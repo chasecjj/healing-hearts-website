@@ -13,6 +13,8 @@ import Resources from './pages/Resources';
 import Frameworks from './pages/Frameworks';
 import Testimonials from './pages/Testimonials';
 import FAQ from './pages/FAQ';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
 
 function App() {
   return (
@@ -32,6 +34,8 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/testimonials" element={<Testimonials />} />
             <Route path="/faq" element={<FAQ />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
           </Route>
 
           {/* Standalone Course Portal without general Layout */}
