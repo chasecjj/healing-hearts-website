@@ -1,0 +1,58 @@
+# Healing Hearts - AI Branding & UI Consistency Guide
+
+This document is designed to be passed to AI agents as a strict set of design constraints and styling guidelines for the Healing Hearts platform. Following these rules ensures a consistent, premium, and emotionally resonant user experience.
+
+---
+
+## 1. Core Aesthetic Philosophy
+- **Vibe:** Clinical but warm, premium, empathetic, and breathable. 
+- **Goal:** Users should feel safe and understood. The site should *never* feel like a stark medical textbook or a cluttered sales funnel.
+- **Key Directive for AI:** Always prioritize generous whitespace (margins/padding) and clear information hierarchy over cramming content.
+
+## 2. Color Palette & Rules
+| Role | Color Profile | Usage & Constraints |
+| :--- | :--- | :--- |
+| **Primary** | Deep Teal (`#0891B2` / `bg-primary`) | Dominant color for headers, text on light backgrounds, and foundational solid sections. |
+| **Accent** | Salmon/Coral (`#E9967A` / `bg-accent`) | Use sparingly for key highlights, progress indicators, or secondary subtle links. **Constraint:** *Never* place this color as text directly on top of the Primary Teal background, as it causes visual vibration and fails WCAG contrast. |
+| **Neutral Base** | Off-White / Cream (`#F7F6F2` / `bg-[#F7F6F2]`) | Primary background color to avoid the clinical starkness of pure white. |
+| **Text/Foreground** | Dark Slate | Use for highly legible body copy. Use `/70` or `/80` opacity for softer reading (e.g., `text-foreground/80`). |
+
+## 3. Typography
+The system relies on a high-contrast pairing between a clean sans-serif and an elegant serif.
+
+- **Primary Heading (Sans-Serif):** *Outfit* (`font-outfit`). Used for bold, structural titles (e.g., `font-outfit font-bold`).
+- **Emotional/Highlight Heading (Serif):** A dramatically italicized serif (`font-drama italic`). Used to emphasize emotional hooks or quotes. *Rule:* Never use the dramatic italic for long body copy or critical functional buttons.
+- **Body Text:** A clean geometric sans-serif (`font-sans`). Keep it light and breathable (`font-light leading-relaxed`).
+
+## 4. UI Components & Theming
+
+### Buttons & CTAs (Calls to Action)
+- **Shape:** Always use pill-shaped, fully rounded corners (`rounded-full`).
+- **Interactive State:** Incorporate smooth duration transitions (e.g., `transition-colors duration-500` or `hover:-translate-y-2`).
+- **Hierarchy:** 
+  - *Primary Button:* Solid background (Primary Teal or Accent, depending on section contrast).
+  - *Secondary Button:* Transparent with borders (e.g., `border border-primary/20 text-primary hover:bg-primary hover:text-background`).
+
+### Cards & Feature Tiles
+- **Border Radius:** Use generous rounding (`rounded-[2.5rem]` or `rounded-[3rem]`). Sharp corners are strictly prohibited.
+- **Borders & Shadows:** Use ultra-light, subtle borders (`border-primary/5`) and soft shadows (`shadow-sm`) instead of heavy, high-contrast outlines.
+
+### Badges
+- For premium offerings (e.g., "Premium Flagship Offering"), use a high-contrast combination like a pale gold/amber background with dark text to stand out against primary sections. Example: `bg-amber-100 text-primary font-bold`.
+
+## 5. Layout & "Anti-Clutter" Rules
+
+1. **Avoid the "Wall of Text":** Break up long paragraphs using structural grids (`grid-cols-1 md:grid-cols-2`).
+2. **Icons for lists:** When presenting lists (like "What We Believe" or "Core Pillars"), use a relevant `lucide-react` icon in a soft circular background to anchor the visual weight. Use numbers sparingly, preferably with tracking applied (`tracking-widest`).
+3. **Generous Padding:** Minimum section padding should be `py-24` or `py-32`. Don't let vertical elements crowd each other.
+
+## 6. Imagery & Thematic Graphics
+The site must not feel empty, but it also shouldn't feel like a standard corporate site. 
+
+- **Ambient Blurs (Blobbies):** To introduce the color palette without heavy blocks, use large, highly blurred background circles placed absolutely behind content. 
+  - *Code snippet:* `absolute top-0 right-0 w-96 h-96 bg-accent/10 rounded-full blur-[100px] -z-10`
+- **Photography:** When using imagery (couples, portraits), it should feel warm, candid, and emotionally grounded. 
+- **Image Integration:** Always soften images using slight overlays (e.g., `mix-blend-overlay` or gradients) so they don't look awkwardly placed on the page layout. Place them inside containers with the standard rounding (`rounded-[2.5rem]`).
+
+## AI Prompt Directive
+> *"When generating new pages or components for the Healing Hearts application, you MUST explicitly adhere to the `Branding Guide`. Review color contrast strictly to avoid Accent on Primary collisions. Use `font-outfit` for bold structure and `font-drama italic` for emotional resonance. Incorporate ambient blurs for empty space, and ensure all buttons are pill-shaped with smooth hover interactions."*

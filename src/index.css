@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body {
+    @apply m-0 p-0 w-full min-h-screen overflow-x-hidden;
+  }
+}
+
+@layer utilities {
+  .clip-text {
+    @apply text-transparent bg-clip-text;
+  }
+}

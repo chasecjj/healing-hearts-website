@@ -1,0 +1,49 @@
+# Website UI/UX Evaluation & Recommendations
+
+This report evaluates the website running on `localhost:5173`, focusing on visibility, color schemes, interactive elements, and overall usability.
+
+> [!NOTE]
+> The evaluation was performed on the active local development server. An automated browser session reviewed the pages and interactions.
+
+![Website UI Review Recording](C:/Users/chase/.gemini/antigravity/brain/111e353d-0e8a-4ca0-8ff9-f2ce09e9c38d/website_ui_review_1771884560849.webp)
+
+## 1. Visual Design & Layout
+
+- **Aesthetic:** The website employs a high-end, minimalist aesthetic that feels both modern and empathetic. It uses generous amounts of whitespace (padding and margins) to create a "breathable" experience, which aligns perfectly with a relationship coaching brand.
+- **Typography:** The site uses a sophisticated pairing of an elegant serif font (featuring dramatic italics in menus) and a clean geometric sans-serif (e.g., *Outfit*). This contrast successfully communicates both emotional depth and professional clarity.
+- **Layout Structure:** Content is organized in clearly defined sections using centered hero components and grid-based feature cards. The transition between sections is smooth, aided by subtle animations and scroll indicators.
+
+## 2. Color Palette Assessment
+
+| Color Role | Hex Code | Usage | Impression |
+| :--- | :--- | :--- | :--- |
+| **Primary** | `#0891B2` (Deep Teal/Cyan) | Backgrounds, primary headings | Calming, stable foundation |
+| **Accent** | `#E9967A` (Salmon/Coral) | Key highlights, secondary links, progress indicators | Warmth, empathy |
+| **Neutral** | Off-white / Soft Grays | Backgrounds, body text | Clean, approachable, clinical |
+
+## 3. Interactive Elements
+
+- **Navigation:** Features a sticky navigation bar and a visually striking full-screen menu overlay. The menu overlay uses large, italicized serif text that elevates the navigational experience to feel premium.
+- **Hover States:** Interactive elements (buttons, nav links, and cards) feature smooth transitions (`duration-500`). Buttons use rounded-pill shapes which are friendly and non-aggressive.
+- **LMS Portal:** The member portal is well-structured with a functional sidebar for course navigation and a clear progress tracking system highlighting the accent color.
+
+## 4. Visibility & Usability Issues
+
+> [!WARNING]
+> Several contrast and visibility issues were identified that could impact accessibility (WCAG compliance) and general usability.
+
+- **Hero Navigation Contrast:** On the homepage hero section, the white navigation links against the very light background have extremely low contrast, making them nearly invisible until the user scrolls.
+- **Color Contrast (Accessibility):** Several sections use the salmon-colored text (`#E9967A`) on white or teal backgrounds. This often fails WCAG 2.1 AA contrast requirements for readability, especially for users with visual impairments.
+- **Text Hierarchy:** Some subheading text (especially the "Program details" on the Programs page) is quite small and faint, which can hinder readability on smaller mobile displays or for users skimming the content.
+
+---
+
+## 5. Recommendations Action Plan
+
+Based on the evaluation, here is a prioritized list of recommendations to enhance the UI/UX:
+
+1. **Improve Sticky Nav Contrast:** Add a subtle background blur (`backdrop-blur`) or a slight drop shadow/opacity change to the navigation bar when it defaults over light backgrounds. This ensures links remain legible at all times.
+2. **Adjust Accent Color Contrast:** Darken the Salmon/Coral accent slightly when used for text to ensure it meets a minimum 4.5:1 contrast ratio against light backgrounds.
+3. **Standardize Body Text & Subheadings:** Increase the weight or size of secondary sub-headings to improve the information hierarchy and ensure key points aren't missed.
+4. **Implement Active States for Links:** Add distinct "active" states (e.g., underlines or color shifts) for navigation links so users have a clearer sense of which page they are currently visiting.
+5. **Enhance Mobile/Overlay Menu UX:** The full-screen menu is elegant, but ensure the close button (`X`) is highly visible and accessible against the background.
