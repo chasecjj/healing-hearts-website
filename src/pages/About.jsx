@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MagneticButton } from '../components/Layout';
-import { Heart, Activity, Repeat, Link2, Target } from 'lucide-react';
+import { Heart, Activity, RefreshCw, Link2, Target } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
