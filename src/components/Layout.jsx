@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
-import { Menu, X, ArrowRight } from 'lucide-react';
+import { Menu, X, ArrowRight, LogOut } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 // --- Magnetic Button (Global) ---
 export const MagneticButton = ({ children, className = '', onClick }) => {
@@ -26,6 +27,13 @@ const Navbar = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, isAdmin, signOut } = useAuth();
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -100,9 +108,25 @@ const Navbar = () => {
           <Link to="/tools" className={`transition-colors duration-500 ${menuOpen ? 'text-background/70 hover:text-background' : location.pathname === '/tools' ? 'text-accent font-semibold' : 'text-foreground/70 hover:text-accent'}`}>Tools</Link>
         </div>
         <div className="flex items-center gap-4">
-          <Link to="/portal" className={`hidden md:block text-sm font-sans font-medium transition-colors duration-500 ${menuOpen ? 'text-background/70 hover:text-background' : 'text-foreground hover:text-accent'}`}>
-            Member Login
-          </Link>
+          {user ? (
+            <div className="hidden md:flex items-center gap-4">
+              {isAdmin && (
+                <Link to="/admin" className={`text-sm font-sans font-medium transition-colors duration-500 ${menuOpen ? 'text-background/70 hover:text-background' : 'text-foreground/70 hover:text-accent'}`}>
+                  Admin
+                </Link>
+              )}
+              <Link to="/portal" className={`text-sm font-sans font-medium transition-colors duration-500 ${menuOpen ? 'text-background/70 hover:text-background' : 'text-foreground hover:text-accent'}`}>
+                My Portal
+              </Link>
+              <button onClick={handleLogout} className={`text-sm font-sans font-medium transition-colors duration-500 ${menuOpen ? 'text-background/70 hover:text-background' : 'text-foreground/70 hover:text-accent'}`}>
+                Log out
+              </button>
+            </div>
+          ) : (
+            <Link to="/login" className={`hidden md:block text-sm font-sans font-medium transition-colors duration-500 ${menuOpen ? 'text-background/70 hover:text-background' : 'text-foreground hover:text-accent'}`}>
+              Member Login
+            </Link>
+          )}
           <button 
             onClick={toggleMenu} 
             className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors duration-500 ${
@@ -152,9 +176,25 @@ const Navbar = () => {
               </p>
             </div>
             <div className="flex flex-col gap-4">
-              <Link to="/portal" className="font-sans font-semibold text-accent hover:text-background transition-colors flex items-center gap-2">
-                Member Login <ArrowRight className="w-4 h-4" />
-              </Link>
+              {user ? (
+                <>
+                  <Link to="/portal" className="font-sans font-semibold text-accent hover:text-background transition-colors flex items-center gap-2">
+                    My Portal <ArrowRight className="w-4 h-4" />
+                  </Link>
+                  {isAdmin && (
+                    <Link to="/admin" className="font-sans font-semibold text-accent hover:text-background transition-colors flex items-center gap-2">
+                      Admin Panel <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  )}
+                  <button onClick={handleLogout} className="font-sans text-background/80 hover:text-background transition-colors flex items-center gap-2 text-left">
+                    <LogOut className="w-4 h-4" /> Log out
+                  </button>
+                </>
+              ) : (
+                <Link to="/login" className="font-sans font-semibold text-accent hover:text-background transition-colors flex items-center gap-2">
+                  Member Login <ArrowRight className="w-4 h-4" />
+                </Link>
+              )}
               <a href="mailto:hello@healingheartscoaching.com" className="font-sans text-background/80 hover:text-background transition-colors">
                 hello@healingheartscoaching.com
               </a>

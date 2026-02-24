@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
 import { Layout } from './components/Layout';
+import ProtectedRoute from './components/ProtectedRoute';
 import CoursePortal from './CoursePortal';
 import Home from './pages/Home';
 import About from './pages/About';
@@ -15,36 +17,73 @@ import Testimonials from './pages/Testimonials';
 import FAQ from './pages/FAQ';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import CourseOverview from './pages/CourseOverview';
 
 function App() {
   return (
     <Router>
-      <div className="w-full min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-accent/20 selection:text-accent">
-        <Routes>
-          {/* Main Marketing Site with Layout (Navbar + Footer) */}
-          <Route element={<Layout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/programs" element={<Programs />} />
-            <Route path="/tools" element={<Tools />} />
-            <Route path="/frameworks" element={<Frameworks />} />
-            <Route path="/physician" element={<PhysicianMarriages />} />
-            <Route path="/physicians" element={<Physicians />} />
-            <Route path="/resources" element={<Resources />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/testimonials" element={<Testimonials />} />
-            <Route path="/faq" element={<FAQ />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/privacy" element={<Privacy />} />
-          </Route>
+      <AuthProvider>
+        <div className="w-full min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-accent/20 selection:text-accent">
+          <Routes>
+            {/* Main Marketing Site with Layout (Navbar + Footer) */}
+            <Route element={<Layout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/programs" element={<Programs />} />
+              <Route path="/tools" element={<Tools />} />
+              <Route path="/frameworks" element={<Frameworks />} />
+              <Route path="/physician" element={<PhysicianMarriages />} />
+              <Route path="/physicians" element={<Physicians />} />
+              <Route path="/resources" element={<Resources />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/testimonials" element={<Testimonials />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/course" element={<CourseOverview />} />
+            </Route>
 
-          {/* Standalone Course Portal without general Layout */}
-          <Route path="/portal" element={<CoursePortal onLogout={() => window.location.href = "/"} />} />
+            {/* Auth pages (standalone, no navbar/footer) */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
 
-          {/* Fallback */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </div>
+            {/* Protected: Course Portal (URL-driven lesson navigation) */}
+            <Route
+              path="/portal"
+              element={
+                <ProtectedRoute>
+                  <CoursePortal />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/:moduleSlug"
+              element={
+                <ProtectedRoute>
+                  <CoursePortal />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/:moduleSlug/:lessonSlug"
+              element={
+                <ProtectedRoute>
+                  <CoursePortal />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Fallback */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </div>
+      </AuthProvider>
     </Router>
   );
 }

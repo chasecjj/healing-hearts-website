@@ -1,0 +1,137 @@
+import { supabase } from './supabase';
+
+// ─── Course Data Queries ────────────────────────────────────────
+
+/**
+ * Fetch a single course with its modules and nested lessons.
+ * Uses 2 queries max; relies on idx_modules_sort and idx_lessons_sort indexes.
+ */
+export async function getCourseWithContent(courseSlug) {
+  const { data: course, error: courseError } = await supabase
+    .from('courses')
+    .select('*')
+    .eq('slug', courseSlug)
+    .eq('is_active', true)
+    .single();
+
+  if (courseError) throw courseError;
+
+  const { data: modules, error: modError } = await supabase
+    .from('modules')
+    .select(`
+      *,
+      lessons (*)
+    `)
+    .eq('course_id', course.id)
+    .order('sort_order', { ascending: true });
+
+  if (modError) throw modError;
+
+  // Sort lessons within each module by sort_order
+  modules.forEach((mod) => {
+    mod.lessons = (mod.lessons || []).sort((a, b) => a.sort_order - b.sort_order);
+  });
+
+  return { ...course, modules };
+}
+
+// ─── Progress Queries ───────────────────────────────────────────
+
+/**
+ * Fetch all lesson_progress rows for a user within a specific course.
+ */
+export async function getUserProgress(userId, courseId) {
+  const { data: modules } = await supabase
+    .from('modules')
+    .select('id, lessons(id)')
+    .eq('course_id', courseId);
+
+  const lessonIds = modules?.flatMap((m) => m.lessons?.map((l) => l.id) || []) || [];
+  if (lessonIds.length === 0) return [];
+
+  const { data: progress, error } = await supabase
+    .from('lesson_progress')
+    .select('*')
+    .eq('user_id', userId)
+    .in('lesson_id', lessonIds);
+
+  if (error) throw error;
+  return progress || [];
+}
+
+/**
+ * Mark a lesson as complete. Uses upsert on composite PK (user_id, lesson_id).
+ */
+export async function markLessonComplete(userId, lessonId) {
+  const { data, error } = await supabase
+    .from('lesson_progress')
+    .upsert(
+      {
+        user_id: userId,
+        lesson_id: lessonId,
+        completed: true,
+        completed_at: new Date().toISOString(),
+      },
+      { onConflict: 'user_id,lesson_id' }
+    )
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * Mark a lesson as incomplete (toggle back).
+ */
+export async function markLessonIncomplete(userId, lessonId) {
+  const { data, error } = await supabase
+    .from('lesson_progress')
+    .upsert(
+      {
+        user_id: userId,
+        lesson_id: lessonId,
+        completed: false,
+        completed_at: null,
+      },
+      { onConflict: 'user_id,lesson_id' }
+    )
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+// ─── Pure Progress Calculators (no side effects, easy to test) ──
+
+/**
+ * Calculate completion percentage for a single module.
+ */
+export function calculateModuleProgress(module, progressRecords) {
+  if (!module.lessons || module.lessons.length === 0) return 0;
+  const completedCount = module.lessons.filter((lesson) =>
+    progressRecords.some((p) => p.lesson_id === lesson.id && p.completed)
+  ).length;
+  return Math.round((completedCount / module.lessons.length) * 100);
+}
+
+/**
+ * Calculate overall course completion percentage.
+ */
+export function calculateCourseProgress(modules, progressRecords) {
+  const totalLessons = modules.reduce(
+    (sum, mod) => sum + (mod.lessons?.length || 0),
+    0
+  );
+  if (totalLessons === 0) return 0;
+  const completedCount = modules.reduce(
+    (sum, mod) =>
+      sum +
+      (mod.lessons || []).filter((lesson) =>
+        progressRecords.some((p) => p.lesson_id === lesson.id && p.completed)
+      ).length,
+    0
+  );
+  return Math.round((completedCount / totalLessons) * 100);
+}
