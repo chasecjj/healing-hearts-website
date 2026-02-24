@@ -21,6 +21,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import CourseOverview from './pages/CourseOverview';
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
               <Route path="/faq" element={<FAQ />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
+              <Route path="/course" element={<CourseOverview />} />
             </Route>
 
             {/* Auth pages (standalone, no navbar/footer) */}
@@ -51,9 +53,25 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
 
-            {/* Protected: Course Portal */}
+            {/* Protected: Course Portal (URL-driven lesson navigation) */}
             <Route
               path="/portal"
+              element={
+                <ProtectedRoute>
+                  <CoursePortal />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/:moduleSlug"
+              element={
+                <ProtectedRoute>
+                  <CoursePortal />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/:moduleSlug/:lessonSlug"
               element={
                 <ProtectedRoute>
                   <CoursePortal />

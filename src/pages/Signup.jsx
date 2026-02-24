@@ -85,7 +85,7 @@ export default function Signup() {
             Begin your healing journey today.
           </h2>
           <p className="font-sans font-light text-background/80 text-lg leading-relaxed max-w-md">
-            Join thousands of couples who've chosen to fight for their marriage — together.
+            Create a free account to access Module 7: Forgiveness & Letting Go — a complete preview of the Healing Hearts experience.
           </p>
         </div>
         <div className="relative z-10">
@@ -104,7 +104,7 @@ export default function Signup() {
 
           <h1 className="font-outfit font-bold text-3xl text-primary mb-2">Create your account</h1>
           <p className="font-sans text-foreground/60 mb-8">
-            Start with a free account. Purchase courses when you're ready.
+            Get free access to Module 7: Forgiveness & Letting Go — three full lessons, no payment required.
           </p>
 
           {error && (
