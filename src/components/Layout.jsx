@@ -139,36 +139,36 @@ const Navbar = () => {
       </nav>
 
       {/* Full Screen Overlay Menu */}
-      <div 
-        className={`menu-overlay fixed inset-0 bg-primary z-50 flex flex-col justify-center px-8 md:px-24 transform -translate-y-full \${menuOpen ? 'block' : 'hidden md:flex'}`}
+      <div
+        className={`menu-overlay fixed inset-0 bg-primary z-50 flex flex-col px-8 md:px-24 pt-24 pb-8 md:pt-0 md:pb-0 md:justify-center overflow-y-auto transform -translate-y-full \${menuOpen ? 'block' : 'hidden md:flex'}`}
         style={{ display: menuOpen ? 'flex' : 'none' }} // Ensure it stays hidden initially
       >
-        <div className="max-w-6xl mx-auto w-full flex flex-col md:flex-row gap-16 md:gap-32">
-          <div className="flex flex-col gap-6 md:w-2/3">
-            <Link to="/" className="menu-link font-drama italic text-5xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
-              Home <ArrowRight className="w-8 h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
+        <div className="max-w-6xl mx-auto w-full flex flex-col md:flex-row gap-8 md:gap-32">
+          <div className="flex flex-col gap-4 md:gap-6 md:w-2/3">
+            <Link to="/" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
+              Home <ArrowRight className="w-6 h-6 md:w-8 md:h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
             </Link>
-            <Link to="/about" className="menu-link font-drama italic text-5xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
-              About Us <ArrowRight className="w-8 h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
+            <Link to="/about" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
+              About Us <ArrowRight className="w-6 h-6 md:w-8 md:h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
             </Link>
-            <Link to="/programs" className="menu-link font-drama italic text-5xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
-              Programs <ArrowRight className="w-8 h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
+            <Link to="/programs" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
+              Programs <ArrowRight className="w-6 h-6 md:w-8 md:h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
             </Link>
-            <Link to="/tools" className="menu-link font-drama italic text-5xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
-              Tools & Frameworks <ArrowRight className="w-8 h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
+            <Link to="/tools" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
+              Tools & Frameworks <ArrowRight className="w-6 h-6 md:w-8 md:h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
             </Link>
-            <Link to="/physician" className="menu-link font-drama italic text-5xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
-              Physician Marriages <ArrowRight className="w-8 h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
+            <Link to="/physician" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
+              Physician Marriages <ArrowRight className="w-6 h-6 md:w-8 md:h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
             </Link>
-            <Link to="/resources" className="menu-link font-drama italic text-5xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
-              Resources <ArrowRight className="w-8 h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
+            <Link to="/resources" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
+              Resources <ArrowRight className="w-6 h-6 md:w-8 md:h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
             </Link>
-            <Link to="/contact" className="menu-link font-drama italic text-5xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
-              Contact <ArrowRight className="w-8 h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
+            <Link to="/contact" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
+              Contact <ArrowRight className="w-6 h-6 md:w-8 md:h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
             </Link>
           </div>
-          
-          <div className="menu-footer flex flex-col justify-end gap-12 md:w-1/3 pb-12">
+
+          <div className="menu-footer flex flex-col justify-end gap-8 md:gap-12 md:w-1/3 pb-8 md:pb-12">
             <div>
               <h4 className="font-outfit font-bold text-sm tracking-widest uppercase text-background/50 mb-6">Healing Hearts</h4>
               <p className="font-sans font-light text-background/80 leading-relaxed max-w-sm">

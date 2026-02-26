@@ -14,3 +14,10 @@
     @apply text-transparent bg-clip-text;
   }
 }
+
+/* SVG feTurbulence noise filter causes rendering artifacts on mobile Safari */
+@media (max-width: 768px) {
+  body > svg[aria-hidden="true"] {
+    display: none !important;
+  }
+}
