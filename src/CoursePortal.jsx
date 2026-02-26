@@ -270,7 +270,7 @@ const CoursePortal = () => {
                 >
                   <div className="text-left min-w-0">
                     <span className="font-outfit font-medium text-sm block truncate">
-                      {mod.title}
+                      Module {mod.module_number}: {mod.title}
                     </span>
                     {mod.is_preview && modProgress > 0 && (
                       <span
@@ -312,7 +312,7 @@ const CoursePortal = () => {
                           ) : (
                             <PlayCircle className="w-4 h-4 opacity-50 flex-shrink-0" />
                           )}
-                          <span className="truncate">{lesson.title}</span>
+                          <span className="truncate">{mod.module_number}.{lesson.sort_order} — {lesson.title}</span>
                         </button>
                       );
                     })}
@@ -345,7 +345,7 @@ const CoursePortal = () => {
             <Menu className="w-5 h-5" />
           </button>
           <h1 className="font-outfit text-lg lg:text-2xl text-primary font-medium truncate">
-            {currentModule?.title}
+            Module {currentModule?.module_number}: {currentModule?.title}
           </h1>
         </header>
 
@@ -356,7 +356,7 @@ const CoursePortal = () => {
             <div className="w-full bg-primary rounded-3xl overflow-hidden relative shadow-2xl p-8 md:p-12">
               <div className="text-background">
                 <p className="font-outfit text-sm uppercase tracking-widest text-background/50 mb-2">
-                  {currentModule?.title} · Lesson {currentLesson?.sort_order}
+                  Module {currentModule?.module_number} · Lesson {currentModule?.module_number}.{currentLesson?.sort_order}
                 </p>
                 <h2 className="font-drama italic text-3xl md:text-4xl text-background mb-3">
                   {currentLesson?.title}
@@ -391,26 +391,30 @@ const CoursePortal = () => {
                 <span className="hidden sm:inline">Previous Lesson</span>
               </button>
 
-              <button
-                onClick={handleMarkCompleteAndNext}
-                className={`flex items-center gap-2 px-8 py-3 rounded-full text-sm font-medium transition-colors shadow-lg ${
-                  currentLesson && isLessonCompleted(currentLesson.id)
-                    ? 'text-green-700 bg-green-100 hover:bg-green-200'
-                    : 'text-background bg-accent hover:bg-accent/90'
-                }`}
-              >
-                {currentLesson && isLessonCompleted(currentLesson.id) ? (
-                  <>
-                    <CheckCircle2 className="w-4 h-4" />
-                    Completed
-                  </>
+              {currentLesson && isLessonCompleted(currentLesson.id) ? (
+                nextLesson ? (
+                  <button
+                    onClick={() => navigateToLesson(nextLesson.module, nextLesson.lesson)}
+                    className="flex items-center gap-2 px-8 py-3 rounded-full text-sm font-medium transition-colors shadow-lg text-background bg-primary hover:bg-primary/90"
+                  >
+                    Next Lesson
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
                 ) : (
-                  <>
-                    Mark Complete{nextLesson ? ' & Next' : ''}
-                    {nextLesson && <ChevronRight className="w-4 h-4" />}
-                  </>
-                )}
-              </button>
+                  <div className="flex items-center gap-2 px-8 py-3 rounded-full text-sm font-medium text-green-700 bg-green-100">
+                    <CheckCircle2 className="w-4 h-4" />
+                    Module Complete
+                  </div>
+                )
+              ) : (
+                <button
+                  onClick={handleMarkCompleteAndNext}
+                  className="flex items-center gap-2 px-8 py-3 rounded-full text-sm font-medium transition-colors shadow-lg text-background bg-accent hover:bg-accent/90"
+                >
+                  Mark Complete{nextLesson ? ' & Next' : ''}
+                  {nextLesson && <ChevronRight className="w-4 h-4" />}
+                </button>
+              )}
             </div>
           </div>
         </div>
