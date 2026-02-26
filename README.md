@@ -1,16 +1,48 @@
-# React + Vite
+# Healing Hearts Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Relationship and marriage education platform by Jeff & Trisha Jamison. Marketing site + authenticated course portal with Module 7 free preview.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Frontend:** React 19, Vite 7, Tailwind CSS 3, GSAP animations
+- **Backend:** Supabase (auth + PostgreSQL + RLS)
+- **Hosting:** Vercel (auto-deploy on push to master)
+- **Icons:** Lucide React
 
-## React Compiler
+## Quick Start
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+git clone https://github.com/chasecjj/healing-hearts-website.git
+cd healing-hearts-website
+cp .env.example .env       # Add your Supabase credentials
+npm install
+npm run dev                # http://localhost:5173
+```
 
-## Expanding the ESLint configuration
+## Commands
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start dev server with hot reload |
+| `npm run build` | Production build (~686KB) |
+| `npm run preview` | Preview production build locally |
+| `npm run lint` | Run ESLint |
+
+## Phase Status
+
+| Phase | Status |
+|-------|--------|
+| Phase 0 — Marketing site on Vercel | Done |
+| Phase 1 — Auth (Supabase) | Done |
+| Phase 2 — Course portal with real content | Done |
+| Phase 3 — Stripe payments | Next |
+| Phase 4 — React Native mobile app | Planned |
+
+## Live URL
+
+https://healing-hearts-olive.vercel.app
+
+## Documentation
+
+- **[Getting Started Guide](docs/GETTING-STARTED.md)** — Beginner-friendly setup & editing guide (for Desirae)
+- **[CLAUDE.md](CLAUDE.md)** — Architecture reference for AI-assisted development
