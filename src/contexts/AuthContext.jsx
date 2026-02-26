@@ -97,6 +97,18 @@ export function AuthProvider({ children }) {
       password,
       options: {
         data: { display_name: displayName },
+        emailRedirectTo: `${window.location.origin}/login?verified=true`,
+      },
+    });
+    return { data, error };
+  }
+
+  async function resendConfirmation(email) {
+    const { data, error } = await supabase.auth.resend({
+      type: 'signup',
+      email,
+      options: {
+        emailRedirectTo: `${window.location.origin}/login?verified=true`,
       },
     });
     return { data, error };
@@ -153,6 +165,7 @@ export function AuthProvider({ children }) {
     signUp,
     signIn,
     signInWithMagicLink,
+    resendConfirmation,
     resetPassword,
     updatePassword,
     signOut,

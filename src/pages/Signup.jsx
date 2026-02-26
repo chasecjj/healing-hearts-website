@@ -57,15 +57,26 @@ export default function Signup() {
             <Mail className="w-8 h-8 text-green-600" />
           </div>
           <h1 className="font-outfit font-bold text-3xl text-primary mb-4">Check your email</h1>
-          <p className="font-sans text-foreground/70 mb-8">
+          <p className="font-sans text-foreground/70 mb-3">
             We sent a confirmation link to <strong className="text-primary">{email}</strong>.
-            Please verify your email to complete your registration.
           </p>
+          <div className="bg-primary/5 rounded-2xl p-4 mb-6 text-left">
+            <p className="font-sans text-sm text-foreground/80 mb-2 font-medium">What to do next:</p>
+            <ol className="font-sans text-sm text-foreground/70 space-y-1.5 list-decimal list-inside">
+              <li>Open your email inbox</li>
+              <li>Look for an email from <strong className="text-foreground/80">noreply@mail.app.supabase.io</strong></li>
+              <li>Click the "Confirm your mail" link</li>
+              <li>You'll be redirected back here to sign in</li>
+            </ol>
+            <p className="font-sans text-xs text-foreground/50 mt-3">
+              Don't see it? Check your spam or junk folder. The email usually arrives within a minute.
+            </p>
+          </div>
           <Link
             to="/login"
             className="inline-flex items-center gap-2 font-outfit font-medium text-sm text-accent hover:text-accent/80 transition-colors"
           >
-            Back to login <ArrowRight className="w-4 h-4" />
+            Go to sign in <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </div>

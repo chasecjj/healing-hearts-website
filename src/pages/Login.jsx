@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Mail, Lock, ArrowRight, Sparkles } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Sparkles, CheckCircle } from 'lucide-react';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -10,25 +10,52 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [magicLinkSent, setMagicLinkSent] = useState(false);
   const [mode, setMode] = useState('password'); // 'password' | 'magic'
+  const [unconfirmedEmail, setUnconfirmedEmail] = useState('');
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendSuccess, setResendSuccess] = useState(false);
 
-  const { signIn, signInWithMagicLink } = useAuth();
+  const { signIn, signInWithMagicLink, resendConfirmation } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const from = location.state?.from?.pathname || '/portal';
+  const justVerified = searchParams.get('verified') === 'true';
 
   async function handlePasswordLogin(e) {
     e.preventDefault();
     setError('');
+    setUnconfirmedEmail('');
+    setResendSuccess(false);
     setLoading(true);
 
     const { error: authError } = await signIn({ email, password });
 
     if (authError) {
-      setError(authError.message);
+      if (authError.message?.toLowerCase().includes('email not confirmed')) {
+        setUnconfirmedEmail(email);
+        setError('');
+      } else {
+        setError(authError.message);
+      }
       setLoading(false);
     } else {
       navigate(from, { replace: true });
     }
+  }
+
+  async function handleResendConfirmation() {
+    if (!unconfirmedEmail) return;
+    setResendLoading(true);
+    setResendSuccess(false);
+
+    const { error: resendError } = await resendConfirmation(unconfirmedEmail);
+
+    if (resendError) {
+      setError(resendError.message);
+    } else {
+      setResendSuccess(true);
+    }
+    setResendLoading(false);
   }
 
   async function handleMagicLink(e) {
@@ -103,6 +130,34 @@ export default function Login() {
           <p className="font-sans text-foreground/60 mb-8">
             Access your courses and continue your healing journey.
           </p>
+
+          {justVerified && (
+            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-2xl mb-6 text-sm font-sans flex items-center gap-3">
+              <CheckCircle className="w-5 h-5 flex-shrink-0" />
+              <span>Email verified! You can now sign in.</span>
+            </div>
+          )}
+
+          {unconfirmedEmail && (
+            <div className="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-4 rounded-2xl mb-6 text-sm font-sans">
+              <p className="font-medium mb-2">Email not yet verified</p>
+              <p className="text-amber-700 mb-3">
+                Please check your inbox for a confirmation link from <strong>noreply@mail.app.supabase.io</strong>.
+                It may be in your spam folder.
+              </p>
+              {resendSuccess ? (
+                <p className="text-green-700 font-medium">Confirmation email resent! Check your inbox.</p>
+              ) : (
+                <button
+                  onClick={handleResendConfirmation}
+                  disabled={resendLoading}
+                  className="text-accent font-medium hover:text-accent/80 transition-colors disabled:opacity-50"
+                >
+                  {resendLoading ? 'Sending...' : 'Resend confirmation email'}
+                </button>
+              )}
+            </div>
+          )}
 
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl mb-6 text-sm font-sans">
