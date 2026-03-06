@@ -6,7 +6,7 @@ import LessonContent from './components/LessonContent';
 import {
   BookOpen,
   FileText,
-  LogOut,
+
   PlayCircle,
   CheckCircle2,
   ChevronDown,
@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 
 const CoursePortal = () => {
-  const { signOut, profile } = useAuth();
+  const { profile } = useAuth();
   const navigate = useNavigate();
   const { moduleSlug, lessonSlug } = useParams();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -128,8 +128,7 @@ const CoursePortal = () => {
     }
   };
 
-  const handleLogout = async () => {
-    await signOut();
+  const handleReturnToSite = () => {
     navigate('/');
   };
 
@@ -325,10 +324,10 @@ const CoursePortal = () => {
 
         <div className="p-4 border-t border-primary/10">
           <button
-            onClick={handleLogout}
+            onClick={handleReturnToSite}
             className="flex items-center gap-3 text-primary/70 hover:text-primary transition-colors p-2 rounded-lg hover:bg-primary/5 w-full"
           >
-            <LogOut className="w-5 h-5" />
+            <ChevronLeft className="w-5 h-5" />
             <span className="font-medium text-sm">Return to Site</span>
           </button>
         </div>
