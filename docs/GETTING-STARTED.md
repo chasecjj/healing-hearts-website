@@ -17,6 +17,18 @@
 
 ---
 
+## Using Antigravity IDE?
+
+If you're using **Google Antigravity IDE** (instead of VS Code), head to the dedicated guide:
+
+- **[Antigravity IDE Guide](onboarding/ANTIGRAVITY-GUIDE.md)** — Full setup and walkthrough for Antigravity + Gemini
+- **[Gemini Prompts](onboarding/GEMINI-PROMPTS.md)** — Copy-paste prompts for the built-in AI assistant
+- **[Vikunja Quick Start](onboarding/VIKUNJA-QUICKSTART.md)** — Task management reference
+
+The guide below is for **VS Code** setup. Both editors work with this project.
+
+---
+
 ## Part 1 — One-Time Setup
 
 You only need to do these steps once on your computer.
@@ -494,9 +506,14 @@ healing-hearts-website/
 ├── .env.example
 ├── .gitignore
 ├── CLAUDE.md
+├── GEMINI.md
 ├── README.md
 ├── docs/
-│   └── GETTING-STARTED.md
+│   ├── GETTING-STARTED.md
+│   └── onboarding/
+│       ├── ANTIGRAVITY-GUIDE.md
+│       ├── GEMINI-PROMPTS.md
+│       └── VIKUNJA-QUICKSTART.md
 ├── public/
 │   └── vite.svg
 ├── supabase/
