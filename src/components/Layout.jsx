@@ -99,8 +99,8 @@ const Navbar = () => {
             : 'bg-background shadow-md border border-primary/20 text-foreground'
         }`}
       >
-        <Link to="/" className={`font-outfit font-bold text-xl tracking-wide flex-shrink-0 transition-colors duration-500 ${menuOpen ? 'text-background' : 'text-foreground'}`}>
-          Healing Hearts.
+        <Link to="/" className={`flex items-center flex-shrink-0 transition-opacity duration-500 hover:opacity-80 ${menuOpen ? 'opacity-90' : 'opacity-100'}`}>
+          <img src="/logo.png" alt="Healing Hearts Logo" className="h-8 md:h-10 w-auto object-contain" />
         </Link>
         <div className="hidden md:flex items-center gap-10 font-sans text-sm font-medium">
           <Link to="/about" className={`transition-colors duration-500 ${menuOpen ? 'text-background/70 hover:text-background' : location.pathname === '/about' ? 'text-accent font-semibold' : 'text-foreground/70 hover:text-accent'}`}>About Us</Link>

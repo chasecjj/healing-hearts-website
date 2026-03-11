@@ -39,8 +39,8 @@ export default function Navbar() {
           : 'bg-transparent text-background w-[95%] md:w-[85%]'
       }`}
     >
-      <Link to="/" className="font-sans font-bold text-xl tracking-tight hover:text-accent transition-colors">
-        Healing Hearts
+      <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
+        <img src="/logo.png" alt="Healing Hearts Logo" className="h-8 md:h-10 w-auto object-contain" />
       </Link>
       
       <div className="hidden md:flex items-center gap-8 font-mono text-sm uppercase tracking-widest">
