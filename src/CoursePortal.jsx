@@ -24,6 +24,7 @@ const CoursePortal = () => {
   const navigate = useNavigate();
   const { moduleSlug, lessonSlug } = useParams();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [expandedParents, setExpandedParents] = useState({});
 
   const {
     course,
@@ -131,6 +132,43 @@ const CoursePortal = () => {
   const handleReturnToSite = () => {
     navigate('/');
   };
+
+  // ─── Sub-lesson helpers ───────────────────────────────────
+
+  const getLessonGroups = useCallback((lessons) => {
+    if (!lessons) return { topLevel: [], childrenByParent: {} };
+    const topLevel = lessons.filter((l) => !l.parent_lesson_id);
+    const childrenByParent = {};
+    lessons.forEach((l) => {
+      if (l.parent_lesson_id) {
+        if (!childrenByParent[l.parent_lesson_id]) {
+          childrenByParent[l.parent_lesson_id] = [];
+        }
+        childrenByParent[l.parent_lesson_id].push(l);
+      }
+    });
+    return { topLevel, childrenByParent };
+  }, []);
+
+  const isParentOfActive = useCallback(
+    (lessonId, childrenByParent) => {
+      if (!currentLesson || !childrenByParent[lessonId]) return false;
+      return childrenByParent[lessonId].some((c) => c.id === currentLesson.id);
+    },
+    [currentLesson]
+  );
+
+  const toggleParentExpanded = useCallback((lessonId) => {
+    setExpandedParents((prev) => ({ ...prev, [lessonId]: !prev[lessonId] }));
+  }, []);
+
+  const getParentLesson = useCallback(
+    (lesson) => {
+      if (!lesson?.parent_lesson_id || !currentModule?.lessons) return null;
+      return currentModule.lessons.find((l) => l.id === lesson.parent_lesson_id);
+    },
+    [currentModule]
+  );
 
   // ─── Loading state ──────────────────────────────────────────
 
@@ -290,33 +328,86 @@ const CoursePortal = () => {
                   )}
                 </button>
 
-                {isActive && mod.is_preview && (
-                  <div className="mt-2 pl-4 space-y-1">
-                    {mod.lessons?.map((lesson) => {
-                      const isActiveLesson = currentLesson?.id === lesson.id;
-                      const completed = isLessonCompleted(lesson.id);
+                {isActive && mod.is_preview && (() => {
+                  const { topLevel, childrenByParent } = getLessonGroups(mod.lessons);
+                  return (
+                    <div className="mt-2 pl-4 space-y-1">
+                      {topLevel.map((lesson) => {
+                        const isActiveLesson = currentLesson?.id === lesson.id;
+                        const completed = isLessonCompleted(lesson.id);
+                        const hasChildren = !!childrenByParent[lesson.id];
+                        const isExpanded =
+                          expandedParents[lesson.id] ||
+                          isActiveLesson ||
+                          isParentOfActive(lesson.id, childrenByParent);
 
-                      return (
-                        <button
-                          key={lesson.id}
-                          onClick={() => navigateToLesson(mod, lesson)}
-                          className={`w-full flex items-center gap-3 p-2 rounded-lg text-sm transition-colors text-left ${
-                            isActiveLesson
-                              ? 'bg-accent/10 text-accent font-medium'
-                              : 'text-primary/70 hover:bg-primary/5'
-                          }`}
-                        >
-                          {completed ? (
-                            <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" />
-                          ) : (
-                            <PlayCircle className="w-4 h-4 opacity-50 flex-shrink-0" />
-                          )}
-                          <span className="truncate">{mod.module_number}.{lesson.sort_order} — {lesson.title}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
+                        return (
+                          <div key={lesson.id}>
+                            <div className="flex items-center">
+                              {hasChildren && (
+                                <button
+                                  onClick={() => toggleParentExpanded(lesson.id)}
+                                  className="p-1 text-primary/40 hover:text-primary/70 flex-shrink-0"
+                                >
+                                  <ChevronRight
+                                    className={`w-3 h-3 transition-transform ${
+                                      isExpanded ? 'rotate-90' : ''
+                                    }`}
+                                  />
+                                </button>
+                              )}
+                              <button
+                                onClick={() => navigateToLesson(mod, lesson)}
+                                className={`w-full flex items-center gap-3 p-2 rounded-lg text-sm transition-colors text-left ${
+                                  isActiveLesson
+                                    ? 'bg-accent/10 text-accent font-medium'
+                                    : 'text-primary/70 hover:bg-primary/5'
+                                } ${!hasChildren ? 'ml-5' : ''}`}
+                              >
+                                {completed ? (
+                                  <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" />
+                                ) : (
+                                  <PlayCircle className="w-4 h-4 opacity-50 flex-shrink-0" />
+                                )}
+                                <span className="truncate">
+                                  {mod.module_number}.{lesson.sort_order} — {lesson.title}
+                                </span>
+                              </button>
+                            </div>
+
+                            {hasChildren && isExpanded && (
+                              <div className="ml-5 pl-3 border-l border-primary/10 space-y-1 mt-1">
+                                {childrenByParent[lesson.id].map((child) => {
+                                  const isChildActive = currentLesson?.id === child.id;
+                                  const childCompleted = isLessonCompleted(child.id);
+
+                                  return (
+                                    <button
+                                      key={child.id}
+                                      onClick={() => navigateToLesson(mod, child)}
+                                      className={`w-full flex items-center gap-3 p-2 rounded-lg text-sm transition-colors text-left ${
+                                        isChildActive
+                                          ? 'bg-accent/10 text-accent font-medium'
+                                          : 'text-primary/70 hover:bg-primary/5'
+                                      }`}
+                                    >
+                                      {childCompleted ? (
+                                        <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" />
+                                      ) : (
+                                        <PlayCircle className="w-4 h-4 opacity-50 flex-shrink-0" />
+                                      )}
+                                      <span className="truncate">{child.title}</span>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
               </div>
             );
           })}
@@ -355,7 +446,16 @@ const CoursePortal = () => {
             <div className="w-full bg-primary rounded-3xl overflow-hidden relative shadow-2xl p-8 md:p-12">
               <div className="text-background">
                 <p className="font-outfit text-sm uppercase tracking-widest text-background/50 mb-2">
-                  Module {currentModule?.module_number} · Lesson {currentModule?.module_number}.{currentLesson?.sort_order}
+                  Module {currentModule?.module_number}
+                  {currentLesson?.parent_lesson_id && getParentLesson(currentLesson)
+                    ? ` · ${currentModule?.module_number}.${getParentLesson(currentLesson).sort_order} ${getParentLesson(currentLesson).title}`
+                    : ''
+                  }
+                  {' · '}
+                  {currentLesson?.parent_lesson_id
+                    ? currentLesson?.title
+                    : `Lesson ${currentModule?.module_number}.${currentLesson?.sort_order}`
+                  }
                 </p>
                 <h2 className="font-drama italic text-3xl md:text-4xl text-background mb-3">
                   {currentLesson?.title}
