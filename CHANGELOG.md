@@ -2,6 +2,25 @@
 
 All notable changes to the Healing Hearts Website are documented here.
 
+## [2026-03-16] Module 7.4 Revised Content (7-Agent Pipeline)
+
+### Changed
+- **Module 7.4 content replaced** with 7-agent pipeline revision (214 blocks, 120 min total)
+  - Parent hub: formal Learning Objectives (5 action-verb objectives) + What's Ahead overview (12 blocks, 5 min)
+  - Child 1: Foundations & Safety -- tighter prose, Gottman attribution, betrayal trauma safety note (44 blocks, 30 min)
+  - Child 2: Connection Layers -- corrected HH terminology (CEO Brain/Critter Brain), Costco story preserved (47 blocks, 25 min)
+  - Child 3: Spiritual & Physical -- Morning Anchor, Six-Second Kiss, Dual Control Model, Brick Check-In practices (47 blocks, 30 min)
+  - Child 4: Sexual Connection & Action Plan -- Self-Assessment, Yes/No/Maybe Couples Practice, Reflection Prompts, Key Takeaways, Bridge Forward (64 blocks, 30 min)
+- **Terminology standardized** per audit: "Critter Brain" (capitalized), "CEO Brain", "Green Zone", "activation" over "triggered", Module 7.4 (periods not colons)
+- **Pornography section** rewritten with compassionate "research suggests" framing per pipeline audit
+- Migration 006: UPDATE statements for all 5 existing lesson UUIDs (no schema changes)
+
+### Added
+- `supabase/generators/generate_006_module74_revised.mjs` -- Node.js content generator (source of truth for lesson blocks, outputs SQL via `JSON.stringify` + escaping)
+- **New content sections** (not in original): Self-Assessment (6-level rating + Brakes/Accelerators), Yes/No/Maybe Couples Practice (4 categories, 16 items), Reflection Prompts (3 individual + 1 couples), Key Takeaways (5 points), Bridge Forward (Trisha closing + Module 8.1 preview)
+
+---
+
 ## [2026-03-12] Sub-Lesson Feature + Module 7.4 Content
 
 ### Added
