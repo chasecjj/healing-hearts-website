@@ -260,9 +260,7 @@ const CoursePortal = () => {
         }`}
       >
         <div className="p-6 border-b border-primary/10 flex items-center justify-between">
-          <div className="font-outfit font-bold text-xl text-primary">
-            Healing Hearts.
-          </div>
+          <img src="/logo.png" alt="Healing Hearts Logo" className="h-8 md:h-10 w-auto object-contain hover:opacity-80 transition-opacity" />
           <button
             onClick={() => setSidebarOpen(false)}
             className="lg:hidden p-1 text-primary/50 hover:text-primary"

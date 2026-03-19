@@ -42,8 +42,8 @@ const Navbar = ({ onLogin }) => {
             : 'bg-transparent text-primary border border-transparent'
         }`}
       >
-        <div className="font-outfit font-bold text-xl tracking-wide flex-shrink-0 text-primary">
-          Healing Hearts.
+        <div className="flex-shrink-0">
+          <img src="/logo.png" alt="Healing Hearts Logo" className="h-8 md:h-10 w-auto object-contain hover:opacity-80 transition-opacity" />
         </div>
         <div className="hidden md:flex items-center gap-10 font-sans text-sm font-medium">
           <a href="#about" className="hover:text-accent transition-colors">About Us</a>
