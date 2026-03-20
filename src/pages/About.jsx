@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MagneticButton } from '../components/Layout';
@@ -215,9 +216,11 @@ export default function About() {
           </div>
           
           <div className="mt-20 flex justify-center">
+            <Link to="/contact">
              <MagneticButton className="bg-background text-primary px-10 py-4 rounded-full text-sm font-bold shadow-xl">
                Work With Us
              </MagneticButton>
+            </Link>
           </div>
         </div>
       </section>
