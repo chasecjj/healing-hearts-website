@@ -71,12 +71,12 @@ const FAQ_ITEMS = [
   {
     question: 'How much time does each day take?',
     answer:
-      'Each exercise takes 10-15 minutes. Some days less. We designed this for busy couples \u2014 especially those in demanding careers.',
+      'Each exercise takes 10-15 minutes. Some days less. We designed this for busy couples — especially those in demanding careers.',
   },
   {
     question: 'What happens after the 7 days?',
     answer:
-      "You'll have a personalized Connection Blueprint and an invitation to explore our full Healing Hearts program \u2014 but there's zero pressure.",
+      "You'll have a personalized Connection Blueprint and an invitation to explore our full Healing Hearts program — but there's zero pressure.",
   },
 ]
 
@@ -168,7 +168,7 @@ export default function SparkChallenge() {
       {/* Section 1: Hero */}
       <HeroSection
         headline="7 Days to Reignite Your Connection"
-        subheadline="The Spark Challenge \u2014 free daily exercises that help couples move from disconnection to deep, meaningful connection."
+        subheadline="The Spark Challenge — free daily exercises that help couples move from disconnection to deep, meaningful connection."
         ctaText="Start the Challenge"
         ctaHref="#signup"
         onCtaClick={scrollToSignup}
@@ -193,7 +193,7 @@ export default function SparkChallenge() {
       {/* Section 3: Testimonial */}
       <div className="spark-reveal mx-auto max-w-4xl px-4 py-16 sm:px-6">
         <TestimonialCard
-          quote="After 15 years of marriage, I thought we'd lost something that couldn't come back. The Spark Challenge showed us it was just buried \u2014 not gone."
+          quote="After 15 years of marriage, I thought we'd lost something that couldn't come back. The Spark Challenge showed us it was just buried — not gone."
           name="Sarah"
           role="married 15 years"
         />
