@@ -230,8 +230,8 @@ const Footer = () => {
             </div>
             <div className="flex flex-col gap-3">
               <h4 className="font-outfit font-bold text-sm text-background/50 mb-2">Legal</h4>
-              <a href="#" className="font-sans font-light text-sm text-background/80 hover:text-accent transition-colors">Privacy Policy</a>
-              <a href="#" className="font-sans font-light text-sm text-background/80 hover:text-accent transition-colors">Terms of Service</a>
+              <Link to="/privacy" className="font-sans font-light text-sm text-background/80 hover:text-accent transition-colors">Privacy Policy</Link>
+              <Link to="/terms" className="font-sans font-light text-sm text-background/80 hover:text-accent transition-colors">Terms of Service</Link>
             </div>
           </div>
         </div>
