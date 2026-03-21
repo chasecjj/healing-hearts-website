@@ -91,6 +91,18 @@ export function AuthProvider({ children }) {
   }, []);
 
   // Auth methods
+  //
+  // EMAIL VERIFICATION: The emailRedirectTo URLs below use window.location.origin,
+  // which resolves to the correct domain in production (https://healingheartscourse.com).
+  // However, Supabase must also have these redirect URLs allowlisted in the dashboard:
+  //   Supabase Dashboard > Authentication > URL Configuration > Redirect URLs
+  //   Required entries:
+  //     https://healingheartscourse.com/login?verified=true
+  //     https://healingheartscourse.com/portal
+  //     https://healingheartscourse.com/reset-password
+  //     https://www.healingheartscourse.com/** (wildcard for www variant)
+  //   Also set "Site URL" to: https://healingheartscourse.com
+  //
   async function signUp({ email, password, displayName }) {
     const { data, error } = await supabase.auth.signUp({
       email,

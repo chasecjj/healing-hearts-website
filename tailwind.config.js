@@ -1,5 +1,8 @@
+import scoriPreset from "@scoria/ui/tailwind.preset";
+
 /** @type {import('tailwindcss').Config} */
 export default {
+  presets: [scoriPreset],
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
