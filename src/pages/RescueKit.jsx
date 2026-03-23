@@ -405,7 +405,7 @@ const CritterCeoPreview = () => {
 /*  TEAL QUOTE                                                          */
 /* ------------------------------------------------------------------ */
 const Quote = () => (
-  <TealQuoteBlock
+  <TealQuoteBlock className="!bg-primary"
     quote="We were fighting three, four times a week. The same fight. Different words, same wound. Two weeks after using SPARK, we had our first disagreement that didn't end in silence. We actually talked through it. I cried because I forgot that was possible."
     attribution="Healing Hearts client"
   />

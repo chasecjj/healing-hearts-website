@@ -281,7 +281,7 @@ export default function SparkChallenge() {
       {/* Section 3: Testimonial — TealQuoteBlock                      */}
       {/* ============================================================ */}
       <div className="spark-reveal">
-        <TealQuoteBlock
+        <TealQuoteBlock className="!bg-primary"
           quote="After 15 years of marriage, I thought we'd lost something that couldn't come back. The Spark Challenge showed us it was just buried — not gone."
           attribution="— Sarah, married 15 years"
         />
