@@ -132,8 +132,8 @@ const HonestVersion = () => {
           {/* TeardropImage — Left */}
           <div className="honest-reveal order-last lg:order-first relative">
             <TeardropImage
-              src="/images/team/trisha.jpg"
-              alt="Trisha Jamison, Healing Hearts founder"
+              src="/images/team/jeff-and-trisha.jpg"
+              alt="Jeff and Trisha Jamison, Healing Hearts founders"
               overlayClass="bg-primary/10"
               className="max-w-sm lg:max-w-md"
             />
