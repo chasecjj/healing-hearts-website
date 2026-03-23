@@ -91,11 +91,11 @@ function welcomeEmail() {
               </p>
 
               <p style="margin:0 0 24px; font-size:16px; line-height:1.7; color:#555555;">
-                Over the next seven days, you and your partner are going to reconnect in ways that might surprise you. These aren't big, dramatic exercises — they're small, intentional moments that remind you both why you chose each other.
+                Over the next seven days, you and your partner are going to reconnect in ways that might surprise you. These aren't big, dramatic gestures — they're small, intentional moments that remind you both why you chose each other.
               </p>
 
               <p style="margin:0 0 24px; font-size:16px; line-height:1.7; color:#555555;">
-                <strong>Day 1 arrives tomorrow morning.</strong> Each day you'll get a short lesson and one simple exercise to do together. Some will make you laugh. Some might make you think. All of them work.
+                <strong>Day 1 arrives tomorrow morning.</strong> Each day you'll get a short lesson and one simple practice to do together. Some will make you laugh. Some might make you think. All of them work.
               </p>
 
               <p style="margin:0 0 32px; font-size:16px; line-height:1.7; color:#555555;">

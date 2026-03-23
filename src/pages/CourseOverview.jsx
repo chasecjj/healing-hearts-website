@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Lock, PlayCircle, ChevronRight, BookOpen } from 'lucide-react';
+import usePageMeta from '../hooks/usePageMeta';
 
 const MODULES = [
   { number: '1', title: "Love's Foundation", description: 'Personality blueprint, attachment style, and love language.', lessons: 4 },
@@ -15,6 +16,7 @@ const MODULES = [
 ];
 
 export default function CourseOverview() {
+  usePageMeta('Course Overview', 'Explore the complete 8-module Healing Hearts program — from attachment foundations to legacy building. Free preview of Module 7.');
   const { user } = useAuth();
 
   return (

@@ -1,6 +1,8 @@
 import React from 'react';
+import usePageMeta from '../hooks/usePageMeta';
 
 export default function Privacy() {
+  usePageMeta('Privacy Policy', 'How Healing Hearts collects, uses, and protects your personal information.');
   return (
     <div className="w-full bg-background pt-32 md:pt-48 pb-24">
       <div className="max-w-4xl mx-auto px-6">

@@ -3,10 +3,12 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MagneticButton } from '../components/Layout';
 import { ShieldAlert, Clock, Coins, Network } from 'lucide-react';
+import usePageMeta from '../hooks/usePageMeta';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function PhysicianMarriages() {
+  usePageMeta('Physician Marriages', 'Specialized relationship coaching for physician couples navigating the unique pressures of medical careers on marriage.');
   const containerRef = useRef(null);
 
   useEffect(() => {

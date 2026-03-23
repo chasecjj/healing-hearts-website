@@ -63,8 +63,9 @@ const Navbar = () => {
   const toggleMenu = () => {
     if (!menuOpen) {
       setMenuOpen(true);
-      document.body.style.overflow = 'hidden'; // prevent scrolling
-      
+      document.body.style.overflow = 'hidden';
+      gsap.set('.menu-overlay', { display: 'flex', y: '-100%' });
+
       const tl = gsap.timeline();
       tl.to('.menu-overlay', { y: '0%', duration: 0.8, ease: 'power4.inOut' })
         .fromTo('.menu-link', 
@@ -80,6 +81,7 @@ const Navbar = () => {
     } else {
       const tl = gsap.timeline({
         onComplete: () => {
+          gsap.set('.menu-overlay', { display: 'none' });
           setMenuOpen(false);
           document.body.style.overflow = 'auto';
         }
@@ -141,8 +143,8 @@ const Navbar = () => {
 
       {/* Full Screen Overlay Menu */}
       <div
-        className={`menu-overlay fixed inset-0 bg-primary z-50 flex flex-col px-8 md:px-24 pt-24 pb-8 md:pt-0 md:pb-0 md:justify-center overflow-y-auto transform -translate-y-full \${menuOpen ? 'block' : 'hidden md:flex'}`}
-        style={{ display: menuOpen ? 'flex' : 'none' }} // Ensure it stays hidden initially
+        className="menu-overlay fixed inset-0 bg-primary z-50 flex-col px-6 sm:px-8 md:px-24 pt-24 pb-8 md:pt-0 md:pb-0 md:justify-center overflow-y-auto"
+        style={{ display: 'none' }}
       >
         <div className="max-w-6xl mx-auto w-full flex flex-col md:flex-row gap-8 md:gap-32">
           <div className="flex flex-col gap-4 md:gap-6 md:w-2/3">

@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MagneticButton } from '../components/Layout';
 import { OrganicDivider, Button } from '@scoria/ui';
+import usePageMeta from '../hooks/usePageMeta';
 import {
   CheckCircle2,
   Flame,
@@ -45,7 +46,7 @@ const STANDALONE_PACKAGES = [
     title: 'Communication Mastery Toolkit',
     subtitle: 'Say what you mean\u2014and hear what they\'re really saying.',
     desc: 'Most couples don\'t have a communication problem. They have a safety problem. This toolkit teaches you to express needs without blame.',
-    includes: ['Attachment style deep-dive', 'Needs expression framework', 'Active listening techniques', 'The SPARK repair process', 'Guided practice exercises'],
+    includes: ['Attachment style deep-dive', 'Needs expression framework', 'Active listening techniques', 'The SPARK repair process', 'Guided daily practices'],
     icon: MessageCircleHeart,
     span: 'lg:col-span-1',
   },
@@ -61,7 +62,7 @@ const STANDALONE_PACKAGES = [
     title: 'Spark & Intimacy Bundle',
     subtitle: 'From roommates back to lovers.',
     desc: 'You share a bed. You coordinate schedules. But somewhere along the way, the spark went dark. This bundle addresses the full spectrum of intimacy.',
-    includes: ['The 6 Levels of Intimacy framework', 'Desire and connection assessment', 'Rebuilding physical safety', 'Emotional vulnerability exercises', '30-day reset plan'],
+    includes: ['The 6 Levels of Intimacy framework', 'Desire and connection assessment', 'Rebuilding physical safety', 'Emotional vulnerability practices', '30-day reset plan'],
     icon: Sparkles,
     span: 'lg:col-span-2',
   },
@@ -408,6 +409,7 @@ const ClosingCta = () => {
 /*  PAGE EXPORT                                                         */
 /* ------------------------------------------------------------------ */
 export default function Programs() {
+  usePageMeta('Programs', 'Explore our flagship 8-module couples program and standalone packages for communication, conflict resolution, intimacy, and more.');
   return (
     <>
       <Hero />

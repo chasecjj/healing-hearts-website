@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import usePageMeta from '../hooks/usePageMeta';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -163,7 +164,7 @@ const HonestVersion = () => {
                 Trisha felt invisible. Jeff felt criticized. And both of them were running survival patterns they'd carried since childhood without ever knowing it.
               </p>
               <p className="story-p font-sans text-foreground/80 text-lg leading-relaxed font-light">
-                They didn't just survive it. They studied it. They dug into the neuroscience of why their nervous systems hijacked every hard conversation. They learned why Trisha's need for connection triggered Jeff's impulse to withdraw. They discovered that their worst patterns weren't character flaws—they were protection strategies written by a much younger version of themselves.
+                They didn't just survive it. They studied it. They dug into the neuroscience of why their nervous systems hijacked every hard conversation. They learned why Trisha's need for connection activated Jeff's impulse to withdraw. They discovered that their worst patterns weren't character flaws—they were protection strategies written by a much younger version of themselves.
               </p>
               <p className="story-p font-sans text-foreground/80 text-lg leading-relaxed font-medium text-primary/80 pt-4">
                 Healing Hearts is what grew from the wreckage—and the rebuilding.
@@ -443,7 +444,7 @@ const WorkWithUsCta = () => {
         </p>
         <div className="cta-reveal">
           <Link to="/contact">
-            <MagneticButton className="bg-accent text-white px-12 py-5 rounded-full text-lg font-medium shadow-lg hover:shadow-xl transition-shadow">
+            <MagneticButton className="bg-accent text-white px-8 sm:px-12 py-4 sm:py-5 rounded-full text-base sm:text-lg w-full sm:w-auto font-medium shadow-lg hover:shadow-xl transition-shadow">
               Work With Us
             </MagneticButton>
           </Link>
@@ -457,6 +458,7 @@ const WorkWithUsCta = () => {
 /*  PAGE EXPORT                                                        */
 /* ------------------------------------------------------------------ */
 export default function About() {
+  usePageMeta('Our Story', 'How Jeff and Trisha Jamison turned their own marriage crisis into a mission to help couples reconnect through science-backed coaching.');
   return (
     <>
       <Hero />

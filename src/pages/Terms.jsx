@@ -1,6 +1,8 @@
 import React from 'react';
+import usePageMeta from '../hooks/usePageMeta';
 
 export default function Terms() {
+  usePageMeta('Terms & Conditions', 'Terms and conditions for the Healing Hearts coaching program and website.');
   return (
     <div className="w-full bg-background pt-32 md:pt-48 pb-24">
       <div className="max-w-4xl mx-auto px-6">

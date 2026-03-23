@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { MagneticButton } from '../components/Layout';
 import { ArrowRight, Sparkles, Heart } from 'lucide-react';
+import usePageMeta from '../hooks/usePageMeta';
 
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const ComingSoon = () => {
+  usePageMeta('Coming Soon', 'This feature is on the way. Try our free 7-Day Spark Challenge in the meantime.');
   const ref = useRef(null);
 
   useEffect(() => {

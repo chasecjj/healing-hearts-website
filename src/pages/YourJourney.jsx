@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MagneticButton } from '../components/Layout';
 import { OrganicDivider } from '@scoria/ui';
+import usePageMeta from '../hooks/usePageMeta';
 import {
   Heart,
   Brain,
@@ -641,6 +642,7 @@ const ClosingCta = () => {
 /*  PAGE EXPORT                                                        */
 /* ------------------------------------------------------------------ */
 export default function YourJourney() {
+  usePageMeta('Your Journey', 'Explore the complete Healing Hearts program — 8 modules, weekly coaching, and a path from crisis to connection.');
   return (
     <>
       <Hero />

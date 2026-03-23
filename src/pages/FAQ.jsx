@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { Plus, Minus } from 'lucide-react';
+import usePageMeta from '../hooks/usePageMeta';
 
 const faqData = [
   {
@@ -38,6 +39,7 @@ const faqData = [
 ];
 
 export default function FAQ() {
+  usePageMeta('FAQ', 'Common questions about Healing Hearts couples coaching — is this therapy, do both partners need to participate, how long does it take, and more.');
   const container = useRef(null);
   const [openIdx, setOpenIdx] = useState(0);
 

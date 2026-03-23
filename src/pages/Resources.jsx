@@ -1,24 +1,28 @@
 import React, { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MagneticButton } from '../components/Layout';
 import { ArrowRight, Download } from 'lucide-react';
+import usePageMeta from '../hooks/usePageMeta';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Resources() {
+  usePageMeta('Resources', 'Free relationship guides, downloadable tools, and articles grounded in neuroscience and attachment theory.');
   const containerRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     let ctx = gsap.context(() => {
       // Header animations
-      gsap.fromTo('.resources-reveal', 
-        { y: 30, opacity: 0 }, 
+      gsap.fromTo('.resources-reveal',
+        { y: 30, opacity: 0 },
         { y: 0, opacity: 1, duration: 1.2, stagger: 0.15, ease: 'power3.out' }
       );
-      
+
       const cards = gsap.utils.toArray('.article-card');
-      cards.forEach((card, i) => {
+      cards.forEach((card) => {
         gsap.fromTo(card,
           { y: 50, opacity: 0 },
           {
@@ -105,7 +109,10 @@ export default function Resources() {
                        <h3 className="font-outfit font-bold text-lg mb-2">{item.name}</h3>
                        <p className="font-sans text-sm font-light text-background/70">{item.desc}</p>
                     </div>
-                    <button className="flex-shrink-0 w-12 h-12 rounded-full bg-background/20 text-background flex items-center justify-center hover:bg-background hover:text-primary transition-colors border border-background/30">
+                    <button
+                       onClick={() => navigate('/coming-soon')}
+                       className="flex-shrink-0 w-12 h-12 rounded-full bg-background/20 text-background flex items-center justify-center hover:bg-background hover:text-primary transition-colors border border-background/30"
+                    >
                        <Download className="w-5 h-5" />
                     </button>
                  </div>
@@ -122,7 +129,14 @@ export default function Resources() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {articles.map((article, idx) => (
-            <div key={idx} className="article-card group bg-background p-8 rounded-[2rem] shadow-sm border border-primary/5 flex flex-col h-full hover:-translate-y-2 transition-transform duration-500 cursor-pointer">
+            <div
+              key={idx}
+              className="article-card group bg-background p-8 rounded-[2rem] shadow-sm border border-primary/5 flex flex-col h-full hover:-translate-y-2 transition-transform duration-500 cursor-pointer"
+              onClick={() => navigate('/coming-soon')}
+              role="link"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && navigate('/coming-soon')}
+            >
                <h3 className="font-outfit font-bold text-xl text-primary mb-4 leading-snug group-hover:text-accent transition-colors">
                   {article.title}
                </h3>
@@ -137,7 +151,10 @@ export default function Resources() {
         </div>
         
         <div className="mt-20 text-center">
-           <MagneticButton className="bg-primary/5 text-primary hover:bg-primary hover:text-background px-10 py-4 rounded-full text-base font-medium transition-colors mx-auto">
+           <MagneticButton
+              className="bg-primary/5 text-primary hover:bg-primary hover:text-background px-10 py-4 rounded-full text-base font-medium transition-colors mx-auto"
+              onClick={() => navigate('/coming-soon')}
+           >
               Load More Articles
            </MagneticButton>
         </div>

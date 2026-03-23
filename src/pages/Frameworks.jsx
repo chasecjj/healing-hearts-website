@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import usePageMeta from '../hooks/usePageMeta';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,7 +26,7 @@ const frameworks = [
   },
   {
     title: "The Zones of Resilience",
-    subtitle: "A shared language for the emotional weather inside your body.",
+    subtitle: "A shared language for the emotional weather inside your system.",
     desc: "Imagine if you could instantly communicate your emotional state. The Zones replace blame with biology.",
     points: [
       "Green Zone — Safe and connected.",
@@ -52,6 +53,7 @@ const frameworks = [
 ];
 
 export default function Frameworks() {
+  usePageMeta('Frameworks', 'Discover the SPARK Method, Zones of Resilience, 90-Second Wave, and Core Wounds — the science-backed frameworks behind Healing Hearts.');
   const container = useRef(null);
 
   useEffect(() => {

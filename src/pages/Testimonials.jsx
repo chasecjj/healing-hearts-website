@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import usePageMeta from '../hooks/usePageMeta';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -33,6 +34,7 @@ const testimonials = [
 ];
 
 export default function Testimonials() {
+  usePageMeta('Testimonials', 'Real stories from couples who transformed their relationships with Healing Hearts coaching and the SPARK Method.');
   const container = useRef(null);
 
   useEffect(() => {

@@ -2,10 +2,12 @@ import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import usePageMeta from '../hooks/usePageMeta';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Physicians() {
+  usePageMeta('For Physicians', 'Healing Hearts coaching designed for physicians and their spouses — addressing emotional shutdown, burnout, and reconnection.');
   const container = useRef(null);
 
   useEffect(() => {

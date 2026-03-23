@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MagneticButton } from '../components/Layout';
 import { CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import usePageMeta from '../hooks/usePageMeta';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -602,7 +603,7 @@ const FinalCta = () => {
         </p>
         <div className="cta-reveal">
           <Link to="/spark-challenge">
-            <MagneticButton className="bg-accent text-white px-12 py-5 rounded-full text-lg font-medium shadow-lg hover:shadow-xl transition-shadow">
+            <MagneticButton className="bg-accent text-white px-8 sm:px-12 py-4 sm:py-5 rounded-full text-base sm:text-lg w-full sm:w-auto font-medium shadow-lg hover:shadow-xl transition-shadow">
               Start Your Healing Journey
             </MagneticButton>
           </Link>
@@ -616,6 +617,7 @@ const FinalCta = () => {
 /*  PAGE EXPORT                                                        */
 /* ------------------------------------------------------------------ */
 export default function Home() {
+  usePageMeta('Couples Coaching & Relationship Tools', 'Healing Hearts helps couples move from disconnection to deep, lasting connection through science-backed coaching, the SPARK Method, and practical relationship tools.');
   return (
     <>
       <Hero />

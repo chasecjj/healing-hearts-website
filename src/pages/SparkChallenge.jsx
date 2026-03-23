@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import usePageMeta from '../hooks/usePageMeta'
 import {
   TeardropImage,
   OrganicDivider,
@@ -73,12 +74,12 @@ const FAQ_ITEMS = [
   {
     question: "What if my partner won't participate?",
     answer:
-      "That's okay. Many of our exercises are designed so that one person can start the shift. You'd be surprised how quickly your partner notices the change.",
+      "That's okay. Many of our practices are designed so that one person can start the shift. You'd be surprised how quickly your partner notices the change.",
   },
   {
     question: 'How much time does each day take?',
     answer:
-      'Each exercise takes 10-15 minutes. Some days less. We designed this for busy couples — especially those in demanding careers.',
+      'Each practice takes 10-15 minutes. Some days less. We designed this for busy couples — especially those in demanding careers.',
   },
   {
     question: 'What happens after the 7 days?',
@@ -90,17 +91,7 @@ const FAQ_ITEMS = [
 export default function SparkChallenge() {
   const pageRef = useRef(null)
 
-  useEffect(() => {
-    document.title = 'Spark Challenge | Healing Hearts'
-
-    const meta = document.querySelector('meta[name="description"]')
-    if (meta) {
-      meta.setAttribute(
-        'content',
-        'Join the free 7-Day Spark Challenge. Daily exercises that help couples move from disconnection to deep, meaningful connection.'
-      )
-    }
-  }, [])
+  usePageMeta('Free 7-Day Spark Challenge', 'Join the free 7-Day Spark Challenge. Daily practices that help couples move from disconnection to deep, meaningful connection.')
 
   useEffect(() => {
     if (prefersReducedMotion()) return
@@ -212,7 +203,7 @@ export default function SparkChallenge() {
               </h1>
 
               <p className="spark-reveal font-sans text-foreground/80 text-lg md:text-xl max-w-[50ch] font-light leading-relaxed">
-                The Spark Challenge — free daily exercises that help couples move from disconnection to deep, meaningful connection.
+                The Spark Challenge — free daily practices that help couples move from disconnection to deep, meaningful connection.
               </p>
 
               <div className="spark-reveal mt-4">

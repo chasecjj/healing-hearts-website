@@ -1,10 +1,12 @@
 import React, { useEffect, useRef } from 'react';
+import usePageMeta from '../hooks/usePageMeta';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Tools() {
+  usePageMeta('Tools & Frameworks', 'Explore the SPARK Method, Critter Brain vs. CEO Brain, Zones of Resilience, and other science-backed tools for couples.');
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -141,7 +143,7 @@ export default function Tools() {
       <section className="framework-block max-w-5xl mx-auto px-6 mb-32">
          <div className="text-center mb-16">
             <h2 className="font-outfit font-bold text-4xl text-primary mb-4">The Zones of Resilience</h2>
-            <p className="font-drama italic text-2xl text-accent mb-6">A shared language for the emotional weather inside your body.</p>
+            <p className="font-drama italic text-2xl text-accent mb-6">A shared language for the emotional weather inside your system.</p>
          </div>
 
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -182,7 +184,7 @@ export default function Tools() {
                 From a neurochemical standpoint, an emotion lasts about 90 seconds. The initial flood of cortisol and adrenaline peaks and passes in under two minutes—if you don’t re-trigger it.
              </p>
              <p className="font-sans text-foreground/70 font-light leading-relaxed">
-                We teach you to ride the initial surge without adding fuel. Letting the wave move through your body while your CEO Brain watches from the shore.
+                We teach you to ride the initial surge without adding fuel. Letting the wave move through your system while your CEO Brain watches from the shore.
              </p>
           </div>
 

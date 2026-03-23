@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MagneticButton } from '../components/Layout';
 import { ChevronDown, MessageCircle, FileText, Phone, Send, CheckCircle2 } from 'lucide-react';
+import usePageMeta from '../hooks/usePageMeta';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -156,6 +157,7 @@ const ContactForm = () => {
 };
 
 export default function Contact() {
+  usePageMeta('Contact Us', 'Get in touch with the Healing Hearts team. Schedule a free consultation or send us a message.');
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -279,7 +281,7 @@ export default function Contact() {
       </section>
 
       {/* Contact Form */}
-      <section className="max-w-4xl mx-auto px-6 mb-32">
+      <section id="contact-form" className="max-w-4xl mx-auto px-6 mb-32">
         <div className="text-center mb-12">
           <h2 className="font-outfit font-bold text-4xl text-primary mb-4">Send Us a Message</h2>
           <p className="font-sans text-foreground/70 font-light text-lg">We read every message and respond within 24 hours.</p>

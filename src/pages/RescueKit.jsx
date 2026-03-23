@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MagneticButton } from '../components/Layout';
 import { OrganicDivider, FAQAccordion, TealQuoteBlock } from '@scoria/ui';
+import usePageMeta from '../hooks/usePageMeta';
 import {
   CheckCircle2,
   ShieldAlert,
@@ -31,7 +32,7 @@ const prefersReducedMotion = () =>
 const KIT_INCLUDES = [
   'The SPARK Method\u2122 \u2014 our five-step conflict interruption framework',
   'Critter Brain vs. CEO Brain \u2014 understand the two minds running your arguments',
-  'Zones of Resilience self-assessment \u2014 a shared language for what\u2019s happening inside your body',
+  'Zones of Resilience self-assessment \u2014 a shared language for what\u2019s happening inside your system',
   'The 90-Second Wave guide \u2014 the neuroscience of riding an emotional surge without adding fuel',
   'Printable Conflict Recovery Plan \u2014 a step-by-step repair roadmap you can use tonight',
   '5 guided reflection prompts \u2014 practices that help you process what just happened',
@@ -130,7 +131,7 @@ const Hero = () => {
 
         <div className="rk-hero-reveal">
           <MagneticButton
-            className="bg-accent text-white px-12 py-4 rounded-full text-base font-medium shadow-xl hover:shadow-2xl transition-shadow"
+            className="bg-accent text-white px-8 sm:px-12 py-4 rounded-full text-base w-full sm:w-auto font-medium shadow-xl hover:shadow-2xl transition-shadow"
             onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
           >
             Get the Kit &mdash; $39
@@ -473,7 +474,7 @@ const PricingCta = () => {
 
           <div className="rk-pricing-reveal">
             <MagneticButton
-              className="bg-accent text-white px-12 py-4 rounded-full text-base font-bold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 w-full md:w-auto"
+              className="bg-accent text-white px-8 sm:px-12 py-4 rounded-full text-base w-full sm:w-auto font-bold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 w-full md:w-auto"
               onClick={() => window.location.href = '/coming-soon'}
             >
               Get the Conflict Rescue Kit
@@ -576,7 +577,7 @@ const ClosingCta = () => {
         </p>
         <div className="rk-closing-reveal">
           <MagneticButton
-            className="bg-accent text-white px-12 py-4 rounded-full text-base font-medium shadow-xl hover:shadow-2xl transition-shadow"
+            className="bg-accent text-white px-8 sm:px-12 py-4 rounded-full text-base w-full sm:w-auto font-medium shadow-xl hover:shadow-2xl transition-shadow"
             onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
           >
             Get the Conflict Rescue Kit &mdash; $39
@@ -591,6 +592,7 @@ const ClosingCta = () => {
 /*  PAGE EXPORT                                                         */
 /* ------------------------------------------------------------------ */
 export default function RescueKit() {
+  usePageMeta('Conflict Rescue Kit', 'Stop the bleeding — the SPARK Method, Critter Brain framework, Zones of Resilience, and practical tools to transform how you fight.');
   return (
     <>
       <Hero />

@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MagneticButton } from '../components/Layout';
 import { OrganicDivider } from '@scoria/ui';
 import { Heart, Wrench, Handshake, ArrowRight, ChevronDown, Quote } from 'lucide-react';
+import usePageMeta from '../hooks/usePageMeta';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -273,7 +274,7 @@ const BottomCTA = () => {
         <p className="cta-reveal text-primary font-medium tracking-widest uppercase text-sm mb-4">Ready to Start?</p>
         <h2 className="cta-reveal font-drama italic text-4xl md:text-5xl text-foreground mb-6">Try the Free 7-Day Challenge</h2>
         <p className="cta-reveal text-foreground/70 text-lg leading-relaxed mb-10 max-w-xl mx-auto">
-          Seven days. One exercise per day. A real taste of what Healing Hearts can do for your relationship — completely free.
+          Seven days. One practice per day. A real taste of what Healing Hearts can do for your relationship — completely free.
         </p>
         <Link to="/spark-challenge" className="cta-reveal inline-block">
           <MagneticButton className="bg-primary text-white px-8 py-4 rounded-full text-lg font-medium hover:bg-primary/90 transition-colors inline-flex items-center gap-2">
@@ -288,7 +289,9 @@ const BottomCTA = () => {
 /* ------------------------------------------------------------------ */
 /*  PAGE                                                                */
 /* ------------------------------------------------------------------ */
-const Team = () => (
+const Team = () => {
+  usePageMeta('Meet the Team', 'Meet Trisha, Chase, and Makayla — the family behind Healing Hearts couples coaching.');
+  return (
   <main className="bg-[#faf9f6]">
     <Hero />
     <OrganicDivider variant="wave" />
@@ -351,6 +354,7 @@ const Team = () => (
     <OrganicDivider variant="gentle" />
     <BottomCTA />
   </main>
-);
+  );
+};
 
 export default Team;
