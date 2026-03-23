@@ -39,7 +39,7 @@ const Hero = () => {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'radial-gradient(circle at 30% 40%, #fff8ef 0%, transparent 50%), radial-gradient(circle at 70% 60%, rgba(17,145,177,0.04) 0%, transparent 40%), radial-gradient(circle at 50% 50%, #fbf3e4 0%, #ffffff 100%)',
+            'radial-gradient(circle at 20% 30%, #fff8ef 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(17,145,177,0.06) 0%, transparent 40%), radial-gradient(circle at 50% 50%, #fbf3e4 0%, #ffffff 100%)',
         }}
         aria-hidden="true"
       />
@@ -61,8 +61,7 @@ const Hero = () => {
 };
 
 /* ------------------------------------------------------------------ */
-/*  ARCHWAY PHOTO — rounded top, straight sides, flat bottom            */
-/*  + parallax scroll, scale-in, and decorative depth ring              */
+/*  ARCHWAY PHOTO — parallax + scale entrance                           */
 /* ------------------------------------------------------------------ */
 const ArchwayPhoto = ({ src, alt, id, objectPosition = 'top' }) => {
   const frameRef = useRef(null);
@@ -71,7 +70,6 @@ const ArchwayPhoto = ({ src, alt, id, objectPosition = 'top' }) => {
   useEffect(() => {
     if (prefersReducedMotion()) return;
     const ctx = gsap.context(() => {
-      // Parallax: photo moves slower than scroll for depth
       gsap.to(imgRef.current, {
         yPercent: 8,
         ease: 'none',
@@ -82,16 +80,12 @@ const ArchwayPhoto = ({ src, alt, id, objectPosition = 'top' }) => {
           scrub: 0.6,
         },
       });
-
-      // Scale + fade in on enter
       gsap.fromTo(
         frameRef.current,
-        { scale: 0.92, opacity: 0 },
+        { scale: 0.92, opacity: 0, y: 30 },
         {
-          scale: 1,
-          opacity: 1,
-          duration: 1.2,
-          ease: 'power3.out',
+          scale: 1, opacity: 1, y: 0,
+          duration: 1.2, ease: 'power3.out',
           scrollTrigger: {
             trigger: frameRef.current,
             start: 'top 85%',
@@ -104,18 +98,14 @@ const ArchwayPhoto = ({ src, alt, id, objectPosition = 'top' }) => {
   }, []);
 
   return (
-    <div ref={frameRef} className="relative w-64 md:w-80 flex-shrink-0">
-      {/* Decorative depth ring — offset behind the photo */}
-      <div
-        className="absolute -inset-3 md:-inset-4 border-2 border-primary/15 pointer-events-none"
-        style={{ borderRadius: '50% 50% 0.75rem 0.75rem' }}
-        aria-hidden="true"
-      />
-
+    <div ref={frameRef} className="relative w-64 md:w-72 lg:w-80 flex-shrink-0">
       {/* Archway frame */}
       <div
-        className="relative aspect-[3/4] w-full overflow-hidden shadow-lg"
-        style={{ borderRadius: '50% 50% 0.75rem 0.75rem' }}
+        className="relative aspect-[3/4] w-full overflow-hidden shadow-xl"
+        style={{
+          borderRadius: '50% 50% 0.75rem 0.75rem',
+          boxShadow: '0 20px 50px -12px rgba(7, 58, 71, 0.2)',
+        }}
       >
         <img
           ref={imgRef}
@@ -125,43 +115,32 @@ const ArchwayPhoto = ({ src, alt, id, objectPosition = 'top' }) => {
           style={{ objectPosition }}
           loading="lazy"
         />
-
-        {/* Subtle warm overlay for cohesion */}
+        {/* Bottom fade into card */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: 'linear-gradient(to bottom, transparent 60%, rgba(251,243,228,0.3) 100%)',
+            background: 'linear-gradient(to bottom, transparent 70%, rgba(249,248,245,0.4) 100%)',
           }}
         />
-      </div>
-
-      {/* Accent dot — small teal circle at bottom center */}
-      <div className="flex justify-center mt-4" aria-hidden="true">
-        <div className="w-2 h-2 rounded-full bg-primary/40" />
       </div>
     </div>
   );
 };
 
 /* ------------------------------------------------------------------ */
-/*  TEAM MEMBER CARD                                                    */
+/*  TEAM MEMBER CARD — frosted glass with gradient accent bar           */
 /* ------------------------------------------------------------------ */
-const TeamMember = ({ id, name, title, icon: Icon, photo, photoPosition = 'top', bio, highlight, cta, ctaLink, reverse }) => {
+const TeamMember = ({ id, name, title, icon: Icon, photo, photoPosition = 'top', bio, highlight, cta, ctaLink, reverse, glowColor = 'primary' }) => {
   const contentRef = useRef(null);
 
   useEffect(() => {
     if (prefersReducedMotion()) return;
     const ctx = gsap.context(() => {
-      // Staggered text reveal
       gsap.fromTo(
         `.member-text-${id}`,
         { y: 30, opacity: 0 },
         {
-          y: 0,
-          opacity: 1,
-          duration: 0.9,
-          stagger: 0.1,
-          ease: 'power3.out',
+          y: 0, opacity: 1, duration: 0.9, stagger: 0.1, ease: 'power3.out',
           scrollTrigger: {
             trigger: contentRef.current,
             start: 'top 75%',
@@ -173,54 +152,88 @@ const TeamMember = ({ id, name, title, icon: Icon, photo, photoPosition = 'top',
     return () => ctx.revert();
   }, [id]);
 
+  const glowMap = {
+    primary: 'bg-primary/8',
+    accent: 'bg-accent/8',
+  };
+
   return (
     <section
       id={id}
       ref={contentRef}
-      className={`py-20 md:py-28 ${reverse ? 'bg-[#fbf3e4]/40' : 'bg-white'}`}
+      className="relative py-16 md:py-24 overflow-hidden"
+      style={{
+        background: 'radial-gradient(circle at 50% 50%, rgba(251,243,228,0.5) 0%, rgba(255,255,255,0.9) 70%, #ffffff 100%)',
+      }}
     >
-      <div className={`max-w-6xl mx-auto px-6 flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-12 md:gap-20`}>
-        {/* Photo */}
-        {photo ? (
-          <ArchwayPhoto src={photo} alt={name} id={id} objectPosition={photoPosition} />
-        ) : (
-          <div className="flex-shrink-0 w-64 md:w-80">
-            <div
-              className="aspect-[3/4] w-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center shadow-lg"
-              style={{ borderRadius: '50% 50% 0.75rem 0.75rem' }}
-            >
-              <Icon className="w-16 h-16 text-primary/30" />
-            </div>
-          </div>
-        )}
+      {/* Background depth orbs */}
+      <div
+        className={`absolute ${reverse ? '-left-32 top-20' : '-right-32 top-20'} w-[400px] h-[400px] ${glowMap[glowColor]} rounded-full blur-[100px] pointer-events-none`}
+        aria-hidden="true"
+      />
+      <div
+        className={`absolute ${reverse ? '-right-20 bottom-10' : '-left-20 bottom-10'} w-[250px] h-[250px] ${glowColor === 'primary' ? 'bg-accent/5' : 'bg-primary/5'} rounded-full blur-[80px] pointer-events-none`}
+        aria-hidden="true"
+      />
 
-        {/* Content */}
-        <div className="flex-1 text-center md:text-left">
-          <div className={`member-text-${id} inline-flex items-center gap-2 text-primary font-medium text-sm tracking-wider uppercase mb-3`}>
-            <Icon className="w-4 h-4" />
-            {title}
-          </div>
-          <h2 className={`member-text-${id} font-drama italic text-4xl md:text-5xl text-foreground mb-6`}>
-            {name}
-          </h2>
-          <p className={`member-text-${id} text-foreground/70 text-lg leading-relaxed mb-6`}>
-            {bio}
-          </p>
-          {highlight && (
-            <div className={`member-text-${id} bg-primary/5 border-l-4 border-primary rounded-r-xl px-6 py-4 mb-8`}>
-              <p className="text-foreground/80 italic text-base leading-relaxed">
-                {highlight}
+      {/* Card */}
+      <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-6">
+        <div
+          className="bg-[#F9F8F5]/70 backdrop-blur-sm rounded-3xl border border-primary/8 overflow-hidden transition-shadow duration-500 hover:shadow-xl"
+          style={{
+            boxShadow: '0 10px 40px -10px rgba(17, 145, 177, 0.08), 0 4px 16px -4px rgba(0,0,0,0.04)',
+          }}
+        >
+          {/* Gradient accent bar */}
+          <div className="h-1 w-full bg-gradient-to-r from-primary/50 via-accent/30 to-transparent" />
+
+          <div className={`flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-10 md:gap-16 p-8 md:p-12 lg:p-16`}>
+            {/* Photo */}
+            {photo ? (
+              <ArchwayPhoto src={photo} alt={name} id={id} objectPosition={photoPosition} />
+            ) : (
+              <div className="flex-shrink-0 w-64 md:w-72 lg:w-80">
+                <div
+                  className="aspect-[3/4] w-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center"
+                  style={{
+                    borderRadius: '50% 50% 0.75rem 0.75rem',
+                    boxShadow: '0 20px 50px -12px rgba(7, 58, 71, 0.15)',
+                  }}
+                >
+                  <Icon className="w-16 h-16 text-primary/30" />
+                </div>
+              </div>
+            )}
+
+            {/* Content */}
+            <div className="flex-1 text-center md:text-left">
+              <div className={`member-text-${id} inline-flex items-center gap-2 text-primary font-medium text-sm tracking-wider uppercase mb-3`}>
+                <Icon className="w-4 h-4" />
+                {title}
+              </div>
+              <h2 className={`member-text-${id} font-drama italic text-4xl md:text-5xl text-foreground mb-6`}>
+                {name}
+              </h2>
+              <p className={`member-text-${id} text-foreground/70 text-lg leading-relaxed mb-6`}>
+                {bio}
               </p>
+              {highlight && (
+                <div className={`member-text-${id} bg-white/60 border-l-4 border-primary rounded-r-xl px-6 py-4 mb-8 backdrop-blur-sm`}>
+                  <p className="text-foreground/80 italic text-base leading-relaxed">
+                    {highlight}
+                  </p>
+                </div>
+              )}
+              {cta && (
+                <Link to={ctaLink || '/spark-challenge'} className={`member-text-${id} inline-block`}>
+                  <MagneticButton className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full font-medium hover:bg-primary/90 transition-colors">
+                    {cta}
+                    <ArrowRight className="w-4 h-4" />
+                  </MagneticButton>
+                </Link>
+              )}
             </div>
-          )}
-          {cta && (
-            <Link to={ctaLink || '/spark-challenge'} className={`member-text-${id} inline-block`}>
-              <MagneticButton className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full font-medium hover:bg-primary/90 transition-colors">
-                {cta}
-                <ArrowRight className="w-4 h-4" />
-              </MagneticButton>
-            </Link>
-          )}
+          </div>
         </div>
       </div>
     </section>
@@ -249,8 +262,17 @@ const BottomCTA = () => {
   }, []);
 
   return (
-    <section ref={ref} className="py-24 md:py-32 bg-[#fbf3e4]/60">
-      <div className="max-w-3xl mx-auto text-center px-6">
+    <section
+      ref={ref}
+      className="relative py-24 md:py-32 overflow-hidden"
+      style={{
+        backgroundImage: 'radial-gradient(circle at 30% 50%, rgba(17,145,177,0.08) 0%, transparent 50%), radial-gradient(circle at 70% 50%, rgba(185,106,95,0.06) 0%, transparent 50%)',
+      }}
+    >
+      <div
+        className="max-w-4xl mx-auto px-6 sm:px-12 text-center relative z-10 bg-[#F9F8F5]/60 backdrop-blur-sm p-12 md:p-20 rounded-3xl"
+        style={{ boxShadow: '0 10px 40px -10px rgba(17, 145, 177, 0.06)' }}
+      >
         <p className="cta-reveal text-primary font-medium tracking-widest uppercase text-sm mb-4">
           Ready to Start?
         </p>
@@ -276,7 +298,7 @@ const BottomCTA = () => {
 /*  PAGE                                                                */
 /* ------------------------------------------------------------------ */
 const Team = () => (
-  <main>
+  <main className="bg-white">
     <Hero />
     <OrganicDivider variant="wave" />
 
@@ -287,14 +309,13 @@ const Team = () => (
       icon={Heart}
       photo="/images/team/trisha.jpg"
       photoPosition="top"
+      glowColor="primary"
       bio="Trisha built Healing Hearts from two decades of coaching couples through their hardest moments. She's not a textbook educator — she's someone who's lived it, learned from it, and now helps others find their way back to connection. Her warmth and vulnerability are what make the program feel like a conversation, not a lecture."
       highlight="Every couple in the program gets weekly 90-minute coaching sessions with Trisha. She's in the room with you — helping you navigate the conversations that feel too scary to have alone. Because real change doesn't happen from watching videos. It happens when someone's there with you."
       cta="Start the Free Challenge"
       ctaLink="/spark-challenge"
       reverse={false}
     />
-
-    <OrganicDivider variant="gentle" />
 
     <TeamMember
       id="chase"
@@ -303,6 +324,7 @@ const Team = () => (
       icon={Wrench}
       photo="/images/team/chase.jpg"
       photoPosition="top"
+      glowColor="accent"
       bio="Chase designed and built the entire Healing Hearts platform — from the course portal to the coaching infrastructure. His goal is to make the technology invisible so couples can focus entirely on each other. He handles the business strategy, technical architecture, and makes sure every part of the system serves the mission."
       highlight={null}
       cta="Explore Our Programs"
@@ -310,14 +332,13 @@ const Team = () => (
       reverse={true}
     />
 
-    <OrganicDivider variant="wave" />
-
     <TeamMember
       id="makayla"
       name="Makayla Hildreth"
       title="Operations & Partnerships"
       icon={Handshake}
       photo={null /* Replace: /images/team/makayla.jpg */}
+      glowColor="primary"
       bio="Makayla is the engine behind Healing Hearts — she coordinates events, manages partnerships, and makes sure everything runs smoothly. Whether it's organizing an expo booth or connecting with wellness providers who share our mission, she's the first point of contact and the one who always follows through."
       highlight={null}
       cta="Partner With Us"
