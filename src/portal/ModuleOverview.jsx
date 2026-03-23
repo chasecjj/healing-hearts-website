@@ -19,7 +19,6 @@ import {
  * Rendered at /portal/:moduleSlug (no lessonSlug).
  */
 export default function ModuleOverview({
-  course,
   currentModule,
   getModuleProgress,
   isLessonCompleted,

@@ -1,3 +1,4 @@
+/* global process */
 // Vercel Serverless Function: POST /api/spark-signup
 // Captures Spark Challenge signups and sends a warm welcome email.
 
@@ -71,7 +72,7 @@ function welcomeEmail() {
           <!-- Logo -->
           <tr>
             <td align="center" style="padding-bottom:32px;">
-              <img src="https://healingheartscourse.com/favicon.svg" alt="Healing Hearts" width="48" height="48" style="display:block;">
+              <img src="https://healingheartscourse.com/logo.png" alt="Healing Hearts" width="48" height="48" style="display:block;">
             </td>
           </tr>
 

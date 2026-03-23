@@ -62,7 +62,6 @@ export default function PortalDashboard({
   );
 
   // Stats
-  const totalModules = course?.modules?.length || 0;
   const completedModules = course?.modules?.filter(
     (m) => m.is_preview && getModuleProgress(m) === 100
   ).length || 0;
@@ -223,7 +222,7 @@ export default function PortalDashboard({
             { value: completedModules, label: 'Modules Completed', icon: Flame },
             { value: totalLessons, label: 'Total Lessons', icon: Clock },
             { value: `${overallProgress}%`, label: 'Overall Progress', icon: ChevronRight },
-          ].map(({ value, label, icon: Icon }) => (
+          ].map(({ value, label }) => (
             <div
               key={label}
               className="p-6 bg-white rounded-2xl flex flex-col gap-2 shadow-[0_2px_8px_-2px_rgba(7,58,71,0.06)]"

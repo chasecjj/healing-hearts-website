@@ -23,7 +23,6 @@ export const MagneticButton = ({ children, className = '', onClick }) => {
 
 // --- Navbar with Advanced Animation Overlay ---
 const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
@@ -40,7 +39,6 @@ const Navbar = () => {
 
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      setIsScrolled(currentScrollY > 50);
 
       // Hide if scrolling down and past the top area
       if (currentScrollY > lastScrollY && currentScrollY > 100) {
@@ -54,11 +52,6 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  // Close menu on route change
-  useEffect(() => {
-    if (menuOpen) toggleMenu();
-  }, [location.pathname]);
 
   const toggleMenu = () => {
     if (!menuOpen) {
@@ -90,13 +83,17 @@ const Navbar = () => {
     }
   };
 
+  // Close menu on route change
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { if (menuOpen) toggleMenu(); }, [location.pathname]);
+
   return (
     <>
       <nav
-        className={`fixed left-1/2 -translate-x-1/2 z-[60] transition-all duration-500 ease-in-out w-[95%] max-w-6xl rounded-full px-6 py-4 flex items-center justify-between \${
+        className={`fixed left-1/2 -translate-x-1/2 z-[60] transition-all duration-500 ease-in-out w-[95%] max-w-6xl rounded-full px-6 py-4 flex items-center justify-between ${
           isVisible || menuOpen ? 'top-4 opacity-100' : '-top-32 opacity-0'
-        } \${
-          menuOpen 
+        } ${
+          menuOpen
             ? 'bg-transparent text-background border border-transparent'
             : 'bg-background shadow-md border border-primary/20 text-foreground'
         }`}
@@ -109,6 +106,7 @@ const Navbar = () => {
           <Link to="/programs" className={`transition-colors duration-500 ${menuOpen ? 'text-background/70 hover:text-background' : location.pathname === '/programs' ? 'text-accent font-semibold' : 'text-foreground/70 hover:text-accent'}`}>Programs</Link>
           <Link to="/journey" className={`transition-colors duration-500 ${menuOpen ? 'text-background/70 hover:text-background' : location.pathname === '/journey' ? 'text-accent font-semibold' : 'text-foreground/70 hover:text-accent'}`}>Your Journey</Link>
           <Link to="/tools" className={`transition-colors duration-500 ${menuOpen ? 'text-background/70 hover:text-background' : location.pathname === '/tools' ? 'text-accent font-semibold' : 'text-foreground/70 hover:text-accent'}`}>Tools</Link>
+          <Link to="/spark-challenge" className={`transition-colors duration-500 ${menuOpen ? 'text-accent hover:text-background' : location.pathname === '/spark-challenge' ? 'text-accent font-semibold' : 'text-accent hover:text-accent/80'}`}>Free Challenge</Link>
         </div>
         <div className="flex items-center gap-4">
           {user ? (
@@ -171,6 +169,9 @@ const Navbar = () => {
             </Link>
             <Link to="/contact" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
               Contact <ArrowRight className="w-6 h-6 md:w-8 md:h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
+            </Link>
+            <Link to="/spark-challenge" className="menu-link font-drama italic text-4xl md:text-7xl text-accent hover:text-background transition-colors flex items-center gap-4 group">
+              Free Challenge <ArrowRight className="w-6 h-6 md:w-8 md:h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
             </Link>
           </div>
 

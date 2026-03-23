@@ -138,7 +138,7 @@ const QuoteBreak = ({ text, attribution }) => {
 /* ------------------------------------------------------------------ */
 /*  PHOTO with offset gradient shadow card                              */
 /* ------------------------------------------------------------------ */
-const TeamPhoto = ({ src, alt, id, objectPosition = 'top', icon: Icon, accentColor = 'primary' }) => {
+const TeamPhoto = ({ src, alt, objectPosition = 'top', icon: Icon, accentColor = 'primary' }) => {
   const frameRef = useRef(null);
   const imgRef = useRef(null);
   const hasPhoto = !!src;

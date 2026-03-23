@@ -19,7 +19,7 @@ export default function Tools() {
       
       // Framework block animations
       const blocks = gsap.utils.toArray('.framework-block');
-      blocks.forEach((block, index) => {
+      blocks.forEach((block) => {
           gsap.fromTo(block, 
             { y: 50, opacity: 0 },
             { 

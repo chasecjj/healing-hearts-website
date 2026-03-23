@@ -225,7 +225,7 @@ export default function SparkChallenge() {
             <div className="spark-reveal hidden lg:flex justify-center items-center">
               <div className="relative w-full max-w-sm">
                 <TeardropImage
-                  src="https://picsum.photos/seed/spark-hero-couple/800/600"
+                  src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=800&auto=format&fit=crop"
                   alt="Couple holding hands while walking through a sunlit park"
                   overlayClass="bg-primary/10"
                   className="w-full aspect-[3/4]"

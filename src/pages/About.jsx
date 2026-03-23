@@ -132,8 +132,8 @@ const HonestVersion = () => {
           {/* TeardropImage — Left */}
           <div className="honest-reveal order-last lg:order-first relative">
             <TeardropImage
-              src="https://picsum.photos/seed/jeff-trisha-portrait/600/600"
-              alt="Jeff and Trisha Jamison"
+              src="/images/team/trisha.jpg"
+              alt="Trisha Jamison, Healing Hearts founder"
               overlayClass="bg-primary/10"
               className="max-w-sm lg:max-w-md"
             />

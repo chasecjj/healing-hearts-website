@@ -7,6 +7,8 @@
 - Vercel: auto-deploy on push to master
 - Icons: Lucide React
 - Routing: react-router-dom v7 (BrowserRouter)
+- Design system: Scoria (`@scoria/ui` 23 components, `@scoria/config`) via npm tarballs in `vendor/`
+- Design direction: Organic Flow — teardrop image masks, organic wave dividers, teal quote sections, Cormorant Garamond serif italic headlines
 
 ## Commands
 
@@ -46,7 +48,7 @@ Supabase project ID: `qleojrlqnbiutyhfnqgb`
 - **Progress:** `user_progress` table tracks lesson completion per user. Optimistic toggle with server sync.
 
 ### Marketing Site
-- 13 marketing pages wrapped in `Layout` (Navbar + Footer)
+- 14+ marketing pages wrapped in `Layout` (Navbar + Footer) — includes Spark Challenge
 - 4 auth pages (standalone, no Layout)
 - 3 portal routes (protected)
 - Fallback: all unknown routes → `/`
@@ -93,7 +95,7 @@ Do NOT use `dangerouslySetInnerHTML`. All content is rendered as pure React comp
 ## Deployment
 
 - **Vercel auto-deploy:** Push to `master` triggers build + deploy
-- **Live URL:** https://healing-hearts-olive.vercel.app
+- **Live URL:** https://healingheartscourse.com (Cloudflare → Vercel, also https://healing-hearts-olive.vercel.app)
 - **Build:** `npm run build` produces static files in `dist/`
 - **Routing:** `vercel.json` has rewrites for SPA client-side routing
 
@@ -110,5 +112,7 @@ Do NOT use `dangerouslySetInnerHTML`. All content is rendered as pure React comp
 | Phase 0 — Vercel marketing site | Done |
 | Phase 1 — Supabase auth | Done |
 | Phase 2 — Course portal + real content | Done |
+| Phase 2.5 — Module 7 full content + sub-lessons | Done |
+| Phase 2.6 — Organic Flow redesign (Scoria + Forge Lite) | Done (Session 60) |
 | Phase 3 — Stripe payments | Next |
 | Phase 4 — React Native mobile app | Planned |

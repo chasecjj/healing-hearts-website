@@ -169,7 +169,7 @@ export default function Contact() {
       );
       
       const cards = gsap.utils.toArray('.contact-card');
-      cards.forEach((card, i) => {
+      cards.forEach((card) => {
         gsap.fromTo(card,
           { y: 40, opacity: 0 },
           {
