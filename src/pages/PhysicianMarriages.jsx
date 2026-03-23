@@ -20,7 +20,7 @@ export default function PhysicianMarriages() {
       );
       
       const cards = gsap.utils.toArray('.pressure-card');
-      cards.forEach((card, i) => {
+      cards.forEach((card) => {
         gsap.fromTo(card,
           { y: 50, opacity: 0 },
           {
@@ -47,7 +47,7 @@ export default function PhysicianMarriages() {
          <div className="absolute inset-x-0 bottom-0 h-full opacity-10" style={{ backgroundImage: 'radial-gradient(circle at center, #1191B1 0%, transparent 60%)' }}></div>
 
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-          <p className="physician-reveal font-sans text-accent tracking-widest uppercase text-sm mb-6 font-semibold">Specialized Track</p>
+          <p className="physician-reveal font-sans text-white/80 tracking-widest uppercase text-sm mb-6 font-semibold">Specialized Track</p>
           <h1 className="physician-reveal font-drama italic text-5xl md:text-7xl lg:text-8xl leading-tight mb-8">
             The Physician Marriage
           </h1>

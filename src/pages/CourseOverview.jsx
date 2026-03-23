@@ -26,7 +26,7 @@ export default function CourseOverview() {
         <div className="absolute inset-0 bg-primary" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/20 rounded-full blur-[120px]" />
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-          <p className="font-outfit text-sm uppercase tracking-widest text-background/50 mb-4">
+          <p className="font-outfit text-sm uppercase tracking-widest text-background/70 mb-4">
             The Healing Hearts Journey
           </p>
           <h1 className="font-drama italic text-4xl md:text-6xl text-background mb-6">

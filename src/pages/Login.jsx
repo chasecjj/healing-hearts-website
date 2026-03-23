@@ -113,7 +113,7 @@ export default function Login() {
           </p>
         </div>
         <div className="relative z-10">
-          <p className="font-sans text-sm text-background/50">
+          <p className="font-sans text-sm text-background/70">
             © 2026 Healing Hearts LLC
           </p>
         </div>

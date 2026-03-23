@@ -68,7 +68,7 @@ export default function Testimonials() {
   return (
     <main ref={container} className="bg-primary text-background min-h-screen pt-40 pb-24 px-6 md:px-16 overflow-hidden">
       <section className="max-w-4xl mx-auto text-center mb-24">
-        <div className="test-header font-mono text-accent text-sm tracking-widest uppercase mb-8 border-b border-accent/20 pb-4 inline-block">
+        <div className="test-header font-mono text-white/70 text-sm tracking-widest uppercase mb-8 border-b border-white/20 pb-4 inline-block">
           Stories of Healing
         </div>
         <h1 className="test-header font-sans font-bold text-5xl md:text-7xl tracking-tighter text-background leading-none mb-6">

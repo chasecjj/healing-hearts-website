@@ -55,7 +55,7 @@ export default function Physicians() {
         
         {/* Header */}
         <section className="max-w-4xl mx-auto text-center mb-32">
-          <div className="phys-header font-mono text-accent text-sm tracking-widest uppercase mb-8 opacity-80 border-b border-accent/20 pb-4 inline-block">
+          <div className="phys-header font-mono text-white/70 text-sm tracking-widest uppercase mb-8 border-b border-accent/20 pb-4 inline-block">
             // The Physician Marriage
           </div>
           <h1 className="phys-header font-sans font-bold text-5xl md:text-7xl lg:text-8xl tracking-tighter text-background leading-none mb-6">
@@ -74,7 +74,7 @@ export default function Physicians() {
           <p className="font-sans text-2xl md:text-4xl text-white/90 leading-relaxed font-medium mb-12">
             Physician marriages carry a unique weight. The emotional dissociation that keeps you functional in the OR follows you home.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 font-sans text-lg text-white/60 leading-relaxed">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 font-sans text-lg text-white/80 leading-relaxed">
             <p>
               The schedule chaos makes consistent connection nearly impossible. The power dynamics—the authority that serves you at work—creates friction at the dinner table. And the financial stress that nobody expects creates a pressure cooker underneath a polished surface.
             </p>
@@ -88,33 +88,33 @@ export default function Physicians() {
         <section className="scroll-reveal max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 mb-40">
           
           <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-10 backdrop-blur-sm">
-            <h4 className="font-mono text-xs text-accent uppercase tracking-widest mb-6 border-b border-white/10 pb-4">01</h4>
+            <h4 className="font-mono text-xs text-white/60 uppercase tracking-widest mb-6 border-b border-white/10 pb-4">01</h4>
             <h3 className="font-sans font-bold text-2xl mb-4">Clinical dissociation doesn't have an off switch.</h3>
-            <p className="font-sans text-white/60 leading-relaxed">
+            <p className="font-sans text-white/80 leading-relaxed">
               The emotional compartmentalization that lets you function during a code blue doesn't just shut off when you pull into the driveway. Your spouse isn't getting a different version of you—they're getting the version that learned to turn off feeling in order to function.
             </p>
           </div>
 
           <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-10 backdrop-blur-sm">
-            <h4 className="font-mono text-xs text-accent uppercase tracking-widest mb-6 border-b border-white/10 pb-4">02</h4>
+            <h4 className="font-mono text-xs text-white/60 uppercase tracking-widest mb-6 border-b border-white/10 pb-4">02</h4>
             <h3 className="font-sans font-bold text-2xl mb-4">Your schedule is an intimacy killer by design.</h3>
-            <p className="font-sans text-white/60 leading-relaxed">
+            <p className="font-sans text-white/80 leading-relaxed">
               36-hour shifts. Overnight call. Weekends consumed by documentation. The residency schedule was built to train doctors, not to sustain marriages. And the patterns it creates don't end when training does.
             </p>
           </div>
 
           <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-10 backdrop-blur-sm">
-            <h4 className="font-mono text-xs text-accent uppercase tracking-widest mb-6 border-b border-white/10 pb-4">03</h4>
+            <h4 className="font-mono text-xs text-white/60 uppercase tracking-widest mb-6 border-b border-white/10 pb-4">03</h4>
             <h3 className="font-sans font-bold text-2xl mb-4">High income doesn't mean low financial stress.</h3>
-            <p className="font-sans text-white/60 leading-relaxed">
+            <p className="font-sans text-white/80 leading-relaxed">
               Student loans in the hundreds of thousands. Lifestyle inflation. The financial reality of physician life is wildly misunderstood. And money conflicts carry extra shame when everyone assumes you shouldn't have them.
             </p>
           </div>
 
           <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-10 backdrop-blur-sm">
-            <h4 className="font-mono text-xs text-accent uppercase tracking-widest mb-6 border-b border-white/10 pb-4">04</h4>
+            <h4 className="font-mono text-xs text-white/60 uppercase tracking-widest mb-6 border-b border-white/10 pb-4">04</h4>
             <h3 className="font-sans font-bold text-2xl mb-4">The authority problem.</h3>
-            <p className="font-sans text-white/60 leading-relaxed">
+            <p className="font-sans text-white/80 leading-relaxed">
               In the hospital, your decisions save lives. At home, that same posture feels like control. And the transition between the two is one of the most underexplored sources of marital friction in medicine.
             </p>
           </div>

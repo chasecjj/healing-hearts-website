@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Mail, Lock, User, ArrowRight } from 'lucide-react';
 
@@ -13,7 +13,6 @@ export default function Signup() {
   const [success, setSuccess] = useState(false);
 
   const { signUp } = useAuth();
-  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -100,7 +99,7 @@ export default function Signup() {
           </p>
         </div>
         <div className="relative z-10">
-          <p className="font-sans text-sm text-background/50">
+          <p className="font-sans text-sm text-background/70">
             © 2026 Healing Hearts LLC
           </p>
         </div>

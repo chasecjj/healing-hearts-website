@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import ScrollToTop from './components/ScrollToTop';
 import { AuthProvider } from './contexts/AuthContext';
 import { Layout } from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -31,6 +32,7 @@ import RescueKit from './pages/RescueKit';
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <AuthProvider>
         <div className="w-full min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-accent/20 selection:text-accent">
           <Routes>
