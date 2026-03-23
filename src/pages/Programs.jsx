@@ -39,6 +39,7 @@ const STANDALONE_PACKAGES = [
     includes: ['SPARK Method training', 'Critter Brain vs. CEO Brain framework', 'Zones of Resilience assessment', 'The 90-Second Wave guide', 'Printable Conflict Recovery Plan'],
     icon: ShieldAlert,
     span: 'lg:col-span-2',
+    href: '/rescue-kit',
   },
   {
     title: 'Communication Mastery Toolkit',
@@ -193,9 +194,9 @@ const FlagshipProgram = () => {
               <div className="flagship-reveal">
                 <MagneticButton
                   className="bg-accent text-white px-10 py-4 rounded-full text-sm font-bold shadow-xl w-full md:w-auto hover:scale-105 transition-all duration-300"
-                  onClick={() => window.location.href = '/coming-soon'}
+                  onClick={() => window.location.href = '/journey'}
                 >
-                  Enroll in the Full Program
+                  Explore the Full Journey
                 </MagneticButton>
               </div>
             </div>
@@ -327,7 +328,7 @@ const StandalonePackages = () => {
                   {/* CTA */}
                   <button
                     className="w-full py-3 rounded-full border-2 border-primary/20 text-primary font-outfit font-semibold text-sm hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 mt-auto"
-                    onClick={() => window.location.href = '/coming-soon'}
+                    onClick={() => window.location.href = pkg.href || '/coming-soon'}
                   >
                     View Details
                   </button>
@@ -387,9 +388,9 @@ const ClosingCta = () => {
         <div className="closing-reveal flex flex-col sm:flex-row gap-5 justify-center">
           <MagneticButton
             className="bg-accent text-white px-10 py-4 rounded-full text-base font-medium shadow-xl hover:shadow-2xl transition-shadow"
-            onClick={() => window.location.href = '/coming-soon'}
+            onClick={() => window.location.href = '/journey'}
           >
-            Enroll in the Full Program
+            Explore the Full Journey
           </MagneticButton>
           <button
             className="inline-flex items-center gap-2 text-primary font-medium border-b-2 border-primary/20 hover:border-primary pb-1 transition-colors"

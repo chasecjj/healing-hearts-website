@@ -105,6 +105,7 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-10 font-sans text-sm font-medium">
           <Link to="/about" className={`transition-colors duration-500 ${menuOpen ? 'text-background/70 hover:text-background' : location.pathname === '/about' ? 'text-accent font-semibold' : 'text-foreground/70 hover:text-accent'}`}>About Us</Link>
           <Link to="/programs" className={`transition-colors duration-500 ${menuOpen ? 'text-background/70 hover:text-background' : location.pathname === '/programs' ? 'text-accent font-semibold' : 'text-foreground/70 hover:text-accent'}`}>Programs</Link>
+          <Link to="/journey" className={`transition-colors duration-500 ${menuOpen ? 'text-background/70 hover:text-background' : location.pathname === '/journey' ? 'text-accent font-semibold' : 'text-foreground/70 hover:text-accent'}`}>Your Journey</Link>
           <Link to="/tools" className={`transition-colors duration-500 ${menuOpen ? 'text-background/70 hover:text-background' : location.pathname === '/tools' ? 'text-accent font-semibold' : 'text-foreground/70 hover:text-accent'}`}>Tools</Link>
         </div>
         <div className="flex items-center gap-4">
@@ -154,6 +155,9 @@ const Navbar = () => {
             <Link to="/programs" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
               Programs <ArrowRight className="w-6 h-6 md:w-8 md:h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
             </Link>
+            <Link to="/journey" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
+              Your Journey <ArrowRight className="w-6 h-6 md:w-8 md:h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
+            </Link>
             <Link to="/tools" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
               Tools & Frameworks <ArrowRight className="w-6 h-6 md:w-8 md:h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
             </Link>
@@ -195,8 +199,8 @@ const Navbar = () => {
                   Member Login <ArrowRight className="w-4 h-4" />
                 </Link>
               )}
-              <a href="mailto:hello@healingheartscoaching.com" className="font-sans text-background/80 hover:text-background transition-colors">
-                hello@healingheartscoaching.com
+              <a href="mailto:hello@healingheartscourse.com" className="font-sans text-background/80 hover:text-background transition-colors">
+                hello@healingheartscourse.com
               </a>
             </div>
           </div>
@@ -225,6 +229,7 @@ const Footer = () => {
              <div className="flex flex-col gap-3">
               <h4 className="font-outfit font-bold text-sm text-background/50 mb-2">Explore</h4>
               <Link to="/programs" className="font-sans font-light text-sm text-background/80 hover:text-accent transition-colors">Programs</Link>
+              <Link to="/journey" className="font-sans font-light text-sm text-background/80 hover:text-accent transition-colors">Your Journey</Link>
               <Link to="/about" className="font-sans font-light text-sm text-background/80 hover:text-accent transition-colors">About</Link>
               <Link to="/physician" className="font-sans font-light text-sm text-background/80 hover:text-accent transition-colors">Physician Marriages</Link>
             </div>

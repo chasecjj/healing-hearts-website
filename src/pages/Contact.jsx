@@ -54,14 +54,14 @@ const ContactForm = () => {
         // Fallback to mailto if API not available
         const subject = encodeURIComponent(`Healing Hearts Inquiry - ${formData.interest || 'General'}`);
         const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone || 'Not provided'}\nInterest: ${formData.interest || 'Not specified'}\n\n${formData.message}`);
-        window.location.href = `mailto:hello@healingheartscoaching.com?subject=${subject}&body=${body}`;
+        window.location.href = `mailto:hello@healingheartscourse.com?subject=${subject}&body=${body}`;
         setStatus('sent');
       }
     } catch {
       // Fallback to mailto
       const subject = encodeURIComponent(`Healing Hearts Inquiry - ${formData.interest || 'General'}`);
       const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone || 'Not provided'}\nInterest: ${formData.interest || 'Not specified'}\n\n${formData.message}`);
-      window.location.href = `mailto:hello@healingheartscoaching.com?subject=${subject}&body=${body}`;
+      window.location.href = `mailto:hello@healingheartscourse.com?subject=${subject}&body=${body}`;
       setStatus('sent');
     }
   };
@@ -272,7 +272,7 @@ export default function Contact() {
               <p className="font-sans text-foreground/70 font-light leading-relaxed mb-8 flex-grow">
                 Schedule a free 20-minute call with our team. We’ll listen to where you are and help you find the right path.
               </p>
-               <a href="mailto:hello@healingheartscoaching.com?subject=Free%20Consultation%20Request" className="text-accent font-semibold hover:text-primary transition-colors underline underline-offset-4">Schedule a Free Call</a>
+               <a href="mailto:hello@healingheartscourse.com?subject=Free%20Consultation%20Request" className="text-accent font-semibold hover:text-primary transition-colors underline underline-offset-4">Schedule a Free Call</a>
             </div>
           </div>
         </div>
@@ -300,8 +300,8 @@ export default function Contact() {
         
         <div className="mt-16 text-center">
            <p className="font-sans text-foreground/70 text-lg mb-6">Still Have Questions?</p>
-           <a href="mailto:hello@healingheartscoaching.com" className="font-drama italic text-3xl md:text-5xl text-primary hover:text-accent transition-colors">
-              hello@healingheartscoaching.com
+           <a href="mailto:hello@healingheartscourse.com" className="font-drama italic text-3xl md:text-5xl text-primary hover:text-accent transition-colors">
+              hello@healingheartscourse.com
            </a>
         </div>
       </section>

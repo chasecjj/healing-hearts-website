@@ -25,6 +25,8 @@ import CourseOverview from './pages/CourseOverview';
 import SparkChallenge from './pages/SparkChallenge';
 import Team from './pages/Team';
 import ComingSoon from './pages/ComingSoon';
+import YourJourney from './pages/YourJourney';
+import RescueKit from './pages/RescueKit';
 
 function App() {
   return (
@@ -50,10 +52,11 @@ function App() {
               <Route path="/course" element={<CourseOverview />} />
               <Route path="/spark-challenge" element={<SparkChallenge />} />
               <Route path="/team" element={<Team />} />
+              <Route path="/journey" element={<YourJourney />} />
               <Route path="/coming-soon" element={<ComingSoon />} />
               <Route path="/enroll" element={<ComingSoon />} />
               <Route path="/enroll/:program" element={<ComingSoon />} />
-              <Route path="/rescue-kit" element={<ComingSoon />} />
+              <Route path="/rescue-kit" element={<RescueKit />} />
               <Route path="/physician-track" element={<ComingSoon />} />
               <Route path="/admin" element={<ComingSoon />} />
             </Route>

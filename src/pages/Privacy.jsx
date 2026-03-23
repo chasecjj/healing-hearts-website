@@ -76,7 +76,7 @@ export default function Privacy() {
                 <li><strong>Opt-Out:</strong> Unsubscribe from marketing communications at any time by clicking the unsubscribe link in our emails.</li>
               </ul>
               <p>
-                To exercise any of these rights, please contact us at <a href="mailto:hello@healingheartscoaching.com" className="text-accent hover:text-primary underline underline-offset-4 transition-colors">hello@healingheartscoaching.com</a>.
+                To exercise any of these rights, please contact us at <a href="mailto:hello@healingheartscourse.com" className="text-accent hover:text-primary underline underline-offset-4 transition-colors">hello@healingheartscourse.com</a>.
               </p>
             </div>
           </section>
@@ -102,7 +102,7 @@ export default function Privacy() {
             </p>
             <div className="mt-4 p-6 bg-[#F7F6F2] rounded-2xl">
               <p className="font-outfit font-bold text-primary">Healing Hearts Consulting, LLC</p>
-              <p>Email: <a href="mailto:hello@healingheartscoaching.com" className="text-accent hover:text-primary underline underline-offset-4 transition-colors">hello@healingheartscoaching.com</a></p>
+              <p>Email: <a href="mailto:hello@healingheartscourse.com" className="text-accent hover:text-primary underline underline-offset-4 transition-colors">hello@healingheartscourse.com</a></p>
               <p>Governing Law: State of Utah, USA</p>
             </div>
           </section>

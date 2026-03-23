@@ -443,13 +443,15 @@ const ProgramsTeaser = () => {
       features: ['SPARK Method training', 'Critter Brain framework', 'Zones of Resilience assessment'],
       cta: 'Get the Rescue Kit',
       popular: false,
+      href: '/rescue-kit',
     },
     {
       name: 'Healing Hearts Journey',
       desc: 'Our complete 8-module premium program.',
       features: ['All 8 Transformation Modules', 'Subconscious Healing Guides', 'Nervous System Regulation', '1-on-1 Coaching Option'],
-      cta: 'Apply for the Journey',
+      cta: 'Explore the Journey',
       popular: true,
+      href: '/journey',
     },
   ];
 
@@ -543,7 +545,7 @@ const ProgramsTeaser = () => {
                     ? 'bg-accent text-white'
                     : 'bg-primary/5 text-primary hover:bg-primary hover:text-white'
                 }`}
-                onClick={() => window.location.href = '/coming-soon'}
+                onClick={() => window.location.href = plan.href}
               >
                 {plan.cta}
               </MagneticButton>
