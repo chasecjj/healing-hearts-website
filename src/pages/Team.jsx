@@ -80,29 +80,25 @@ const Hero = () => {
           deserves the tools to find their way back to each other.
         </p>
 
-        {/* Social proof stats */}
-        <div className="team-reveal flex items-center justify-center gap-6 md:gap-10 mt-8 mb-12">
-          <div className="text-center">
-            <p className="text-2xl md:text-3xl font-drama italic text-primary">20+</p>
-            <p className="text-xs md:text-sm text-foreground/50 uppercase tracking-wider">Years Coaching</p>
+        {/* Ornate divider + family tagline */}
+        <div className="team-reveal mt-10 mb-8 flex flex-col items-center gap-4">
+          <div className="flex items-center gap-4">
+            <div className="h-px w-16 md:w-24 bg-gradient-to-r from-transparent to-primary/30" />
+            <svg className="w-6 h-6 text-primary/40" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+            <div className="h-px w-16 md:w-24 bg-gradient-to-l from-transparent to-accent/30" />
           </div>
-          <div className="w-px h-10 bg-primary/15" />
-          <div className="text-center">
-            <p className="text-2xl md:text-3xl font-drama italic text-primary">8</p>
-            <p className="text-xs md:text-sm text-foreground/50 uppercase tracking-wider">Course Modules</p>
-          </div>
-          <div className="w-px h-10 bg-primary/15" />
-          <div className="text-center">
-            <p className="text-2xl md:text-3xl font-drama italic text-primary">90 min</p>
-            <p className="text-xs md:text-sm text-foreground/50 uppercase tracking-wider">Weekly Coaching</p>
-          </div>
+          <p className="font-drama italic text-xl md:text-2xl text-foreground/50 tracking-wide">
+            Family-built from day one
+          </p>
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="scroll-hint absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-primary/40">
-        <span className="text-xs uppercase tracking-widest font-medium">Scroll</span>
-        <ChevronDown className="w-5 h-5" />
+      {/* Scroll indicator — more visible */}
+      <div className="scroll-hint absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-primary/60">
+        <span className="text-xs uppercase tracking-[0.2em] font-semibold">Meet the team</span>
+        <ChevronDown className="w-6 h-6" />
       </div>
     </section>
   );

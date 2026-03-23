@@ -146,19 +146,28 @@ export default function SparkChallenge() {
     return () => ctx.revert()
   }, [])
 
+  const [formState, setFormState] = React.useState('idle') // idle | loading | success | error
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
     const email = formData.get('email')
+    if (!email) return
 
+    setFormState('loading')
     try {
-      await fetch('/api/spark-signup', {
+      const res = await fetch('/api/spark-signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       })
+      if (res.ok) {
+        setFormState('success')
+      } else {
+        setFormState('error')
+      }
     } catch {
-      // Handler not built yet
+      setFormState('error')
     }
   }
 
@@ -316,30 +325,51 @@ export default function SparkChallenge() {
             <p className="font-sans text-foreground/70 font-light text-lg max-w-[55ch] mx-auto mb-8">
               Enter your email and we'll send you Day 1 tomorrow morning.
             </p>
-            <form
-              onSubmit={handleSubmit}
-              action="/api/spark-signup"
-              method="POST"
-              className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
-            >
-              <Input
-                type="email"
-                name="email"
-                placeholder="you@example.com"
-                aria-label="Email address"
-                required
-                className="flex-1"
-              />
-              <button
-                type="submit"
-                className="bg-accent text-white px-8 py-3 rounded-full font-medium text-base shadow-lg hover:opacity-90 hover:shadow-xl transition-all whitespace-nowrap"
-              >
-                Begin the Challenge
-              </button>
-            </form>
-            <p className="mt-5 font-sans text-sm text-foreground/40">
-              We respect your inbox. Unsubscribe anytime.
-            </p>
+            {formState === 'success' ? (
+              <div className="py-6">
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 className="font-drama italic text-2xl text-primary mb-2">You're in!</h3>
+                <p className="font-sans text-foreground/70 text-lg">
+                  Check your inbox for a welcome message from Trisha. Day 1 arrives tomorrow morning.
+                </p>
+              </div>
+            ) : (
+              <>
+                <form
+                  onSubmit={handleSubmit}
+                  className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
+                >
+                  <Input
+                    type="email"
+                    name="email"
+                    placeholder="you@example.com"
+                    aria-label="Email address"
+                    required
+                    disabled={formState === 'loading'}
+                    className="flex-1"
+                  />
+                  <button
+                    type="submit"
+                    disabled={formState === 'loading'}
+                    className="bg-accent text-white px-8 py-3 rounded-full font-medium text-base shadow-lg hover:opacity-90 hover:shadow-xl transition-all whitespace-nowrap disabled:opacity-60 disabled:cursor-wait"
+                  >
+                    {formState === 'loading' ? 'Signing up...' : 'Begin the Challenge'}
+                  </button>
+                </form>
+                {formState === 'error' && (
+                  <p className="mt-3 font-sans text-sm text-red-500">
+                    Something went wrong. Please try again or email us at hello@healingheartscourse.com.
+                  </p>
+                )}
+                <p className="mt-5 font-sans text-sm text-foreground/40">
+                  We respect your inbox. Unsubscribe anytime.
+                </p>
+              </>
+            )}
           </div>
         </div>
       </section>
