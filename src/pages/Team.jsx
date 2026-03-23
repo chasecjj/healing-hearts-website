@@ -63,7 +63,7 @@ const Hero = () => {
 /* ------------------------------------------------------------------ */
 /*  TEAM MEMBER CARD                                                    */
 /* ------------------------------------------------------------------ */
-const TeamMember = ({ id, name, title, icon: Icon, photo, bio, highlight, cta, ctaLink, reverse }) => {
+const TeamMember = ({ id, name, title, icon: Icon, photo, photoPosition = 'center', bio, highlight, cta, ctaLink, reverse }) => {
   const sectionRef = useRef(null);
 
   useEffect(() => {
@@ -95,16 +95,36 @@ const TeamMember = ({ id, name, title, icon: Icon, photo, bio, highlight, cta, c
       className={`py-20 md:py-28 ${reverse ? 'bg-[#fbf3e4]/40' : 'bg-white'}`}
     >
       <div className={`max-w-6xl mx-auto px-6 flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-12 md:gap-20`}>
-        {/* Photo */}
-        <div className="w-64 h-80 md:w-80 md:h-96 flex-shrink-0">
+        {/* Photo — inline teardrop mask with object-position control */}
+        <div className="flex-shrink-0 w-64 md:w-80">
           {photo ? (
-            <TeardropImage
-              src={photo}
-              alt={name}
-              className="w-full h-full object-cover"
-            />
+            <div className="relative aspect-[3/4] w-full">
+              <svg className="absolute w-0 h-0" aria-hidden="true">
+                <defs>
+                  <clipPath id={`teardrop-${id}`} clipPathUnits="objectBoundingBox">
+                    <path d="M0.5 0 C0.7 0.2 0.9 0.4 0.9 0.7 C0.9 0.9 0.7 1 0.5 1 C0.3 1 0.1 0.9 0.1 0.7 C0.1 0.4 0.3 0.2 0.5 0" />
+                  </clipPath>
+                </defs>
+              </svg>
+              <div
+                className="w-full h-full rounded-[2.5rem] md:rounded-none overflow-hidden"
+                style={{ clipPath: `url(#teardrop-${id})` }}
+              >
+                <img
+                  src={photo}
+                  alt={name}
+                  className="w-full h-full object-cover"
+                  style={{ objectPosition: photoPosition }}
+                  loading="lazy"
+                />
+              </div>
+              <div
+                className="absolute inset-0 mix-blend-overlay pointer-events-none bg-primary/5"
+                style={{ clipPath: `url(#teardrop-${id})` }}
+              />
+            </div>
           ) : (
-            <div className="w-full h-full rounded-[2rem] bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+            <div className="aspect-[3/4] w-full rounded-[2rem] bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
               <Icon className="w-16 h-16 text-primary/40" />
             </div>
           )}
@@ -208,7 +228,8 @@ const Team = () => (
       name="Trisha Jamison"
       title="Founder & Lead Coach"
       icon={Heart}
-      photo={null /* Replace: /images/team/trisha.jpg */}
+      photo="/images/team/trisha.jpg"
+      photoPosition="top"
       bio="Trisha built Healing Hearts from two decades of coaching couples through their hardest moments. She's not a textbook educator — she's someone who's lived it, learned from it, and now helps others find their way back to connection. Her warmth and vulnerability are what make the program feel like a conversation, not a lecture."
       highlight="Every couple in the program gets weekly 90-minute coaching sessions with Trisha. She's in the room with you — helping you navigate the conversations that feel too scary to have alone. Because real change doesn't happen from watching videos. It happens when someone's there with you."
       cta="Start the Free Challenge"
@@ -224,6 +245,7 @@ const Team = () => (
       title="Platform & Strategy"
       icon={Wrench}
       photo="/images/team/chase.jpg"
+      photoPosition="top"
       bio="Chase designed and built the entire Healing Hearts platform — from the course portal to the coaching infrastructure. His goal is to make the technology invisible so couples can focus entirely on each other. He handles the business strategy, technical architecture, and makes sure every part of the system serves the mission."
       highlight={null}
       cta="Explore Our Programs"
