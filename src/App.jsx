@@ -23,6 +23,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import CourseOverview from './pages/CourseOverview';
 import SparkChallenge from './pages/SparkChallenge';
+import Team from './pages/Team';
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/course" element={<CourseOverview />} />
               <Route path="/spark-challenge" element={<SparkChallenge />} />
+              <Route path="/team" element={<Team />} />
             </Route>
 
             {/* Auth pages (standalone, no navbar/footer) */}
