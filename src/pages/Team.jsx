@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MagneticButton } from '../components/Layout';
-import { TeardropImage, OrganicDivider } from '@scoria/ui';
+import { OrganicDivider } from '@scoria/ui';
 import { Heart, Wrench, Handshake, ArrowRight } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -61,96 +61,160 @@ const Hero = () => {
 };
 
 /* ------------------------------------------------------------------ */
-/*  TEAM MEMBER CARD                                                    */
+/*  ARCHWAY PHOTO — rounded top, straight sides, flat bottom            */
+/*  + parallax scroll, scale-in, and decorative depth ring              */
 /* ------------------------------------------------------------------ */
-const TeamMember = ({ id, name, title, icon: Icon, photo, photoPosition = 'center', bio, highlight, cta, ctaLink, reverse }) => {
-  const sectionRef = useRef(null);
+const ArchwayPhoto = ({ src, alt, id, objectPosition = 'top' }) => {
+  const frameRef = useRef(null);
+  const imgRef = useRef(null);
 
   useEffect(() => {
     if (prefersReducedMotion()) return;
     const ctx = gsap.context(() => {
+      // Parallax: photo moves slower than scroll for depth
+      gsap.to(imgRef.current, {
+        yPercent: 8,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: frameRef.current,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 0.6,
+        },
+      });
+
+      // Scale + fade in on enter
       gsap.fromTo(
-        sectionRef.current,
-        { y: 40, opacity: 0 },
+        frameRef.current,
+        { scale: 0.92, opacity: 0 },
         {
-          y: 0,
+          scale: 1,
           opacity: 1,
-          duration: 1,
+          duration: 1.2,
           ease: 'power3.out',
           scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 80%',
+            trigger: frameRef.current,
+            start: 'top 85%',
             toggleActions: 'play none none none',
           },
         }
       );
-    }, sectionRef);
+    }, frameRef);
     return () => ctx.revert();
   }, []);
 
   return (
+    <div ref={frameRef} className="relative w-64 md:w-80 flex-shrink-0">
+      {/* Decorative depth ring — offset behind the photo */}
+      <div
+        className="absolute -inset-3 md:-inset-4 border-2 border-primary/15 pointer-events-none"
+        style={{ borderRadius: '50% 50% 0.75rem 0.75rem' }}
+        aria-hidden="true"
+      />
+
+      {/* Archway frame */}
+      <div
+        className="relative aspect-[3/4] w-full overflow-hidden shadow-lg"
+        style={{ borderRadius: '50% 50% 0.75rem 0.75rem' }}
+      >
+        <img
+          ref={imgRef}
+          src={src}
+          alt={alt}
+          className="w-full h-[115%] object-cover -translate-y-[5%]"
+          style={{ objectPosition }}
+          loading="lazy"
+        />
+
+        {/* Subtle warm overlay for cohesion */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'linear-gradient(to bottom, transparent 60%, rgba(251,243,228,0.3) 100%)',
+          }}
+        />
+      </div>
+
+      {/* Accent dot — small teal circle at bottom center */}
+      <div className="flex justify-center mt-4" aria-hidden="true">
+        <div className="w-2 h-2 rounded-full bg-primary/40" />
+      </div>
+    </div>
+  );
+};
+
+/* ------------------------------------------------------------------ */
+/*  TEAM MEMBER CARD                                                    */
+/* ------------------------------------------------------------------ */
+const TeamMember = ({ id, name, title, icon: Icon, photo, photoPosition = 'top', bio, highlight, cta, ctaLink, reverse }) => {
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    if (prefersReducedMotion()) return;
+    const ctx = gsap.context(() => {
+      // Staggered text reveal
+      gsap.fromTo(
+        `.member-text-${id}`,
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.9,
+          stagger: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: contentRef.current,
+            start: 'top 75%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
+    }, contentRef);
+    return () => ctx.revert();
+  }, [id]);
+
+  return (
     <section
       id={id}
-      ref={sectionRef}
+      ref={contentRef}
       className={`py-20 md:py-28 ${reverse ? 'bg-[#fbf3e4]/40' : 'bg-white'}`}
     >
       <div className={`max-w-6xl mx-auto px-6 flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-12 md:gap-20`}>
-        {/* Photo — inline teardrop mask with object-position control */}
-        <div className="flex-shrink-0 w-64 md:w-80">
-          {photo ? (
-            <div className="relative aspect-[3/4] w-full">
-              <svg className="absolute w-0 h-0" aria-hidden="true">
-                <defs>
-                  <clipPath id={`teardrop-${id}`} clipPathUnits="objectBoundingBox">
-                    <path d="M0.5 0 C0.7 0.2 0.9 0.4 0.9 0.7 C0.9 0.9 0.7 1 0.5 1 C0.3 1 0.1 0.9 0.1 0.7 C0.1 0.4 0.3 0.2 0.5 0" />
-                  </clipPath>
-                </defs>
-              </svg>
-              <div
-                className="w-full h-full rounded-[2.5rem] md:rounded-none overflow-hidden"
-                style={{ clipPath: `url(#teardrop-${id})` }}
-              >
-                <img
-                  src={photo}
-                  alt={name}
-                  className="w-full h-full object-cover"
-                  style={{ objectPosition: photoPosition }}
-                  loading="lazy"
-                />
-              </div>
-              <div
-                className="absolute inset-0 mix-blend-overlay pointer-events-none bg-primary/5"
-                style={{ clipPath: `url(#teardrop-${id})` }}
-              />
+        {/* Photo */}
+        {photo ? (
+          <ArchwayPhoto src={photo} alt={name} id={id} objectPosition={photoPosition} />
+        ) : (
+          <div className="flex-shrink-0 w-64 md:w-80">
+            <div
+              className="aspect-[3/4] w-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center shadow-lg"
+              style={{ borderRadius: '50% 50% 0.75rem 0.75rem' }}
+            >
+              <Icon className="w-16 h-16 text-primary/30" />
             </div>
-          ) : (
-            <div className="aspect-[3/4] w-full rounded-[2rem] bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
-              <Icon className="w-16 h-16 text-primary/40" />
-            </div>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Content */}
         <div className="flex-1 text-center md:text-left">
-          <div className="inline-flex items-center gap-2 text-primary font-medium text-sm tracking-wider uppercase mb-3">
+          <div className={`member-text-${id} inline-flex items-center gap-2 text-primary font-medium text-sm tracking-wider uppercase mb-3`}>
             <Icon className="w-4 h-4" />
             {title}
           </div>
-          <h2 className="font-drama italic text-4xl md:text-5xl text-foreground mb-6">
+          <h2 className={`member-text-${id} font-drama italic text-4xl md:text-5xl text-foreground mb-6`}>
             {name}
           </h2>
-          <p className="text-foreground/70 text-lg leading-relaxed mb-6">
+          <p className={`member-text-${id} text-foreground/70 text-lg leading-relaxed mb-6`}>
             {bio}
           </p>
           {highlight && (
-            <div className="bg-primary/5 border-l-4 border-primary rounded-r-xl px-6 py-4 mb-8">
+            <div className={`member-text-${id} bg-primary/5 border-l-4 border-primary rounded-r-xl px-6 py-4 mb-8`}>
               <p className="text-foreground/80 italic text-base leading-relaxed">
                 {highlight}
               </p>
             </div>
           )}
           {cta && (
-            <Link to={ctaLink || '/spark-challenge'}>
+            <Link to={ctaLink || '/spark-challenge'} className={`member-text-${id} inline-block`}>
               <MagneticButton className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full font-medium hover:bg-primary/90 transition-colors">
                 {cta}
                 <ArrowRight className="w-4 h-4" />
@@ -176,15 +240,8 @@ const BottomCTA = () => {
         '.cta-reveal',
         { y: 30, opacity: 0 },
         {
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          stagger: 0.1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: ref.current,
-            start: 'top 80%',
-          },
+          y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: 'power3.out',
+          scrollTrigger: { trigger: ref.current, start: 'top 80%' },
         }
       );
     }, ref);
