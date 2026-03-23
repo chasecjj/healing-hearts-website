@@ -543,6 +543,7 @@ const ProgramsTeaser = () => {
                     ? 'bg-accent text-white'
                     : 'bg-primary/5 text-primary hover:bg-primary hover:text-white'
                 }`}
+                onClick={() => window.location.href = '/coming-soon'}
               >
                 {plan.cta}
               </MagneticButton>

@@ -123,7 +123,7 @@ export default function PhysicianMarriages() {
             <p className="font-sans text-foreground/80 md:text-xl leading-relaxed font-light mb-16 italic">
               This isn’t generic marriage advice with a stethoscope on the cover.
             </p>
-            <MagneticButton className="bg-accent text-background px-10 py-4 rounded-full text-base font-bold shadow-xl mx-auto">
+            <MagneticButton className="bg-accent text-background px-10 py-4 rounded-full text-base font-bold shadow-xl mx-auto" onClick={() => window.location.href = '/coming-soon'}>
                Learn About the Physician Track
             </MagneticButton>
          </div>

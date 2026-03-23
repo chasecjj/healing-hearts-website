@@ -24,6 +24,7 @@ import ResetPassword from './pages/ResetPassword';
 import CourseOverview from './pages/CourseOverview';
 import SparkChallenge from './pages/SparkChallenge';
 import Team from './pages/Team';
+import ComingSoon from './pages/ComingSoon';
 
 function App() {
   return (
@@ -49,6 +50,12 @@ function App() {
               <Route path="/course" element={<CourseOverview />} />
               <Route path="/spark-challenge" element={<SparkChallenge />} />
               <Route path="/team" element={<Team />} />
+              <Route path="/coming-soon" element={<ComingSoon />} />
+              <Route path="/enroll" element={<ComingSoon />} />
+              <Route path="/enroll/:program" element={<ComingSoon />} />
+              <Route path="/rescue-kit" element={<ComingSoon />} />
+              <Route path="/physician-track" element={<ComingSoon />} />
+              <Route path="/admin" element={<ComingSoon />} />
             </Route>
 
             {/* Auth pages (standalone, no navbar/footer) */}

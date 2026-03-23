@@ -89,7 +89,7 @@ const Hero = () => {
             </svg>
             <div className="h-px w-16 md:w-24 bg-gradient-to-l from-transparent to-accent/30" />
           </div>
-          <p className="font-drama italic text-xl md:text-2xl text-foreground/50 tracking-wide">
+          <p className="font-drama italic text-xl md:text-2xl text-foreground/70 tracking-wide font-medium">
             Family-built from day one
           </p>
         </div>
@@ -338,7 +338,8 @@ const Team = () => (
       name="Makayla Hildreth"
       title="Operations & Partnerships"
       icon={Handshake}
-      photo={null}
+      photo="/images/team/makayla.jpg"
+      photoPosition="top"
       accentColor="primary"
       bio="Makayla is the engine behind Healing Hearts — she coordinates events, manages partnerships, and makes sure everything runs smoothly. Whether it's organizing an expo booth or connecting with wellness providers who share our mission, she's the first point of contact and the one who always follows through."
       highlight={null}

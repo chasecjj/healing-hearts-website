@@ -193,7 +193,7 @@ const FlagshipProgram = () => {
               <div className="flagship-reveal">
                 <MagneticButton
                   className="bg-accent text-white px-10 py-4 rounded-full text-sm font-bold shadow-xl w-full md:w-auto hover:scale-105 transition-all duration-300"
-                  onClick={() => {}}
+                  onClick={() => window.location.href = '/coming-soon'}
                 >
                   Enroll in the Full Program
                 </MagneticButton>
@@ -327,7 +327,7 @@ const StandalonePackages = () => {
                   {/* CTA */}
                   <button
                     className="w-full py-3 rounded-full border-2 border-primary/20 text-primary font-outfit font-semibold text-sm hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 mt-auto"
-                    onClick={() => {}}
+                    onClick={() => window.location.href = '/coming-soon'}
                   >
                     View Details
                   </button>
@@ -387,13 +387,13 @@ const ClosingCta = () => {
         <div className="closing-reveal flex flex-col sm:flex-row gap-5 justify-center">
           <MagneticButton
             className="bg-accent text-white px-10 py-4 rounded-full text-base font-medium shadow-xl hover:shadow-2xl transition-shadow"
-            onClick={() => {}}
+            onClick={() => window.location.href = '/coming-soon'}
           >
             Enroll in the Full Program
           </MagneticButton>
           <button
             className="inline-flex items-center gap-2 text-primary font-medium border-b-2 border-primary/20 hover:border-primary pb-1 transition-colors"
-            onClick={() => {}}
+            onClick={() => window.location.href = '/coming-soon'}
           >
             Talk to Us First
           </button>
