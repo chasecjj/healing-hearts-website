@@ -61,25 +61,28 @@ const Hero = () => {
 };
 
 /* ------------------------------------------------------------------ */
-/*  ARCHWAY PHOTO — parallax + scale entrance                           */
+/*  ARCHWAY PHOTO with gradient mat backdrop                            */
 /* ------------------------------------------------------------------ */
-const ArchwayPhoto = ({ src, alt, id, objectPosition = 'top' }) => {
+const ArchwayPhoto = ({ src, alt, id, objectPosition = 'top', icon: Icon }) => {
   const frameRef = useRef(null);
   const imgRef = useRef(null);
+  const hasPhoto = !!src;
 
   useEffect(() => {
     if (prefersReducedMotion()) return;
     const ctx = gsap.context(() => {
-      gsap.to(imgRef.current, {
-        yPercent: 8,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: frameRef.current,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 0.6,
-        },
-      });
+      if (hasPhoto && imgRef.current) {
+        gsap.to(imgRef.current, {
+          yPercent: 8,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: frameRef.current,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 0.6,
+          },
+        });
+      }
       gsap.fromTo(
         frameRef.current,
         { scale: 0.92, opacity: 0, y: 30 },
@@ -95,40 +98,74 @@ const ArchwayPhoto = ({ src, alt, id, objectPosition = 'top' }) => {
       );
     }, frameRef);
     return () => ctx.revert();
-  }, []);
+  }, [hasPhoto]);
+
+  const archRadius = '50% 50% 0.75rem 0.75rem';
 
   return (
     <div ref={frameRef} className="relative w-64 md:w-72 lg:w-80 flex-shrink-0">
+      {/* Gradient mat — peeks out behind the photo as a decorative frame */}
+      <div
+        className="absolute -inset-2 md:-inset-3"
+        style={{
+          borderRadius: archRadius,
+          background: 'linear-gradient(135deg, rgba(17,145,177,0.15) 0%, rgba(185,106,95,0.12) 50%, rgba(17,145,177,0.08) 100%)',
+        }}
+        aria-hidden="true"
+      />
+
       {/* Archway frame */}
       <div
-        className="relative aspect-[3/4] w-full overflow-hidden shadow-xl"
+        className="relative aspect-[3/4] w-full overflow-hidden"
         style={{
-          borderRadius: '50% 50% 0.75rem 0.75rem',
+          borderRadius: archRadius,
           boxShadow: '0 20px 50px -12px rgba(7, 58, 71, 0.2)',
         }}
       >
-        <img
-          ref={imgRef}
-          src={src}
-          alt={alt}
-          className="w-full h-[115%] object-cover -translate-y-[5%]"
-          style={{ objectPosition }}
-          loading="lazy"
-        />
-        {/* Bottom fade into card */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: 'linear-gradient(to bottom, transparent 70%, rgba(249,248,245,0.4) 100%)',
-          }}
-        />
+        {hasPhoto ? (
+          <img
+            ref={imgRef}
+            src={src}
+            alt={alt}
+            className="w-full h-[115%] object-cover -translate-y-[5%]"
+            style={{ objectPosition }}
+            loading="lazy"
+          />
+        ) : (
+          /* Placeholder — gradient with icon */
+          <div className="w-full h-full bg-gradient-to-br from-primary/10 via-[#fbf3e4] to-accent/10 flex items-center justify-center">
+            {Icon && <Icon className="w-16 h-16 text-primary/25" />}
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 /* ------------------------------------------------------------------ */
-/*  TEAM MEMBER CARD — frosted glass with gradient accent bar           */
+/*  SHIMMER BAR — animated gradient accent                              */
+/* ------------------------------------------------------------------ */
+const ShimmerBar = () => (
+  <div className="relative h-1.5 w-full overflow-hidden rounded-t-3xl">
+    <div
+      className="absolute inset-0"
+      style={{
+        background: 'linear-gradient(90deg, transparent 0%, rgba(17,145,177,0.5) 15%, rgba(185,106,95,0.4) 35%, rgba(17,145,177,0.3) 55%, rgba(185,106,95,0.2) 75%, transparent 100%)',
+        backgroundSize: '200% 100%',
+        animation: 'shimmer 6s ease-in-out infinite alternate',
+      }}
+    />
+    <style>{`
+      @keyframes shimmer {
+        0% { background-position: 0% 50%; }
+        100% { background-position: 100% 50%; }
+      }
+    `}</style>
+  </div>
+);
+
+/* ------------------------------------------------------------------ */
+/*  TEAM MEMBER CARD                                                    */
 /* ------------------------------------------------------------------ */
 const TeamMember = ({ id, name, title, icon: Icon, photo, photoPosition = 'top', bio, highlight, cta, ctaLink, reverse, glowColor = 'primary' }) => {
   const contentRef = useRef(null);
@@ -184,26 +221,18 @@ const TeamMember = ({ id, name, title, icon: Icon, photo, photoPosition = 'top',
             boxShadow: '0 10px 40px -10px rgba(17, 145, 177, 0.08), 0 4px 16px -4px rgba(0,0,0,0.04)',
           }}
         >
-          {/* Gradient accent bar */}
-          <div className="h-1 w-full bg-gradient-to-r from-primary/50 via-accent/30 to-transparent" />
+          {/* Animated shimmer accent bar */}
+          <ShimmerBar />
 
           <div className={`flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-10 md:gap-16 p-8 md:p-12 lg:p-16`}>
-            {/* Photo */}
-            {photo ? (
-              <ArchwayPhoto src={photo} alt={name} id={id} objectPosition={photoPosition} />
-            ) : (
-              <div className="flex-shrink-0 w-64 md:w-72 lg:w-80">
-                <div
-                  className="aspect-[3/4] w-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center"
-                  style={{
-                    borderRadius: '50% 50% 0.75rem 0.75rem',
-                    boxShadow: '0 20px 50px -12px rgba(7, 58, 71, 0.15)',
-                  }}
-                >
-                  <Icon className="w-16 h-16 text-primary/30" />
-                </div>
-              </div>
-            )}
+            {/* Photo with gradient mat */}
+            <ArchwayPhoto
+              src={photo}
+              alt={name}
+              id={id}
+              objectPosition={photoPosition}
+              icon={Icon}
+            />
 
             {/* Content */}
             <div className="flex-1 text-center md:text-left">
@@ -337,7 +366,7 @@ const Team = () => (
       name="Makayla Hildreth"
       title="Operations & Partnerships"
       icon={Handshake}
-      photo={null /* Replace: /images/team/makayla.jpg */}
+      photo={null}
       glowColor="primary"
       bio="Makayla is the engine behind Healing Hearts — she coordinates events, manages partnerships, and makes sure everything runs smoothly. Whether it's organizing an expo booth or connecting with wellness providers who share our mission, she's the first point of contact and the one who always follows through."
       highlight={null}
