@@ -340,8 +340,8 @@ const Team = () => (
       photo="/images/team/trisha.jpg"
       photoPosition="top"
       accentColor="primary"
-      bio="Trisha built Healing Hearts from two decades of coaching couples through their hardest moments. She's not a textbook educator — she's someone who's lived it, learned from it, and now helps others find their way back to connection. Her warmth and vulnerability are what make the program feel like a conversation, not a lecture."
-      highlight="Every couple in the program gets weekly 90-minute coaching sessions with Trisha. She's in the room with you — helping you navigate the conversations that feel too scary to have alone. Because real change doesn't happen from watching videos. It happens when someone's there with you."
+      bio="Trisha built Healing Hearts from two decades of coaching couples through their hardest moments. She's not a textbook educator — she's someone who's lived it, learned from it, and now helps others find their way back to connection. Every couple in the full program gets weekly 90-minute coaching sessions with Trisha over Zoom — she's right there with you, helping you navigate the conversations that feel too scary to have alone."
+      highlight={`"Voicing these things that we like about each other — it feels really good and positive. It feels like we can keep going. It just feels more hopeful. I feel like it will be easier to bring compassion into these moments and maybe not get so heated."\n— Coaching session participant`}
       cta="Start the Free Challenge"
       ctaLink="/spark-challenge"
       reverse={false}
