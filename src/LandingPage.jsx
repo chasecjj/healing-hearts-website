@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight, Menu, X, PlayCircle, FileText, CheckCircle2 } from 'lucide-react';
+import PillarsRedesign from './components/PillarsRedesign';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -351,7 +352,8 @@ export const LandingPage = ({ onLogin }) => {
       <Navbar onLogin={onLogin} />
       <Hero />
       <Philosophy />
-      <Pillars />
+      {/* Original: <Pillars /> */}
+      <PillarsRedesign />
       <Programs />
       <Footer />
     </div>
