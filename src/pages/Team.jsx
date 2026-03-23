@@ -61,9 +61,9 @@ const Hero = () => {
 };
 
 /* ------------------------------------------------------------------ */
-/*  ARCHWAY PHOTO with gradient mat backdrop                            */
+/*  PHOTO with offset gradient shadow card                              */
 /* ------------------------------------------------------------------ */
-const ArchwayPhoto = ({ src, alt, id, objectPosition = 'top', icon: Icon }) => {
+const TeamPhoto = ({ src, alt, id, objectPosition = 'top', icon: Icon, accentColor = 'primary' }) => {
   const frameRef = useRef(null);
   const imgRef = useRef(null);
   const hasPhoto = !!src;
@@ -73,7 +73,7 @@ const ArchwayPhoto = ({ src, alt, id, objectPosition = 'top', icon: Icon }) => {
     const ctx = gsap.context(() => {
       if (hasPhoto && imgRef.current) {
         gsap.to(imgRef.current, {
-          yPercent: 8,
+          yPercent: 6,
           ease: 'none',
           scrollTrigger: {
             trigger: frameRef.current,
@@ -100,26 +100,39 @@ const ArchwayPhoto = ({ src, alt, id, objectPosition = 'top', icon: Icon }) => {
     return () => ctx.revert();
   }, [hasPhoto]);
 
-  const archRadius = '50% 50% 0.75rem 0.75rem';
+  const gradients = {
+    primary: 'linear-gradient(135deg, rgba(17,145,177,0.2) 0%, rgba(17,145,177,0.08) 50%, rgba(185,106,95,0.1) 100%)',
+    accent: 'linear-gradient(135deg, rgba(185,106,95,0.18) 0%, rgba(185,106,95,0.06) 50%, rgba(17,145,177,0.1) 100%)',
+  };
 
   return (
-    <div ref={frameRef} className="relative w-64 md:w-72 lg:w-80 flex-shrink-0">
-      {/* Gradient mat — peeks out behind the photo as a decorative frame */}
+    <div ref={frameRef} className="relative w-56 md:w-64 lg:w-72 flex-shrink-0">
+      {/* Offset shadow card — shifted down-right, slightly rotated */}
       <div
-        className="absolute -inset-2 md:-inset-3"
+        className="absolute inset-0 rounded-3xl"
         style={{
-          borderRadius: archRadius,
-          background: 'linear-gradient(135deg, rgba(17,145,177,0.15) 0%, rgba(185,106,95,0.12) 50%, rgba(17,145,177,0.08) 100%)',
+          background: gradients[accentColor],
+          transform: 'translate(12px, 14px) rotate(2.5deg)',
         }}
         aria-hidden="true"
       />
 
-      {/* Archway frame */}
+      {/* Second offset for extra depth — more subtle, further offset */}
       <div
-        className="relative aspect-[3/4] w-full overflow-hidden"
+        className="absolute inset-0 rounded-3xl"
         style={{
-          borderRadius: archRadius,
-          boxShadow: '0 20px 50px -12px rgba(7, 58, 71, 0.2)',
+          background: gradients[accentColor],
+          opacity: 0.4,
+          transform: 'translate(22px, 24px) rotate(4deg)',
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Main photo frame */}
+      <div
+        className="relative aspect-[3/4] w-full overflow-hidden rounded-3xl"
+        style={{
+          boxShadow: '0 16px 40px -8px rgba(7, 58, 71, 0.18)',
         }}
       >
         {hasPhoto ? (
@@ -127,14 +140,13 @@ const ArchwayPhoto = ({ src, alt, id, objectPosition = 'top', icon: Icon }) => {
             ref={imgRef}
             src={src}
             alt={alt}
-            className="w-full h-[115%] object-cover -translate-y-[5%]"
+            className="w-full h-[112%] object-cover -translate-y-[3%]"
             style={{ objectPosition }}
             loading="lazy"
           />
         ) : (
-          /* Placeholder — gradient with icon */
-          <div className="w-full h-full bg-gradient-to-br from-primary/10 via-[#fbf3e4] to-accent/10 flex items-center justify-center">
-            {Icon && <Icon className="w-16 h-16 text-primary/25" />}
+          <div className="w-full h-full bg-gradient-to-br from-primary/8 via-[#fbf3e4] to-accent/8 flex items-center justify-center">
+            {Icon && <Icon className="w-14 h-14 text-primary/20" />}
           </div>
         )}
       </div>
@@ -143,7 +155,7 @@ const ArchwayPhoto = ({ src, alt, id, objectPosition = 'top', icon: Icon }) => {
 };
 
 /* ------------------------------------------------------------------ */
-/*  SHIMMER BAR — animated gradient accent                              */
+/*  SHIMMER BAR                                                         */
 /* ------------------------------------------------------------------ */
 const ShimmerBar = () => (
   <div className="relative h-1.5 w-full overflow-hidden rounded-t-3xl">
@@ -167,7 +179,7 @@ const ShimmerBar = () => (
 /* ------------------------------------------------------------------ */
 /*  TEAM MEMBER CARD                                                    */
 /* ------------------------------------------------------------------ */
-const TeamMember = ({ id, name, title, icon: Icon, photo, photoPosition = 'top', bio, highlight, cta, ctaLink, reverse, glowColor = 'primary' }) => {
+const TeamMember = ({ id, name, title, icon: Icon, photo, photoPosition = 'top', bio, highlight, cta, ctaLink, reverse, accentColor = 'primary' }) => {
   const contentRef = useRef(null);
 
   useEffect(() => {
@@ -189,9 +201,10 @@ const TeamMember = ({ id, name, title, icon: Icon, photo, photoPosition = 'top',
     return () => ctx.revert();
   }, [id]);
 
-  const glowMap = {
-    primary: 'bg-primary/8',
-    accent: 'bg-accent/8',
+  // Alternating section backgrounds
+  const sectionBgs = {
+    primary: 'radial-gradient(ellipse at 25% 50%, rgba(17,145,177,0.06) 0%, transparent 60%), radial-gradient(ellipse at 75% 50%, rgba(185,106,95,0.04) 0%, transparent 60%), linear-gradient(180deg, #faf9f6 0%, #ffffff 50%, #faf9f6 100%)',
+    accent: 'radial-gradient(ellipse at 75% 50%, rgba(185,106,95,0.06) 0%, transparent 60%), radial-gradient(ellipse at 25% 50%, rgba(17,145,177,0.04) 0%, transparent 60%), linear-gradient(180deg, #ffffff 0%, #faf9f6 50%, #ffffff 100%)',
   };
 
   return (
@@ -199,39 +212,27 @@ const TeamMember = ({ id, name, title, icon: Icon, photo, photoPosition = 'top',
       id={id}
       ref={contentRef}
       className="relative py-16 md:py-24 overflow-hidden"
-      style={{
-        background: 'radial-gradient(circle at 50% 50%, rgba(251,243,228,0.5) 0%, rgba(255,255,255,0.9) 70%, #ffffff 100%)',
-      }}
+      style={{ background: sectionBgs[accentColor] }}
     >
-      {/* Background depth orbs */}
-      <div
-        className={`absolute ${reverse ? '-left-32 top-20' : '-right-32 top-20'} w-[400px] h-[400px] ${glowMap[glowColor]} rounded-full blur-[100px] pointer-events-none`}
-        aria-hidden="true"
-      />
-      <div
-        className={`absolute ${reverse ? '-right-20 bottom-10' : '-left-20 bottom-10'} w-[250px] h-[250px] ${glowColor === 'primary' ? 'bg-accent/5' : 'bg-primary/5'} rounded-full blur-[80px] pointer-events-none`}
-        aria-hidden="true"
-      />
-
       {/* Card */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-6">
         <div
-          className="bg-[#F9F8F5]/70 backdrop-blur-sm rounded-3xl border border-primary/8 overflow-hidden transition-shadow duration-500 hover:shadow-xl"
+          className="bg-white/70 backdrop-blur-sm rounded-3xl border border-neutral-200/60 overflow-hidden transition-shadow duration-500 hover:shadow-xl"
           style={{
-            boxShadow: '0 10px 40px -10px rgba(17, 145, 177, 0.08), 0 4px 16px -4px rgba(0,0,0,0.04)',
+            boxShadow: '0 8px 32px -8px rgba(7, 58, 71, 0.08), 0 2px 8px -2px rgba(0,0,0,0.03)',
           }}
         >
-          {/* Animated shimmer accent bar */}
           <ShimmerBar />
 
           <div className={`flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-10 md:gap-16 p-8 md:p-12 lg:p-16`}>
-            {/* Photo with gradient mat */}
-            <ArchwayPhoto
+            {/* Photo with offset cards */}
+            <TeamPhoto
               src={photo}
               alt={name}
               id={id}
               objectPosition={photoPosition}
               icon={Icon}
+              accentColor={accentColor}
             />
 
             {/* Content */}
@@ -247,7 +248,7 @@ const TeamMember = ({ id, name, title, icon: Icon, photo, photoPosition = 'top',
                 {bio}
               </p>
               {highlight && (
-                <div className={`member-text-${id} bg-white/60 border-l-4 border-primary rounded-r-xl px-6 py-4 mb-8 backdrop-blur-sm`}>
+                <div className={`member-text-${id} bg-[#f4f9fa] border-l-4 border-primary rounded-r-xl px-6 py-4 mb-8`}>
                   <p className="text-foreground/80 italic text-base leading-relaxed">
                     {highlight}
                   </p>
@@ -327,7 +328,7 @@ const BottomCTA = () => {
 /*  PAGE                                                                */
 /* ------------------------------------------------------------------ */
 const Team = () => (
-  <main className="bg-white">
+  <main className="bg-[#faf9f6]">
     <Hero />
     <OrganicDivider variant="wave" />
 
@@ -338,7 +339,7 @@ const Team = () => (
       icon={Heart}
       photo="/images/team/trisha.jpg"
       photoPosition="top"
-      glowColor="primary"
+      accentColor="primary"
       bio="Trisha built Healing Hearts from two decades of coaching couples through their hardest moments. She's not a textbook educator — she's someone who's lived it, learned from it, and now helps others find their way back to connection. Her warmth and vulnerability are what make the program feel like a conversation, not a lecture."
       highlight="Every couple in the program gets weekly 90-minute coaching sessions with Trisha. She's in the room with you — helping you navigate the conversations that feel too scary to have alone. Because real change doesn't happen from watching videos. It happens when someone's there with you."
       cta="Start the Free Challenge"
@@ -353,7 +354,7 @@ const Team = () => (
       icon={Wrench}
       photo="/images/team/chase.jpg"
       photoPosition="top"
-      glowColor="accent"
+      accentColor="accent"
       bio="Chase designed and built the entire Healing Hearts platform — from the course portal to the coaching infrastructure. His goal is to make the technology invisible so couples can focus entirely on each other. He handles the business strategy, technical architecture, and makes sure every part of the system serves the mission."
       highlight={null}
       cta="Explore Our Programs"
@@ -367,7 +368,7 @@ const Team = () => (
       title="Operations & Partnerships"
       icon={Handshake}
       photo={null}
-      glowColor="primary"
+      accentColor="primary"
       bio="Makayla is the engine behind Healing Hearts — she coordinates events, manages partnerships, and makes sure everything runs smoothly. Whether it's organizing an expo booth or connecting with wellness providers who share our mission, she's the first point of contact and the one who always follows through."
       highlight={null}
       cta="Partner With Us"
