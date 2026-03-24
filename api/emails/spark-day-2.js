@@ -5,7 +5,8 @@ import {
 } from './spark-shared.js';
 
 export function dayEmail() {
-  const subject = 'Day 2: The Specific Spark Compliment -- Spark Challenge';
+  const subject = 'Beyond "you look nice"';
+  const previewText = "The compliment that landed differently than all the others.";
 
   const body = [
     dayBadge(2),
@@ -15,7 +16,8 @@ export function dayEmail() {
     paragraph("You know, we often give compliments, right? 'You look nice,' or 'Good job.' And those are good! They're kind. But sometimes, they can feel a little... general. Like a warm, fuzzy blanket that's nice, but doesn't quite hug you tight in all the right places."),
     paragraph("I remember early in our marriage, Jeff would often tell me, 'You're a great mom.' And of course, that felt good to hear! Any mom loves to hear that. But one day, after a particularly crazy morning with the kids -- I mean, spilled cereal, forgotten shoes, a full-on tantrum -- I finally got them out the door, feeling completely frazzled. When I walked back inside, Jeff was there, and he looked at me and said, 'Hey, I just watched you handle that entire morning chaos, and you were so incredibly patient and calm even when everything was going sideways. That's amazing.'"),
     callout("And wow. That landed differently. It wasn't just 'You're a great mom.' It was 'I saw you in that specific moment, I saw the effort you put in, and I appreciate that specific thing about you.' It felt like he had peered right into my heart and acknowledged the exact struggle and triumph of that moment. It wasn't a general compliment; it was a specific spark that ignited a deep feeling of being truly understood and valued."),
-    paragraph("And that's the magic we're bringing into your relationship today! Today's challenge is all about The Specific Spark Compliment. It's about giving a genuine, detailed compliment that goes beyond the surface and truly lands in your partner's heart."),
+    paragraph("And if you're doing this challenge on your own, without your partner knowing -- that's more than okay. Some of the most meaningful shifts I've seen in couples started with one person quietly deciding to show up differently. You don't need permission to begin."),
+    paragraph("That's the magic we're bringing into your relationship today! Today's challenge is all about The Specific Spark Compliment. It's about giving a genuine, detailed compliment that goes beyond the surface and truly lands in your partner's heart."),
     subheading('Your Challenge for Today'),
     numberedList([
       'Notice Something Real: Throughout your day, pay attention to something your partner does, says, or is that you appreciate. Maybe it\'s how they handled a tricky situation. Maybe it\'s a small act of service they performed. Maybe it\'s a quality you admire about them (their patience, their humor, their resilience).',
@@ -42,5 +44,5 @@ export function dayEmail() {
     ),
   ].join('\n');
 
-  return { subject, html: emailWrapper(body) };
+  return { subject, html: emailWrapper(body, previewText) };
 }

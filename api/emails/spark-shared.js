@@ -1,7 +1,10 @@
 // Shared email HTML chrome for Spark Challenge drip emails.
 // All day templates import these helpers to maintain consistent styling.
 
-export function emailWrapper(bodyContent) {
+export function emailWrapper(bodyContent, previewText) {
+  const preheader = previewText
+    ? `<div style="display:none;font-size:1px;color:#faf9f6;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">${previewText}</div>`
+    : '';
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +12,7 @@ export function emailWrapper(bodyContent) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body style="margin:0; padding:0; background-color:#faf9f6; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  ${preheader}
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#faf9f6;">
     <tr>
       <td align="center" style="padding:40px 20px;">

@@ -5,12 +5,13 @@ import {
 } from './spark-shared.js';
 
 export function dayEmail() {
-  const subject = "Day 1: The 'I Noticed' Text -- Spark Challenge";
+  const subject = "Something Jeff did at 5am";
+  const previewText = "It wasn't about the car. It was about being seen.";
 
   const body = [
     dayBadge(1),
     heading("The 'I Noticed' Text"),
-    paragraph("Hey there, beautiful people! I'm Trisha Jamison and I am so thrilled you're joining our 'Ignite Your Connection: Small Sparks, Big Shifts!' 7-day challenge! This week is all about bringing a little extra joy, fun, and deep connection back into your relationship, one tiny, powerful step at a time. No pressure, just play!"),
+    paragraph("Hey there, beautiful heart! I'm Trisha Jamison and I am so thrilled you're joining our 'Ignite Your Connection: Small Sparks, Big Shifts!' 7-day challenge! This week is all about bringing a little extra joy, fun, and deep connection back into your relationship, one tiny, powerful step at a time. No pressure, just play!"),
     paragraph("You know, it's so easy in the hustle and bustle of life -- the school runs, the deadlines, the dinner dilemmas -- to start seeing our partners through a bit of a blurry lens. We see the 'to-do list' version of them, or maybe the 'habit' version. And sometimes, we just forget to really look."),
     paragraph("I remember one time, I was getting ready to head out of town for a few days, and my head was just spinning with last-minute preparations. Normally, I'd have my car all washed and gassed up the night before, but this time, I just completely ran out of hours. I went to bed feeling a little stressed, thinking about everything I still needed to do in the morning before hitting the road."),
     paragraph("Well, the next morning, I woke up, still feeling a bit rushed, and went out to the driveway. And there it was -- my car, sparkling clean, fully packed with my bags, and the gas tank was completely full! Jeff had gotten up extra early, quietly taken care of everything. He had washed the car, filled the tank, helped me pack it, and made sure everything was in perfect working order, all before I even woke up."),
@@ -41,5 +42,5 @@ export function dayEmail() {
     ),
   ].join('\n');
 
-  return { subject, html: emailWrapper(body) };
+  return { subject, html: emailWrapper(body, previewText) };
 }

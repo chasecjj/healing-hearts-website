@@ -5,7 +5,8 @@ import {
 } from './spark-shared.js';
 
 export function dayEmail() {
-  const subject = 'Day 4: The Pause Experiment -- Spark Challenge';
+  const subject = "Ten seconds changed everything";
+  const previewText = "The space between the trigger and your response.";
 
   const body = [
     dayBadge(4),
@@ -35,5 +36,5 @@ export function dayEmail() {
     ),
   ].join('\n');
 
-  return { subject, html: emailWrapper(body) };
+  return { subject, html: emailWrapper(body, previewText) };
 }

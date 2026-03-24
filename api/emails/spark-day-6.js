@@ -5,7 +5,8 @@ import {
 } from './spark-shared.js';
 
 export function dayEmail() {
-  const subject = 'Day 6: The Memory Lane Moment -- Spark Challenge';
+  const subject = "The burnt birthday dinner";
+  const previewText = "We sat there for twenty minutes, just remembering.";
 
   const body = [
     dayBadge(6),
@@ -35,5 +36,5 @@ export function dayEmail() {
     ),
   ].join('\n');
 
-  return { subject, html: emailWrapper(body) };
+  return { subject, html: emailWrapper(body, previewText) };
 }

@@ -5,7 +5,8 @@ import {
 } from './spark-shared.js';
 
 export function dayEmail() {
-  const subject = 'Day 7: The Spark Conversation -- Spark Challenge';
+  const subject = "One question, fifteen minutes";
+  const previewText = "The prompt that changed how we showed up for each other.";
 
   const body = [
     dayBadge(7),
@@ -39,5 +40,5 @@ export function dayEmail() {
     ctaButton('Explore the Full Program', 'https://healingheartscourse.com/programs'),
   ].join('\n');
 
-  return { subject, html: emailWrapper(body) };
+  return { subject, html: emailWrapper(body, previewText) };
 }
