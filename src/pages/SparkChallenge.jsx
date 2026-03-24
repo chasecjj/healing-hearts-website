@@ -24,44 +24,45 @@ const prefersReducedMotion = () =>
 const DAYS = [
   {
     day: 1,
-    title: 'The Pause',
+    title: "The 'I Noticed' Text",
     description:
-      'Learn the 5-second pause that transforms reactive arguments into real conversations.',
+      "Send your partner a text noticing something positive -- a quiet act, a kind word, a little thing that made you smile.",
   },
   {
     day: 2,
-    title: 'Curiosity Over Criticism',
-    description: 'Replace "you always..." with one powerful question.',
+    title: 'The Specific Spark Compliment',
+    description:
+      "Move beyond 'you look nice' to a detailed, heartfelt compliment that names exactly what you noticed and how it made you feel.",
   },
   {
     day: 3,
-    title: 'The 10-Minute Check-In',
+    title: 'The 2-Minute Check-In',
     description:
-      'A simple daily ritual that rebuilds emotional safety.',
+      "Ask 'What was the best part of your day?' and just listen. No fixing, no advising -- just two minutes of loving presence.",
   },
   {
     day: 4,
-    title: 'Naming Your Needs',
+    title: 'The Pause Experiment',
     description:
-      'Move from hints and resentment to clear, kind requests.',
+      "When tension rises, try a 10-second pause before responding. Let your thoughtful CEO Brain step in before your Critter Brain reacts.",
   },
   {
     day: 5,
-    title: 'Repair Attempts',
+    title: 'The Gratitude Text',
     description:
-      'What to do in the first 60 seconds after things go wrong.',
+      "Send an unexpected mid-day text starting with 'I'm grateful you...' and watch a small spark of appreciation shift your whole day.",
   },
   {
     day: 6,
-    title: 'Appreciation Flooding',
+    title: 'The Memory Lane Moment',
     description:
-      'The science behind why gratitude physically rewires your relationship.',
+      "Share a favorite memory from early in your relationship and tell your partner why that moment still matters to you today.",
   },
   {
     day: 7,
-    title: 'Your Connection Blueprint',
+    title: 'The Spark Conversation',
     description:
-      'Build a personalized plan to keep the spark alive.',
+      "Sit together and take turns asking: 'What's one small thing I could do this week to make you feel loved?' Then commit to doing it.",
   },
 ]
 
@@ -84,7 +85,7 @@ const FAQ_ITEMS = [
   {
     question: 'What happens after the 7 days?',
     answer:
-      "You'll have a personalized Connection Blueprint and an invitation to explore our full Healing Hearts program — but there's zero pressure.",
+      "You'll have practiced 7 powerful connection tools and had the Spark Conversation with your partner -- a direct, loving exchange about what makes each of you feel truly loved. From there, you're welcome to explore our full Healing Hearts program, but there's zero pressure.",
   },
 ]
 
