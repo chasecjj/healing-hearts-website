@@ -54,10 +54,16 @@ export function AuthProvider({ children }) {
       setUser(currentUser);
 
       if (currentUser) {
-        fetchProfile(currentUser.id).then((p) => {
-          setProfile(p);
-          setLoading(false);
-        });
+        fetchProfile(currentUser.id)
+          .then((p) => {
+            setProfile(p);
+          })
+          .catch((err) => {
+            console.error('Profile fetch failed:', err);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
       } else {
         setLoading(false);
       }
@@ -70,17 +76,21 @@ export function AuthProvider({ children }) {
         setUser(currentUser);
 
         if (currentUser) {
-          if (event === 'SIGNED_IN') {
-            // Ensure profile exists on sign-in
-            const p = await ensureProfile(
-              currentUser.id,
-              currentUser.email,
-              currentUser.user_metadata?.display_name
-            );
-            setProfile(p);
-          } else {
-            const p = await fetchProfile(currentUser.id);
-            setProfile(p);
+          try {
+            if (event === 'SIGNED_IN') {
+              const p = await ensureProfile(
+                currentUser.id,
+                currentUser.email,
+                currentUser.user_metadata?.display_name
+              );
+              setProfile(p);
+            } else {
+              const p = await fetchProfile(currentUser.id);
+              setProfile(p);
+            }
+          } catch (err) {
+            console.error('Profile load failed:', err);
+            setProfile(null);
           }
         } else {
           setProfile(null);
