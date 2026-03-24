@@ -92,6 +92,40 @@ Lesson content is stored as JSONB in the `content_json` column of the `lessons` 
 
 Do NOT use `dangerouslySetInnerHTML`. All content is rendered as pure React components.
 
+## Build Pipeline
+
+New pages and major redesigns use the **Forge Lite pipeline** from Scoria.
+
+### Scoria Design System
+- **Components:** @scoria/ui (23 components) installed via vendor tarballs in `vendor/`
+- **Design tokens:** `C:/Users/chase/Documents/scoria/design/DESIGN.md` (single source of truth)
+- **Available components:** HeroSection, TeardropImage, OrganicDivider, TealQuoteBlock, DailyBreakdownGrid, FAQAccordion, TestimonialCard, PricingCard, ModuleCard, Input, Button, Card + more
+
+### Forge Lite (Page Building)
+- **Location:** `C:/Users/chase/Documents/scoria/skills/scoria-build/SKILL.md`
+- **Use for:** Any new page or major page redesign
+- **NOT for:** Small copy changes, bug fixes, minor style tweaks
+- **Pipeline:** Intent → Explore (Stitch variants) → Build → Validate → Deploy
+- **Validation gates:** Lighthouse (Perf ≥70, A11y ≥90, SEO ≥80), axe-core, token compliance
+
+### Taste-Skill (Design Quality)
+- **Location:** `C:/Users/chase/Documents/scoria/design/taste/`
+- **Loaded by:** Forge Build-Execute stage automatically
+- **HH defaults:** DESIGN_VARIANCE=7, MOTION_INTENSITY=5, VISUAL_DENSITY=4
+- **Key rules:** No Inter font, no centered heroes on landing pages, no 3-col equal grids, no pure black, no AI copywriting cliches
+
+### Invocation
+```
+# New page
+Invoke Forge Lite pipeline with page description
+
+# Redesign existing page
+Read scoria/skills/scoria-build/SKILL.md for --iterate and --modify flags
+
+# Validate existing page
+Read scoria/skills/scoria-build/SKILL.md for --validate-only flag
+```
+
 ## Deployment
 
 - **Vercel auto-deploy:** Push to `master` triggers build + deploy
