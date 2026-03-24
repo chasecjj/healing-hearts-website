@@ -104,7 +104,7 @@ function welcomeEmail() {
               </h1>
 
               <p style="margin:0 0 24px; font-size:16px; line-height:1.7; color:#555555;">
-                Hey there, beautiful! I'm Trisha Jamison, and I am so thrilled you've decided to join us for the Spark Challenge!
+                Hey there! I'm Trisha Jamison, and I am so thrilled you've decided to join us for the Spark Challenge!
               </p>
 
               <p style="margin:0 0 24px; font-size:16px; line-height:1.7; color:#555555;">
