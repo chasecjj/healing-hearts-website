@@ -1,0 +1,91 @@
+/* global process */
+// Vercel Cron Function: GET /api/cron/spark-drip
+// Runs daily at 7 AM MT (13:00 UTC during MDT).
+// Queries pending spark_signups and sends the next day's email.
+
+import { Resend } from 'resend';
+import { supabaseAdmin } from '../_lib/supabase-admin.js';
+
+// Dynamic imports for day templates
+const dayTemplates = {
+  1: () => import('../emails/spark-day-1.js'),
+  2: () => import('../emails/spark-day-2.js'),
+  3: () => import('../emails/spark-day-3.js'),
+  4: () => import('../emails/spark-day-4.js'),
+  5: () => import('../emails/spark-day-5.js'),
+  6: () => import('../emails/spark-day-6.js'),
+  7: () => import('../emails/spark-day-7.js'),
+};
+
+export default async function handler(req, res) {
+  // Auth: Vercel sends CRON_SECRET header for cron invocations
+  if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  if (!process.env.RESEND_API_KEY) {
+    return res.status(500).json({ error: 'RESEND_API_KEY not configured' });
+  }
+
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  // Query signups ready for their next email
+  const { data: signups, error: queryError } = await supabaseAdmin
+    .from('spark_signups')
+    .select('*')
+    .eq('completed', false)
+    .eq('unsubscribed', false)
+    .lt('current_day', 7)
+    .lt('signed_up_at', new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString())
+    .or(`last_email_sent_at.is.null,last_email_sent_at.lt.${new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString()}`)
+    .order('signed_up_at', { ascending: true })
+    .limit(50);
+
+  if (queryError) {
+    console.error('[spark-drip] Query failed:', queryError);
+    return res.status(500).json({ error: 'Failed to query signups' });
+  }
+
+  if (!signups || signups.length === 0) {
+    return res.status(200).json({ sent: 0, message: 'No pending emails' });
+  }
+
+  const results = { sent: 0, errors: [] };
+
+  for (const signup of signups) {
+    const nextDay = signup.current_day + 1;
+
+    try {
+      // Load the day's email template
+      const templateModule = await dayTemplates[nextDay]();
+      const { subject, html } = templateModule.dayEmail();
+
+      // Send via Resend
+      await resend.emails.send({
+        from: 'Healing Hearts <hello@healingheartscourse.com>',
+        to: signup.email,
+        subject,
+        html,
+      });
+
+      // Update progress
+      await supabaseAdmin
+        .from('spark_signups')
+        .update({
+          current_day: nextDay,
+          last_email_sent_at: new Date().toISOString(),
+          completed: nextDay === 7,
+        })
+        .eq('id', signup.id);
+
+      results.sent++;
+    } catch (err) {
+      console.error(`[spark-drip] Failed for ${signup.email} (day ${nextDay}):`, err);
+      results.errors.push({ email: signup.email, day: nextDay, error: err.message });
+      // Continue to next signup — don't block the batch
+    }
+  }
+
+  console.log(`[spark-drip] Sent: ${results.sent}, Errors: ${results.errors.length}`);
+  return res.status(200).json(results);
+}

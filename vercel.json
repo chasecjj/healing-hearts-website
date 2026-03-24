@@ -1,4 +1,10 @@
 {
+  "crons": [
+    {
+      "path": "/api/cron/spark-drip",
+      "schedule": "0 13 * * *"
+    }
+  ],
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
