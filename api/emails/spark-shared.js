@@ -15,7 +15,7 @@ export function emailWrapper(bodyContent) {
         <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%;">
           <tr>
             <td align="center" style="padding-bottom:32px;">
-              <img src="https://healingheartscourse.com/logo.png" alt="Healing Hearts" width="48" height="48" style="display:block;">
+              <img src="https://healingheartscourse.com/logo.png" alt="Healing Hearts" width="180" style="display:block; height:auto;">
             </td>
           </tr>
           <tr>

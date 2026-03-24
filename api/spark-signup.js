@@ -88,7 +88,7 @@ function welcomeEmail() {
           <!-- Logo -->
           <tr>
             <td align="center" style="padding-bottom:32px;">
-              <img src="https://healingheartscourse.com/logo.png" alt="Healing Hearts" width="48" height="48" style="display:block;">
+              <img src="https://healingheartscourse.com/logo.png" alt="Healing Hearts" width="180" style="display:block; height:auto;">
             </td>
           </tr>
 
@@ -104,19 +104,19 @@ function welcomeEmail() {
               </h1>
 
               <p style="margin:0 0 24px; font-size:16px; line-height:1.7; color:#555555;">
-                Hi there! I'm Trisha, and I'm so glad you're here.
+                Hey there, beautiful! I'm Trisha Jamison, and I am so thrilled you've decided to join us for the Spark Challenge!
               </p>
 
               <p style="margin:0 0 24px; font-size:16px; line-height:1.7; color:#555555;">
-                Over the next seven days, you and your partner are going to reconnect in ways that might surprise you. These aren't big, dramatic gestures -- they're small, intentional moments that remind you both why you chose each other.
+                Over the next seven days, you and your partner are going to reconnect in ways that might surprise you. No big, dramatic gestures -- just small, intentional moments that remind you both why you chose each other. No pressure, just play!
               </p>
 
               <p style="margin:0 0 24px; font-size:16px; line-height:1.7; color:#555555;">
-                <strong>Day 1 arrives tomorrow morning.</strong> Each day you'll get a short lesson and one simple practice to do together. Some will make you laugh. Some might make you think. All of them work.
+                <strong>Day 1 arrives tomorrow morning.</strong> Each day, I'll send you a short story from my own marriage (Jeff and I have been through it all!), plus one simple practice for you and your partner to try together. Some will make you laugh. Some might make you think. All of them work.
               </p>
 
               <p style="margin:0 0 32px; font-size:16px; line-height:1.7; color:#555555;">
-                One thing I've learned from 20 years of coaching couples: change doesn't have to be hard. Sometimes it just starts with showing up -- and you already did that by signing up today.
+                Here's what I've learned from 20 years of coaching couples: change doesn't have to be hard. Sometimes it just starts with showing up -- and you already did that by signing up today. I'm so proud of you for taking this step!
               </p>
 
               <!-- CTA -->
