@@ -1,8 +1,9 @@
 /* global process */
 // Vercel Serverless Function: POST /api/spark-signup
-// Captures Spark Challenge signups and sends a warm welcome email.
+// Persists signup to Supabase, then sends welcome email via Resend.
 
 import { Resend } from 'resend';
+import { supabaseAdmin } from './_lib/supabase-admin.js';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -20,7 +21,22 @@ export default async function handler(req, res) {
 
   const cleanEmail = email.trim().toLowerCase();
 
-  // Send welcome email via Resend
+  // Step 1: Persist to Supabase BEFORE sending email
+  try {
+    const { error } = await supabaseAdmin
+      .from('spark_signups')
+      .upsert({ email: cleanEmail }, { onConflict: 'email', ignoreDuplicates: true });
+
+    if (error) {
+      console.error('[spark-signup] Supabase insert failed:', error);
+      return res.status(500).json({ error: 'Signup failed. Please try again.' });
+    }
+  } catch (err) {
+    console.error('[spark-signup] Supabase error:', err);
+    return res.status(500).json({ error: 'Signup failed. Please try again.' });
+  }
+
+  // Step 2: Send welcome email via Resend (non-blocking on failure)
   if (process.env.RESEND_API_KEY) {
     try {
       const resend = new Resend(process.env.RESEND_API_KEY);
@@ -40,7 +56,7 @@ export default async function handler(req, res) {
       });
     } catch (err) {
       console.error('[spark-signup] Email send failed:', err);
-      // Don't fail the request — still record the signup
+      // Don't fail the request — user is already in DB and will get drip emails
     }
   } else {
     console.warn('[spark-signup] RESEND_API_KEY not set — skipping email');
@@ -92,7 +108,7 @@ function welcomeEmail() {
               </p>
 
               <p style="margin:0 0 24px; font-size:16px; line-height:1.7; color:#555555;">
-                Over the next seven days, you and your partner are going to reconnect in ways that might surprise you. These aren't big, dramatic gestures — they're small, intentional moments that remind you both why you chose each other.
+                Over the next seven days, you and your partner are going to reconnect in ways that might surprise you. These aren't big, dramatic gestures -- they're small, intentional moments that remind you both why you chose each other.
               </p>
 
               <p style="margin:0 0 24px; font-size:16px; line-height:1.7; color:#555555;">
@@ -100,7 +116,7 @@ function welcomeEmail() {
               </p>
 
               <p style="margin:0 0 32px; font-size:16px; line-height:1.7; color:#555555;">
-                One thing I've learned from 20 years of coaching couples: change doesn't have to be hard. Sometimes it just starts with showing up — and you already did that by signing up today.
+                One thing I've learned from 20 years of coaching couples: change doesn't have to be hard. Sometimes it just starts with showing up -- and you already did that by signing up today.
               </p>
 
               <!-- CTA -->
