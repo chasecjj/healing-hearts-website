@@ -8,7 +8,7 @@ word_count: 262
 transcript_coverage: "78%"
 transcript_sources: ["zoom_9bd24835c38ed40d", "zoom_3e8f09df866371a6", "zoom_2bb01f82a4481854", "zoom_30889206e0029e52"]
 ai_written_sections: ["HOOK question", "THE TURN lead-in sentence", "BRIDGE TO EMAIL sentence", "WARM CLOSE"]
-status: "draft"
+status: "trisha-review"
 ---
 
 # Day 3 -- The 2-Minute Check-In

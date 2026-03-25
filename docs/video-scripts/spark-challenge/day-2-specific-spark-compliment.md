@@ -8,7 +8,7 @@ word_count: 251
 transcript_coverage: "82%"
 transcript_sources: ["zoom_9bd24835c38ed40d", "zoom_2bb01f82a4481854", "zoom_be302c0cf3f2a7f7"]
 ai_written_sections: ["HOOK opener line", "BRIDGE intro sentence", "WARM CLOSE final line"]
-status: "draft"
+status: "trisha-review"
 ---
 
 ## HOOK (10-15s)

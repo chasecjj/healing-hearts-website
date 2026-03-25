@@ -8,7 +8,7 @@ word_count: 224
 transcript_coverage: "82%"
 transcript_sources: ["jeff-lunch-session", "gratitude-letter-session", "noticing-shift-session"]
 ai_written_sections: ["hook question", "turn insight framing", "bridge-to-email transition"]
-status: "draft"
+status: "trisha-review"
 ---
 
 ## HOOK (10-15s)

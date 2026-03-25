@@ -8,7 +8,7 @@ word_count: 256
 transcript_coverage: "78%"
 transcript_sources: ["zoom_949879419fb5c93f", "zoom_2bb01f82a4481854", "zoom_3cca48274ac6938e", "zoom_c1bebfeaecac2bae", "zoom_da7101186ef5ebb0"]
 ai_written_sections: ["hook question", "turn framing -- gratitude as Tuesday interruption", "bridge-to-email transition"]
-status: "draft"
+status: "trisha-review"
 ---
 
 ## HOOK (10-15s)

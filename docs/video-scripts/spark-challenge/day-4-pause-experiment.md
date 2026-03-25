@@ -19,7 +19,7 @@ ai_written_sections:
   - "Transition lines between speakers"
   - "Bridge to email"
   - "Warm close"
-status: "draft"
+status: "trisha-review"
 ---
 
 ## HOOK (10-15s) -- Trisha

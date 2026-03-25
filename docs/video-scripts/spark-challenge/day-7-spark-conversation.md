@@ -8,7 +8,7 @@ word_count: 178
 transcript_coverage: "72%"
 transcript_sources: ["zoom_9bd24835c38ed40d", "zoom_949879419fb5c93f", "zoom_c1bebfeaecac2bae", "zoom_9253f6f4a6a8f145", "zoom_6f71ca5939d337eb"]
 ai_written_sections: ["HOOK -- 'This is the last day' framing", "BRIDGE + SOFT UPSELL -- course invitation language", "CLOSE -- sign-off"]
-status: "draft"
+status: "trisha-review"
 ---
 
 # Day 7 -- The Spark Conversation

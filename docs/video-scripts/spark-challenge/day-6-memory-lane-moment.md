@@ -8,7 +8,7 @@ word_count: 258
 transcript_coverage: "55%"
 transcript_sources: ["zoom_9bd24835c38ed40d", "zoom_c1bebfeaecac2bae", "zoom_f450813d9b7b7ba0", "zoom_be302c0cf3f2a7f7"]
 ai_written_sections: ["HOOK -- 'Do you remember the moment you knew?'", "THE TURN -- 'Sharing that memory isn't nostalgia' framing", "BRIDGE TO EMAIL", "WARM CLOSE -- tease line for Day 7"]
-status: "draft"
+status: "trisha-review"
 ---
 
 # Day 6 -- The Memory Lane Moment
