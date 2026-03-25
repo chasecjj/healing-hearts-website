@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MagneticButton } from '../components/Layout';
@@ -193,12 +194,13 @@ const FlagshipProgram = () => {
               </blockquote>
 
               <div className="flagship-reveal">
-                <MagneticButton
-                  className="bg-accent text-white px-10 py-4 rounded-full text-sm font-bold shadow-xl w-full md:w-auto hover:scale-105 transition-all duration-300"
-                  onClick={() => window.location.href = '/journey'}
-                >
-                  Explore the Full Journey
-                </MagneticButton>
+                <Link to="/apply">
+                  <MagneticButton
+                    className="bg-accent text-white px-10 py-4 rounded-full text-sm font-bold shadow-xl w-full md:w-auto hover:scale-105 transition-all duration-300"
+                  >
+                    Apply for Healing Hearts
+                  </MagneticButton>
+                </Link>
               </div>
             </div>
 
@@ -327,12 +329,12 @@ const StandalonePackages = () => {
                   </ul>
 
                   {/* CTA */}
-                  <button
-                    className="w-full py-3 rounded-full border-2 border-primary/20 text-primary font-outfit font-semibold text-sm hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 mt-auto"
-                    onClick={() => window.location.href = pkg.href || '/coming-soon'}
+                  <Link
+                    to={pkg.href || '/apply'}
+                    className="block w-full py-3 rounded-full border-2 border-primary/20 text-primary font-outfit font-semibold text-sm hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 mt-auto text-center"
                   >
                     View Details
-                  </button>
+                  </Link>
                 </div>
 
                 {/* Background glow on hover */}
@@ -387,18 +389,19 @@ const ClosingCta = () => {
           Whether you're in crisis or just feeling the slow drift, we meet you where you are. Our programs are designed to stand alone or build on each other—so you can start with what you need most and go deeper when you're ready.
         </p>
         <div className="closing-reveal flex flex-col sm:flex-row gap-5 justify-center">
-          <MagneticButton
-            className="bg-accent text-white px-10 py-4 rounded-full text-base font-medium shadow-xl hover:shadow-2xl transition-shadow"
-            onClick={() => window.location.href = '/journey'}
-          >
-            Explore the Full Journey
-          </MagneticButton>
-          <button
-            className="inline-flex items-center gap-2 text-primary font-medium border-b-2 border-primary/20 hover:border-primary pb-1 transition-colors"
-            onClick={() => window.location.href = '/coming-soon'}
+          <Link to="/apply">
+            <MagneticButton
+              className="bg-accent text-white px-10 py-4 rounded-full text-base font-medium shadow-xl hover:shadow-2xl transition-shadow"
+            >
+              Apply for Healing Hearts
+            </MagneticButton>
+          </Link>
+          <Link
+            to="/book"
+            className="inline-flex items-center gap-2 text-primary font-medium border-b-2 border-primary/20 hover:border-primary pb-1 transition-colors self-center"
           >
             Talk to Us First
-          </button>
+          </Link>
         </div>
       </div>
     </section>

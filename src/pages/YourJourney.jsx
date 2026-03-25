@@ -190,9 +190,9 @@ const Hero = () => {
           Built by Jeff & Trisha Jamison from the trenches of their own marriage. Every framework has been tested in real life first.
         </p>
         <div className="journey-hero-reveal flex flex-col sm:flex-row gap-5 justify-center">
-          <Link to="/coming-soon">
+          <Link to="/apply">
             <MagneticButton className="bg-accent text-white px-10 py-4 rounded-full text-base font-medium shadow-xl hover:shadow-2xl transition-shadow">
-              Begin the Journey
+              Apply for Healing Hearts
             </MagneticButton>
           </Link>
           <Link
@@ -616,9 +616,9 @@ const ClosingCta = () => {
               <p className="font-sans text-white/80 text-base leading-relaxed font-light mb-8 flex-grow">
                 8 modules. 32 weeks. Weekly live coaching with Trisha. A private community of couples on the same path. And a transformation that changes not just your marriage — but your family tree.
               </p>
-              <Link to="/coming-soon">
+              <Link to="/apply">
                 <MagneticButton className="w-full py-4 rounded-full bg-accent text-white font-outfit font-semibold text-sm shadow-xl hover:scale-105 transition-all duration-300">
-                  Enroll in the Full Journey
+                  Apply for Healing Hearts
                 </MagneticButton>
               </Link>
             </div>

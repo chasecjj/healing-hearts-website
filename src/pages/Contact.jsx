@@ -274,7 +274,7 @@ export default function Contact() {
               <p className="font-sans text-foreground/70 font-light leading-relaxed mb-8 flex-grow">
                 Schedule a free 20-minute call with our team. We’ll listen to where you are and help you find the right path.
               </p>
-               <a href="mailto:hello@healingheartscourse.com?subject=Free%20Consultation%20Request" className="text-accent font-semibold hover:text-primary transition-colors underline underline-offset-4">Schedule a Free Call</a>
+               <Link to="/book" className="text-accent font-semibold hover:text-primary transition-colors underline underline-offset-4">Schedule a Free Call</Link>
             </div>
           </div>
         </div>
