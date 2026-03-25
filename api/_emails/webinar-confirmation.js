@@ -31,7 +31,7 @@ export function webinarConfirmationEmail(name, webinar) {
   const formattedDate = formatMountainTime(webinar.starts_at);
   const duration = webinar.duration_minutes;
 
-  const previewText = `You're registered for ${safeTitle} -- we can't wait to see you there!`;
+  const previewText = `You're registered for ${safeTitle} &mdash; we can't wait to see you there!`;
 
   const body = [
     heading(`You're In, ${safeName}!`),
@@ -42,7 +42,7 @@ export function webinarConfirmationEmail(name, webinar) {
       `<strong>When:</strong> ${formattedDate}<br><strong>Duration:</strong> ${duration} minutes`
     ),
     paragraph(
-      `This is going to be a real, honest conversation about what it takes to rebuild connection in your marriage -- no fluff, no sales pitch, just the stuff that actually works. Jeff and I have been in the trenches ourselves, and we are sharing what we have learned the hard way so you don't have to figure it out alone.`
+      `This is going to be a real, honest conversation about what it takes to rebuild connection in your marriage &mdash; no fluff, no sales pitch, just the stuff that actually works. Jeff and I have been in the trenches ourselves, and we are sharing what we have learned the hard way so you don't have to figure it out alone.`
     ),
     paragraph(
       `Mark your calendar and show up ready. Even if your partner can't make it, <em>you</em> being here matters more than you know.`
@@ -50,7 +50,7 @@ export function webinarConfirmationEmail(name, webinar) {
     ctaButton('View Webinar Details', 'https://healingheartscourse.com/webinar'),
     divider(),
     paragraph(
-      `<strong>A quick tip:</strong> Add this event to your calendar right now so it does not slip away. Life gets busy -- we get it. But this hour could change everything.`
+      `<strong>A quick tip:</strong> Add this event to your calendar right now so it does not slip away. Life gets busy &mdash; we get it. But this hour could change everything.`
     ),
     signOff('Cheering for you and your marriage,'),
   ].join('');

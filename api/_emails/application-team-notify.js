@@ -15,8 +15,10 @@ export function applicationTeamNotifyEmail(data) {
 
   // Qualification flags — values arrive as display strings from the form
   const qualificationFlags = [];
-  if (data.partner_willing === true || data.partner_willing === 'Yes') qualificationFlags.push('Partner willing');
-  if (data.partner_willing === false || data.partner_willing === 'No' || data.partner_willing === 'Not yet') qualificationFlags.push('Partner NOT willing');
+  if (data.partner_willing === 'Yes') qualificationFlags.push('Partner willing');
+  if (data.partner_willing === 'No') qualificationFlags.push('Partner NOT willing');
+  if (data.partner_willing === 'Not yet') qualificationFlags.push('Partner not yet willing');
+  if (data.partner_willing === 'Not sure') qualificationFlags.push('Partner willingness uncertain');
   if (['$10K\u201320K', '$10K-$20K', '10k_20k', 'Over $20K', 'over_20k'].includes(data.investment_readiness)) qualificationFlags.push('Budget aligned');
   if (['Under $5K', 'under_5k'].includes(data.investment_readiness)) qualificationFlags.push('Budget concern');
   if (['ASAP', 'asap'].includes(data.urgency)) qualificationFlags.push('High urgency');
@@ -37,8 +39,8 @@ export function applicationTeamNotifyEmail(data) {
     field('Rating', data.relationship_rating ? ratingBar(data.relationship_rating) : 'Not provided'),
     field('Biggest Challenge', data.biggest_challenge),
     field('Tried Before', data.tried_before || 'Not provided'),
-    field('Partner Aware', String(data.partner_aware || 'Not provided')),
-    field('Partner Willing', String(data.partner_willing || 'Not provided')),
+    field('Partner Aware', data.partner_aware || 'Not provided'),
+    field('Partner Willing', data.partner_willing || 'Not provided'),
     field('Ideal Outcome', data.ideal_outcome || 'Not provided'),
     field('Urgency', data.urgency || 'Not provided'),
     field('Investment Readiness', data.investment_readiness || 'Not provided'),

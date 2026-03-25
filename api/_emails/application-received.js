@@ -10,7 +10,7 @@ export function applicationReceivedEmail(name) {
       `We are honored that you are considering the Healing Hearts journey. Your application has been received, and our team will review it within 24-48 hours.`
     ),
     callout(
-      `What happens next: One of our team members will reach out to schedule a conversation with Jeff and Trisha. This is not a sales call -- it is a chance for us to hear your story and for you to experience what working with us feels like.`
+      `What happens next: One of our team members will reach out to schedule a conversation with Jeff and Trisha. This is not a sales call &mdash; it is a chance for us to hear your story and for you to experience what working with us feels like.`
     ),
     paragraph(
       `In the meantime, if you have not already, we invite you to explore our free resources and the 7-Day Spark Challenge.`

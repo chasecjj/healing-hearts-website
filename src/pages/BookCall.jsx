@@ -66,15 +66,16 @@ export default function BookCall() {
           <div
             className="calendly-inline-widget rounded-3xl overflow-hidden shadow-lg"
             data-url={`${CALENDLY_URL}?hide_gdpr_banner=1&background_color=fafafa&text_color=2D2D2D&primary_color=1191B1`}
-            style={{ minWidth: '320px', height: '700px' }}
+            style={{ minWidth: '320px', height: '1000px' }}
           />
         </div>
 
         <div className="reveal-el text-center mt-8">
           <p className="font-sans text-sm text-foreground/50">
             Having trouble with the calendar?{' '}
+            Email us at{' '}
             <a href="mailto:hello@healingheartscourse.com?subject=Consultation%20Request" className="text-primary underline">
-              Email us directly
+              hello@healingheartscourse.com
             </a>{' '}
             and we will find a time that works.
           </p>

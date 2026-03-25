@@ -20,8 +20,8 @@ export function dayEmail() {
     subheading('Your Challenge for Today'),
     numberedList([
       'Identify the Trigger: Pay attention. That little knot in your stomach, that tightening in your jaw, that quickening of your breath. That\'s your signal. It could be a comment, an action, or even just an internal thought.',
-      'Initiate the Pause -- and I mean a full 10 seconds! STOP: Physically, mentally, emotionally. Just freeze for a second. BREATHE: Take a slow, deep breath. Feel the air come in, feel it go out. NOTICE: What\'s happening in your body? No judgment, just observation. Is your heart racing? Shoulders up to your ears? DO NOT RESPOND IMMEDIATELY: Give yourself the full 10 seconds before you speak or act. Just let the impulse pass.',
-      'Choose Your Response: After that 10-second pause, you might be amazed. The intensity often lessens. You might have a clearer idea of what you actually want to say. You might find a softer tone, or different words. Or you might simply be able to name your feeling -- "I\'m feeling a little frustrated right now" -- instead of making an accusation.',
+      'Initiate the Pause &mdash; and I mean a full 10 seconds! STOP: Physically, mentally, emotionally. Just freeze for a second. BREATHE: Take a slow, deep breath. Feel the air come in, feel it go out. NOTICE: What\'s happening in your body? No judgment, just observation. Is your heart racing? Shoulders up to your ears? DO NOT RESPOND IMMEDIATELY: Give yourself the full 10 seconds before you speak or act. Just let the impulse pass.',
+      'Choose Your Response: After that 10-second pause, you might be amazed. The intensity often lessens. You might have a clearer idea of what you actually want to say. You might find a softer tone, or different words. Or you might simply be able to name your feeling &mdash; "I\'m feeling a little frustrated right now" &mdash; instead of making an accusation.',
     ]),
     paragraph("This isn't about ignoring the issue, or stuffing down your feelings. Not at all. It's about giving yourself the power to choose how you show up in that moment, rather than being swept away by an automatic, unhelpful reaction. It's about bringing your CEO Brain online to lead, instead of letting your Critter Brain run wild."),
     subheading('Reflection Questions'),
@@ -32,7 +32,7 @@ export function dayEmail() {
     ctaButton('View the Challenge', 'https://healingheartscourse.com/spark-challenge'),
     signOff(
       "So today, embrace the power of the pause. It's a small shift that can prevent big arguments and create a much more peaceful, intentional connection. I can't wait to hear how this feels for you.",
-      "Day 5: The Gratitude Text -- unexpected appreciation that shifts your whole day.",
+      "Day 5: The Gratitude Text &mdash; unexpected appreciation that shifts your whole day.",
     ),
   ].join('\n');
 

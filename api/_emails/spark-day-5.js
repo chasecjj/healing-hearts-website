@@ -39,7 +39,7 @@ export function dayEmail() {
     ctaButton('View the Challenge', 'https://healingheartscourse.com/spark-challenge'),
     signOff(
       "Let's make today a day filled with unexpected sparks of appreciation! I can't wait to hear about the little smiles these texts create.",
-      "Day 6: The Memory Lane Moment -- reconnecting with the story that started it all.",
+      "Day 6: The Memory Lane Moment &mdash; reconnecting with the story that started it all.",
     ),
   ].join('\n');
 

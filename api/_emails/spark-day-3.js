@@ -21,7 +21,7 @@ export function dayEmail() {
     numberedList([
       "Set the Stage: Find a calm moment when you both can sit together, free from distractions (phones away!).",
       "Ask the Question: One of you asks: \"What was the best part of your day?\" (Optional: If \"best part\" feels too big, you can also try \"What was one small good thing that happened today?\")",
-      "The Listener's Role (Crucial!): Just Listen -- your only job is to listen intently. No Fixing -- resist the urge to offer advice, solutions, or problem-solve. No Interrupting -- let your partner speak for the full two minutes, or until they naturally finish. Be Present -- offer eye contact, a nod, or a gentle touch to show you're engaged, but keep your words to a minimum.",
+      "The Listener's Role (Crucial!): Just Listen &mdash; your only job is to listen intently. No Fixing &mdash; resist the urge to offer advice, solutions, or problem-solve. No Interrupting &mdash; let your partner speak for the full two minutes, or until they naturally finish. Be Present &mdash; offer eye contact, a nod, or a gentle touch to show you're engaged, but keep your words to a minimum.",
       "Switch Roles: After the first person has shared and been listened to, switch roles. The other person asks: \"What was the best part of your day?\" and receives the same gift of listening.",
     ]),
     paragraph("<strong>Remember the Golden Rule:</strong> This isn't a therapy session or a complaint forum. It's a brief, positive connection point. The focus is on sharing a \"best part\" (even a small one!) and simply being heard."),
@@ -33,7 +33,7 @@ export function dayEmail() {
     ctaButton('View the Challenge', 'https://healingheartscourse.com/spark-challenge'),
     signOff(
       "This simple, consistent practice can transform your daily connection. You've got this. I can't wait to hear about the peace you find in these two minutes.",
-      'Day 4: The Pause Experiment -- introducing the 10-second pause that changes everything.',
+      'Day 4: The Pause Experiment &mdash; introducing the 10-second pause that changes everything.',
     ),
   ].join('\n');
 

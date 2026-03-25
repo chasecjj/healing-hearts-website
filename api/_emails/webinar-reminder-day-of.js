@@ -16,11 +16,11 @@ export function reminderEmail(name, webinar) {
   });
 
   const subject = `Starting in 2 hours: ${safeTitle}`;
-  const previewText = `We are going live soon -- click below to join when it is time.`;
+  const previewText = `We are going live soon &mdash; click below to join when it is time.`;
 
   const body = [
     heading(`We Are Almost Live, ${safeName}`),
-    paragraph(`<strong>${safeTitle}</strong> starts in about two hours -- <strong>${escapeHtml(formatted)}</strong>.`),
+    paragraph(`<strong>${safeTitle}</strong> starts in about two hours &mdash; <strong>${escapeHtml(formatted)}</strong>.`),
     paragraph('Find a comfortable spot, grab something warm to drink, and click below to join when it is time. If your partner is with you, even better.'),
     ctaButton('Join the Workshop', webinar.riverside_audience_url),
     paragraph(`If the button above does not work, you can also join from our <a href="https://healingheartscourse.com/webinar/live" style="color:#1191B1; text-decoration:underline;">webinar page</a>.`),

@@ -16,15 +16,15 @@ export function reminderEmail(name, webinar) {
   });
 
   const subject = `Tomorrow: ${safeTitle}`;
-  const previewText = `Your seat is saved for tomorrow -- here is what to expect.`;
+  const previewText = `Your seat is saved for tomorrow &mdash; here is what to expect.`;
 
   const body = [
     heading(`Tomorrow Is the Day, ${safeName}`),
-    paragraph(`Just a warm reminder -- our live workshop, <strong>${safeTitle}</strong>, is happening tomorrow.`),
+    paragraph(`Just a warm reminder &mdash; our live workshop, <strong>${safeTitle}</strong>, is happening tomorrow.`),
     paragraph(`<strong>When:</strong> ${escapeHtml(formatted)}`),
     paragraph(`Here is what you can expect to walk away with:`),
     bulletList([
-      'How to recognize when your "Critter Brain" is running the conversation -- and how to hand the keys back to your CEO Brain',
+      'How to recognize when your "Critter Brain" is running the conversation &mdash; and how to hand the keys back to your CEO Brain',
       'The 90-Second Wave technique that can change the way you respond to conflict starting tonight',
       'Why most couples get stuck in the same argument for years (and the pattern that keeps it looping)',
       'A practical framework you and your partner can use long after the workshop ends',

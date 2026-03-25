@@ -88,7 +88,7 @@ export default async function handler(req, res) {
       const resend = new Resend(process.env.RESEND_API_KEY);
 
       const confirmation = webinarConfirmationEmail(cleanName, webinar);
-      resend.emails
+      await resend.emails
         .send({
           from: 'Healing Hearts <hello@healingheartscourse.com>',
           to: cleanEmail,
@@ -97,8 +97,8 @@ export default async function handler(req, res) {
         })
         .catch((err) => console.error('[webinar-register] Confirmation email failed:', err));
 
-      // --- Team notification (non-blocking, plain text) ---
-      resend.emails
+      // --- Team notification ---
+      await resend.emails
         .send({
           from: 'Healing Hearts <hello@healingheartscourse.com>',
           to: TEAM_EMAIL,

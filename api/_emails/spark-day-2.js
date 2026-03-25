@@ -14,9 +14,9 @@ export function dayEmail() {
     paragraph("Welcome back, connection detectives! Trisha Jamison here, and I am so excited to see you for Day 2 of our 'Ignite Your Connection: Small Sparks, Big Shifts!' challenge. How did those 'I Noticed' texts land yesterday? I bet you felt a little ripple of warmth, right? That's what we're building on!"),
     paragraph("Yesterday was about seeing the small, wonderful things. Today, we're taking it a step further: we're going to say those wonderful things, but with a twist!"),
     paragraph("You know, we often give compliments, right? 'You look nice,' or 'Good job.' And those are good! They're kind. But sometimes, they can feel a little... general. Like a warm, fuzzy blanket that's nice, but doesn't quite hug you tight in all the right places."),
-    paragraph("I remember early in our marriage, Jeff would often tell me, 'You're a great mom.' And of course, that felt good to hear! Any mom loves to hear that. But one day, after a particularly crazy morning with the kids -- I mean, spilled cereal, forgotten shoes, a full-on tantrum -- I finally got them out the door, feeling completely frazzled. When I walked back inside, Jeff was there, and he looked at me and said, 'Hey, I just watched you handle that entire morning chaos, and you were so incredibly patient and calm even when everything was going sideways. That's amazing.'"),
+    paragraph("I remember early in our marriage, Jeff would often tell me, 'You're a great mom.' And of course, that felt good to hear! Any mom loves to hear that. But one day, after a particularly crazy morning with the kids &mdash; I mean, spilled cereal, forgotten shoes, a full-on tantrum &mdash; I finally got them out the door, feeling completely frazzled. When I walked back inside, Jeff was there, and he looked at me and said, 'Hey, I just watched you handle that entire morning chaos, and you were so incredibly patient and calm even when everything was going sideways. That's amazing.'"),
     callout("And wow. That landed differently. It wasn't just 'You're a great mom.' It was 'I saw you in that specific moment, I saw the effort you put in, and I appreciate that specific thing about you.' It felt like he had peered right into my heart and acknowledged the exact struggle and triumph of that moment. It wasn't a general compliment; it was a specific spark that ignited a deep feeling of being truly understood and valued."),
-    paragraph("And if you're doing this challenge on your own, without your partner knowing -- that's more than okay. Some of the most meaningful shifts I've seen in couples started with one person quietly deciding to show up differently. You don't need permission to begin."),
+    paragraph("And if you're doing this challenge on your own, without your partner knowing &mdash; that's more than okay. Some of the most meaningful shifts I've seen in couples started with one person quietly deciding to show up differently. You don't need permission to begin."),
     paragraph("That's the magic we're bringing into your relationship today! Today's challenge is all about The Specific Spark Compliment. It's about giving a genuine, detailed compliment that goes beyond the surface and truly lands in your partner's heart."),
     subheading('Your Challenge for Today'),
     numberedList([
@@ -40,7 +40,7 @@ export function dayEmail() {
     ctaButton('View the Challenge', 'https://healingheartscourse.com/spark-challenge'),
     signOff(
       "So go out there, notice those specific sparks, and let your partner know how much you truly appreciate them! I can't wait to hear about the warmth you create.",
-      'Day 3: The 2-Minute Check-In -- the gift of pure, undivided listening.',
+      'Day 3: The 2-Minute Check-In &mdash; the gift of pure, undivided listening.',
     ),
   ].join('\n');
 

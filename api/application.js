@@ -8,9 +8,10 @@ const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KE
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const TEAM_EMAIL = 'hello@healingheartscourse.com';
 
-function toBool(val) {
-  if (val === true || val === 'Yes') return true;
-  if (val === false || val === 'No' || val === 'Not yet') return false;
+function toTextChoice(val) {
+  if (typeof val === 'string' && val.trim()) return val.trim();
+  if (val === true) return 'Yes';
+  if (val === false) return 'No';
   return null;
 }
 
@@ -58,8 +59,8 @@ export default async function handler(req, res) {
       relationship_rating: relationship_rating ? parseInt(relationship_rating, 10) : null,
       biggest_challenge: biggest_challenge.trim(),
       tried_before: typeof tried_before === 'string' ? tried_before.trim() || null : null,
-      partner_aware: toBool(partner_aware),
-      partner_willing: toBool(partner_willing),
+      partner_aware: toTextChoice(partner_aware),
+      partner_willing: toTextChoice(partner_willing),
       ideal_outcome: typeof ideal_outcome === 'string' ? ideal_outcome.trim() || null : null,
       urgency: typeof urgency === 'string' ? urgency || null : null,
       investment_readiness: typeof investment_readiness === 'string' ? investment_readiness || null : null,
@@ -81,7 +82,7 @@ export default async function handler(req, res) {
 
     if (resend) {
       const confirmEmail = applicationReceivedEmail(cleanName);
-      resend.emails.send({
+      await resend.emails.send({
         from: 'Healing Hearts <hello@healingheartscourse.com>',
         to: cleanEmail,
         subject: confirmEmail.subject,
@@ -89,7 +90,7 @@ export default async function handler(req, res) {
       }).catch(err => console.error('Applicant email failed:', err));
 
       const teamEmail = applicationTeamNotifyEmail(applicationData);
-      resend.emails.send({
+      await resend.emails.send({
         from: 'Healing Hearts Applications <hello@healingheartscourse.com>',
         to: TEAM_EMAIL,
         subject: teamEmail.subject,
