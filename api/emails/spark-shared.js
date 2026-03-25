@@ -1,6 +1,16 @@
 // Shared email HTML chrome for Spark Challenge drip emails.
 // All day templates import these helpers to maintain consistent styling.
 
+export function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 export function emailWrapper(bodyContent, previewText) {
   const preheader = previewText
     ? `<div style="display:none;font-size:1px;color:#faf9f6;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">${previewText}</div>`

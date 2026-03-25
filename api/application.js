@@ -1,3 +1,4 @@
+/* global process */
 import { supabaseAdmin } from './_lib/supabase-admin.js';
 import { Resend } from 'resend';
 import { applicationReceivedEmail } from './emails/application-received.js';
@@ -7,8 +8,15 @@ const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KE
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const TEAM_EMAIL = 'hello@healingheartscourse.com';
 
+function toBool(val) {
+  if (val === true || val === 'Yes') return true;
+  if (val === false || val === 'No' || val === 'Not yet') return false;
+  return null;
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
@@ -20,13 +28,13 @@ export default async function handler(req, res) {
       partner_aware, partner_willing,
       ideal_outcome, urgency, investment_readiness,
       faith_role, how_heard, additional_notes,
-    } = req.body;
+    } = req.body || {};
 
     const errors = [];
-    if (!name || !name.trim()) errors.push('Name is required');
-    if (!email || !EMAIL_REGEX.test(email.trim())) errors.push('Valid email is required');
-    if (!relationship_status) errors.push('Relationship status is required');
-    if (!biggest_challenge || !biggest_challenge.trim()) errors.push('Please share your biggest challenge');
+    if (!name || typeof name !== 'string' || !name.trim()) errors.push('Name is required');
+    if (!email || typeof email !== 'string' || !EMAIL_REGEX.test(email.trim())) errors.push('Valid email is required');
+    if (!relationship_status || typeof relationship_status !== 'string') errors.push('Relationship status is required');
+    if (!biggest_challenge || typeof biggest_challenge !== 'string' || !biggest_challenge.trim()) errors.push('Please share your biggest challenge');
 
     if (errors.length > 0) {
       return res.status(400).json({ error: 'Validation failed', details: errors });
@@ -44,20 +52,20 @@ export default async function handler(req, res) {
     const applicationData = {
       name: cleanName,
       email: cleanEmail,
-      phone: phone?.trim() || null,
+      phone: typeof phone === 'string' ? phone.trim() || null : null,
       relationship_status,
-      years_together: years_together?.trim() || null,
+      years_together: typeof years_together === 'string' ? years_together.trim() || null : null,
       relationship_rating: relationship_rating ? parseInt(relationship_rating, 10) : null,
       biggest_challenge: biggest_challenge.trim(),
-      tried_before: tried_before?.trim() || null,
-      partner_aware: partner_aware ?? null,
-      partner_willing: partner_willing ?? null,
-      ideal_outcome: ideal_outcome?.trim() || null,
-      urgency: urgency || null,
-      investment_readiness: investment_readiness || null,
-      faith_role: faith_role?.trim() || null,
-      how_heard: how_heard?.trim() || null,
-      additional_notes: additional_notes?.trim() || null,
+      tried_before: typeof tried_before === 'string' ? tried_before.trim() || null : null,
+      partner_aware: toBool(partner_aware),
+      partner_willing: toBool(partner_willing),
+      ideal_outcome: typeof ideal_outcome === 'string' ? ideal_outcome.trim() || null : null,
+      urgency: typeof urgency === 'string' ? urgency || null : null,
+      investment_readiness: typeof investment_readiness === 'string' ? investment_readiness || null : null,
+      faith_role: typeof faith_role === 'string' ? faith_role.trim() || null : null,
+      how_heard: typeof how_heard === 'string' ? how_heard.trim() || null : null,
+      additional_notes: typeof additional_notes === 'string' ? additional_notes.trim() || null : null,
       spark_signup_id: sparkSignup?.id || null,
       status: 'new',
     };

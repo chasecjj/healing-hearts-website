@@ -1,10 +1,11 @@
-import { emailWrapper, heading, paragraph, callout, ctaButton, signOff } from './spark-shared.js';
+import { emailWrapper, escapeHtml, heading, paragraph, callout, ctaButton, signOff } from './spark-shared.js';
 
 export function applicationReceivedEmail(name) {
   const previewText = 'We received your Healing Hearts application';
+  const safeName = escapeHtml(name);
 
   const body = [
-    heading(`Thank You, ${name}`),
+    heading(`Thank You, ${safeName}`),
     paragraph(
       `We are honored that you are considering the Healing Hearts journey. Your application has been received, and our team will review it within 24-48 hours.`
     ),
