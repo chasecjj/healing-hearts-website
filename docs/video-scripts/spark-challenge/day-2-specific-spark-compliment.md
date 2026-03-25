@@ -1,0 +1,84 @@
+---
+day: 2
+title: "The Specific Spark Compliment"
+theme: "Specificity signals attention"
+talent: "Trisha solo"
+target_duration: "90-120 seconds"
+word_count: 251
+transcript_coverage: "82%"
+transcript_sources: ["zoom_9bd24835c38ed40d", "zoom_2bb01f82a4481854", "zoom_be302c0cf3f2a7f7"]
+ai_written_sections: ["HOOK opener line", "BRIDGE intro sentence", "WARM CLOSE final line"]
+status: "draft"
+---
+
+## HOOK (10-15s)
+
+[direct to camera, slight smile]
+How often do you say "you look nice"?
+Like -- it's a reflex.
+You mean it.
+But does it land?
+
+## STORY (40-60s)
+
+[leaning in]
+I had a client tell me something that stopped me.
+She said -- "I'm doing all the things.
+And he's taking it as me just checking a box.
+If I was just checking a box -- I wouldn't do it at all."
+
+[beat]
+That hit me.
+Because she was paying attention.
+He just couldn't tell.
+
+[softening]
+And here's what I've learned -- in my own marriage, in session after session --
+when you get specific, something shifts.
+I said it to a husband once.
+"David -- you were paying attention to the temperature of the room."
+That's it.
+That's all I said.
+And you could see it land differently.
+
+[leaning in]
+Because specific means -- I was watching.
+I noticed you.
+Not in general.
+You, specifically.
+
+It goes noticed when you actually show up.
+[beat]
+But it's not the same as showing up vaguely.
+
+[softening]
+One of my clients told me she cooked for her husband --
+the one meal he truly loves --
+and he didn't say a word about it.
+Not because he didn't care.
+He just didn't get specific.
+And she felt invisible.
+
+## THE TURN (15-20s)
+
+[warm, steady]
+"You look nice" says you glanced.
+"That color makes your eyes look alive" says you studied.
+Your partner knows the difference.
+Every time.
+
+## BRIDGE TO EMAIL (10-15s)
+
+[bright, forward]
+I have an exercise waiting for you.
+Check your email today.
+I'm going to give you a real example --
+word for word --
+so you know exactly what to say.
+
+## WARM CLOSE (5-10s)
+
+[warm smile]
+Small shift.
+Big feeling.
+I'll see you there.
