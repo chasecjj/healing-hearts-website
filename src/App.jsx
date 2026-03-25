@@ -28,6 +28,7 @@ import Team from './pages/Team';
 import ComingSoon from './pages/ComingSoon';
 import YourJourney from './pages/YourJourney';
 import RescueKit from './pages/RescueKit';
+import BookCall from './pages/BookCall';
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
               <Route path="/physicians" element={<Physicians />} />
               <Route path="/resources" element={<Resources />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/book" element={<BookCall />} />
               <Route path="/testimonials" element={<Testimonials />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/terms" element={<Terms />} />
