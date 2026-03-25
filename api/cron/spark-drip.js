@@ -15,6 +15,13 @@ const dayTemplates = {
   5: () => import('../emails/spark-day-5.js'),
   6: () => import('../emails/spark-day-6.js'),
   7: () => import('../emails/spark-day-7.js'),
+  8: () => import('../emails/spark-day-8.js'),
+  9: () => import('../emails/spark-day-9.js'),
+  10: () => import('../emails/spark-day-10.js'),
+  11: () => import('../emails/spark-day-11.js'),
+  12: () => import('../emails/spark-day-12.js'),
+  13: () => import('../emails/spark-day-13.js'),
+  14: () => import('../emails/spark-day-14.js'),
 };
 
 export default async function handler(req, res) {
@@ -35,7 +42,7 @@ export default async function handler(req, res) {
     .select('*')
     .eq('completed', false)
     .eq('unsubscribed', false)
-    .lt('current_day', 7)
+    .lt('current_day', 14)
     .lt('signed_up_at', new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString())
     .or(`last_email_sent_at.is.null,last_email_sent_at.lt.${new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString()}`)
     .order('signed_up_at', { ascending: true })
@@ -74,7 +81,7 @@ export default async function handler(req, res) {
         .update({
           current_day: nextDay,
           last_email_sent_at: new Date().toISOString(),
-          completed: nextDay === 7,
+          completed: nextDay === 14,
         })
         .eq('id', signup.id);
 

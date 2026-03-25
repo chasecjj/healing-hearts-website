@@ -28,6 +28,9 @@ import Team from './pages/Team';
 import ComingSoon from './pages/ComingSoon';
 import YourJourney from './pages/YourJourney';
 import RescueKit from './pages/RescueKit';
+import BookCall from './pages/BookCall';
+import Apply from './pages/Apply';
+import ApplicationSuccess from './pages/ApplicationSuccess';
 
 function App() {
   return (
@@ -47,6 +50,8 @@ function App() {
               <Route path="/physicians" element={<Physicians />} />
               <Route path="/resources" element={<Resources />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/book" element={<BookCall />} />
+              <Route path="/apply" element={<Apply />} />
               <Route path="/testimonials" element={<Testimonials />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/terms" element={<Terms />} />
@@ -68,6 +73,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/apply/success" element={<ApplicationSuccess />} />
 
             {/* Protected: Course Portal (URL-driven lesson navigation) */}
             <Route

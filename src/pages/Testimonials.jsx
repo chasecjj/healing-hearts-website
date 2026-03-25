@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import usePageMeta from '../hooks/usePageMeta';
@@ -97,6 +98,31 @@ export default function Testimonials() {
             </div>
           </div>
         ))}
+      </section>
+
+      {/* CTA Section */}
+      <section className="scroll-trigger max-w-3xl mx-auto text-center mt-24 mb-8">
+        <h2 className="font-drama italic text-3xl md:text-5xl text-primary mb-4">
+          Ready to Write Your Own Story?
+        </h2>
+        <p className="font-sans text-lg text-foreground/70 mb-8 max-w-xl mx-auto">
+          Every couple on this page started exactly where you are now. The only difference
+          is they decided to take the next step.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Link
+            to="/apply"
+            className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-accent text-white font-medium shadow-lg hover:shadow-xl transition-all"
+          >
+            Apply for Healing Hearts
+          </Link>
+          <Link
+            to="/spark-challenge"
+            className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-neutral-100 text-foreground font-medium hover:bg-neutral-200 transition-all"
+          >
+            Not ready yet? Try the Free Challenge
+          </Link>
+        </div>
       </section>
 
     </main>

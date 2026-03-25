@@ -473,15 +473,19 @@ const PricingCta = () => {
           </div>
 
           <div className="rk-pricing-reveal">
-            <MagneticButton
-              className="bg-accent text-white px-8 sm:px-12 py-4 rounded-full text-base w-full sm:w-auto font-bold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 w-full md:w-auto"
-              onClick={() => window.location.href = '/coming-soon'}
-            >
-              Get the Conflict Rescue Kit
-            </MagneticButton>
+            <Link to="/apply">
+              <MagneticButton
+                className="bg-accent text-white px-8 sm:px-12 py-4 rounded-full text-base w-full sm:w-auto font-bold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 w-full md:w-auto"
+              >
+                Get the Conflict Rescue Kit
+              </MagneticButton>
+            </Link>
           </div>
 
-          <p className="rk-pricing-reveal font-sans text-foreground/50 text-xs mt-6">
+          <p className="rk-pricing-reveal font-sans text-foreground/60 text-sm mt-6 italic">
+            The Conflict Rescue Kit is included in the full Healing Hearts program.
+          </p>
+          <p className="rk-pricing-reveal font-sans text-foreground/50 text-xs mt-2">
             Payments processed securely through Stripe. Access delivered instantly to your portal.
           </p>
         </div>

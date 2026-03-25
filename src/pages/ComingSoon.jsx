@@ -10,7 +10,7 @@ const prefersReducedMotion = () =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const ComingSoon = () => {
-  usePageMeta('Coming Soon', 'This feature is on the way. Try our free 7-Day Spark Challenge in the meantime.');
+  usePageMeta('Your Next Step', 'Take the next step toward healing your relationship. Apply for the Healing Hearts program or schedule a conversation.');
   const ref = useRef(null);
 
   useEffect(() => {
@@ -56,31 +56,39 @@ const ComingSoon = () => {
         </div>
 
         <h1 className="cs-reveal font-drama italic text-4xl md:text-5xl lg:text-6xl text-foreground leading-[1.1] mb-6">
-          Something Beautiful<br />Is Coming
+          Your Next Step
         </h1>
 
         <p className="cs-reveal text-lg md:text-xl text-foreground/60 max-w-lg mx-auto leading-relaxed mb-4">
-          We're putting the finishing touches on this part of the experience.
-          Great things take time — and we want this to be great for you.
+          You're here because something in your relationship matters enough to
+          fight for. That already says something powerful about you.
         </p>
 
         <p className="cs-reveal text-base text-foreground/50 max-w-md mx-auto leading-relaxed mb-10">
-          In the meantime, try our free 7-Day Spark Challenge — it's the perfect
-          way to start reconnecting with your partner right now.
+          Whether you're ready to dive in or just want to have a conversation
+          first, there's a path forward waiting for you.
         </p>
 
-        <div className="cs-reveal flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link to="/spark-challenge">
-            <MagneticButton className="inline-flex items-center gap-2 bg-primary text-white px-8 py-4 rounded-full text-lg font-medium hover:bg-primary/90 transition-colors">
-              Try the Free Challenge
+        <div className="cs-reveal flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+          <Link to="/apply">
+            <MagneticButton className="inline-flex items-center gap-2 bg-accent text-white px-8 py-4 rounded-full text-lg font-medium hover:bg-accent/90 transition-colors shadow-xl">
+              Apply for Healing Hearts
               <ArrowRight className="w-5 h-5" />
             </MagneticButton>
           </Link>
           <Link
-            to="/team"
+            to="/book"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-full border-2 border-primary/20 text-primary font-medium hover:bg-primary hover:text-white hover:border-primary transition-all"
+          >
+            Schedule a Conversation
+          </Link>
+        </div>
+        <div className="cs-reveal">
+          <Link
+            to="/spark-challenge"
             className="text-primary/70 hover:text-primary font-medium transition-colors underline underline-offset-4"
           >
-            Meet the team
+            Or try the free 7-Day Challenge
           </Link>
         </div>
       </div>
