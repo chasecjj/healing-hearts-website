@@ -1,0 +1,9 @@
+# Be Healthy Expo — Magazine Ad Design (Multiple Sizes)
+
+- [x] Deep-read the Healing Hearts brand context: directive, voice profile, and style guide — absorbed voice dimensions, vocabulary preferences, 8 gold standard examples, 5 anti-examples, emotional guardrails, and prohibited language
+- [x] Mine real transformation quotes from coaching transcripts — found 5 verified public quotes from Team.jsx + rich case studies from Module 8.1 (Burnout) and 8.2 (Coping). Key quotes: "It just feels more hopeful", "She felt safe enough to explore those feelings", "We were together, we were feeling connected", "He was able to comfort me in ways he never has"
+- [x] Read competitive positioning — internalized dual buyer path (spouse emotional vs physician professional), 3 priority segments (early-career physicians, dual-physician couples, physician spouses), competitive gap (no one does comprehensive + medical-specific + online + nervous system), $16K high-ticket positioning
+- [x] Read Spark Challenge landing page and Programs page — understood 7-day challenge structure (daily practices from "I Noticed" text to Spark Conversation), amber/gold palette, and full 8-module program overview with standalone packages
+- [x] Design 3 distinct ad concepts — Concept 1 "The Hopeful Feeling" (emotional recognition), Concept 2 "A Doctor Who Gets It" (credibility/authority), Concept 3 "The Space Between" (transformation proof). Full copy for all 3 sizes x 3 concepts = 9 layouts total. Each includes headline, subhead, body copy, CTA, QR placement, and spatial layout direction.
+- [x] Canva execution brief included — font guidance, color hex codes, photo direction, QR code specs, export instructions, and a quick-reference headline table. All written for Desirae in plain English.
+- [x] All deliverables written to .dispatch/tasks/magazine-ad-design/output.md

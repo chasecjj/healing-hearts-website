@@ -1,0 +1,8 @@
+{
+  "name": "healing-hearts-marketing",
+  "version": "1.0.0",
+  "description": "Marketing agent team for Healing Hearts. 6-agent system in two phases: Phase 1 (Scout, Storyteller, Qualifier) builds audience while the course is written. Phase 2 (Nurture Writer, Partnership Scout, Campaign Analyst) activates post-Stripe for conversion and optimization. Each agent has a specific function — no overlap.",
+  "author": {
+    "name": "Chase Jamison"
+  }
+}

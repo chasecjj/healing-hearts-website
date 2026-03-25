@@ -1,0 +1,5 @@
+# Create Nano Banana Content Pipeline Task + Reference Note
+
+- [x] Create a reference note in the Mind Vault at `Projects/healing-hearts/research/2026-03-24-nano-banana-content-pipeline.md` with YAML frontmatter (date, type: research, project: healing-hearts, tags: [nano-banana, content-pipeline, image-generation, marketing]). Include: NB2 vs Pro comparison, capabilities relevant to HH, recommended workflow (Scout → Storyteller → Nano Banana → Desirae polish), cost analysis, integration options (PHEDRIS API, Gemini app for self-serve), and the pipeline architecture diagram
+- [x] Add a task to the Mind Vault healing-hearts task file for building the content generation pipeline. Task should reference the research note and describe: PHEDRIS integration with Nano Banana 2 API, prompt templates for HH brand (palette, fonts, aesthetic), self-serve interface for Trisha/Makayla, batch generation for social media, and routing logic (NB2 default, Pro for hero imagery)
+- [x] Write confirmation to .dispatch/tasks/nano-banana-task/output.md

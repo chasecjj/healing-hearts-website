@@ -1,8 +1,8 @@
 /* global process */
 import { supabaseAdmin } from './_lib/supabase-admin.js';
 import { Resend } from 'resend';
-import { applicationReceivedEmail } from './emails/application-received.js';
-import { applicationTeamNotifyEmail } from './emails/application-team-notify.js';
+import { applicationReceivedEmail } from './_emails/application-received.js';
+import { applicationTeamNotifyEmail } from './_emails/application-team-notify.js';
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

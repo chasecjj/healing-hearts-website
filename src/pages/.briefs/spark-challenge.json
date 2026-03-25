@@ -1,0 +1,43 @@
+{
+  "page_type": "landing_page",
+  "slug": "/spark-challenge",
+  "mode": "redesign",
+  "conversion_goal": "email_capture",
+  "conversion_intensity": 5,
+  "tone": "warm, inviting, hopeful, grounded",
+  "audience": "couples experiencing disconnection — some in crisis, many signing up alone without partner knowing",
+  "brand": "healing-hearts",
+  "route_group": "marketing",
+  "sections": [
+    "hero_split",
+    "pain_validation",
+    "coach_intro",
+    "daily_breakdown",
+    "mid_page_cta",
+    "social_proof",
+    "objection_handler",
+    "qualifier",
+    "final_cta",
+    "faq_expanded"
+  ],
+  "content_sources": {
+    "hero_headline": "generate",
+    "pain_validation": "generate",
+    "coach_intro": "vault:Projects/healing-hearts/pipeline/foundation/voice-profile.md",
+    "daily_breakdown": "existing:DAYS array in SparkChallenge.jsx",
+    "testimonials": "generate",
+    "objection_cards": "generate",
+    "qualifier_list": "generate",
+    "faq": "existing:FAQ_ITEMS + 4 new questions"
+  },
+  "layout_hints": {
+    "avoid": ["centered hero", "3-column equal grid", "countdown timers", "aggressive scarcity"],
+    "prefer": ["split hero", "bento grid", "editorial zig-zag", "organic dividers between all sections"]
+  },
+  "guardrails": {
+    "anti_shame": true,
+    "shared_device_safe": true,
+    "voice_profile": "healing-hearts/trisha",
+    "max_conversion_intensity": 6
+  }
+}
