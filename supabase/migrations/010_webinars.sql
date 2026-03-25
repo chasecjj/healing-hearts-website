@@ -26,11 +26,6 @@ CREATE TABLE webinars (
   registrant_count INTEGER DEFAULT 0 NOT NULL
 );
 
--- Only one webinar should be 'scheduled' or 'live' at a time
-CREATE UNIQUE INDEX idx_webinars_active
-  ON webinars (status)
-  WHERE status IN ('scheduled', 'live');
-
 -- RLS
 ALTER TABLE webinars ENABLE ROW LEVEL SECURITY;
 

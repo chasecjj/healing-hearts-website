@@ -20,6 +20,7 @@ CREATE TABLE webinar_registrations (
   followup_day INTEGER DEFAULT 0 NOT NULL CHECK (followup_day >= 0 AND followup_day <= 5),
   followup_completed BOOLEAN DEFAULT false NOT NULL,
   last_email_sent_at TIMESTAMPTZ,
+  unsubscribed BOOLEAN DEFAULT false NOT NULL,
 
   -- Linking to other tables
   spark_signup_id UUID REFERENCES spark_signups(id),

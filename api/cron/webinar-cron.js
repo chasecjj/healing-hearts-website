@@ -71,7 +71,7 @@ export default async function handler(req, res) {
           .eq('webinar_id', webinar.id)
           .eq('reminder_day_before_sent', false)
           .eq('unsubscribed', false)
-          .order('registered_at', { ascending: true })
+          .order('created_at', { ascending: true })
           .limit(50);
 
         if (regErr) {
@@ -137,7 +137,7 @@ export default async function handler(req, res) {
           .eq('webinar_id', webinar.id)
           .eq('reminder_day_of_sent', false)
           .eq('unsubscribed', false)
-          .order('registered_at', { ascending: true })
+          .order('created_at', { ascending: true })
           .limit(50);
 
         if (regErr) {
@@ -208,7 +208,7 @@ export default async function handler(req, res) {
           .eq('followup_completed', false)
           .eq('unsubscribed', false)
           .or(`last_email_sent_at.is.null,last_email_sent_at.lt.${new Date(now - 20 * 60 * 60 * 1000).toISOString()}`)
-          .order('registered_at', { ascending: true })
+          .order('created_at', { ascending: true })
           .limit(50);
 
         if (regErr) {
