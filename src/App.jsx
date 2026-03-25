@@ -31,6 +31,9 @@ import RescueKit from './pages/RescueKit';
 import BookCall from './pages/BookCall';
 import Apply from './pages/Apply';
 import ApplicationSuccess from './pages/ApplicationSuccess';
+import WebinarRegister from './pages/WebinarRegister';
+import WebinarLive from './pages/WebinarLive';
+import WebinarReplay from './pages/WebinarReplay';
 
 function App() {
   return (
@@ -64,6 +67,9 @@ function App() {
               <Route path="/enroll" element={<ComingSoon />} />
               <Route path="/enroll/:program" element={<ComingSoon />} />
               <Route path="/rescue-kit" element={<RescueKit />} />
+              <Route path="/webinar" element={<WebinarRegister />} />
+              <Route path="/webinar/live" element={<WebinarLive />} />
+              <Route path="/webinar/replay" element={<WebinarReplay />} />
               <Route path="/physician-track" element={<ComingSoon />} />
               <Route path="/admin" element={<ComingSoon />} />
             </Route>

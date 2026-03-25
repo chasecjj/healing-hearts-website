@@ -22,7 +22,7 @@ export function dayEmail() {
     callout("\"This is not a pitch disguised as a workshop. We teach for over an hour before we ever mention our program.\" -- Trisha"),
     paragraph("Whether you are on the fence about getting help, curious about what the Healing Hearts program actually involves, or just want to learn something new about how your relationship works -- this workshop is for you."),
     paragraph("Seats are limited because we keep these small enough for real conversation."),
-    ctaButton('Save Your Spot', 'https://healingheartscourse.com/apply'),
+    ctaButton('Save Your Spot', 'https://healingheartscourse.com/webinar'),
     signOff(
       "We would love to see you there. Come as you are -- no prep required, no pressure to do anything but learn.",
       "What happened after they said yes -- another transformation story.",

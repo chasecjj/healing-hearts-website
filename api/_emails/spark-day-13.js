@@ -23,7 +23,7 @@ export function dayEmail() {
     callout("\"We had a fight last Tuesday. And for the first time in maybe ever, we repaired it the same night. We actually talked about what was really going on. And then we laughed about it. I did not know that was possible for us.\""),
     paragraph("That is not a small thing. That is everything. The ability to fight, repair, and reconnect -- in the same night -- is what a healthy marriage looks like. Not the absence of conflict, but the confidence that conflict will not destroy you."),
     paragraph("If their story sounds like yours -- if \"fine\" is the word you keep using and it does not feel like enough anymore -- you are not alone. And there is a way forward."),
-    ctaButton('Learn More About the Program', 'https://healingheartscourse.com/apply'),
+    ctaButton('Learn More About the Program', 'https://healingheartscourse.com/webinar'),
     signOff(
       "Whether it is the workshop, the program, or just these emails -- we are glad you are here.",
       "Tomorrow is our last email together. I want to leave you with something important.",

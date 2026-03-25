@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/spark-drip",
       "schedule": "0 13 * * *"
+    },
+    {
+      "path": "/api/cron/webinar-cron",
+      "schedule": "0 23 * * *"
     }
   ],
   "buildCommand": "npm run build",
