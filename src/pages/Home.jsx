@@ -99,15 +99,15 @@ const Hero = () => {
                 style={{ clipPath: 'url(#teardrop-hero)' }}
               >
                 <img
-                  src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=1287&auto=format&fit=crop"
-                  alt="Couple reconnecting emotionally"
+                  src="https://images.unsplash.com/photo-1474552226712-ac0f0961a954?q=80&w=1287&auto=format&fit=crop"
+                  alt="Couple walking together at sunset"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-primary/10 mix-blend-overlay pointer-events-none" />
               </div>
 
               {/* Floating accent bubble */}
-              <div className="absolute -bottom-6 -left-6 w-44 h-44 bg-primary/5 backdrop-blur-lg rounded-full flex items-center justify-center p-6 border border-primary/10 shadow-lg">
+              <div className="absolute -bottom-6 -left-6 w-44 h-44 bg-white rounded-full flex items-center justify-center p-6 border border-primary/10 shadow-lg">
                 <p className="font-drama italic text-sm text-primary leading-snug text-center">
                   "Healing happens in the spaces between words."
                 </p>
