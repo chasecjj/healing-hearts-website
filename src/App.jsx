@@ -28,6 +28,7 @@ import Team from './pages/Team';
 import ComingSoon from './pages/ComingSoon';
 import YourJourney from './pages/YourJourney';
 import RescueKit from './pages/RescueKit';
+import AdminPanel from './pages/AdminPanel';
 import BookCall from './pages/BookCall';
 import Apply from './pages/Apply';
 import ApplicationSuccess from './pages/ApplicationSuccess';
@@ -71,7 +72,7 @@ function App() {
               <Route path="/webinar/live" element={<WebinarLive />} />
               <Route path="/webinar/replay" element={<WebinarReplay />} />
               <Route path="/physician-track" element={<ComingSoon />} />
-              <Route path="/admin" element={<ComingSoon />} />
+              <Route path="/admin" element={<AdminPanel />} />
             </Route>
 
             {/* Auth pages (standalone, no navbar/footer) */}

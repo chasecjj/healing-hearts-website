@@ -18,7 +18,7 @@ import { Lock, ShieldAlert } from 'lucide-react';
  *   /portal/:moduleSlug/:lessonSlug  → LessonView
  */
 const CoursePortal = () => {
-  const { profile } = useAuth();
+  const { profile, isAdmin } = useAuth();
   const navigate = useNavigate();
   const { moduleSlug, lessonSlug } = useParams();
 
@@ -47,7 +47,7 @@ const CoursePortal = () => {
       const modNum = moduleSlug.replace('module-', '');
       mod = course.modules.find((m) => m.module_number === modNum);
 
-      if (mod && !mod.is_preview) {
+      if (mod && !mod.is_preview && !isAdmin) {
         denied = true;
       }
     }
@@ -61,7 +61,7 @@ const CoursePortal = () => {
       const lessonNum = parseInt(lessonSlug.replace('lesson-', ''), 10);
       lesson = mod.lessons.find((l) => l.sort_order === lessonNum);
 
-      if (lesson && !lesson.is_preview && !mod.is_preview) {
+      if (lesson && !lesson.is_preview && !mod.is_preview && !isAdmin) {
         denied = true;
         lesson = null;
       }
@@ -72,7 +72,7 @@ const CoursePortal = () => {
     }
 
     return { currentModule: mod, currentLesson: lesson, isAccessDenied: denied };
-  }, [course, moduleSlug, lessonSlug]);
+  }, [course, moduleSlug, lessonSlug, isAdmin]);
 
   // ─── Loading state ──────────────────────────────────────────
   if (loading) {
@@ -153,6 +153,7 @@ const CoursePortal = () => {
         overallProgress={overallProgress}
         getModuleProgress={getModuleProgress}
         isLessonCompleted={isLessonCompleted}
+        isAdmin={isAdmin}
       />
     );
   }
@@ -165,6 +166,7 @@ const CoursePortal = () => {
         currentModule={currentModule}
         getModuleProgress={getModuleProgress}
         isLessonCompleted={isLessonCompleted}
+        isAdmin={isAdmin}
       />
     );
   }
@@ -177,6 +179,7 @@ const CoursePortal = () => {
       currentLesson={currentLesson}
       isLessonCompleted={isLessonCompleted}
       toggleLessonComplete={toggleLessonComplete}
+      isAdmin={isAdmin}
       getModuleProgress={getModuleProgress}
       overallProgress={overallProgress}
     />
