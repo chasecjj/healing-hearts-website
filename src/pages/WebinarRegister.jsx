@@ -215,7 +215,7 @@ export default function WebinarRegister() {
     e.preventDefault();
     if (!formData.name.trim() || !formData.email.trim()) return;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      setErrorMessage('Please enter a valid email address.');
+      setErrorMessage("That email doesn't look quite right. Could you double-check it?");
       setFormStatus('error');
       return;
     }
@@ -237,11 +237,11 @@ export default function WebinarRegister() {
         setFormStatus('success');
       } else {
         const result = await res.json().catch(() => ({}));
-        setErrorMessage(result.error || 'Something went wrong. Please try again.');
+        setErrorMessage(result.error || "We weren't able to register you. Please try once more.");
         setFormStatus('error');
       }
     } catch {
-      setErrorMessage('Unable to register. Please try again or email us at hello@healingheartscourse.com');
+      setErrorMessage("We're having trouble connecting right now. Please try again, or email us at hello@healingheartscourse.com");
       setFormStatus('error');
     }
   };
@@ -250,7 +250,7 @@ export default function WebinarRegister() {
     e.preventDefault();
     if (!formData.email.trim()) return;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      setErrorMessage('Please enter a valid email address.');
+      setErrorMessage("That email doesn't look quite right. Could you double-check it?");
       setFormStatus('error');
       return;
     }
@@ -273,7 +273,7 @@ export default function WebinarRegister() {
           setFormStatus('success');
         } else {
           const result = await res.json().catch(() => ({}));
-          setErrorMessage(result.error || 'Something went wrong. Please try again.');
+          setErrorMessage(result.error || "We weren't able to add you to the waitlist. Please try once more.");
           setFormStatus('error');
         }
       } else {
@@ -287,11 +287,11 @@ export default function WebinarRegister() {
           setFormStatus('success');
         } else {
           setFormStatus('error');
-          setErrorMessage('Something went wrong. Please try again.');
+          setErrorMessage("We weren't able to add you to the waitlist. Please try once more.");
         }
       }
     } catch {
-      setErrorMessage('Unable to submit. Please try again or email us at hello@healingheartscourse.com');
+      setErrorMessage("We're having trouble connecting right now. Please try again, or email us at hello@healingheartscourse.com");
       setFormStatus('error');
     }
   };
