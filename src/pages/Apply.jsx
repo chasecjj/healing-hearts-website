@@ -103,17 +103,16 @@ export default function Apply() {
   const validateStep = () => {
     const errs = [];
     if (step === 1) {
-      if (!data.name.trim()) errs.push('Name is required.');
-      if (!data.email.trim()) errs.push('Email is required.');
-      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) errs.push('Please enter a valid email address.');
+      if (!data.name.trim()) errs.push("We'd love to know your name so we can greet you properly.");
+      if (!data.email.trim()) errs.push("We need your email so we can follow up with you personally.");
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) errs.push("That email doesn't look quite right. Could you double-check it?");
     }
     if (step === 2) {
-      if (!data.relationship_status) errs.push('Please select your relationship status.');
+      if (!data.relationship_status) errs.push('Let us know where your relationship is right now so we can understand your starting point.');
     }
     if (step === 3) {
-      if (!data.biggest_challenge.trim()) errs.push('Please describe your biggest challenge.');
+      if (!data.biggest_challenge.trim()) errs.push("Share whatever feels safe. Even a sentence helps us understand what you're facing.");
     }
-    // Steps 4 and 5 have no strictly required fields
     setErrors(errs);
     return errs.length === 0;
   };
@@ -145,11 +144,11 @@ export default function Apply() {
         navigate('/apply/success');
       } else {
         const result = await res.json().catch(() => ({}));
-        setErrors(result.details || ['Something went wrong. Please try again.']);
+        setErrors(result.details || ["We weren't able to submit your application. Please try once more, or reach out to us directly."]);
         setStatus('idle');
       }
     } catch {
-      setErrors(['Unable to submit. Please try again or email us at hello@healingheartscourse.com']);
+      setErrors(["We're having trouble connecting right now. Please try again in a moment, or email us at hello@healingheartscourse.com"]);
       setStatus('idle');
     }
   };
