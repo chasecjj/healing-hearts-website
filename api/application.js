@@ -52,6 +52,18 @@ export default async function handler(req, res) {
       });
     }
 
+    const { data: existing } = await supabaseAdmin
+      .from('applications')
+      .select('id')
+      .eq('email', cleanEmail)
+      .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+      .limit(1)
+      .single();
+
+    if (existing) {
+      return res.status(200).json({ success: true, message: 'Application received!' });
+    }
+
     const { data: sparkSignup } = await supabaseAdmin
       .from('spark_signups')
       .select('id')
