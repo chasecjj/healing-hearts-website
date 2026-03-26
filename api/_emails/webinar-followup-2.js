@@ -7,7 +7,7 @@ import {
 export function followupEmail(name, webinar) {
   const safeName = escapeHtml(name);
 
-  const subject = 'What happened after they said yes';
+  const subject = 'The moment everything shifted for them';
   const previewText = 'They almost did not come. She had to convince him in the parking lot.';
 
   const body = [
