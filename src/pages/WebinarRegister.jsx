@@ -144,14 +144,14 @@ export default function WebinarRegister() {
         const [upcomingRes, replayRes] = await Promise.all([
           supabase
             .from('webinars')
-            .select('*')
+            .select('id, title, starts_at, duration_minutes, status')
             .in('status', ['scheduled', 'live'])
             .order('starts_at', { ascending: true })
             .limit(1)
             .single(),
           supabase
             .from('webinars')
-            .select('*')
+            .select('id, title, starts_at, duration_minutes, status, replay_url')
             .in('status', ['completed', 'evergreen'])
             .not('replay_url', 'is', null)
             .order('starts_at', { ascending: false })
