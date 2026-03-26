@@ -4,6 +4,7 @@
 
 import { Resend } from 'resend';
 import { supabaseAdmin } from './_lib/supabase-admin.js';
+import { checkEmailRateLimit } from './_lib/rate-limit.js';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -20,6 +21,11 @@ export default async function handler(req, res) {
   }
 
   const cleanEmail = email.trim().toLowerCase();
+
+  const rateCheck = await checkEmailRateLimit('spark_signups', cleanEmail, 5);
+  if (!rateCheck.allowed) {
+    return res.status(200).json({ success: true, message: "You're in!" });
+  }
 
   // Step 1: Persist to Supabase BEFORE sending email
   try {

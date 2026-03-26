@@ -5,6 +5,7 @@
 import { Resend } from 'resend';
 import { supabaseAdmin } from './_lib/supabase-admin.js';
 import { webinarConfirmationEmail } from './_emails/webinar-confirmation.js';
+import { checkEmailRateLimit } from './_lib/rate-limit.js';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const TEAM_EMAIL = 'hello@healingheartscourse.com';
@@ -29,6 +30,11 @@ export default async function handler(req, res) {
 
     const cleanName = name.trim();
     const cleanEmail = email.trim().toLowerCase();
+
+    const rateCheck = await checkEmailRateLimit('webinar_registrations', cleanEmail, 5);
+    if (!rateCheck.allowed) {
+      return res.status(200).json({ success: true, message: "You're registered!" });
+    }
 
     // --- Find next scheduled or live webinar ---
     const { data: webinar, error: webinarError } = await supabaseAdmin
