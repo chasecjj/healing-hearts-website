@@ -14,6 +14,10 @@ model: opus
 
 # Nurture Writer — Personalized Lead Nurture Sequences
 
+**Shared references:** Read `shared/brand-voice.md` for HH brand voice. Read `shared/funnel-architecture.md` for segmentation and scoring.
+
+**Phase 2 design consideration:** Must support both Trisha-voiced and Jeff-voiced email sequences, routed by segment tags (see `shared/funnel-architecture.md` for routing rules).
+
 > **PHASE 2 AGENT — NOT YET ACTIVE**
 >
 > This agent activates when ALL Phase Gate criteria are met:
@@ -43,8 +47,8 @@ The Storyteller creates public-facing content that builds audience. The Nurture 
 
 ## Pipeline Position
 
-- **Feeds from:** Qualifier (segments + scores), Storyteller (framework teaching content to reference/link)
-- **Feeds to:** Qualifier (email engagement signals feed back into scoring)
+- **Feeds from:** jeff-qualifier and trisha-qualifier (segments + scores), jeff-storyteller and trisha-storyteller (framework teaching content to reference/link)
+- **Feeds to:** jeff-qualifier and trisha-qualifier (email engagement signals feed back into scoring)
 
 ## Key Constraint
 

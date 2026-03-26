@@ -1,7 +1,7 @@
 {
   "name": "healing-hearts-marketing",
-  "version": "1.0.0",
-  "description": "Marketing agent team for Healing Hearts. 6-agent system in two phases: Phase 1 (Scout, Storyteller, Qualifier) builds audience while the course is written. Phase 2 (Nurture Writer, Partnership Scout, Campaign Analyst) activates post-Stripe for conversion and optimization. Each agent has a specific function — no overlap.",
+  "version": "2.0.0",
+  "description": "Dual-track marketing agent team for Healing Hearts. Jeff track targets physician/professional audiences via LinkedIn, podcasts, and medical communities. Trisha track targets natural health/holistic wellness audiences via Instagram, conferences, and wellness communities. Shared foundation (brand voice, frameworks, funnel architecture) keeps both tracks aligned on HH IP and scoring. 9 agents: 3 Jeff, 3 Trisha, 3 shared (Partnership Scout active, Campaign Analyst + Nurture Writer Phase 2).",
   "author": {
     "name": "Chase Jamison"
   }
