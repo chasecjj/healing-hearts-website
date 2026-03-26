@@ -13,9 +13,9 @@ export function applicationReceivedEmail(name) {
       `What happens next: One of our team members will reach out to schedule a conversation with Jeff and Trisha. This is not a sales call &mdash; it is a chance for us to hear your story and for you to experience what working with us feels like.`
     ),
     paragraph(
-      `In the meantime, if you have not already, we invite you to explore our free resources and the 7-Day Spark Challenge.`
+      `In the meantime, if you have not already, we invite you to try our free 7-Day Spark Challenge -- a week of simple, real tools you can use with your partner tonight.`
     ),
-    ctaButton('Explore Free Resources', 'https://healingheartscourse.com/resources'),
+    ctaButton('Try the 7-Day Spark Challenge', 'https://healingheartscourse.com/spark-challenge'),
     signOff('We are grateful you are here.'),
   ].join('');
 
