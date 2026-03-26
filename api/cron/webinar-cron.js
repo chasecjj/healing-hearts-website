@@ -65,47 +65,63 @@ export default async function handler(req, res) {
       console.error('[webinar-cron] Day-before webinar query failed:', webinarErr);
     } else if (webinars && webinars.length > 0) {
       for (const webinar of webinars) {
-        const { data: registrants, error: regErr } = await supabaseAdmin
-          .from('webinar_registrations')
-          .select('id, email, name, reminder_day_before_sent, unsubscribed')
-          .eq('webinar_id', webinar.id)
-          .eq('reminder_day_before_sent', false)
-          .eq('unsubscribed', false)
-          .order('created_at', { ascending: true })
-          .limit(50);
-
-        if (regErr) {
-          console.error(`[webinar-cron] Day-before registrant query failed for webinar ${webinar.id}:`, regErr);
-          continue;
-        }
-
-        if (!registrants || registrants.length === 0) continue;
-
         const templateModule = await reminderTemplates.day_before();
+        let hasMoreRegs = true;
+        let lastRegId = null;
 
-        for (const reg of registrants) {
-          try {
-            const { subject, html } = templateModule.reminderEmail(reg.name, webinar);
+        while (hasMoreRegs) {
+          let regQuery = supabaseAdmin
+            .from('webinar_registrations')
+            .select('id, email, name, reminder_day_before_sent, unsubscribed')
+            .eq('webinar_id', webinar.id)
+            .eq('reminder_day_before_sent', false)
+            .eq('unsubscribed', false)
+            .order('id', { ascending: true })
+            .limit(50);
 
-            await resend.emails.send({
-              from: 'Healing Hearts <hello@healingheartscourse.com>',
-              to: reg.email,
-              subject,
-              html,
-            });
+          if (lastRegId) {
+            regQuery = regQuery.gt('id', lastRegId);
+          }
 
-            await supabaseAdmin
-              .from('webinar_registrations')
-              .update({
-                reminder_day_before_sent: true,
-                last_email_sent_at: new Date().toISOString(),
-              })
-              .eq('id', reg.id);
+          const { data: registrants, error: regErr } = await regQuery;
 
-            results.dayBeforeReminders.sent++;
-          } catch (err) {
-            console.error(`[webinar-cron] Day-before failed for ${reg.email}:`, err);
-            results.dayBeforeReminders.errors.push({ email: reg.email, error: err.message });
+          if (regErr) {
+            console.error(`[webinar-cron] Day-before registrant query failed for webinar ${webinar.id}:`, regErr);
+            break;
+          }
+
+          if (!registrants || registrants.length === 0) {
+            hasMoreRegs = false;
+            break;
+          }
+
+          lastRegId = registrants[registrants.length - 1].id;
+          hasMoreRegs = registrants.length === 50;
+
+          for (const reg of registrants) {
+            try {
+              const { subject, html } = templateModule.reminderEmail(reg.name, webinar);
+
+              await resend.emails.send({
+                from: 'Healing Hearts <hello@healingheartscourse.com>',
+                to: reg.email,
+                subject,
+                html,
+              });
+
+              await supabaseAdmin
+                .from('webinar_registrations')
+                .update({
+                  reminder_day_before_sent: true,
+                  last_email_sent_at: new Date().toISOString(),
+                })
+                .eq('id', reg.id);
+
+              results.dayBeforeReminders.sent++;
+            } catch (err) {
+              console.error(`[webinar-cron] Day-before failed for ${reg.email}:`, err);
+              results.dayBeforeReminders.errors.push({ email: reg.email, error: err.message });
+            }
           }
         }
       }
@@ -131,47 +147,63 @@ export default async function handler(req, res) {
       console.error('[webinar-cron] Day-of webinar query failed:', webinarErr);
     } else if (webinars && webinars.length > 0) {
       for (const webinar of webinars) {
-        const { data: registrants, error: regErr } = await supabaseAdmin
-          .from('webinar_registrations')
-          .select('id, email, name, reminder_day_of_sent, unsubscribed')
-          .eq('webinar_id', webinar.id)
-          .eq('reminder_day_of_sent', false)
-          .eq('unsubscribed', false)
-          .order('created_at', { ascending: true })
-          .limit(50);
-
-        if (regErr) {
-          console.error(`[webinar-cron] Day-of registrant query failed for webinar ${webinar.id}:`, regErr);
-          continue;
-        }
-
-        if (!registrants || registrants.length === 0) continue;
-
         const templateModule = await reminderTemplates.day_of();
+        let hasMoreRegs = true;
+        let lastRegId = null;
 
-        for (const reg of registrants) {
-          try {
-            const { subject, html } = templateModule.reminderEmail(reg.name, webinar);
+        while (hasMoreRegs) {
+          let regQuery = supabaseAdmin
+            .from('webinar_registrations')
+            .select('id, email, name, reminder_day_of_sent, unsubscribed')
+            .eq('webinar_id', webinar.id)
+            .eq('reminder_day_of_sent', false)
+            .eq('unsubscribed', false)
+            .order('id', { ascending: true })
+            .limit(50);
 
-            await resend.emails.send({
-              from: 'Healing Hearts <hello@healingheartscourse.com>',
-              to: reg.email,
-              subject,
-              html,
-            });
+          if (lastRegId) {
+            regQuery = regQuery.gt('id', lastRegId);
+          }
 
-            await supabaseAdmin
-              .from('webinar_registrations')
-              .update({
-                reminder_day_of_sent: true,
-                last_email_sent_at: new Date().toISOString(),
-              })
-              .eq('id', reg.id);
+          const { data: registrants, error: regErr } = await regQuery;
 
-            results.dayOfReminders.sent++;
-          } catch (err) {
-            console.error(`[webinar-cron] Day-of failed for ${reg.email}:`, err);
-            results.dayOfReminders.errors.push({ email: reg.email, error: err.message });
+          if (regErr) {
+            console.error(`[webinar-cron] Day-of registrant query failed for webinar ${webinar.id}:`, regErr);
+            break;
+          }
+
+          if (!registrants || registrants.length === 0) {
+            hasMoreRegs = false;
+            break;
+          }
+
+          lastRegId = registrants[registrants.length - 1].id;
+          hasMoreRegs = registrants.length === 50;
+
+          for (const reg of registrants) {
+            try {
+              const { subject, html } = templateModule.reminderEmail(reg.name, webinar);
+
+              await resend.emails.send({
+                from: 'Healing Hearts <hello@healingheartscourse.com>',
+                to: reg.email,
+                subject,
+                html,
+              });
+
+              await supabaseAdmin
+                .from('webinar_registrations')
+                .update({
+                  reminder_day_of_sent: true,
+                  last_email_sent_at: new Date().toISOString(),
+                })
+                .eq('id', reg.id);
+
+              results.dayOfReminders.sent++;
+            } catch (err) {
+              console.error(`[webinar-cron] Day-of failed for ${reg.email}:`, err);
+              results.dayOfReminders.errors.push({ email: reg.email, error: err.message });
+            }
           }
         }
       }
@@ -196,55 +228,74 @@ export default async function handler(req, res) {
           (now - new Date(webinar.starts_at).getTime()) / (24 * 60 * 60 * 1000)
         );
 
-        // Find which step in the follow-up schedule applies today
-        const step = FOLLOWUP_SCHEDULE.find((s) => s.afterDays === daysSinceWebinar);
-        if (!step) continue;
+        // Find all applicable follow-up steps up to today (handles missed cron runs)
+        const applicableSteps = FOLLOWUP_SCHEDULE.filter((s) => s.afterDays <= daysSinceWebinar);
+        if (applicableSteps.length === 0) continue;
 
-        const { data: registrants, error: regErr } = await supabaseAdmin
-          .from('webinar_registrations')
-          .select('id, email, name, followup_day, followup_completed, unsubscribed, last_email_sent_at')
-          .eq('webinar_id', webinar.id)
-          .eq('followup_day', step.atDay)
-          .eq('followup_completed', false)
-          .eq('unsubscribed', false)
-          .or(`last_email_sent_at.is.null,last_email_sent_at.lt.${new Date(now - 20 * 60 * 60 * 1000).toISOString()}`)
-          .order('created_at', { ascending: true })
-          .limit(50);
+        // Process each applicable step — registrants still at that step get their email
+        for (const step of applicableSteps) {
+          const templateModule = await followupTemplates[step.template]();
+          let hasMoreRegs = true;
+          let lastRegId = null;
 
-        if (regErr) {
-          console.error(`[webinar-cron] Follow-up registrant query failed for webinar ${webinar.id}:`, regErr);
-          continue;
-        }
-
-        if (!registrants || registrants.length === 0) continue;
-
-        const templateModule = await followupTemplates[step.template]();
-
-        for (const reg of registrants) {
-          try {
-            const { subject, html } = templateModule.followupEmail(reg.name, webinar);
-
-            await resend.emails.send({
-              from: 'Healing Hearts <hello@healingheartscourse.com>',
-              to: reg.email,
-              subject,
-              html,
-            });
-
-            const newFollowupDay = step.atDay + 1;
-            await supabaseAdmin
+          while (hasMoreRegs) {
+            let regQuery = supabaseAdmin
               .from('webinar_registrations')
-              .update({
-                followup_day: newFollowupDay,
-                followup_completed: newFollowupDay >= 5,
-                last_email_sent_at: new Date().toISOString(),
-              })
-              .eq('id', reg.id);
+              .select('id, email, name, followup_day, followup_completed, unsubscribed, last_email_sent_at')
+              .eq('webinar_id', webinar.id)
+              .eq('followup_day', step.atDay)
+              .eq('followup_completed', false)
+              .eq('unsubscribed', false)
+              .or(`last_email_sent_at.is.null,last_email_sent_at.lt.${new Date(now - 20 * 60 * 60 * 1000).toISOString()}`)
+              .order('id', { ascending: true })
+              .limit(50);
 
-            results.followups.sent++;
-          } catch (err) {
-            console.error(`[webinar-cron] Follow-up failed for ${reg.email} (template ${step.template}):`, err);
-            results.followups.errors.push({ email: reg.email, template: step.template, error: err.message });
+            if (lastRegId) {
+              regQuery = regQuery.gt('id', lastRegId);
+            }
+
+            const { data: registrants, error: regErr } = await regQuery;
+
+            if (regErr) {
+              console.error(`[webinar-cron] Follow-up registrant query failed for webinar ${webinar.id}:`, regErr);
+              break;
+            }
+
+            if (!registrants || registrants.length === 0) {
+              hasMoreRegs = false;
+              break;
+            }
+
+            lastRegId = registrants[registrants.length - 1].id;
+            hasMoreRegs = registrants.length === 50;
+
+            for (const reg of registrants) {
+              try {
+                const { subject, html } = templateModule.followupEmail(reg.name, webinar);
+
+                await resend.emails.send({
+                  from: 'Healing Hearts <hello@healingheartscourse.com>',
+                  to: reg.email,
+                  subject,
+                  html,
+                });
+
+                const newFollowupDay = step.atDay + 1;
+                await supabaseAdmin
+                  .from('webinar_registrations')
+                  .update({
+                    followup_day: newFollowupDay,
+                    followup_completed: newFollowupDay >= 5,
+                    last_email_sent_at: new Date().toISOString(),
+                  })
+                  .eq('id', reg.id);
+
+                results.followups.sent++;
+              } catch (err) {
+                console.error(`[webinar-cron] Follow-up failed for ${reg.email} (template ${step.template}):`, err);
+                results.followups.errors.push({ email: reg.email, template: step.template, error: err.message });
+              }
+            }
           }
         }
       }

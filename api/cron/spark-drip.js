@@ -36,60 +36,70 @@ export default async function handler(req, res) {
 
   const resend = new Resend(process.env.RESEND_API_KEY);
 
-  // Query signups ready for their next email
-  const { data: signups, error: queryError } = await supabaseAdmin
-    .from('spark_signups')
-    .select('*')
-    .eq('completed', false)
-    .eq('unsubscribed', false)
-    .lt('current_day', 14)
-    .lt('signed_up_at', new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString())
-    .or(`last_email_sent_at.is.null,last_email_sent_at.lt.${new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString()}`)
-    .order('signed_up_at', { ascending: true })
-    .limit(50);
-
-  if (queryError) {
-    console.error('[spark-drip] Query failed:', queryError);
-    return res.status(500).json({ error: 'Failed to query signups' });
-  }
-
-  if (!signups || signups.length === 0) {
-    return res.status(200).json({ sent: 0, message: 'No pending emails' });
-  }
-
+  const BATCH_SIZE = 50;
   const results = { sent: 0, errors: [] };
+  let hasMore = true;
+  let lastId = null;
 
-  for (const signup of signups) {
-    const nextDay = signup.current_day + 1;
+  while (hasMore) {
+    let query = supabaseAdmin
+      .from('spark_signups')
+      .select('*')
+      .eq('completed', false)
+      .eq('unsubscribed', false)
+      .lt('current_day', 14)
+      .lt('signed_up_at', new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString())
+      .or(`last_email_sent_at.is.null,last_email_sent_at.lt.${new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString()}`)
+      .order('id', { ascending: true })
+      .limit(BATCH_SIZE);
 
-    try {
-      // Load the day's email template
-      const templateModule = await dayTemplates[nextDay]();
-      const { subject, html } = templateModule.dayEmail();
+    if (lastId) {
+      query = query.gt('id', lastId);
+    }
 
-      // Send via Resend
-      await resend.emails.send({
-        from: 'Healing Hearts <hello@healingheartscourse.com>',
-        to: signup.email,
-        subject,
-        html,
-      });
+    const { data: signups, error: queryError } = await query;
 
-      // Update progress
-      await supabaseAdmin
-        .from('spark_signups')
-        .update({
-          current_day: nextDay,
-          last_email_sent_at: new Date().toISOString(),
-          completed: nextDay === 14,
-        })
-        .eq('id', signup.id);
+    if (queryError) {
+      console.error('[spark-drip] Query failed:', queryError);
+      return res.status(500).json({ error: 'Failed to query signups' });
+    }
 
-      results.sent++;
-    } catch (err) {
-      console.error(`[spark-drip] Failed for ${signup.email} (day ${nextDay}):`, err);
-      results.errors.push({ email: signup.email, day: nextDay, error: err.message });
-      // Continue to next signup — don't block the batch
+    if (!signups || signups.length === 0) {
+      hasMore = false;
+      break;
+    }
+
+    lastId = signups[signups.length - 1].id;
+    hasMore = signups.length === BATCH_SIZE;
+
+    for (const signup of signups) {
+      const nextDay = signup.current_day + 1;
+
+      try {
+        const templateModule = await dayTemplates[nextDay]();
+        const { subject, html } = templateModule.dayEmail();
+
+        await resend.emails.send({
+          from: 'Healing Hearts <hello@healingheartscourse.com>',
+          to: signup.email,
+          subject,
+          html,
+        });
+
+        await supabaseAdmin
+          .from('spark_signups')
+          .update({
+            current_day: nextDay,
+            last_email_sent_at: new Date().toISOString(),
+            completed: nextDay === 14,
+          })
+          .eq('id', signup.id);
+
+        results.sent++;
+      } catch (err) {
+        console.error(`[spark-drip] Failed for ${signup.email} (day ${nextDay}):`, err);
+        results.errors.push({ email: signup.email, day: nextDay, error: err.message });
+      }
     }
   }
 

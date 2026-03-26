@@ -41,7 +41,7 @@ export default async function handler(req, res) {
       .from('webinars')
       .select('id, title, starts_at, duration_minutes')
       .in('status', ['scheduled', 'live'])
-      .gte('starts_at', new Date().toISOString())
+      .or(`status.eq.live,starts_at.gte.${new Date().toISOString()}`)
       .order('starts_at', { ascending: true })
       .limit(1)
       .single();
