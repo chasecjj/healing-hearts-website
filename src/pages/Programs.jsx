@@ -189,7 +189,7 @@ const FlagshipProgram = () => {
 
               <blockquote className="flagship-reveal border-l-2 border-accent pl-6 py-2 mb-12 hidden lg:block">
                 <p className="font-drama italic text-2xl text-white leading-tight">
-                  "This isn't a weekend workshop. It's a transformation. Give it 32 weeks and we'll give you a different marriage."
+                  "This isn't a weekend workshop. It's a transformation. Give it 32 milestones and we'll give you a different marriage."
                 </p>
               </blockquote>
 

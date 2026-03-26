@@ -33,7 +33,7 @@ export default function Terms() {
             <h2 className="font-outfit font-bold text-2xl text-primary mb-4">2. Program Structure and Scope of Services</h2>
             <div className="space-y-4">
               <p>
-                <strong>2.1 Program Structure:</strong> The Program is structured as a comprehensive course designed to be completed over a period of nine (9) months and currently consists of thirty-two (32) individual modules.
+                <strong>2.1 Program Structure:</strong> The Program is structured as a comprehensive course consisting of eight (8) modules with thirty-two (32) milestones, designed to be completed at the Client's pace.
               </p>
               <p>
                 <strong>2.2 Program Materials Access:</strong> Healing Hearts LLC grants the Client a non-exclusive, non-transferable right to access the Program material, which includes, but is not limited to, videos, audio recordings, PDF documents, and any other media that is currently available or produced by Healing Hearts LLC subsequent to the execution of this Agreement. This access is granted for the Program Lifetime. Should Healing Hearts LLC cease to offer the Program, this access right shall terminate.
@@ -45,7 +45,7 @@ export default function Terms() {
                 <strong>2.4 Coaching Sessions Entitlement:</strong> The Client is entitled to thirty-six (36) scheduled coaching sessions. These sessions shall be primarily conducted by Trisha Jamison. Healing Hearts LLC reserves the right to include Jeff Jamison, DO, in these sessions at its sole discretion, without prior notice to the Client. The Client acknowledges and agrees that these sessions are for coaching and educational purposes only and do not constitute medical, psychological, or legal advice.
               </p>
               <p>
-                <strong>2.5 Additional Coaching Services:</strong> Should the Client desire coaching sessions in excess of the forty (40) sessions outlined in Section 2.4, such additional sessions shall be available at an additional cost, the rate of which shall be communicated by Healing Hearts LLC to the Client prior to the booking of any such session.
+                <strong>2.5 Additional Coaching Services:</strong> Should the Client desire coaching sessions in excess of the thirty-six (36) sessions outlined in Section 2.4, such additional sessions shall be available at an additional cost, the rate of which shall be communicated by Healing Hearts LLC to the Client prior to the booking of any such session.
               </p>
             </div>
           </section>
@@ -57,12 +57,12 @@ export default function Terms() {
                 <strong>3.1 Term:</strong> This Agreement shall commence on the Effective Date and shall terminate one (1) calendar year thereafter, unless further extended by mutual written agreement of the parties involved.
               </p>
               <p>
-                <strong>3.2 Program Cost and Payment Options:</strong> The standard, full cost for enrollment in the Program is Fifteen Thousand Nine Hundred Ninety-Seven Dollars ($16,997.00). The Client shall select one of the following payment options:
+                <strong>3.2 Program Cost and Payment Options:</strong> The standard, full cost for enrollment in the Program is Twelve Thousand Nine Hundred Ninety-Seven Dollars ($12,997.00). The Client shall select one of the following payment options:
               </p>
               <ul className="list-disc pl-6 space-y-2">
-                <li><strong>Pay-in-Full:</strong> $15,997.00 (Includes $1,000.00 discount). Due in one lump sum payment upon commencement of the Program.</li>
-                <li><strong>Monthly Installments:</strong> Total $16,997.00. $5,997.00 down payment, followed by 8 monthly payments of $1,250.00.</li>
-                <li><strong>Quarterly Installments:</strong> Total $16,997.00. $5,997.00 down payment, followed by 3 quarterly payments of $3,334.00.</li>
+                <li><strong>Pay-in-Full:</strong> $11,997.00 (Includes $1,000.00 discount). Due in one lump sum payment upon commencement of the Program.</li>
+                <li><strong>Monthly Installments:</strong> Total $12,997.00. $4,997.00 down payment, followed by 8 monthly payments of $1,000.00.</li>
+                <li><strong>Quarterly Installments:</strong> Total $12,997.00. $4,997.00 down payment, followed by 3 quarterly payments of $2,667.00.</li>
               </ul>
               <p>
                 <strong>3.3 Refund and Cancellation Policy:</strong>

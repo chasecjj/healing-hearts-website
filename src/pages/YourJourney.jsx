@@ -184,7 +184,7 @@ const Hero = () => {
           Your path back <br className="hidden md:block" />to each other.
         </h1>
         <p className="journey-hero-reveal font-sans text-foreground/80 md:text-xl leading-relaxed font-light mx-auto max-w-3xl mb-6">
-          This isn't a weekend workshop or a list of tips. It's a 32-week guided transformation — from understanding why you shut down, to building a marriage that lasts generations.
+          This isn't a weekend workshop or a list of tips. It's a guided transformation through 32 milestones — from understanding why you shut down, to building a marriage that lasts generations.
         </p>
         <p className="journey-hero-reveal font-sans text-foreground/60 md:text-lg leading-relaxed font-light mx-auto max-w-2xl mb-12">
           Built by Jeff & Trisha Jamison from the trenches of their own marriage. Every framework has been tested in real life first.
@@ -459,7 +459,7 @@ const TealQuote = () => {
           &ldquo;
         </span>
         <blockquote className="jquote-reveal font-drama italic text-3xl sm:text-4xl md:text-5xl text-white leading-tight mb-10">
-          This isn't a weekend workshop. It's a transformation. Give it 32 weeks and we'll give you a different marriage.
+          This isn't a weekend workshop. It's a transformation. Give it 32 milestones and we'll give you a different marriage.
         </blockquote>
         <cite className="jquote-reveal not-italic text-base sm:text-lg text-white/70 font-medium tracking-wide uppercase block">
           — Trisha Jamison
@@ -614,7 +614,7 @@ const ClosingCta = () => {
                 Ready to do the real work?
               </h3>
               <p className="font-sans text-white/80 text-base leading-relaxed font-light mb-8 flex-grow">
-                8 modules. 32 weeks. Weekly live coaching with Trisha. A private community of couples on the same path. And a transformation that changes not just your marriage — but your family tree.
+                8 modules. 32 milestones. 36 coaching sessions with Trisha. A private community of couples on the same path. And a transformation that changes not just your marriage — but your family tree.
               </p>
               <Link to="/apply">
                 <MagneticButton className="w-full py-4 rounded-full bg-accent text-white font-outfit font-semibold text-sm shadow-xl hover:scale-105 transition-all duration-300">

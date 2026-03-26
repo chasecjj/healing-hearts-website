@@ -23,7 +23,7 @@ const LEARN_BULLETS = [
   'Why most relationship advice treats symptoms instead of causes',
   'The nervous system pattern that hijacks your conversations',
   'The one question that reveals whether your conflict is about the issue or a much older wound',
-  'What 8 months of deep work actually looks like',
+  'What a full journey of deep work actually looks like',
 ];
 
 const FAQ_ITEMS = [

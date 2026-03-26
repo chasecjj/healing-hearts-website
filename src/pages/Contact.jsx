@@ -203,7 +203,7 @@ export default function Contact() {
     },
     {
       q: "How long does the full program take?",
-      a: "The complete Healing Hearts program is designed for 32 weeks—8 modules, roughly one month each. But this isn’t a race. Some couples sit with a module for six weeks because it’s touching something deep. We’d rather you go slow and integrate than rush through and forget."
+      a: "The complete Healing Hearts program has 8 modules with 32 milestones and 36 coaching sessions. Each module moves at your pace — some couples take a few weeks, others sit with one for six weeks because it’s touching something deep. We’d rather you go slow and integrate than rush through and forget."
     },
     {
       q: "What if we’re already in a good place?",
