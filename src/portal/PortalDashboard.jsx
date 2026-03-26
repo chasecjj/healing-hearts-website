@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { gsap } from 'gsap';
 import {
   BookOpen,
@@ -7,6 +7,7 @@ import {
   Flame,
   Lock,
   ChevronRight,
+  ChevronLeft,
   Quote,
 } from 'lucide-react';
 
@@ -87,8 +88,19 @@ export default function PortalDashboard({
 
   return (
     <div ref={containerRef} className="pb-24 px-4 sm:px-8 max-w-7xl mx-auto flex flex-col gap-16">
+      {/* ── Back to website ─────────────────────────────────── */}
+      <div className="pt-6">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-1 font-sans text-sm text-foreground/40 hover:text-primary transition-colors"
+        >
+          <ChevronLeft className="w-4 h-4" />
+          Back to website
+        </Link>
+      </div>
+
       {/* ── Welcome Header ─────────────────────────────────── */}
-      <section className="relative pt-8" data-animate>
+      <section className="relative pt-2" data-animate>
         <div className="max-w-3xl">
           <h1 className="font-drama text-4xl sm:text-5xl md:text-6xl text-foreground leading-tight tracking-tight mb-6">
             Welcome back to your Sanctuary,{' '}
