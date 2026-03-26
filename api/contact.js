@@ -3,6 +3,7 @@
 // Receives contact form submissions and sends notification + confirmation emails via Resend.
 
 import { Resend } from 'resend';
+import { escapeHtml } from './_lib/escape-html.js';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -79,6 +80,11 @@ export default async function handler(req, res) {
 }
 
 function teamNotificationEmail({ name, email, phone, interest, message, receivedAt }) {
+  const safeName = escapeHtml(name);
+  const safeEmail = escapeHtml(email);
+  const safePhone = escapeHtml(phone);
+  const safeInterest = escapeHtml(interest);
+  const safeMessage = escapeHtml(message);
   return `
 <!DOCTYPE html>
 <html lang="en">
@@ -103,26 +109,26 @@ function teamNotificationEmail({ name, email, phone, interest, message, received
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
                 <tr>
                   <td style="padding:8px 0; font-size:14px; color:#a3a3a3; width:100px; vertical-align:top;">Name</td>
-                  <td style="padding:8px 0; font-size:16px; color:#2D2D2D;">${name}</td>
+                  <td style="padding:8px 0; font-size:16px; color:#2D2D2D;">${safeName}</td>
                 </tr>
                 <tr>
                   <td style="padding:8px 0; font-size:14px; color:#a3a3a3; vertical-align:top;">Email</td>
-                  <td style="padding:8px 0; font-size:16px; color:#2D2D2D;"><a href="mailto:${email}" style="color:#1191B1; text-decoration:none;">${email}</a></td>
+                  <td style="padding:8px 0; font-size:16px; color:#2D2D2D;"><a href="mailto:${safeEmail}" style="color:#1191B1; text-decoration:none;">${safeEmail}</a></td>
                 </tr>
                 <tr>
                   <td style="padding:8px 0; font-size:14px; color:#a3a3a3; vertical-align:top;">Phone</td>
-                  <td style="padding:8px 0; font-size:16px; color:#2D2D2D;">${phone || 'Not provided'}</td>
+                  <td style="padding:8px 0; font-size:16px; color:#2D2D2D;">${safePhone || 'Not provided'}</td>
                 </tr>
                 <tr>
                   <td style="padding:8px 0; font-size:14px; color:#a3a3a3; vertical-align:top;">Interest</td>
-                  <td style="padding:8px 0; font-size:16px; color:#2D2D2D;">${interest || 'Not specified'}</td>
+                  <td style="padding:8px 0; font-size:16px; color:#2D2D2D;">${safeInterest || 'Not specified'}</td>
                 </tr>
               </table>
 
               <div style="height:1px; background-color:#e5e5e5; margin:16px 0;"></div>
 
               <p style="margin:16px 0 8px; font-size:14px; color:#a3a3a3;">Message</p>
-              <p style="margin:0; font-size:16px; line-height:1.7; color:#555555; white-space:pre-wrap;">${message}</p>
+              <p style="margin:0; font-size:16px; line-height:1.7; color:#555555; white-space:pre-wrap;">${safeMessage}</p>
 
               <div style="height:1px; background-color:#e5e5e5; margin:24px 0 16px;"></div>
 
@@ -140,7 +146,7 @@ function teamNotificationEmail({ name, email, phone, interest, message, received
 }
 
 function confirmationEmail(name) {
-  const firstName = name.split(' ')[0] || 'there';
+  const firstName = escapeHtml(name.split(' ')[0]) || 'there';
   return `
 <!DOCTYPE html>
 <html lang="en">
