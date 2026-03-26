@@ -646,7 +646,10 @@ export default function WebinarRegister() {
             Live Workshops Coming Soon
           </h1>
           <p className="webinar-reveal font-sans text-foreground/70 text-xl font-light max-w-xl mx-auto mb-4">
-            Jeff and Trisha are preparing something special. Be the first to know when our next live workshop is announced.
+            Jeff and Trisha host live workshops where couples learn the frameworks behind lasting change -- the same tools used in the Healing Hearts program. No fluff. Real, clinically-informed content you can use that night.
+          </p>
+          <p className="webinar-reveal font-sans text-foreground/50 text-base max-w-md mx-auto mb-4">
+            Past workshops have covered the nervous system patterns that hijack conversations, the SPARK Method for reconnection, and the difference between Critter Brain reactions and CEO Brain responses.
           </p>
         </div>
       </section>
@@ -698,6 +701,19 @@ export default function WebinarRegister() {
                   Get notified the moment registration opens.
                 </p>
                 <form onSubmit={handleWaitlistSubmit} className="space-y-5">
+                  <div>
+                    <label className="block font-outfit font-bold text-sm text-primary mb-2">
+                      Your Name
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+                      className={INPUT_CLASS}
+                      placeholder="Your name"
+                      disabled={formStatus === 'loading'}
+                    />
+                  </div>
                   <div>
                     <label className="block font-outfit font-bold text-sm text-primary mb-2">
                       Email Address *

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { MagneticButton } from '../components/Layout';
-import { ArrowRight, Sparkles, Heart } from 'lucide-react';
+import { ArrowRight, Sparkles, Heart, Quote } from 'lucide-react';
 import usePageMeta from '../hooks/usePageMeta';
 
 const prefersReducedMotion = () =>
@@ -64,9 +64,24 @@ const ComingSoon = () => {
           fight for. That already says something powerful about you.
         </p>
 
-        <p className="cs-reveal text-base text-foreground/50 max-w-md mx-auto leading-relaxed mb-10">
+        <p className="cs-reveal text-base text-foreground/50 max-w-md mx-auto leading-relaxed mb-8">
           Whether you're ready to dive in or just want to have a conversation
           first, there's a path forward waiting for you.
+        </p>
+
+        {/* Testimonial */}
+        <div className="cs-reveal max-w-md mx-auto mb-8 bg-white/60 backdrop-blur rounded-2xl p-6 border border-primary/5">
+          <Quote className="w-6 h-6 text-primary/20 mb-3" />
+          <p className="font-drama italic text-lg text-foreground/70 leading-relaxed mb-3">
+            "Learning about the Zones of Resilience changed everything. We finally had language for what was happening between us."
+          </p>
+          <p className="font-sans text-sm text-foreground/40">
+            -- Healing Hearts participant
+          </p>
+        </div>
+
+        <p className="cs-reveal text-sm text-foreground/40 max-w-sm mx-auto leading-relaxed mb-10">
+          Our program uses frameworks like the SPARK Method and Zones of Resilience to help couples move from stuck to connected -- at their own pace.
         </p>
 
         <div className="cs-reveal flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">

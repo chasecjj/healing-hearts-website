@@ -237,9 +237,12 @@ export default function Apply() {
   const renderRelationship = () => (
     <div className="max-w-lg mx-auto">
       <h2 className="step-reveal font-drama italic text-3xl md:text-4xl text-primary mb-2">
-        Tell us about your relationship.
+        Where is your relationship right now?
       </h2>
-      <p className="step-reveal font-sans text-foreground/50 font-light mb-8">Step 2 of 5</p>
+      <p className="step-reveal font-sans text-foreground/50 font-light mb-2">Step 2 of 5</p>
+      <p className="step-reveal font-sans text-foreground/40 font-light text-sm mb-8">
+        Think about your Zones of Resilience -- where do you and your partner spend most of your time together?
+      </p>
 
       <div className="space-y-8">
         <div className="step-reveal">
@@ -285,7 +288,7 @@ export default function Apply() {
   const renderChallenge = () => (
     <div className="max-w-lg mx-auto">
       <h2 className="step-reveal font-drama italic text-3xl md:text-4xl text-primary mb-2">
-        What are you facing?
+        What keeps coming up between you?
       </h2>
       <p className="step-reveal font-sans text-foreground/50 font-light mb-8">Step 3 of 5</p>
 
@@ -297,17 +300,15 @@ export default function Apply() {
             value={data.biggest_challenge}
             onChange={(e) => update('biggest_challenge', e.target.value)}
             className={`${INPUT_CLASS} resize-none`}
-            placeholder="Be as open as you're comfortable being..."
+            placeholder="Maybe it's the same argument on repeat, or a distance that crept in quietly..."
           />
         </div>
         <div className="step-reveal">
-          <FieldLabel>Have you tried counseling or coaching before? If so, what happened?</FieldLabel>
-          <textarea
-            rows={3}
+          <FieldLabel>Have you tried counseling or coaching before?</FieldLabel>
+          <RadioPills
+            options={['Yes, it helped', 'Yes, but it didn\'t stick', 'No, this is our first step']}
             value={data.tried_before}
-            onChange={(e) => update('tried_before', e.target.value)}
-            className={`${INPUT_CLASS} resize-none`}
-            placeholder="Optional — but it helps us understand your experience."
+            onChange={(v) => update('tried_before', v)}
           />
         </div>
         <div className="step-reveal">
@@ -333,19 +334,23 @@ export default function Apply() {
   const renderReadiness = () => (
     <div className="max-w-lg mx-auto">
       <h2 className="step-reveal font-drama italic text-3xl md:text-4xl text-primary mb-2">
-        Where do you want to go?
+        Imagine your relationship six months from now.
       </h2>
       <p className="step-reveal font-sans text-foreground/50 font-light mb-8">Step 4 of 5</p>
 
       <div className="space-y-8">
         <div className="step-reveal">
-          <FieldLabel>What would your ideal outcome look like?</FieldLabel>
-          <textarea
-            rows={4}
+          <FieldLabel>If things could change, what would matter most to you?</FieldLabel>
+          <RadioPills
+            options={[
+              'We communicate without it turning into a fight',
+              'We feel close and connected again',
+              'We rebuild the trust that was broken',
+              'We learn to support each other through stress',
+              'We understand each other\'s deeper needs',
+            ]}
             value={data.ideal_outcome}
-            onChange={(e) => update('ideal_outcome', e.target.value)}
-            className={`${INPUT_CLASS} resize-none`}
-            placeholder="Imagine your relationship 6 months from now..."
+            onChange={(v) => update('ideal_outcome', v)}
           />
         </div>
         <div className="step-reveal">
@@ -354,14 +359,6 @@ export default function Apply() {
             options={['ASAP', 'Within 3 months', 'No rush']}
             value={data.urgency}
             onChange={(v) => update('urgency', v)}
-          />
-        </div>
-        <div className="step-reveal">
-          <FieldLabel>What level of investment feels right for transforming your relationship?</FieldLabel>
-          <RadioPills
-            options={['Under $5K', '$5K–$10K', '$10K–$20K', 'Over $20K']}
-            value={data.investment_readiness}
-            onChange={(v) => update('investment_readiness', v)}
           />
         </div>
       </div>
@@ -397,13 +394,13 @@ export default function Apply() {
           />
         </div>
         <div className="step-reveal">
-          <FieldLabel>Anything else you'd like us to know?</FieldLabel>
+          <FieldLabel>What does your relationship look like at its best?</FieldLabel>
           <textarea
             rows={3}
             value={data.additional_notes}
             onChange={(e) => update('additional_notes', e.target.value)}
             className={`${INPUT_CLASS} resize-none`}
-            placeholder="Optional — share whatever feels important."
+            placeholder="Think back to your happiest season together. What made it work?"
           />
         </div>
       </div>
