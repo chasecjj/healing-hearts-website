@@ -117,3 +117,13 @@ ${paragraph(message)}
 export function dayBadge(dayNumber) {
   return `<div style="display:inline-block; background-color:#1191B1; color:#ffffff; font-size:13px; font-weight:700; padding:6px 14px; border-radius:50px; margin-bottom:16px;">Day ${dayNumber} of 7</div>`;
 }
+
+export function unsubscribeFooter(email, list) {
+  const url = `https://healingheartscourse.com/api/unsubscribe?email=${encodeURIComponent(email)}&list=${list}`;
+  return `<div style="text-align:center; margin-top:32px; padding-top:16px; border-top:1px solid #e5e5e5;">
+  <p style="margin:0; font-size:12px; color:#d4d4d4;">
+    <a href="${url}" style="color:#a3a3a3; text-decoration:underline;">Unsubscribe</a> &middot;
+    Healing Hearts &middot; healingheartscourse.com
+  </p>
+</div>`;
+}
