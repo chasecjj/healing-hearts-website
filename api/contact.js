@@ -48,7 +48,7 @@ export default async function handler(req, res) {
 
       // Notify the team
       await resend.emails.send({
-        from: 'Healing Hearts <noreply@healingheartscourse.com>',
+        from: 'Healing Hearts <hello@healingheartscourse.com>',
         to: 'hello@healingheartscourse.com',
         replyTo: sanitized.email,
         subject: `New Contact: ${sanitized.name} — ${sanitized.interest || 'General'}`,

@@ -49,7 +49,7 @@ export default async function handler(req, res) {
 
       // Notify the team
       await resend.emails.send({
-        from: 'Healing Hearts <noreply@healingheartscourse.com>',
+        from: 'Healing Hearts <hello@healingheartscourse.com>',
         to: 'hello@healingheartscourse.com',
         subject: `New Spark Challenge signup: ${cleanEmail}`,
         text: `New signup for the 7-Day Spark Challenge!\n\nEmail: ${cleanEmail}\nTime: ${new Date().toISOString()}\n\nThis person will receive Day 1 tomorrow morning.`,
