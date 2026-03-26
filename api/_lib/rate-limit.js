@@ -17,6 +17,10 @@ export async function checkEmailRateLimit(table, email, windowMinutes = 5) {
       .limit(1)
       .single();
 
+    if (error) {
+      console.warn('[rate-limit] Supabase query error (failing open):', error.message);
+    }
+
     if (error || !data) {
       return { allowed: true };
     }
@@ -26,7 +30,8 @@ export async function checkEmailRateLimit(table, email, windowMinutes = 5) {
     const retryAfterMinutes = Math.ceil(windowMinutes - minutesSince);
 
     return { allowed: false, retryAfterMinutes };
-  } catch {
+  } catch (err) {
+    console.warn('[rate-limit] Unexpected error (failing open):', err.message);
     return { allowed: true };
   }
 }

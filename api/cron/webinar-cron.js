@@ -233,6 +233,7 @@ export default async function handler(req, res) {
         if (applicableSteps.length === 0) continue;
 
         // Process each applicable step — registrants still at that step get their email
+        const processedInThisRun = new Set();
         for (const step of applicableSteps) {
           const templateModule = await followupTemplates[step.template]();
           let hasMoreRegs = true;
@@ -270,6 +271,8 @@ export default async function handler(req, res) {
             hasMoreRegs = registrants.length === 50;
 
             for (const reg of registrants) {
+              if (processedInThisRun.has(reg.id)) continue;
+              processedInThisRun.add(reg.id);
               try {
                 const { subject, html } = templateModule.followupEmail(reg.name, webinar);
 

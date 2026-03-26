@@ -5,6 +5,10 @@
 import { Resend } from 'resend';
 import { escapeHtml } from './_lib/escape-html.js';
 
+function sanitizeSubject(str) {
+  return String(str).replace(/[\r\n\0]/g, '');
+}
+
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default async function handler(req, res) {
@@ -52,7 +56,7 @@ export default async function handler(req, res) {
         from: 'Healing Hearts <hello@healingheartscourse.com>',
         to: 'hello@healingheartscourse.com',
         replyTo: sanitized.email,
-        subject: `New Contact: ${sanitized.name} — ${sanitized.interest || 'General'}`,
+        subject: sanitizeSubject(`New Contact: ${sanitized.name} — ${sanitized.interest || 'General'}`),
         html: teamNotificationEmail(sanitized),
       });
 

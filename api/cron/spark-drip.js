@@ -44,7 +44,7 @@ export default async function handler(req, res) {
   while (hasMore) {
     let query = supabaseAdmin
       .from('spark_signups')
-      .select('*')
+      .select('id, email, current_day, completed, unsubscribed, signed_up_at, last_email_sent_at')
       .eq('completed', false)
       .eq('unsubscribed', false)
       .lt('current_day', 14)

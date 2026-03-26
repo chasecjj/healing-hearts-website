@@ -7,6 +7,10 @@ import { supabaseAdmin } from './_lib/supabase-admin.js';
 import { webinarConfirmationEmail } from './_emails/webinar-confirmation.js';
 import { checkEmailRateLimit } from './_lib/rate-limit.js';
 
+function sanitizeSubject(str) {
+  return String(str).replace(/[\r\n\0]/g, '');
+}
+
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const TEAM_EMAIL = 'hello@healingheartscourse.com';
 
@@ -108,7 +112,7 @@ export default async function handler(req, res) {
         .send({
           from: 'Healing Hearts <hello@healingheartscourse.com>',
           to: TEAM_EMAIL,
-          subject: `New webinar registration: ${cleanName} (${cleanEmail})`,
+          subject: sanitizeSubject(`New webinar registration: ${cleanName} (${cleanEmail})`),
           text: [
             `New webinar registration!`,
             ``,

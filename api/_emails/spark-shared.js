@@ -1,6 +1,8 @@
 // Shared email HTML chrome for Spark Challenge drip emails.
 // All day templates import these helpers to maintain consistent styling.
 
+import crypto from 'crypto';
+
 export function escapeHtml(str) {
   if (!str) return '';
   return String(str)
@@ -119,7 +121,9 @@ export function dayBadge(dayNumber) {
 }
 
 export function unsubscribeFooter(email, list) {
-  const url = `https://healingheartscourse.com/api/unsubscribe?email=${encodeURIComponent(email)}&list=${list}`;
+  const secret = process.env.CRON_SECRET || 'healing-hearts-unsub';
+  const sig = crypto.createHmac('sha256', secret).update(`${email}:${list}`).digest('hex').slice(0, 16);
+  const url = `https://healingheartscourse.com/api/unsubscribe?email=${encodeURIComponent(email)}&list=${list}&sig=${sig}`;
   return `<div style="text-align:center; margin-top:32px; padding-top:16px; border-top:1px solid #e5e5e5;">
   <p style="margin:0; font-size:12px; color:#d4d4d4;">
     <a href="${url}" style="color:#a3a3a3; text-decoration:underline;">Unsubscribe</a> &middot;

@@ -1,5 +1,12 @@
 /* global process */
 import { supabaseAdmin } from './_lib/supabase-admin.js';
+import crypto from 'crypto';
+
+const UNSUB_SECRET = process.env.CRON_SECRET || 'healing-hearts-unsub';
+
+function signEmail(email, list) {
+  return crypto.createHmac('sha256', UNSUB_SECRET).update(`${email}:${list}`).digest('hex').slice(0, 16);
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -12,6 +19,18 @@ export default async function handler(req, res) {
 
   if (!email) {
     return res.status(400).send(unsubscribePage('Missing email address.', false));
+  }
+
+  const VALID_LISTS = ['spark', 'webinar', ''];
+  if (!VALID_LISTS.includes(list)) {
+    return res.status(400).send(unsubscribePage('Invalid unsubscribe link.', false));
+  }
+
+  const sig = req.query.sig || '';
+  const expectedSig = signEmail(email, list);
+
+  if (sig !== expectedSig) {
+    return res.status(403).send(unsubscribePage('Invalid unsubscribe link. Please use the link from your email.', false));
   }
 
   try {
