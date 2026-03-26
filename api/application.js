@@ -3,6 +3,7 @@ import { supabaseAdmin } from './_lib/supabase-admin.js';
 import { Resend } from 'resend';
 import { applicationReceivedEmail } from './_emails/application-received.js';
 import { applicationTeamNotifyEmail } from './_emails/application-team-notify.js';
+import { checkEmailRateLimit } from './_lib/rate-limit.js';
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -43,6 +44,25 @@ export default async function handler(req, res) {
 
     const cleanEmail = email.trim().toLowerCase();
     const cleanName = name.trim();
+
+    const rateCheck = await checkEmailRateLimit('applications', cleanEmail, 10);
+    if (!rateCheck.allowed) {
+      return res.status(429).json({
+        error: 'You have already submitted an application recently. Please wait a few minutes before trying again.',
+      });
+    }
+
+    const { data: existing } = await supabaseAdmin
+      .from('applications')
+      .select('id')
+      .eq('email', cleanEmail)
+      .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+      .limit(1)
+      .single();
+
+    if (existing) {
+      return res.status(200).json({ success: true, message: 'Application received!' });
+    }
 
     const { data: sparkSignup } = await supabaseAdmin
       .from('spark_signups')

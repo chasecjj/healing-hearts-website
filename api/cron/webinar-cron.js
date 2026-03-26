@@ -56,7 +56,7 @@ export default async function handler(req, res) {
 
     const { data: webinars, error: webinarErr } = await supabaseAdmin
       .from('webinars')
-      .select('*')
+      .select('id, title, starts_at, duration_minutes, status')
       .in('status', ['scheduled', 'live'])
       .gte('starts_at', windowStart)
       .lte('starts_at', windowEnd);
@@ -67,7 +67,7 @@ export default async function handler(req, res) {
       for (const webinar of webinars) {
         const { data: registrants, error: regErr } = await supabaseAdmin
           .from('webinar_registrations')
-          .select('*')
+          .select('id, email, name, reminder_day_before_sent, unsubscribed')
           .eq('webinar_id', webinar.id)
           .eq('reminder_day_before_sent', false)
           .eq('unsubscribed', false)
@@ -122,7 +122,7 @@ export default async function handler(req, res) {
 
     const { data: webinars, error: webinarErr } = await supabaseAdmin
       .from('webinars')
-      .select('*')
+      .select('id, title, starts_at, duration_minutes, status')
       .in('status', ['scheduled', 'live'])
       .gte('starts_at', windowStart)
       .lte('starts_at', windowEnd);
@@ -133,7 +133,7 @@ export default async function handler(req, res) {
       for (const webinar of webinars) {
         const { data: registrants, error: regErr } = await supabaseAdmin
           .from('webinar_registrations')
-          .select('*')
+          .select('id, email, name, reminder_day_of_sent, unsubscribed')
           .eq('webinar_id', webinar.id)
           .eq('reminder_day_of_sent', false)
           .eq('unsubscribed', false)
@@ -185,7 +185,7 @@ export default async function handler(req, res) {
   try {
     const { data: webinars, error: webinarErr } = await supabaseAdmin
       .from('webinars')
-      .select('*')
+      .select('id, title, starts_at, duration_minutes, status')
       .in('status', ['completed', 'evergreen']);
 
     if (webinarErr) {
@@ -202,7 +202,7 @@ export default async function handler(req, res) {
 
         const { data: registrants, error: regErr } = await supabaseAdmin
           .from('webinar_registrations')
-          .select('*')
+          .select('id, email, name, followup_day, followup_completed, unsubscribed, last_email_sent_at')
           .eq('webinar_id', webinar.id)
           .eq('followup_day', step.atDay)
           .eq('followup_completed', false)
