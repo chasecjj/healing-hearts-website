@@ -72,6 +72,10 @@ export default async function handler(req, res) {
     lastId = signups[signups.length - 1].id;
     hasMore = signups.length === BATCH_SIZE;
 
+    // Build email payloads for this page of signups
+    const emailPayloads = [];
+    const payloadSignups = [];
+
     for (const signup of signups) {
       const nextDay = signup.current_day + 1;
 
@@ -79,26 +83,60 @@ export default async function handler(req, res) {
         const templateModule = await dayTemplates[nextDay]();
         const { subject, html } = templateModule.dayEmail();
 
-        await resend.emails.send({
+        emailPayloads.push({
           from: 'Healing Hearts <hello@healingheartscourse.com>',
           to: signup.email,
           subject,
           html,
         });
-
-        await supabaseAdmin
-          .from('spark_signups')
-          .update({
-            current_day: nextDay,
-            last_email_sent_at: new Date().toISOString(),
-            completed: nextDay === 14,
-          })
-          .eq('id', signup.id);
-
-        results.sent++;
+        payloadSignups.push({ signup, nextDay });
       } catch (err) {
-        console.error(`[spark-drip] Failed for ${signup.email} (day ${nextDay}):`, err);
+        console.error(`[spark-drip] Template load failed for ${signup.email} (day ${nextDay}):`, err);
         results.errors.push({ email: signup.email, day: nextDay, error: err.message });
+      }
+    }
+
+    // Send in chunks of 100 (Resend batch limit)
+    const RESEND_CHUNK_SIZE = 100;
+    for (let i = 0; i < emailPayloads.length; i += RESEND_CHUNK_SIZE) {
+      const chunkPayloads = emailPayloads.slice(i, i + RESEND_CHUNK_SIZE);
+      const chunkSignups = payloadSignups.slice(i, i + RESEND_CHUNK_SIZE);
+
+      try {
+        const { error: batchError } = await resend.batch.send(chunkPayloads);
+
+        if (batchError) {
+          console.error('[spark-drip] Batch send error:', batchError);
+          for (const { signup, nextDay } of chunkSignups) {
+            results.errors.push({ email: signup.email, day: nextDay, error: batchError.message });
+          }
+          continue;
+        }
+
+        // Update Supabase for all successfully sent emails in this chunk
+        const now = new Date().toISOString();
+        for (const { signup, nextDay } of chunkSignups) {
+          try {
+            await supabaseAdmin
+              .from('spark_signups')
+              .update({
+                current_day: nextDay,
+                last_email_sent_at: now,
+                completed: nextDay === 14,
+              })
+              .eq('id', signup.id);
+
+            results.sent++;
+          } catch (updateErr) {
+            console.error(`[spark-drip] Supabase update failed for ${signup.email}:`, updateErr);
+            results.errors.push({ email: signup.email, day: nextDay, error: updateErr.message });
+          }
+        }
+      } catch (err) {
+        console.error('[spark-drip] Batch send threw:', err);
+        for (const { signup, nextDay } of chunkSignups) {
+          results.errors.push({ email: signup.email, day: nextDay, error: err.message });
+        }
       }
     }
   }

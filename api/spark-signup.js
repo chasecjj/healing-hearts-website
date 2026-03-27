@@ -6,10 +6,6 @@ import { Resend } from 'resend';
 import { supabaseAdmin } from './_lib/supabase-admin.js';
 import { checkEmailRateLimit } from './_lib/rate-limit.js';
 
-function sanitizeSubject(str) {
-  return String(str).replace(/[\r\n\0]/g, '');
-}
-
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default async function handler(req, res) {
@@ -57,13 +53,6 @@ export default async function handler(req, res) {
         html: welcomeEmail(),
       });
 
-      // Notify the team
-      await resend.emails.send({
-        from: 'Healing Hearts <hello@healingheartscourse.com>',
-        to: 'hello@healingheartscourse.com',
-        subject: sanitizeSubject(`New Spark Challenge signup: ${cleanEmail}`),
-        text: `New signup for the 7-Day Spark Challenge!\n\nEmail: ${cleanEmail}\nTime: ${new Date().toISOString()}\n\nThis person will receive Day 1 tomorrow morning.`,
-      });
     } catch (err) {
       console.error('[spark-signup] Email send failed:', err);
       // Don't fail the request — user is already in DB and will get drip emails
