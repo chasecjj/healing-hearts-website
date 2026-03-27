@@ -418,6 +418,8 @@ export default function WebinarRegister() {
                       </label>
                       <input
                         type="email"
+                        inputMode="email"
+                        autoComplete="email"
                         required
                         value={formData.email}
                         onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
@@ -581,6 +583,8 @@ export default function WebinarRegister() {
                       </label>
                       <input
                         type="email"
+                        inputMode="email"
+                        autoComplete="email"
                         required
                         value={formData.email}
                         onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}

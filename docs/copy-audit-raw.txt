@@ -1,0 +1,1080 @@
+================================================================================
+HEALING HEARTS WEBSITE — FULL COPY AUDIT
+Generated: 2026-03-25
+================================================================================
+All customer-facing text extracted verbatim from source files.
+Organized by category for voice consistency and accuracy review.
+================================================================================
+
+
+=== SECTION: APPLICATION FORM (src/pages/Apply.jsx) ===
+
+--- Page Meta ---
+Title: Apply
+Description: Apply for the Healing Hearts relationship coaching program. A short, confidential application to help us understand where you are.
+
+--- Intro Screen (Step 0) ---
+Heading: Apply for Healing Hearts
+Body: This short application helps us understand where you are so we can recommend the right path forward for your relationship.
+Trust Signal 1: 100% confidential
+Trust Signal 2: Takes about 5 minutes
+CTA Button: Begin Application
+
+--- Step 1: Contact Info ---
+Heading: Let's start with the basics.
+Step Indicator: Step 1 of 5
+
+Field Label: Your Name *
+Placeholder: Jeff & Trisha
+
+Field Label: Email Address *
+Placeholder: you@example.com
+
+Field Label: Phone (optional)
+Placeholder: (555) 123-4567
+
+--- Step 2: Relationship ---
+Heading: Tell us about your relationship.
+Step Indicator: Step 2 of 5
+
+Field Label: Relationship Status *
+Options: Married | Separated | Engaged | Dating
+
+Field Label: How long have you been together?
+Placeholder: e.g. 12 years
+
+Field Label: How would you rate your relationship right now? (1-10)
+Slider Left Label: Struggling
+Slider Right Label: Thriving
+
+--- Step 3: Challenges ---
+Heading: What are you facing?
+Step Indicator: Step 3 of 5
+
+Field Label: What is the biggest challenge in your relationship right now? *
+Placeholder: Be as open as you're comfortable being...
+
+Field Label: Have you tried counseling or coaching before? If so, what happened?
+Placeholder: Optional -- but it helps us understand your experience.
+
+Field Label: Is your partner aware you're exploring this?
+Options: Yes | No
+
+Field Label: Is your partner willing to participate?
+Options: Yes | Not yet | Not sure
+
+--- Step 4: Readiness ---
+Heading: Where do you want to go?
+Step Indicator: Step 4 of 5
+
+Field Label: What would your ideal outcome look like?
+Placeholder: Imagine your relationship 6 months from now...
+
+Field Label: How soon are you looking to start?
+Options: ASAP | Within 3 months | No rush
+
+Field Label: What level of investment feels right for transforming your relationship?
+Options: Under $5K | $5K-$10K | $10K-$20K | Over $20K
+
+--- Step 5: Final ---
+Heading: Almost there.
+Step Indicator: Step 5 of 5
+
+Field Label: Does faith play a role in your relationship? If so, how?
+Placeholder: Optional -- helps us tailor the experience.
+
+Field Label: How did you hear about Healing Hearts?
+Placeholder: e.g. Instagram, a friend, Google...
+
+Field Label: Anything else you'd like us to know?
+Placeholder: Optional -- share whatever feels important.
+
+--- Navigation & Buttons ---
+Back Button: Back
+Continue Button: Continue
+Submit Button (idle): Submit Application
+Submit Button (sending): Submitting...
+
+--- Validation Error Messages ---
+Name is required.
+Email is required.
+Please enter a valid email address.
+Please select your relationship status.
+Please describe your biggest challenge.
+
+--- Submission Error Messages ---
+Something went wrong. Please try again.
+Unable to submit. Please try again or email us at hello@healingheartscourse.com
+
+
+=== SECTION: APPLICATION SUCCESS (src/pages/ApplicationSuccess.jsx) ===
+
+--- Page Meta ---
+Title: Application Received
+Description: Thank you for applying to Healing Hearts. We will be in touch shortly.
+
+--- Page Content ---
+Heading: Application Received
+Body Paragraph 1: Thank you for taking this brave step. We have received your application and will review it personally.
+Body Paragraph 2: Check your inbox for a confirmation email. We typically respond within 48 hours.
+CTA Button 1: Try the 7-Day Spark Challenge
+CTA Button 2: Return Home
+
+
+=== SECTION: BOOK CALL PAGE (src/pages/BookCall.jsx) ===
+
+--- Page Meta ---
+Title: Schedule a Conversation | Healing Hearts
+Description: Book a free conversation with Jeff and Trisha to explore whether Healing Hearts is right for you.
+
+--- Page Content ---
+Heading: Schedule a Conversation
+Subheading: This is not a sales call. It is a chance for Jeff and Trisha to hear your story and for you to experience what coaching with us feels like.
+
+Trust Signal 1: 30 minutes
+Trust Signal 2: No pressure, no pitch
+Trust Signal 3: Completely confidential
+
+Fallback Text: Having trouble with the calendar? Email us directly and we will find a time that works.
+Fallback Email: hello@healingheartscourse.com (subject: Consultation Request)
+
+
+=== SECTION: COMING SOON / YOUR NEXT STEP (src/pages/ComingSoon.jsx) ===
+
+--- Page Meta ---
+Title: Your Next Step
+Description: Take the next step toward healing your relationship. Apply for the Healing Hearts program or schedule a conversation.
+
+--- Page Content ---
+Heading: Your Next Step
+Body Paragraph 1: You're here because something in your relationship matters enough to fight for. That already says something powerful about you.
+Body Paragraph 2: Whether you're ready to dive in or just want to have a conversation first, there's a path forward waiting for you.
+CTA Button 1: Apply for Healing Hearts
+CTA Button 2: Schedule a Conversation
+CTA Link: Or try the free 7-Day Challenge
+
+
+=== SECTION: TESTIMONIALS PAGE (src/pages/Testimonials.jsx) ===
+
+--- Page Meta ---
+Title: Testimonials
+Description: Real stories from couples who transformed their relationships with Healing Hearts coaching and the SPARK Method.
+
+--- Page Header ---
+Label: Stories of Healing
+Heading: Real couples. Real struggles. Real transformation.
+Subheading: We don't share these stories to sell you anything. We share them because when you're in the darkest season of your marriage, sometimes the most powerful thing you can hear is that someone else made it through.
+
+--- Testimonial 1 ---
+Quote: We were two weeks from filing when we found Healing Hearts. I'm not exaggerating when I say the SPARK Method saved us. Not because it was magic -- but because it gave us something to DO when everything felt hopeless.
+Author: K. & R.
+Meta: Married 11 years
+
+--- Testimonial 2 ---
+Quote: The Zones of Resilience concept was a game-changer for us. My husband is a physician and he'd come home in Blue Zone every night -- completely shut down. I used to take it personally. Now I understand it's his nervous system, not his heart.
+Author: S.
+Meta: Physician's spouse, married 9 years
+
+--- Testimonial 3 ---
+Quote: I always thought I was 'the logical one' in our marriage. Turns out I was just in Blue Zone so often that I'd convinced myself numbness was rationality. Learning about my Critter Brain cracked me open in the best way.
+Author: T.
+Meta: Married 16 years
+
+--- Testimonial 4 ---
+Quote: What I love about this program is that it doesn't make you feel broken. Jeff and Trisha talk about patterns like they're outdated software, not character flaws. That distinction matters.
+Author: L. & M.
+Meta: Married 7 years
+
+--- Testimonial 5 ---
+Quote: The Core Wounds module hit different. I finally understood why a simple comment from my wife about the dishes could send me into a spiral. It wasn't about the dishes. It was about the Unworthiness wound I've been carrying since I was eight.
+Author: J.
+Meta: Married 12 years
+
+--- CTA Section (Bottom of Page) ---
+Heading: Ready to Write Your Own Story?
+Body: Every couple on this page started exactly where you are now. The only difference is they decided to take the next step.
+CTA Button 1: Apply for Healing Hearts
+CTA Button 2: Not ready yet? Try the Free Challenge
+
+
+=== SECTION: BRIDGE EMAILS — SPARK DAY 8 (api/_emails/spark-day-8.js) ===
+
+--- Email Metadata ---
+Subject: The spark was just the beginning
+Preview Text: A 7-day challenge can light a match. It cannot rebuild a house.
+
+--- Email Body ---
+Heading: The Spark Was Just the Beginning
+
+Hey there -- congratulations. You just finished seven days of intentional connection. That is not a small thing. Most people never even try. You showed up, day after day, and that says something real about your heart.
+
+So let me be honest with you for a moment.
+
+A 7-day challenge can light a match. It cannot rebuild a house.
+
+The patterns running your relationship -- the way you argue, the way you shut down, the way you avoid the hard conversations -- those have been building for years. Sometimes decades. They did not form in a week, and they will not unravel in one either.
+
+[Callout:] The spark you felt this week? That is real. But it needs somewhere to go. Without deeper work, most couples feel that initial glow fade within a few weeks -- and then they assume nothing can change.
+
+That is not true. Something can change. Something already did -- you proved that this week.
+
+The question is: what comes next?
+
+Over the next seven days, I want to share some things with you -- stories, tools, and honest conversations about what it looks like to do the deeper work. No pressure. No sales countdown timers. Just the truth about what becomes possible when two people decide their marriage is worth fighting for.
+
+[Sign-off:] I am so glad you are here. Truly.
+
+[Teaser for next email:] A couple who was two weeks from filing -- and what happened next.
+
+
+=== SECTION: BRIDGE EMAILS — SPARK DAY 9 (api/_emails/spark-day-9.js) ===
+
+--- Email Metadata ---
+Subject: They were two weeks from filing
+Preview Text: He had already talked to an attorney. She was looking at apartments.
+
+--- Email Body ---
+Heading: They Were Two Weeks From Filing
+
+David had already talked to an attorney. Breanne was looking at apartments. They had not had a real conversation in months -- just logistics about the kids and cold silences in between.
+
+When they walked into their first session, David sat on the far end of the couch. Arms crossed. He looked like a man who had already made his decision.
+
+I asked him one question: "When was the last time you felt truly safe with Breanne?"
+
+He was quiet for a long time. Then he said, barely above a whisper:
+
+[Callout:] "Our honeymoon. I did not know I was allowed to be that open with someone."
+
+Breanne started crying. Not because she was sad -- because she had never heard him say that. In sixteen years of marriage, she had never known that their honeymoon was the last time he felt safe enough to be fully himself.
+
+That moment cracked something open.
+
+What Changed
+
+It was not instant. There were hard weeks. There were sessions where one of them wanted to quit. But they kept showing up. They learned how their nervous systems were hijacking every conversation. They learned how to actually hear each other instead of just defending themselves.
+
+Six months later, Breanne sent me a message. Just one line:
+
+[Callout:] "I have my husband back."
+
+David and Breanne are not special. They are not unusually brave or emotionally gifted. They are two ordinary people who decided to do something extraordinary -- they chose to fight for their marriage instead of against each other.
+
+This is what becomes possible when you do the deep work. Not surface-level tips. Not communication hacks. The real, honest, sometimes uncomfortable work of learning who you are together -- and who you could be.
+
+[Sign-off:] Their story is not unique. I have seen it happen again and again. And it starts with the same decision you already made when you signed up for the Spark Challenge -- the decision to try.
+
+[Teaser for next email:] The real reason your arguments last for hours (and what to do about it).
+
+
+=== SECTION: BRIDGE EMAILS — SPARK DAY 10 (api/_emails/spark-day-10.js) ===
+
+--- Email Metadata ---
+Subject: The real reason your arguments last hours
+Preview Text: An emotion lasts about 90 seconds. So why do your fights last all night?
+
+--- Email Body ---
+Heading: The Real Reason Your Arguments Last Hours
+
+Here is something most people do not know: a single emotion -- anger, hurt, fear -- lasts about 90 seconds in your body. Ninety seconds. That is it. The neurochemical surge rises, peaks, and fades in under two minutes.
+
+So why do your arguments last for hours?
+
+Because your brain has two operating systems, and the wrong one keeps taking the wheel.
+
+Critter Brain vs. CEO Brain
+
+Jeff and I teach a concept we call the Critter Brain and the CEO Brain. Your Critter Brain is the ancient, survival-driven part of you -- the part that scans for threats, reacts in milliseconds, and cares about one thing: keeping you alive. It does not do nuance. It does not do empathy. It does fight, flight, freeze, and fawn.
+
+Your CEO Brain is the thoughtful, reflective part -- the part that can see your partner's perspective, choose your words carefully, and remember that this person is not actually your enemy.
+
+[Callout:] Here is the problem: when your Critter Brain activates, it shuts your CEO Brain out of the room. And in most couples, when one person's Critter Brain fires, it triggers the other person's Critter Brain. Now you have two survival systems locked in combat -- and neither person has access to the part of their brain that could actually resolve the conflict.
+
+That is why arguments last hours. It is not one emotion. It is a cascade of re-triggers -- your Critter Brain firing, their Critter Brain firing back, over and over, each time resetting that 90-second clock.
+
+Three Things to Try Tonight
+
+1. Name it out loud. When you feel the surge, say: "My Critter Brain just activated." This sounds simple, but naming it engages your CEO Brain and gives your partner a signal that you are not attacking -- you are overwhelmed.
+
+2. Take a 20-minute reset. When both Critter Brains are running, no amount of talking will help. Agree to pause for 20 minutes -- not to avoid the conversation, but to let your nervous systems calm down so your CEO Brains can come back online.
+
+3. Return with curiosity. After the reset, start with a question instead of a statement. "What were you feeling when that happened?" is a CEO Brain move. "You always do this" is pure Critter.
+
+These are not tricks. They are based on how your nervous system actually works. And when you understand the science behind your fights, everything starts to shift.
+
+This is exactly the kind of deep work we do in the Healing Hearts program -- not just tips, but a real understanding of why your relationship works the way it does and how to change it at the root.
+
+[CTA Button:] Learn More About the Full Program -> https://healingheartscourse.com/apply
+
+[Sign-off:] Try the 20-minute reset tonight. You might be surprised what happens when two CEO Brains finally get to sit down together.
+
+[Teaser for next email:] The question nobody asks -- and the cost of not asking it.
+
+
+=== SECTION: BRIDGE EMAILS — SPARK DAY 11 (api/_emails/spark-day-11.js) ===
+
+--- Email Metadata ---
+Subject: The question nobody asks
+Preview Text: What is staying stuck actually costing you?
+
+--- Email Body ---
+Heading: The Question Nobody Asks
+
+Most couples I work with have thought about what it would cost to get help. The time. The vulnerability. The risk of digging into things that feel safer left buried.
+
+But almost nobody asks the other question:
+
+[Callout:] What is staying stuck actually costing you?
+
+Not in dollars. In the things that matter.
+
+The Cost You Are Already Paying
+
+It is the bedtime conversations that stopped. You used to talk about everything -- your fears, your dreams, the weird thought you had in the shower. Now the last thing you say before sleep is "goodnight." Or nothing at all.
+
+It is your kids watching. They do not miss as much as you think. They see the way you avoid each other in the kitchen. They notice when one of you leaves the room as soon as the other walks in. They are learning right now what love looks like -- and what it does not.
+
+It is the dreams you stopped mentioning. The trip you wanted to take together. The business you wanted to start. The version of your marriage you imagined on your wedding day. At some point, you stopped bringing those things up -- not because you stopped wanting them, but because it hurt too much to want something that felt impossible.
+
+It is the slow, quiet erosion of hope. Not a dramatic breaking point -- just a gradual settling into "this is just how it is."
+
+[Callout:] "The couples who wait for the perfect time are the same couples who eventually run out of time." -- Jeff Jamison, DO
+
+I am not saying this to create urgency or pressure. I am saying it because I have sat across from hundreds of couples, and the ones who wish they had started sooner always outnumber the ones who wish they had waited.
+
+The investment in your marriage is not really about the program or the course or the sessions. It is about deciding that the life you are living right now is not the life you are willing to settle for.
+
+[CTA Button:] Learn More About Healing Hearts -> https://healingheartscourse.com/apply
+
+[Sign-off:] We are here whenever you are ready. No expiration date, no countdown. Just an open door.
+
+[Teaser for next email:] Jeff and Trisha are going live -- and you are invited.
+
+
+=== SECTION: BRIDGE EMAILS — SPARK DAY 12 (api/_emails/spark-day-12.js) ===
+
+--- Email Metadata ---
+Subject: Jeff and Trisha are going live
+Preview Text: A live workshop on the nervous system patterns running your marriage.
+
+--- Email Body ---
+Heading: Jeff and Trisha Are Going Live
+
+We are hosting a live workshop, and we would love for you to be there.
+
+This is not a quick webinar with ten minutes of content and forty minutes of selling. Jeff and I teach for over an hour before we ever mention our program. We believe that if we cannot help you in sixty minutes, we have not earned the right to ask for more of your time.
+
+Here is what we will cover:
+
+- The nervous system patterns running your marriage -- why your body reacts before your brain catches up, and how to interrupt the cycle
+- The one question that reveals the real issue -- most couples fight about the wrong thing for years. We will show you how to find what is actually underneath.
+- What 8 months of deep work looks like -- a transparent walkthrough of the Healing Hearts journey, from the first module to the transformation on the other side
+- Live Q&A with Jeff and Trisha -- bring your real questions. Nothing is off limits.
+
+[Callout:] "This is not a pitch disguised as a workshop. We teach for over an hour before we ever mention our program." -- Trisha
+
+Whether you are on the fence about getting help, curious about what the Healing Hearts program actually involves, or just want to learn something new about how your relationship works -- this workshop is for you.
+
+Seats are limited because we keep these small enough for real conversation.
+
+[CTA Button:] Save Your Spot -> https://healingheartscourse.com/webinar
+
+[Sign-off:] We would love to see you there. Come as you are -- no prep required, no pressure to do anything but learn.
+
+[Teaser for next email:] What happened after they said yes -- another transformation story.
+
+
+=== SECTION: BRIDGE EMAILS — SPARK DAY 13 (api/_emails/spark-day-13.js) ===
+
+--- Email Metadata ---
+Subject: What happened after they said yes
+Preview Text: She thought they were fine. Turns out fine was code for numb.
+
+--- Email Body ---
+Heading: What Happened After They Said Yes
+
+Michelle thought their marriage was fine. Not great, not terrible -- just fine. They did not fight much. They co-parented well. They were polite.
+
+It was her sister who said it first: "You two are like really good roommates."
+
+That line sat in her chest for weeks.
+
+When Michelle brought it up to Ryan, he shrugged. "I thought we were doing okay." But the more they talked -- really talked, for the first time in a long time -- the more they realized that "okay" had become code for numb.
+
+[Callout:] He did not know he was in what we call the Blue Zone every night -- emotionally checked out, running on autopilot, not because he did not care but because somewhere along the way he had decided that shutting down was safer than reaching out.
+
+She did not know that her constant cheerfulness was actually a fawn response -- performing happiness to keep the peace, while underneath she was lonely in her own home.
+
+The Slow Drift
+
+This is the pattern nobody warns you about. It is not the explosive fights or the dramatic betrayals. It is the slow drift -- two good people gradually becoming strangers while sharing a bed.
+
+Michelle and Ryan started the program not because their marriage was in crisis, but because they realized that "fine" was not the life they had promised each other.
+
+Four months in, Michelle sent me a voice message. She was laughing. She said:
+
+[Callout:] "We had a fight last Tuesday. And for the first time in maybe ever, we repaired it the same night. We actually talked about what was really going on. And then we laughed about it. I did not know that was possible for us."
+
+That is not a small thing. That is everything. The ability to fight, repair, and reconnect -- in the same night -- is what a healthy marriage looks like. Not the absence of conflict, but the confidence that conflict will not destroy you.
+
+If their story sounds like yours -- if "fine" is the word you keep using and it does not feel like enough anymore -- you are not alone. And there is a way forward.
+
+[CTA Button:] Learn More About the Program -> https://healingheartscourse.com/webinar
+
+[Sign-off:] Whether it is the workshop, the program, or just these emails -- we are glad you are here.
+
+[Teaser for next email:] Tomorrow is our last email together. I want to leave you with something important.
+
+
+=== SECTION: BRIDGE EMAILS — SPARK DAY 14 (api/_emails/spark-day-14.js) ===
+
+--- Email Metadata ---
+Subject: Is this the year your marriage changes?
+Preview Text: There is no expiration date on healing.
+
+--- Email Body ---
+Heading: Is This the Year Your Marriage Changes?
+
+This is our last email together -- at least for now -- and I want to be real with you.
+
+I do not know your story. I do not know what brought you to the Spark Challenge, what keeps you up at night, or what you are hoping for. But I know you are here, and that tells me something.
+
+It tells me you have not given up.
+
+Maybe you are in crisis and looking for a lifeline. Maybe you are in that quiet "fine" zone and wondering if this is really all there is. Maybe your marriage is actually pretty good and you want it to be great. Wherever you are, the fact that you spent two weeks reading these emails means something.
+
+[Callout:] There is no expiration date on healing. There is no deadline after which your marriage cannot change. I have seen couples come back from places that felt impossible -- and I have seen them do it at every age, every stage, and after every kind of hurt.
+
+So here is what I want you to know:
+
+The door is always open. If right now is the time, we are here. If you need six more months, we will still be here. If you never join our program but something in these emails shifted the way you see your partner -- that is enough. That matters.
+
+But if you are feeling that pull -- that quiet voice saying "maybe this is the year" -- I want to encourage you to listen to it. Not because I want your business, but because I have watched too many couples wait until the pain got unbearable before they asked for help. And every single one of them said the same thing: "I wish we had started sooner."
+
+[CTA Button:] Apply to the Healing Hearts Program -> https://healingheartscourse.com/apply
+
+Or if you would rather start with a conversation, you can schedule a free call with our team. No pressure, no obligations -- just a chance to talk about where you are and where you want to be.
+
+[Divider]
+
+Whatever you decide, Jeff and I are grateful you spent these two weeks with us. Your marriage has a story worth fighting for, and we believe that with our whole hearts.
+
+[Sign-off:] With love and hope for your journey,
+
+
+=== SECTION: APPLICATION EMAIL — RECEIVED (api/_emails/application-received.js) ===
+
+--- Email Metadata ---
+Subject: Your Healing Hearts Application Has Been Received
+Preview Text: We received your Healing Hearts application
+
+--- Email Body ---
+Heading: Thank You, [Name]
+
+We are honored that you are considering the Healing Hearts journey. Your application has been received, and our team will review it within 24-48 hours.
+
+[Callout:] What happens next: One of our team members will reach out to schedule a conversation with Jeff and Trisha. This is not a sales call -- it is a chance for us to hear your story and for you to experience what working with us feels like.
+
+In the meantime, if you have not already, we invite you to explore our free resources and the 7-Day Spark Challenge.
+
+[CTA Button:] Explore Free Resources -> https://healingheartscourse.com/resources
+
+[Sign-off:] We are grateful you are here.
+
+
+=== SECTION: APPLICATION EMAIL — TEAM NOTIFY (api/_emails/application-team-notify.js) ===
+
+--- Email Metadata ---
+Subject: New HH Application: [Name] ([urgency or "no urgency"])
+Preview Text: New application from [Name]
+
+--- Email Body (Internal/Team) ---
+Heading: New Application Received
+
+[Qualification flags are auto-generated based on form responses:]
+- Partner willing
+- Partner NOT willing
+- Budget aligned
+- Budget concern
+- High urgency
+
+[Data table with fields:]
+- Name
+- Email
+- Phone (or "Not provided")
+- Relationship
+- Years Together
+- Rating (visual bar /10)
+- Biggest Challenge
+- Tried Before (or "Not provided")
+- Partner Aware (or "Not provided")
+- Partner Willing (or "Not provided")
+- Ideal Outcome (or "Not provided")
+- Urgency (or "Not provided")
+- Investment Readiness (or "Not provided")
+- Faith Role (or "Not provided")
+- How Heard (or "Not provided")
+- Additional Notes (or "None")
+
+Footer: Review this application and update the status in Supabase. If qualified, send the Calendly booking link.
+
+
+=== SECTION: WEBINAR REGISTRATION PAGE (src/pages/WebinarRegister.jsx) ===
+
+--- Page Meta ---
+Title: Join Our Live Workshop
+Description: Free live workshop with Jeff & Trisha. Learn the nervous system patterns that hijack your conversations and the one question that reveals what your conflict is really about.
+
+--- "What You'll Learn" Bullets (Used in All 3 States) ---
+1. Why most relationship advice treats symptoms instead of causes
+2. The nervous system pattern that hijacks your conversations
+3. The one question that reveals whether your conflict is about the issue or a much older wound
+4. What 8 months of deep work actually looks like
+
+--- FAQ Content ---
+Q: Is this really free?
+A: Yes, completely free. No credit card, no hidden upsells during the workshop. We teach for 80 minutes, then spend the last 15 minutes sharing how our program works for those who want to go deeper.
+
+Q: Do both of us need to attend?
+A: Ideally, yes. The workshop is designed for couples, and you'll get the most out of it together. But if your partner isn't ready, come on your own -- you'll still walk away with tools you can use immediately.
+
+Q: How long is the workshop?
+A: About 90 minutes. We spend roughly 80% of the time teaching real frameworks and tools you can use that night. The last 15-20 minutes cover how Healing Hearts works for couples who want to go deeper.
+
+Q: What happens after the workshop?
+A: You'll receive a replay link and a summary of the key frameworks we covered. If you want to explore the full Healing Hearts program, we'll share how to apply -- but there's zero pressure.
+
+Q: Is this a sales pitch disguised as a workshop?
+A: No. We lead with value because that's who we are. Jeff and Trisha teach real, clinically-informed content. If at the end you want to learn more about working with us, that option is there. Most people tell us the workshop alone gave them something they could use immediately.
+
+--- Trust Signals ---
+1. Free
+2. 80% teaching, 20% invitation
+3. No pressure
+
+--- STATE 1: Upcoming Webinar Exists ---
+Label: Free Live Workshop
+Heading: Join Trisha & Jeff Live
+[Dynamic: webinar title displayed if present]
+
+Section Heading: What You'll Learn
+[Bullets listed above]
+
+Registration Form Heading: Reserve Your Spot
+Field Label: Your Name *
+Placeholder: Jeff & Trisha
+Field Label: Email Address *
+Placeholder: you@example.com
+Submit Button (idle): Register for Free
+Submit Button (loading): Registering...
+Privacy Note: Your information is always kept private.
+
+Success State Heading: You're registered!
+Success State Body: Check your inbox for a confirmation email.
+
+Error Messages:
+- Please enter a valid email address.
+- Something went wrong. Please try again.
+- Unable to register. Please try again or email us at hello@healingheartscourse.com
+
+Replay Link Text: Can't make it live?
+Replay Link CTA: Watch the most recent replay
+
+Section Heading: Questions?
+[FAQ accordion listed above]
+
+--- STATE 2: No Upcoming Webinar + Replay Exists ---
+Label: Workshop Replay Available
+Heading: Watch Our Most Recent Workshop
+[Dynamic: replay title displayed if present]
+CTA Button: Watch the Replay
+
+Section Heading: What You'll Learn
+[Bullets listed above]
+
+Waitlist Form Heading: Want to join live next time?
+Waitlist Form Body: Get notified when we announce the next live workshop.
+Field Label: Your Name
+Placeholder: Your name
+Field Label: Email Address *
+Placeholder: you@example.com
+Submit Button (idle): Join the Waitlist
+Submit Button (loading): Joining...
+Privacy Note: Your information is always kept private.
+
+Waitlist Success Heading: You're on the list!
+Waitlist Success Body: We'll email you as soon as the next live workshop is scheduled.
+
+Section Heading: Questions?
+[FAQ accordion listed above]
+
+--- STATE 3: No Webinar at All ---
+Label: Live Workshops
+Heading: Live Workshops Coming Soon
+Body: Jeff and Trisha are preparing something special. Be the first to know when our next live workshop is announced.
+
+Section Heading: What to Expect
+[Bullets listed above]
+
+Waitlist Form Heading: Join the Waitlist
+Waitlist Form Body: Get notified the moment registration opens.
+Field Label: Email Address *
+Placeholder: you@example.com
+Submit Button (idle): Notify Me
+Submit Button (loading): Joining...
+Privacy Note: Your information is always kept private.
+
+Success Heading: You're on the list!
+Success Body: We'll email you as soon as the next live workshop is scheduled.
+
+
+=== SECTION: WEBINAR LIVE PAGE (src/pages/WebinarLive.jsx) ===
+
+--- Page Meta ---
+Title: Live Workshop | Healing Hearts
+Description: Watch the Healing Hearts live workshop.
+
+--- State 1: Webinar Is LIVE ---
+Live Indicator: Live Now
+Heading: Healing Hearts Live Workshop
+iframe Title: Healing Hearts Live Workshop
+Fallback Text: Having trouble? Open in a new tab
+Post-Workshop Text: After the workshop:
+Post-Workshop CTA: Apply for Healing Hearts
+
+--- State 2: Webinar Is SCHEDULED (Not Yet Live) ---
+Heading: The Workshop Hasn't Started Yet
+Body 1: We go live on:
+Body 2: [Dynamic date/time]
+Body 3: Come back at that time, or we'll send you an email reminder.
+CTA Button: Register for the Workshop
+
+
+=== SECTION: WEBINAR REPLAY PAGE (src/pages/WebinarReplay.jsx) ===
+
+--- Page Meta ---
+Title: Workshop Replay
+Description: Watch our most recent Healing Hearts workshop and discover the science-backed tools that help couples move from disconnection to deep, lasting connection.
+
+--- Replay Testimonials ---
+Testimonial 1:
+Quote: The workshop was the first time I felt like someone actually understood what we were going through. Jeff and Trisha don't just teach concepts -- they live them.
+Author: A. & D.
+Meta: Married 8 years
+
+Testimonial 2:
+Quote: I almost didn't watch. I'm so glad I did. The part about the Critter Brain completely reframed how I see our arguments. We're not broken -- we're just wired for survival.
+Author: M.
+Meta: Married 14 years
+
+Testimonial 3:
+Quote: We watched it together on a Sunday morning with coffee. By the end we were holding hands and hadn't done that in months.
+Author: R. & S.
+Meta: Married 6 years
+
+--- State 1: Replay Available ---
+Heading: Watch the Workshop
+[Dynamic: replay title displayed]
+Video Fallback: Your browser does not support video playback.
+
+CTA Heading: If This Resonated...
+CTA Body: The workshop is just the beginning. Healing Hearts gives you and your partner a proven path from disconnection to deep, lasting connection.
+CTA Button 1: Apply for Healing Hearts
+CTA Link: Schedule a Conversation
+
+Next Live Workshop Box:
+Heading: Next Live Workshop
+[Dynamic: title, date, time]
+CTA Button: Register Free
+
+--- State 2: No Replay Available ---
+Heading: Replay Coming Soon
+Body: We are preparing the workshop replay. In the meantime, here are two ways to start your healing journey today.
+CTA Button 1: Join Us Live at the Next Workshop
+CTA Button 2: Try the Free 7-Day Spark Challenge
+Fallback: Questions? Email us and we will let you know when the replay is ready.
+Fallback Email: hello@healingheartscourse.com (subject: Workshop Replay)
+
+
+=== SECTION: WEBINAR EMAIL — CONFIRMATION (api/_emails/webinar-confirmation.js) ===
+
+--- Email Metadata ---
+Subject: You're registered: [Webinar Title]
+Preview Text: You're registered for [Webinar Title] -- we can't wait to see you there!
+
+--- Email Body ---
+Heading: You're In, [Name]!
+
+Thank you so much for registering! We are truly excited to have you join us for [Webinar Title].
+
+[Callout:] When: [Formatted Date/Time]
+Duration: [X] minutes
+
+This is going to be a real, honest conversation about what it takes to rebuild connection in your marriage -- no fluff, no sales pitch, just the stuff that actually works. Jeff and I have been in the trenches ourselves, and we are sharing what we have learned the hard way so you don't have to figure it out alone.
+
+Mark your calendar and show up ready. Even if your partner can't make it, you being here matters more than you know.
+
+[CTA Button:] View Webinar Details -> https://healingheartscourse.com/webinar
+
+A quick tip: Add this event to your calendar right now so it does not slip away. Life gets busy -- we get it. But this hour could change everything.
+
+[Sign-off:] Cheering for you and your marriage,
+
+
+=== SECTION: WEBINAR EMAIL — REMINDER DAY BEFORE (api/_emails/webinar-reminder-day-before.js) ===
+
+--- Email Metadata ---
+Subject: Tomorrow: [Webinar Title]
+Preview Text: Your seat is saved for tomorrow -- here is what to expect.
+
+--- Email Body ---
+Heading: Tomorrow Is the Day, [Name]
+
+Just a warm reminder -- our live workshop, [Webinar Title], is happening tomorrow.
+
+When: [Formatted Date/Time]
+
+Here is what you can expect to walk away with:
+
+- How to recognize when your "Critter Brain" is running the conversation -- and how to hand the keys back to your CEO Brain
+- The 90-Second Wave technique that can change the way you respond to conflict starting tonight
+- Why most couples get stuck in the same argument for years (and the pattern that keeps it looping)
+- A practical framework you and your partner can use long after the workshop ends
+
+[Callout:] If your partner is open to it, bring them along. This is the kind of experience that lands differently when you share it together.
+
+[CTA Button:] Get Ready -> https://healingheartscourse.com/webinar/live
+
+We will send you one more reminder with the join link right before we go live. For now, just mark your calendar and come with an open heart.
+
+[Sign-off:] We cannot wait to see you there.
+
+
+=== SECTION: WEBINAR EMAIL — REMINDER DAY OF (api/_emails/webinar-reminder-day-of.js) ===
+
+--- Email Metadata ---
+Subject: Starting in 2 hours: [Webinar Title]
+Preview Text: We are going live soon -- click below to join when it is time.
+
+--- Email Body ---
+Heading: We Are Almost Live, [Name]
+
+[Webinar Title] starts in about two hours -- [Formatted Date/Time].
+
+Find a comfortable spot, grab something warm to drink, and click below to join when it is time. If your partner is with you, even better.
+
+[CTA Button:] Join the Workshop -> [Riverside audience URL]
+
+If the button above does not work, you can also join from our webinar page.
+
+We will be there right when it starts. See you soon.
+
+[Sign-off:] Here we go.
+
+
+=== SECTION: WEBINAR EMAIL — FOLLOW-UP 1 / SAME DAY (api/_emails/webinar-followup-1.js) ===
+
+--- Email Metadata ---
+Subject: The replay is ready + what to do next
+Preview Text: Whether you were there live or not, we saved a seat for you.
+
+--- Email Body ---
+Heading: Thank You, [Name]
+
+Whether you joined us live for [Webinar Title] or life had other plans today -- we are glad you are here. The fact that you signed up tells us something about your heart.
+
+If you missed it, or if you want to revisit a section that hit close to home, the full replay is ready for you:
+
+[CTA Button:] Watch the Replay -> [Replay URL or https://healingheartscourse.com/webinar/replay]
+
+[Callout:] Something Jeff often says: "Insight without action is just entertainment." If something resonated with you today -- a phrase, a framework, a moment of recognition -- that is worth paying attention to.
+
+So here is a gentle question: what do you want to do with what you felt?
+
+If you are curious about what the deeper work looks like -- the kind of sustained, guided transformation that turns a single workshop into lasting change -- we would love to tell you more.
+
+[CTA Button:] Apply to the Healing Hearts Program -> https://healingheartscourse.com/apply
+
+No commitment. No pressure. Just a chance to see if this is the right fit for where you are.
+
+[Sign-off:] Grateful you were part of this.
+
+
+=== SECTION: WEBINAR EMAIL — FOLLOW-UP 2 / DAY +1 (api/_emails/webinar-followup-2.js) ===
+
+--- Email Metadata ---
+Subject: What happened after they said yes
+Preview Text: They almost did not come. She had to convince him in the parking lot.
+
+--- Email Body ---
+Heading: What Happened After They Said Yes
+
+[Name], I want to tell you about a couple I will call Marcus and Eliana.
+
+They signed up for a workshop a lot like the one you just attended. Eliana registered. Marcus agreed to come, but only because she asked three times. He sat in the back row with his arms crossed and spent the first twenty minutes checking his phone.
+
+But somewhere around the halfway point, something shifted. Jeff was explaining how the Critter Brain works -- how it hijacks a conversation and turns your partner into a threat instead of a teammate. Marcus put his phone down. He looked at Eliana for the first time all evening.
+
+[Callout:] "That is exactly what I do," he said afterward in the car. "I shut down because it feels like I am being attacked. But she is not attacking me. She is trying to reach me."
+
+That car ride conversation lasted two hours. They sat in their driveway and talked in a way they had not talked in years.
+
+The Decision
+
+A week later, they applied to the Healing Hearts program. Not because the workshop fixed everything -- it did not. But because it showed them what was possible. It gave them a shared language for the patterns they had been stuck in.
+
+Over the next eight weeks, they learned to identify their Core Wounds -- the deeper injuries underneath every surface-level argument. They practiced the 90-Second Wave when things got heated. They started having conversations that actually went somewhere instead of looping back to the same hurt.
+
+Six Months Later
+
+Eliana told me something I will never forget:
+
+[Callout:] "I used to dread coming home. Now I look forward to it. Not because everything is perfect -- but because I finally feel like we are on the same team."
+
+Marcus and Eliana are not extraordinary people. They are a regular couple who made one decision -- to stop waiting for things to get better on their own and start doing the work together.
+
+That decision is available to you too.
+
+[CTA Button:] See If Healing Hearts Is Right for You -> https://healingheartscourse.com/apply
+
+[Sign-off:] Every story of transformation starts with a single step.
+
+
+=== SECTION: WEBINAR EMAIL — FOLLOW-UP 3 / DAY +3 (api/_emails/webinar-followup-3.js) ===
+
+--- Email Metadata ---
+Subject: The framework Jeff didn't have time to finish
+Preview Text: A gift from the workshop -- the Zones of Resilience explained.
+
+--- Email Body ---
+Heading: The Framework Jeff Ran Out of Time For
+
+[Name], during the workshop Jeff mentioned something called the Zones of Resilience but did not have time to go deep. A few of you wrote in asking about it, so consider this a gift from the workshop -- just for you.
+
+This is one of the most practical tools we teach inside Healing Hearts, and once you see it, you will start noticing it everywhere in your relationship.
+
+The Four Zones
+
+Green Zone -- Connected and Calm
+This is where you want to be. You feel safe. You can listen without defending. You can disagree without it feeling like a threat. Conversations are productive. Repair happens naturally.
+
+Yellow Zone -- Activated but Aware
+Your heart rate is rising. You notice tension in your chest or jaw. You can still think clearly, but you are starting to feel reactive. This is the critical moment -- because what you do here determines everything.
+
+Red Zone -- Flooded
+Your Critter Brain has taken over. You are in fight-or-flight. Anything your partner says feels like an attack. You say things you do not mean. You slam doors, raise your voice, or go completely cold. Productive conversation is biologically impossible here -- your prefrontal cortex has gone offline.
+
+Blue Zone -- Shutdown
+This is the freeze response. You go numb. You stonewall. You leave the room -- not to cool down, but to disappear. Your partner feels abandoned. You feel nothing, which is its own kind of pain.
+
+Try This Tonight
+
+Here is something you can practice right now, even without the full program:
+
+- Name your zone. Next time you feel a conversation heating up, pause and silently ask yourself: "What zone am I in right now?"
+- Catch the Yellow. Yellow is your window. If you can recognize it before you hit Red, you can choose a different response. Take a breath. Say "I need a minute" -- not to escape, but to stay present.
+- Share the language. Tell your partner about the zones. When you both have the same map, you can navigate together instead of against each other.
+
+[Callout:] The SPARK Method builds on this foundation. Once you understand your zones, you can learn to co-regulate -- to help each other come back to Green instead of pushing each other further into Red.
+
+This is just one piece of what we cover inside Healing Hearts. If you want the full framework -- with guided practice, live coaching, and the support of other couples doing the same work -- we would love to have you.
+
+[CTA Button:] Apply to Healing Hearts -> https://healingheartscourse.com/apply
+
+[Sign-off:] Use this tonight. See what happens.
+
+
+=== SECTION: WEBINAR EMAIL — FOLLOW-UP 4 / DAY +5 (api/_emails/webinar-followup-4.js) ===
+
+--- Email Metadata ---
+Subject: Applications close this week
+Preview Text: We keep our program intentionally small -- and we have a few spots left.
+
+--- Email Body ---
+Heading: A Quick Update on Enrollment
+
+[Name], I wanted to let you know where things stand.
+
+Applications for the next Healing Hearts cohort close at the end of this week. We keep our groups intentionally small -- usually eight to ten couples -- because the kind of work we do requires real attention. Not a lecture hall. Not a passive webinar. Actual, hands-on guidance with Jeff and our team walking alongside you.
+
+That means space is limited, and it fills up. Not because of artificial scarcity -- because we genuinely cannot support more couples than that and do it well.
+
+[Callout:] We have room for a few more couples in this cohort. If you have been thinking about it, this is a good time to take the next step.
+
+Here is what the application process looks like:
+
+You fill out a short form -- it takes about five minutes. We review it and reach out to schedule a brief conversation. That call is not a sales pitch. It is a chance for us to learn about your situation and for you to ask us anything. If it is a good fit, we will invite you to join. If it is not, we will tell you honestly and point you toward something that might be better.
+
+That is it. No hidden steps. No high-pressure closing.
+
+[CTA Button:] Submit Your Application -> https://healingheartscourse.com/apply
+
+If the timing is not right, that is completely okay. We run new cohorts regularly, and you are always welcome to apply when you are ready. But if that quiet voice has been nudging you -- this is worth listening to.
+
+[Sign-off:] We are here either way.
+
+
+=== SECTION: WEBINAR EMAIL — FOLLOW-UP 5 / DAY +7 (api/_emails/webinar-followup-5.js) ===
+
+--- Email Metadata ---
+Subject: Is this the year?
+Preview Text: There is no expiration date on healing.
+
+--- Email Body ---
+Heading: Is This the Year?
+
+[Name], this is the last email in this series -- and I want to be honest with you.
+
+I do not know your full story. I do not know what brought you to the workshop, what keeps you up at 2 AM, or what you are hoping for. But I know you showed up. You gave us your time and your attention, and that tells me something important about you.
+
+It tells me you have not given up.
+
+Maybe your marriage is in crisis and you are looking for a lifeline. Maybe you are in that quiet "fine" zone -- not terrible, but not what you dreamed of either. Maybe things are actually pretty good and you want them to be great. Wherever you are, the fact that you have been reading these emails means something.
+
+[Callout:] There is no expiration date on healing. There is no deadline after which your marriage cannot change. We have seen couples come back from places that felt impossible -- and they have done it at every age, every stage, and after every kind of hurt.
+
+So here is what I want you to know:
+
+The door is always open. If right now is the time, we are here. If you need six more months, we will still be here. If you never join our program but something from the workshop or these emails shifted the way you see your partner -- that is enough. That matters.
+
+But if you are feeling that pull -- that quiet voice saying "maybe this is the year" -- I want to encourage you to listen to it. Not because we want your business, but because we have watched too many couples wait until the pain got unbearable before they asked for help. And every single one of them said the same thing:
+
+[Callout:] "We wish we had started sooner."
+
+[CTA Button:] Apply to the Healing Hearts Program -> https://healingheartscourse.com/apply
+
+Or if you would rather start with a conversation, you can schedule a free call with our team. No pressure, no obligations -- just a chance to talk about where you are and where you want to be.
+
+[Divider]
+
+Whatever you decide, Jeff and I are grateful you spent this time with us. Your marriage has a story worth fighting for, and we believe that with our whole hearts.
+
+[Sign-off:] With love and hope for your journey,
+
+
+=== SECTION: MAKAYLA CLOSE PROCESS SOP — EMAIL TEMPLATES ===
+Source: C:\Users\chase\Documents\Mind Vault\Projects\healing-hearts\sops\2026-03-24-makayla-close-process.md
+
+--- Day 0 — Initial Follow-Up (Within 2 Hours of Consultation) ---
+
+Subject: It was wonderful to hear your story
+
+Hi [Name] and [Partner's Name],
+
+I am Makayla from the Healing Hearts team. Trisha and Jeff shared a bit about your conversation today, and I just wanted to reach out personally.
+
+First -- it takes real courage to have the kind of conversation you had today. That says something important about both of you and about your commitment to each other.
+
+I am here to answer any questions you might have about the program, the logistics, or anything else that would help you feel confident about your next step. No pressure, no rush -- just a real person ready to help.
+
+If it is helpful, here is a quick overview of how the program works:
+
+The Healing Hearts Blueprint -- 8 Months Together
+- 36 weekly coaching sessions (90 minutes each) with Trisha and Jeff via Zoom
+- 32 self-paced lessons in the online portal -- the frameworks, exercises, and tools
+- Direct access to your coaching team throughout the program
+
+Investment Options:
+- Pay in full: $15,997 (saves $1,000)
+- Monthly: $5,997 to start + 8 payments of $1,250
+- Quarterly: $5,997 to start + 3 payments of $3,334
+
+Take all the time you need. If you want to talk through anything -- even if it is just questions -- I am a phone call or email away.
+
+With warmth,
+Makayla
+Healing Hearts Team
+hello@healingheartscourse.com
+
+--- Day 2 — The Testimonial Email ---
+
+Subject: A story I thought you might relate to
+
+Hi [Name],
+
+I wanted to share something with you. One of the couples who went through the program told us this after their fourth month:
+
+"We had a fight last Tuesday. A real one. And for the first time in maybe ever, we repaired it the same night. Not perfectly. But we did it. And we went to bed on the same side."
+
+That is what this work does. Not perfection -- repair speed. The ability to come back to each other after the hard moments instead of building another wall.
+
+I do not know if their story sounds like yours, but I thought it might resonate.
+
+If you have any questions about the program or want to chat, I am here.
+
+Warmly,
+Makayla
+
+--- Day 4 — The Objection Handler ---
+
+Subject: A question most couples ask (but don't always say out loud)
+
+Hi [Name],
+
+I know making a decision like this is not small. And I have found that most couples who are thinking about it have one of two questions they are not sure how to ask:
+
+"Can we really afford this?"
+I understand. $15,997 is a significant investment. Here is how some of our couples have thought about it: weekly therapy at $150/session for a year is $7,800 -- and most couples tell us they see more progress in 8 months with us than in years of traditional counseling. We also have payment plans that bring the monthly investment to $1,250. And the pay-in-full option saves $1,000 if that works better for your family.
+
+"What if my partner is not fully on board?"
+This is more common than you might think. Often, one partner leads the charge and the other needs a bit more time. If it would help, Trisha would be happy to hop on a brief call with both of you -- no pressure, just a chance for your partner to ask questions directly.
+
+If either of these landed, or if you have a completely different question, just hit reply. I am here.
+
+Makayla
+
+--- Day 7 — The Value-Add ---
+
+Subject: Something I thought might help right now
+
+Hi [Name],
+
+No questions today -- just something I thought might be useful for you and [Partner] right now.
+
+[CHOOSE ONE based on Trisha's brief about their key challenge:]
+
+- If their issue is CONFLICT: "Here is our free guide on the 90-Second Wave -- the neuroscience behind why emotions flood you during arguments and how to ride it out instead of reacting. [Link to /resources]"
+- If their issue is DISCONNECTION: "Here is our 7-Day Spark Challenge -- small daily practices to rebuild connection without adding pressure. [Link to /spark-challenge]"
+- If their issue is COMMUNICATION: "Here is a quick framework called SPARK that gives you something to DO in the heat of the moment. [Link to /tools]"
+
+No strings attached. Just something you can try tonight.
+
+Makayla
+
+--- Day 10 — The Direct Invitation ---
+
+Subject: Checking in
+
+Hi [Name],
+
+I wanted to check in one more time. No pressure at all -- I just want to make sure you have everything you need to feel confident about your decision, whatever that decision is.
+
+If you are ready to get started, I can have you set up this week. Just reply "yes" and I will send over the enrollment details.
+
+If the timing is not right, that is completely okay too. We are not going anywhere.
+
+Either way, I am glad you and [Partner] took the step of talking with Trisha and Jeff. That matters.
+
+Makayla
+
+--- Day 14 — The Long-Term Nurture Transition ---
+
+Subject: No expiration date
+
+Hi [Name],
+
+This is my last dedicated follow-up -- not because we have given up on you, but because I respect your timeline.
+
+Here is what I want you to know: there is no expiration date on Healing Hearts. Whether you are ready today, next month, or next year, we will be here.
+
+If anything changes -- or if you just want to talk through it one more time -- reply to this email or book a conversation anytime at healingheartscourse.com/book.
+
+Your marriage is worth fighting for. And the fact that you explored this at all tells me you already know that.
+
+With hope,
+Makayla
+
+
+================================================================================
+END OF COPY AUDIT
+================================================================================

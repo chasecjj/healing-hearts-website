@@ -102,7 +102,7 @@ These are the content verticals from Healing Hearts that stand alone in natural 
 - **Experience:** 20+ years coaching couples
 - **Personal story:** Her own marriage crisis and recovery with Jeff (a physician — DO, FAAFP). This is the bridge between the health world and the relationship world. At natural health conferences, her personal story follows the exact speaker bio pattern that works: personal health/life crisis led to the work she does now.
 - **Nervous system bridge:** Trisha's unique position is that she connects body-based health (nervous system science, polyvagal theory, somatic awareness) to relationship healing. This is the positioning gap — no one else does this.
-- **Conference keynote:** Be Healthy Utah, April 17-18, 2026. 45-minute Saturday slot (longest block). Only relationship speaker at a 40+ speaker conference. Talk title: "Why Your Body Runs Your Relationships." Booth + talk combo for conversion.
+- **Conference keynote:** Be Healthy Utah, April 17-18, 2026. 45-minute Saturday slot (longest block). Only relationship speaker at a 40+ speaker conference. Talk title: "The Secret Behind How Your Brain Hijacks Relationships." Description: "Relationship stress is a health crisis. Discover how to tame your 'critter brain,' the hidden driver of conflict, using science-backed tools to calm stress, stop fighting, and reignite intimacy." Booth + talk combo for conversion.
 - **Teaching style:** Validation-first ("this makes sense" is her #1 phrase), metaphor-heavy (smoke alarm, Coca-Cola bottle, invisible backpack, trees, hamster wheel), somatic awareness before cognitive processing, gratitude closing ritual.
 
 ### Competitive Landscape

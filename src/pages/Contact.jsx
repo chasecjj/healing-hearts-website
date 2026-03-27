@@ -98,6 +98,8 @@ const ContactForm = () => {
           <label className="block font-outfit font-bold text-sm text-primary mb-2">Email Address *</label>
           <input
             type="email"
+            inputMode="email"
+            autoComplete="email"
             required
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}

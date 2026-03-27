@@ -224,6 +224,8 @@ function SignupForm({ formState, onSubmit, variant }) {
       >
         <Input
           type="email"
+          inputMode="email"
+          autoComplete="email"
           name="email"
           placeholder="you@example.com"
           aria-label="Email address"

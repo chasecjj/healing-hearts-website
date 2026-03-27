@@ -225,7 +225,7 @@ PHASE 2: BOOTH EXPERIENCE (Friday + Saturday)
 GOAL: Capture email from every interested visitor in < 60 seconds.
 
 BOOTH SETUP:
-  - Banner: "Why Your Body Runs Your Relationships" (matches talk title)
+  - Banner: "The Secret Behind How Your Brain Hijacks Relationships" (matches talk title)
   - QR code card (physical, 4x6 postcard stock):
     FRONT: "Is your nervous system hijacking your relationship?"
            + QR code + "Scan for a free 7-Day Spark Challenge"

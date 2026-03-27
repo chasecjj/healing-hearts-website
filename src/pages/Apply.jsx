@@ -214,6 +214,8 @@ export default function Apply() {
           <FieldLabel required>Email Address</FieldLabel>
           <input
             type="email"
+            inputMode="email"
+            autoComplete="email"
             value={data.email}
             onChange={(e) => update('email', e.target.value)}
             className={INPUT_CLASS}
