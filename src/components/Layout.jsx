@@ -99,14 +99,14 @@ const Navbar = () => {
         }`}
       >
         <Link to="/" className={`flex items-center flex-shrink-0 transition-opacity duration-500 hover:opacity-80 ${menuOpen ? 'opacity-90' : 'opacity-100'}`}>
-          <img src="/logo.png" alt="Healing Hearts Logo" className="h-8 md:h-10 w-auto object-contain" />
+          <img src="/logo.png" alt="Healing Hearts Logo" className={`h-8 md:h-10 w-auto object-contain transition-all duration-500 ${menuOpen ? 'brightness-0 invert' : ''}`} />
         </Link>
         <div className="hidden md:flex items-center gap-10 font-sans text-sm font-medium">
           <Link to="/about" className={`transition-colors duration-500 ${menuOpen ? 'text-background/70 hover:text-background' : location.pathname === '/about' ? 'text-accent font-semibold' : 'text-foreground/70 hover:text-accent'}`}>About Us</Link>
           <Link to="/programs" className={`transition-colors duration-500 ${menuOpen ? 'text-background/70 hover:text-background' : location.pathname === '/programs' ? 'text-accent font-semibold' : 'text-foreground/70 hover:text-accent'}`}>Programs</Link>
           <Link to="/journey" className={`transition-colors duration-500 ${menuOpen ? 'text-background/70 hover:text-background' : location.pathname === '/journey' ? 'text-accent font-semibold' : 'text-foreground/70 hover:text-accent'}`}>Your Journey</Link>
           <Link to="/tools" className={`transition-colors duration-500 ${menuOpen ? 'text-background/70 hover:text-background' : location.pathname === '/tools' ? 'text-accent font-semibold' : 'text-foreground/70 hover:text-accent'}`}>Tools</Link>
-          <Link to="/spark-challenge" className={`transition-colors duration-500 ${menuOpen ? 'text-accent hover:text-background' : location.pathname === '/spark-challenge' ? 'text-accent font-semibold' : 'text-accent hover:text-accent/80'}`}>Free Challenge</Link>
+          <Link to="/spark-challenge" className={`transition-colors duration-500 ${menuOpen ? 'text-white/90 hover:text-white' : location.pathname === '/spark-challenge' ? 'text-accent font-semibold' : 'text-accent hover:text-accent/80'}`}>Free Challenge</Link>
         </div>
         <div className="flex items-center gap-4">
           {user ? (
@@ -170,7 +170,7 @@ const Navbar = () => {
             <Link to="/contact" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
               Contact <ArrowRight className="w-6 h-6 md:w-8 md:h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
             </Link>
-            <Link to="/spark-challenge" className="menu-link font-drama italic text-4xl md:text-7xl text-accent hover:text-background transition-colors flex items-center gap-4 group">
+            <Link to="/spark-challenge" className="menu-link font-drama italic text-4xl md:text-7xl text-white/90 hover:text-white transition-colors flex items-center gap-4 group">
               Free Challenge <ArrowRight className="w-6 h-6 md:w-8 md:h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
             </Link>
           </div>

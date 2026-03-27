@@ -136,6 +136,7 @@ const HonestVersion = () => {
               alt="Jeff and Trisha Jamison, Healing Hearts founders"
               overlayClass="bg-primary/10"
               className="max-w-sm lg:max-w-md"
+              imgStyle={{ objectPosition: 'center 25%' }}
             />
             {/* Floating label box */}
             <div className="absolute -bottom-6 -right-6 lg:-right-12 bg-white p-6 rounded-[2rem] shadow-lg border border-primary/5 z-20 hidden md:block max-w-[250px]">

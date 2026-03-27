@@ -393,7 +393,7 @@ const TealQuote = () => {
   return (
     <section
       ref={containerRef}
-      className="relative py-24 md:py-32 overflow-hidden bg-primary"
+      className="relative py-32 md:py-40 overflow-hidden bg-primary"
     >
       {/* Botanical vine decoration */}
       <div className="absolute top-1/2 left-0 -translate-y-1/2 opacity-10 pointer-events-none" aria-hidden="true">
@@ -517,7 +517,7 @@ const ProgramsTeaser = () => {
               }}
             >
               {plan.popular && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-accent text-white px-5 py-1.5 rounded-full text-xs font-outfit uppercase tracking-wider font-semibold shadow-md">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white text-primary px-5 py-1.5 rounded-full text-xs font-outfit uppercase tracking-wider font-semibold shadow-md">
                   Most Transformative
                 </div>
               )}
@@ -532,7 +532,7 @@ const ProgramsTeaser = () => {
               <ul className="flex-grow space-y-5 mb-10">
                 {plan.features.map((feat, j) => (
                   <li key={j} className="flex items-start gap-3">
-                    <CheckCircle2 className={`w-5 h-5 flex-shrink-0 ${plan.popular ? 'text-accent' : 'text-primary/40'}`} />
+                    <CheckCircle2 className={`w-5 h-5 flex-shrink-0 ${plan.popular ? 'text-white/70' : 'text-primary/40'}`} />
                     <span className={`text-sm font-sans font-light ${plan.popular ? 'text-white/90' : 'text-foreground/80'}`}>
                       {feat}
                     </span>
@@ -543,7 +543,7 @@ const ProgramsTeaser = () => {
               <MagneticButton
                 className={`w-full py-4 rounded-full text-sm font-medium transition-colors ${
                   plan.popular
-                    ? 'bg-accent text-white'
+                    ? 'bg-white/20 text-white border border-white/30 hover:bg-white/30'
                     : 'bg-primary/5 text-primary hover:bg-primary hover:text-white'
                 }`}
                 onClick={() => window.location.href = plan.href}
