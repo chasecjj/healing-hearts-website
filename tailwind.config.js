@@ -15,7 +15,7 @@ export default {
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', "sans-serif"],
         outfit: ['"Outfit"', "sans-serif"],
-        drama: ['"Cormorant Garamond"', "serif"],
+        drama: ['"Playfair Display"', "serif"],
         mono: ['"IBM Plex Mono"', "monospace"],
       },
       borderRadius: {
