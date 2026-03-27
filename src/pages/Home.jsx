@@ -393,7 +393,7 @@ const TealQuote = () => {
   return (
     <section
       ref={containerRef}
-      className="relative py-32 md:py-40 overflow-hidden bg-primary"
+      className="relative pt-16 pb-36 md:pt-24 md:pb-44 overflow-hidden bg-primary"
     >
       {/* Botanical vine decoration */}
       <div className="absolute top-1/2 left-0 -translate-y-1/2 opacity-10 pointer-events-none" aria-hidden="true">

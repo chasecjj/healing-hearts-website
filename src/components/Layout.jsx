@@ -146,28 +146,28 @@ const Navbar = () => {
       >
         <div className="max-w-6xl mx-auto w-full flex flex-col md:flex-row gap-8 md:gap-32">
           <div className="flex flex-col gap-4 md:gap-6 md:w-2/3">
-            <Link to="/" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
+            <Link to="/" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-white/60 transition-colors flex items-center gap-4 group">
               Home <ArrowRight className="w-6 h-6 md:w-8 md:h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
             </Link>
-            <Link to="/about" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
+            <Link to="/about" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-white/60 transition-colors flex items-center gap-4 group">
               About Us <ArrowRight className="w-6 h-6 md:w-8 md:h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
             </Link>
-            <Link to="/programs" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
+            <Link to="/programs" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-white/60 transition-colors flex items-center gap-4 group">
               Programs <ArrowRight className="w-6 h-6 md:w-8 md:h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
             </Link>
-            <Link to="/journey" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
+            <Link to="/journey" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-white/60 transition-colors flex items-center gap-4 group">
               Your Journey <ArrowRight className="w-6 h-6 md:w-8 md:h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
             </Link>
-            <Link to="/tools" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
+            <Link to="/tools" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-white/60 transition-colors flex items-center gap-4 group">
               Tools & Frameworks <ArrowRight className="w-6 h-6 md:w-8 md:h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
             </Link>
-            <Link to="/physician" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
+            <Link to="/physician" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-white/60 transition-colors flex items-center gap-4 group">
               Physician Marriages <ArrowRight className="w-6 h-6 md:w-8 md:h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
             </Link>
-            <Link to="/resources" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
+            <Link to="/resources" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-white/60 transition-colors flex items-center gap-4 group">
               Resources <ArrowRight className="w-6 h-6 md:w-8 md:h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
             </Link>
-            <Link to="/contact" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-accent transition-colors flex items-center gap-4 group">
+            <Link to="/contact" className="menu-link font-drama italic text-4xl md:text-7xl text-background hover:text-white/60 transition-colors flex items-center gap-4 group">
               Contact <ArrowRight className="w-6 h-6 md:w-8 md:h-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-4 transition-all" />
             </Link>
             <Link to="/spark-challenge" className="menu-link font-drama italic text-4xl md:text-7xl text-white/90 hover:text-white transition-colors flex items-center gap-4 group">
@@ -185,11 +185,11 @@ const Navbar = () => {
             <div className="flex flex-col gap-4">
               {user ? (
                 <>
-                  <Link to="/portal" className="font-sans font-semibold text-accent hover:text-background transition-colors flex items-center gap-2">
+                  <Link to="/portal" className="font-sans font-semibold text-white/90 hover:text-white transition-colors flex items-center gap-2">
                     My Portal <ArrowRight className="w-4 h-4" />
                   </Link>
                   {isAdmin && (
-                    <Link to="/admin" className="font-sans font-semibold text-accent hover:text-background transition-colors flex items-center gap-2">
+                    <Link to="/admin" className="font-sans font-semibold text-white/90 hover:text-white transition-colors flex items-center gap-2">
                       Admin Panel <ArrowRight className="w-4 h-4" />
                     </Link>
                   )}
@@ -198,7 +198,7 @@ const Navbar = () => {
                   </button>
                 </>
               ) : (
-                <Link to="/login" className="font-sans font-semibold text-accent hover:text-background transition-colors flex items-center gap-2">
+                <Link to="/login" className="font-sans font-semibold text-white/90 hover:text-white transition-colors flex items-center gap-2">
                   Member Login <ArrowRight className="w-4 h-4" />
                 </Link>
               )}
