@@ -36,6 +36,7 @@ import ApplicationSuccess from './pages/ApplicationSuccess';
 import WebinarRegister from './pages/WebinarRegister';
 import WebinarLive from './pages/WebinarLive';
 import WebinarReplay from './pages/WebinarReplay';
+import { Analytics } from '@vercel/analytics/react';
 
 /* Homepage swap: show ConferenceHome during Be Healthy Utah expo window */
 function useExpoHomepage() {
@@ -52,6 +53,7 @@ function App() {
   return (
     <Router>
       <ScrollToTop />
+      <Analytics />
       <AuthProvider>
         <div className="w-full min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-accent/20 selection:text-accent">
           <Routes>
