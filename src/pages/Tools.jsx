@@ -109,16 +109,16 @@ export default function Tools() {
       {/* Critter vs CEO */}
       <section className="framework-block max-w-5xl mx-auto px-6 mb-32">
         <div className="bg-primary text-background rounded-[3rem] p-10 md:p-16 relative overflow-hidden shadow-xl">
-           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-accent/10 rounded-full blur-[120px]"></div>
+           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-white/5 rounded-full blur-[120px]"></div>
            <div className="relative z-10 text-center max-w-3xl mx-auto mb-16">
               <h2 className="font-outfit font-bold text-4xl mb-4">Critter Brain vs. CEO Brain</h2>
-              <p className="font-drama italic text-2xl text-accent mb-6">The two minds running your marriage.</p>
+              <p className="font-drama italic text-2xl text-white/70 mb-6">The two minds running your marriage.</p>
            </div>
-           
+
            <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12">
               <div className="bg-background/10 p-8 rounded-3xl border border-background/20 backdrop-blur-sm">
                  <h3 className="font-outfit font-bold text-2xl mb-4 flex items-center gap-3">
-                    <span className="text-accent text-3xl">🔥</span> The Critter Brain
+                    <span className="text-3xl">🔥</span> The Critter Brain
                  </h3>
                  <p className="font-sans font-light text-background/80 leading-relaxed">
                    Like a smoke alarm—quick to react, but terrible at distinguishing between burnt toast and a house fire. It's the part of your nervous system that scans for danger, installed long before you could talk.
@@ -126,7 +126,7 @@ export default function Tools() {
               </div>
               <div className="bg-background p-8 rounded-3xl text-primary border border-primary/5">
                  <h3 className="font-outfit font-bold text-2xl mb-4 flex items-center gap-3">
-                    <span className="text-accent text-3xl">🏛️</span> The CEO Brain
+                    <span className="text-3xl">🏛️</span> The CEO Brain
                  </h3>
                  <p className="font-sans font-light text-foreground/80 leading-relaxed">
                    The thoughtful, wise part of you. It holds perspective, shows empathy, and chooses a response. When the Critter Brain sounds the alarm, the CEO Brain gets locked out of the control room.
