@@ -1,10 +1,10 @@
 // Day 14: Is this the year your marriage changes?
 import {
   emailWrapper, heading, paragraph,
-  callout, ctaButton, divider, signOff,
+  callout, ctaButton, divider, signOff, unsubscribeFooter,
 } from './spark-shared.js';
 
-export function dayEmail() {
+export function dayEmail(email) {
   const subject = "Is this the year your marriage changes?";
   const previewText = "There is no expiration date on healing.";
 
@@ -25,6 +25,7 @@ export function dayEmail() {
     signOff(
       "With love and hope for your journey,",
     ),
+    unsubscribeFooter(email, 'spark'),
   ].join('\n');
 
   return { subject, html: emailWrapper(body, previewText) };

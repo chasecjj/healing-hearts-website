@@ -1,10 +1,10 @@
 // Day 9: They were two weeks from filing
 import {
   emailWrapper, heading, paragraph, subheading,
-  callout, signOff,
+  callout, signOff, unsubscribeFooter,
 } from './spark-shared.js';
 
-export function dayEmail() {
+export function dayEmail(email) {
   const subject = "They were two weeks from filing";
   const previewText = "He had already talked to an attorney. She was looking at apartments.";
 
@@ -27,6 +27,7 @@ export function dayEmail() {
       "Their story is not unique. I have seen it happen again and again. And it starts with the same decision you already made when you signed up for the Spark Challenge &mdash; the decision to try.",
       "The real reason your arguments last for hours (and what to do about it).",
     ),
+    unsubscribeFooter(email, 'spark'),
   ].join('\n');
 
   return { subject, html: emailWrapper(body, previewText) };

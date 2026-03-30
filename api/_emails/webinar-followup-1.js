@@ -1,10 +1,10 @@
 // Webinar Follow-Up 1: Same day — Replay + next step
 import {
   escapeHtml, emailWrapper, heading, paragraph,
-  callout, ctaButton, divider, signOff,
+  callout, ctaButton, divider, signOff, unsubscribeFooter,
 } from './spark-shared.js';
 
-export function followupEmail(name, webinar) {
+export function followupEmail(name, webinar, email) {
   const safeName = escapeHtml(name);
   const safeTitle = escapeHtml(webinar.title);
   const replayUrl = webinar.replay_url || 'https://healingheartscourse.com/webinar/replay';
@@ -24,6 +24,7 @@ export function followupEmail(name, webinar) {
     ctaButton('Apply to the Healing Hearts Program', 'https://healingheartscourse.com/apply'),
     paragraph('No commitment. No pressure. Just a chance to see if this is the right fit for where you are.'),
     signOff('Grateful you were part of this.'),
+    unsubscribeFooter(email, 'webinar'),
   ].join('\n');
 
   return { subject, html: emailWrapper(body, previewText) };

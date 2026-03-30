@@ -1,4 +1,4 @@
-import { emailWrapper, escapeHtml, heading, paragraph, callout, ctaButton, divider, signOff } from './spark-shared.js';
+import { emailWrapper, escapeHtml, heading, paragraph, callout, ctaButton, divider, signOff, unsubscribeFooter } from './spark-shared.js';
 
 /**
  * Format a TIMESTAMPTZ / ISO date string for display in Mountain Time.
@@ -25,7 +25,7 @@ function formatMountainTime(isoString) {
  * @param {{ title: string, starts_at: string, duration_minutes: number }} webinar
  * @returns {{ subject: string, html: string }}
  */
-export function webinarConfirmationEmail(name, webinar) {
+export function webinarConfirmationEmail(name, webinar, email) {
   const safeName = escapeHtml(name);
   const safeTitle = escapeHtml(webinar.title);
   const formattedDate = formatMountainTime(webinar.starts_at);
@@ -53,6 +53,7 @@ export function webinarConfirmationEmail(name, webinar) {
       `<strong>A quick tip:</strong> Add this event to your calendar right now so it does not slip away. Life gets busy &mdash; we get it. But this hour could change everything.`
     ),
     signOff('Cheering for you and your marriage,'),
+    unsubscribeFooter(email, 'webinar'),
   ].join('');
 
   return {

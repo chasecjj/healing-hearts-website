@@ -1,10 +1,10 @@
 // Webinar Follow-Up 2: Day +1 — Transformation story
 import {
   escapeHtml, emailWrapper, heading, paragraph, subheading,
-  callout, ctaButton, signOff,
+  callout, ctaButton, signOff, unsubscribeFooter,
 } from './spark-shared.js';
 
-export function followupEmail(name, webinar) {
+export function followupEmail(name, webinar, email) {
   const safeName = escapeHtml(name);
 
   const subject = 'The moment everything shifted for them';
@@ -27,6 +27,7 @@ export function followupEmail(name, webinar) {
     paragraph('That decision is available to you too.'),
     ctaButton('See If Healing Hearts Is Right for You', 'https://healingheartscourse.com/apply'),
     signOff('Every story of transformation starts with a single step.'),
+    unsubscribeFooter(email, 'webinar'),
   ].join('\n');
 
   return { subject, html: emailWrapper(body, previewText) };

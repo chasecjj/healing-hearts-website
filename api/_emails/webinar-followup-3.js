@@ -1,10 +1,10 @@
 // Webinar Follow-Up 3: Day +3 — Bonus teaching (Zones of Resilience)
 import {
   escapeHtml, emailWrapper, heading, paragraph, subheading,
-  callout, bulletList, ctaButton, divider, signOff,
+  callout, bulletList, ctaButton, divider, signOff, unsubscribeFooter,
 } from './spark-shared.js';
 
-export function followupEmail(name, webinar) {
+export function followupEmail(name, webinar, email) {
   const safeName = escapeHtml(name);
 
   const subject = "The framework Jeff didn't have time to finish";
@@ -35,6 +35,7 @@ export function followupEmail(name, webinar) {
     paragraph('This is just one piece of what we cover inside Healing Hearts. If you want the full framework &mdash; with guided practice, live coaching, and the support of other couples doing the same work &mdash; we would love to have you.'),
     ctaButton('Apply to Healing Hearts', 'https://healingheartscourse.com/apply'),
     signOff('Use this tonight. See what happens.'),
+    unsubscribeFooter(email, 'webinar'),
   ].join('\n');
 
   return { subject, html: emailWrapper(body, previewText) };

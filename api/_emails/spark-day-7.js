@@ -1,10 +1,10 @@
 // Day 7: The Spark Conversation
 import {
   emailWrapper, dayBadge, heading, paragraph, subheading,
-  callout, numberedList, bulletList, ctaButton, signOff,
+  callout, numberedList, bulletList, ctaButton, signOff, unsubscribeFooter,
 } from './spark-shared.js';
 
-export function dayEmail() {
+export function dayEmail(email) {
   const subject = "One question, fifteen minutes";
   const previewText = "The prompt that changed how we showed up for each other.";
 
@@ -38,6 +38,7 @@ export function dayEmail() {
     paragraph('<strong>You did it!</strong> You\'ve completed the 7-Day Spark Challenge. These 7 tools are yours to keep &mdash; use them anytime your connection needs a little boost.'),
     callout("If you're ready to go deeper, our full Healing Hearts program takes these foundations and builds something extraordinary. No pressure &mdash; just an invitation when you're ready."),
     ctaButton('Explore the Full Program', 'https://healingheartscourse.com/programs'),
+    unsubscribeFooter(email, 'spark'),
   ].join('\n');
 
   return { subject, html: emailWrapper(body, previewText) };

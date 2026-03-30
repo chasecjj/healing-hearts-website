@@ -1,10 +1,10 @@
 // Day 5: The Gratitude Text
 import {
   emailWrapper, dayBadge, heading, paragraph, subheading,
-  callout, numberedList, bulletList, ctaButton, signOff,
+  callout, numberedList, bulletList, ctaButton, signOff, unsubscribeFooter,
 } from './spark-shared.js';
 
-export function dayEmail() {
+export function dayEmail(email) {
   const subject = "What I almost forgot to say";
   const previewText = "He'd been handling dinner all week and I almost missed it.";
 
@@ -41,6 +41,7 @@ export function dayEmail() {
       "Let's make today a day filled with unexpected sparks of appreciation! I can't wait to hear about the little smiles these texts create.",
       "Day 6: The Memory Lane Moment &mdash; reconnecting with the story that started it all.",
     ),
+    unsubscribeFooter(email, 'spark'),
   ].join('\n');
 
   return { subject, html: emailWrapper(body, previewText) };

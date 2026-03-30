@@ -97,7 +97,7 @@ export default async function handler(req, res) {
     if (process.env.RESEND_API_KEY) {
       const resend = new Resend(process.env.RESEND_API_KEY);
 
-      const confirmation = webinarConfirmationEmail(cleanName, webinar);
+      const confirmation = webinarConfirmationEmail(cleanName, webinar, cleanEmail);
       await resend.emails
         .send({
           from: 'Healing Hearts <hello@healingheartscourse.com>',

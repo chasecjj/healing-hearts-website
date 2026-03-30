@@ -5,6 +5,7 @@
 import { Resend } from 'resend';
 import { supabaseAdmin } from './_lib/supabase-admin.js';
 import { checkEmailRateLimit } from './_lib/rate-limit.js';
+import { welcomeEmail as buildWelcomeEmail } from './_emails/spark-welcome.js';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -52,11 +53,12 @@ export default async function handler(req, res) {
   if (process.env.RESEND_API_KEY) {
     try {
       const resend = new Resend(process.env.RESEND_API_KEY);
+      const welcome = buildWelcomeEmail(cleanEmail);
       await resend.emails.send({
         from: 'Healing Hearts <hello@healingheartscourse.com>',
         to: cleanEmail,
-        subject: "You're in! Your 7-Day Spark Challenge starts tomorrow",
-        html: welcomeEmail(),
+        subject: welcome.subject,
+        html: welcome.html,
       });
 
     } catch (err) {
@@ -75,98 +77,3 @@ export default async function handler(req, res) {
   });
 }
 
-function welcomeEmail() {
-  return `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome to the Spark Challenge</title>
-</head>
-<body style="margin:0; padding:0; background-color:#faf9f6; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#faf9f6;">
-    <tr>
-      <td align="center" style="padding:40px 20px;">
-        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%;">
-
-          <!-- Logo -->
-          <tr>
-            <td align="center" style="padding-bottom:32px;">
-              <img src="https://healingheartscourse.com/logo.png" alt="Healing Hearts" width="180" style="display:block; height:auto;">
-            </td>
-          </tr>
-
-          <!-- Card -->
-          <tr>
-            <td style="background-color:#ffffff; border-radius:16px; padding:48px 40px; box-shadow:0 4px 24px rgba(17,145,177,0.06);">
-
-              <!-- Accent bar -->
-              <div style="height:3px; background:linear-gradient(90deg, #1191B1, #B96A5F, #1191B1); border-radius:2px; margin-bottom:32px;"></div>
-
-              <h1 style="margin:0 0 16px; font-size:28px; color:#2D2D2D; font-weight:400; font-style:italic; font-family:Georgia,'Times New Roman',serif;">
-                Welcome to the Spark Challenge
-              </h1>
-
-              <p style="margin:0 0 24px; font-size:16px; line-height:1.7; color:#555555;">
-                Hey there! I'm Trisha Jamison, and I am so thrilled you've decided to join us for the Spark Challenge!
-              </p>
-
-              <p style="margin:0 0 24px; font-size:16px; line-height:1.7; color:#555555;">
-                Over the next seven days, you and your partner are going to reconnect in ways that might surprise you. No big, dramatic gestures -- just small, intentional moments that remind you both why you chose each other. No pressure, just play!
-              </p>
-
-              <p style="margin:0 0 24px; font-size:16px; line-height:1.7; color:#555555;">
-                <strong>Day 1 arrives tomorrow morning.</strong> Each day, I'll send you a short story from my own marriage (Jeff and I have been through it all!), plus one simple practice for you and your partner to try together. Some will make you laugh. Some might make you think. All of them work.
-              </p>
-
-              <p style="margin:0 0 32px; font-size:16px; line-height:1.7; color:#555555;">
-                Here's what I've learned from 20 years of coaching couples: change doesn't have to be hard. Sometimes it just starts with showing up -- and you already did that by signing up today. I'm so proud of you for taking this step!
-              </p>
-
-              <!-- CTA -->
-              <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 32px;">
-                <tr>
-                  <td align="center" style="background-color:#1191B1; border-radius:50px; padding:14px 32px;">
-                    <a href="https://healingheartscourse.com/spark-challenge" style="color:#ffffff; text-decoration:none; font-size:16px; font-weight:600; display:inline-block;">
-                      Preview the Challenge
-                    </a>
-                  </td>
-                </tr>
-              </table>
-
-              <!-- Divider -->
-              <div style="height:1px; background-color:#e5e5e5; margin:24px 0;"></div>
-
-              <!-- Warm sign-off -->
-              <p style="margin:0 0 4px; font-size:16px; line-height:1.7; color:#555555;">
-                Cheering for you both,
-              </p>
-              <p style="margin:0 0 4px; font-size:18px; color:#2D2D2D; font-style:italic; font-family:Georgia,'Times New Roman',serif;">
-                Trisha Jamison
-              </p>
-              <p style="margin:0; font-size:13px; color:#a3a3a3;">
-                Founder, Healing Hearts
-              </p>
-            </td>
-          </tr>
-
-          <!-- Footer -->
-          <tr>
-            <td align="center" style="padding:32px 20px 0;">
-              <p style="margin:0 0 8px; font-size:13px; color:#a3a3a3;">
-                Healing Hearts &middot; healingheartscourse.com
-              </p>
-              <p style="margin:0; font-size:12px; color:#d4d4d4;">
-                Every marriage has a story worth fighting for.
-              </p>
-            </td>
-          </tr>
-
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>`;
-}

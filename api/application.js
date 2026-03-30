@@ -101,7 +101,7 @@ export default async function handler(req, res) {
     }
 
     if (resend) {
-      const confirmEmail = applicationReceivedEmail(cleanName);
+      const confirmEmail = applicationReceivedEmail(cleanName, cleanEmail);
       await resend.emails.send({
         from: 'Healing Hearts <hello@healingheartscourse.com>',
         to: cleanEmail,

@@ -1,10 +1,10 @@
 // Day 3: The 2-Minute Check-In
 import {
   emailWrapper, dayBadge, heading, paragraph, subheading,
-  callout, numberedList, bulletList, ctaButton, signOff,
+  callout, numberedList, bulletList, ctaButton, signOff, unsubscribeFooter,
 } from './spark-shared.js';
 
-export function dayEmail() {
+export function dayEmail(email) {
   const subject = "What if you just listened?";
   const previewText = "Two minutes. No fixing. Just presence.";
 
@@ -35,6 +35,7 @@ export function dayEmail() {
       "This simple, consistent practice can transform your daily connection. You've got this. I can't wait to hear about the peace you find in these two minutes.",
       'Day 4: The Pause Experiment &mdash; introducing the 10-second pause that changes everything.',
     ),
+    unsubscribeFooter(email, 'spark'),
   ].join('\n');
 
   return { subject, html: emailWrapper(body, previewText) };

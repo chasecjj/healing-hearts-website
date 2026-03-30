@@ -1,10 +1,10 @@
 // Day 6: The Memory Lane Moment
 import {
   emailWrapper, dayBadge, heading, paragraph, subheading,
-  callout, numberedList, bulletList, ctaButton, signOff,
+  callout, numberedList, bulletList, ctaButton, signOff, unsubscribeFooter,
 } from './spark-shared.js';
 
-export function dayEmail() {
+export function dayEmail(email) {
   const subject = "The burnt birthday dinner";
   const previewText = "We sat there for twenty minutes, just remembering.";
 
@@ -34,6 +34,7 @@ export function dayEmail() {
       "Enjoy your trip down memory lane today, and let those wonderful feelings wash over you. You've built a wonderful story together!",
       "Day 7: The Spark Conversation &mdash; the most direct and loving way to keep your connection vibrant.",
     ),
+    unsubscribeFooter(email, 'spark'),
   ].join('\n');
 
   return { subject, html: emailWrapper(body, previewText) };

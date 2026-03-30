@@ -1,10 +1,10 @@
 // Day 13: What happened after they said yes
 import {
   emailWrapper, heading, paragraph, subheading,
-  callout, ctaButton, signOff,
+  callout, ctaButton, signOff, unsubscribeFooter,
 } from './spark-shared.js';
 
-export function dayEmail() {
+export function dayEmail(email) {
   const subject = "What happened after they said yes";
   const previewText = "She thought they were fine. Turns out fine was code for numb.";
 
@@ -28,6 +28,7 @@ export function dayEmail() {
       "Whether it is the workshop, the program, or just these emails &mdash; we are glad you are here.",
       "Tomorrow is our last email together. I want to leave you with something important.",
     ),
+    unsubscribeFooter(email, 'spark'),
   ].join('\n');
 
   return { subject, html: emailWrapper(body, previewText) };

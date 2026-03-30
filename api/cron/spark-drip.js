@@ -81,7 +81,7 @@ export default async function handler(req, res) {
 
       try {
         const templateModule = await dayTemplates[nextDay]();
-        const { subject, html } = templateModule.dayEmail();
+        const { subject, html } = templateModule.dayEmail(signup.email);
 
         emailPayloads.push({
           from: 'Healing Hearts <hello@healingheartscourse.com>',

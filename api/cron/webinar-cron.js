@@ -100,7 +100,7 @@ export default async function handler(req, res) {
 
           for (const reg of registrants) {
             try {
-              const { subject, html } = templateModule.reminderEmail(reg.name, webinar);
+              const { subject, html } = templateModule.reminderEmail(reg.name, webinar, reg.email);
 
               await resend.emails.send({
                 from: 'Healing Hearts <hello@healingheartscourse.com>',
@@ -182,7 +182,7 @@ export default async function handler(req, res) {
 
           for (const reg of registrants) {
             try {
-              const { subject, html } = templateModule.reminderEmail(reg.name, webinar);
+              const { subject, html } = templateModule.reminderEmail(reg.name, webinar, reg.email);
 
               await resend.emails.send({
                 from: 'Healing Hearts <hello@healingheartscourse.com>',
@@ -274,7 +274,7 @@ export default async function handler(req, res) {
               if (processedInThisRun.has(reg.id)) continue;
               processedInThisRun.add(reg.id);
               try {
-                const { subject, html } = templateModule.followupEmail(reg.name, webinar);
+                const { subject, html } = templateModule.followupEmail(reg.name, webinar, reg.email);
 
                 await resend.emails.send({
                   from: 'Healing Hearts <hello@healingheartscourse.com>',

@@ -1,10 +1,10 @@
 // Day 10: The real reason your arguments last hours
 import {
   emailWrapper, heading, paragraph, subheading,
-  callout, numberedList, ctaButton, signOff,
+  callout, numberedList, ctaButton, signOff, unsubscribeFooter,
 } from './spark-shared.js';
 
-export function dayEmail() {
+export function dayEmail(email) {
   const subject = "The real reason your arguments last hours";
   const previewText = "An emotion lasts about 90 seconds. So why do your fights last all night?";
 
@@ -31,6 +31,7 @@ export function dayEmail() {
       "Try the 20-minute reset tonight. You might be surprised what happens when two CEO Brains finally get to sit down together.",
       "The question nobody asks &mdash; and the cost of not asking it.",
     ),
+    unsubscribeFooter(email, 'spark'),
   ].join('\n');
 
   return { subject, html: emailWrapper(body, previewText) };

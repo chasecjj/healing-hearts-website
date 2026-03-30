@@ -1,10 +1,10 @@
 // Webinar Reminder: Day Of (2 hours before)
 import {
   escapeHtml, emailWrapper, heading, paragraph,
-  ctaButton, signOff,
+  ctaButton, signOff, unsubscribeFooter,
 } from './spark-shared.js';
 
-export function reminderEmail(name, webinar) {
+export function reminderEmail(name, webinar, email) {
   const safeName = escapeHtml(name);
   const safeTitle = escapeHtml(webinar.title);
   const joinUrl = webinar.meeting_url || webinar.riverside_audience_url || 'https://healingheartscourse.com/webinar/live';
@@ -27,6 +27,7 @@ export function reminderEmail(name, webinar) {
     paragraph(`If the button above does not work, you can also join from our <a href="https://healingheartscourse.com/webinar/live" style="color:#1191B1; text-decoration:underline;">webinar page</a>.`),
     paragraph('We will be there right when it starts. See you soon.'),
     signOff('Here we go.'),
+    unsubscribeFooter(email, 'webinar'),
   ].join('\n');
 
   return { subject, html: emailWrapper(body, previewText) };

@@ -1,10 +1,10 @@
 // Day 1: The 'I Noticed' Text
 import {
   emailWrapper, dayBadge, heading, paragraph, subheading,
-  callout, numberedList, bulletList, ctaButton, signOff,
+  callout, numberedList, bulletList, ctaButton, signOff, unsubscribeFooter,
 } from './spark-shared.js';
 
-export function dayEmail() {
+export function dayEmail(email) {
   const subject = "Something Jeff did at 5am";
   const previewText = "It wasn't about the car. It was about being seen.";
 
@@ -40,6 +40,7 @@ export function dayEmail() {
       "So, go out there today, be a connection detective, and sprinkle some 'I noticed' magic! I can't wait to hear what you discover.",
       "Day 2: The Specific Spark Compliment &mdash; moving beyond 'you look nice' to compliments that truly land.",
     ),
+    unsubscribeFooter(email, 'spark'),
   ].join('\n');
 
   return { subject, html: emailWrapper(body, previewText) };

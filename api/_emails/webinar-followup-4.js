@@ -1,10 +1,10 @@
 // Webinar Follow-Up 4: Day +5 — Warm urgency
 import {
   escapeHtml, emailWrapper, heading, paragraph,
-  callout, ctaButton, signOff,
+  callout, ctaButton, signOff, unsubscribeFooter,
 } from './spark-shared.js';
 
-export function followupEmail(name, webinar) {
+export function followupEmail(name, webinar, email) {
   const safeName = escapeHtml(name);
 
   const subject = 'Applications close this week';
@@ -22,6 +22,7 @@ export function followupEmail(name, webinar) {
     ctaButton('Submit Your Application', 'https://healingheartscourse.com/apply'),
     paragraph('If the timing is not right, that is completely okay. We run new cohorts regularly, and you are always welcome to apply when you are ready. But if that quiet voice has been nudging you &mdash; this is worth listening to.'),
     signOff('We are here either way.'),
+    unsubscribeFooter(email, 'webinar'),
   ].join('\n');
 
   return { subject, html: emailWrapper(body, previewText) };

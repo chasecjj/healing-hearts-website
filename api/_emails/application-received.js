@@ -1,6 +1,6 @@
-import { emailWrapper, escapeHtml, heading, paragraph, callout, ctaButton, signOff } from './spark-shared.js';
+import { emailWrapper, escapeHtml, heading, paragraph, callout, ctaButton, signOff, unsubscribeFooter } from './spark-shared.js';
 
-export function applicationReceivedEmail(name) {
+export function applicationReceivedEmail(name, email) {
   const previewText = 'We received your Healing Hearts application';
   const safeName = escapeHtml(name);
 
@@ -17,6 +17,7 @@ export function applicationReceivedEmail(name) {
     ),
     ctaButton('Try the 7-Day Spark Challenge', 'https://healingheartscourse.com/spark-challenge'),
     signOff('We are grateful you are here.'),
+    unsubscribeFooter(email, 'spark'),
   ].join('');
 
   return {

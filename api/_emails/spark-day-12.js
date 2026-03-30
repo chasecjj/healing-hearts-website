@@ -1,10 +1,10 @@
 // Day 12: Jeff and Trisha are going live
 import {
   emailWrapper, heading, paragraph,
-  callout, bulletList, ctaButton, signOff,
+  callout, bulletList, ctaButton, signOff, unsubscribeFooter,
 } from './spark-shared.js';
 
-export function dayEmail() {
+export function dayEmail(email) {
   const subject = "Jeff and Trisha are going live";
   const previewText = "A live workshop on the nervous system patterns running your marriage.";
 
@@ -27,6 +27,7 @@ export function dayEmail() {
       "We would love to see you there. Come as you are &mdash; no prep required, no pressure to do anything but learn.",
       "What happened after they said yes &mdash; another transformation story.",
     ),
+    unsubscribeFooter(email, 'spark'),
   ].join('\n');
 
   return { subject, html: emailWrapper(body, previewText) };

@@ -1,10 +1,10 @@
 // Day 11: The question nobody asks
 import {
   emailWrapper, heading, paragraph, subheading,
-  callout, ctaButton, signOff,
+  callout, ctaButton, signOff, unsubscribeFooter,
 } from './spark-shared.js';
 
-export function dayEmail() {
+export function dayEmail(email) {
   const subject = "The question nobody asks";
   const previewText = "What is staying stuck actually costing you?";
 
@@ -27,6 +27,7 @@ export function dayEmail() {
       "We are here whenever you are ready. No expiration date, no countdown. Just an open door.",
       "Jeff and Trisha are going live &mdash; and you are invited.",
     ),
+    unsubscribeFooter(email, 'spark'),
   ].join('\n');
 
   return { subject, html: emailWrapper(body, previewText) };

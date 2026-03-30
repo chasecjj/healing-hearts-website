@@ -1,10 +1,10 @@
 // Day 4: The Pause Experiment
 import {
   emailWrapper, dayBadge, heading, paragraph, subheading,
-  callout, numberedList, bulletList, ctaButton, signOff,
+  callout, numberedList, bulletList, ctaButton, signOff, unsubscribeFooter,
 } from './spark-shared.js';
 
-export function dayEmail() {
+export function dayEmail(email) {
   const subject = "Ten seconds changed everything";
   const previewText = "The space between the trigger and your response.";
 
@@ -34,6 +34,7 @@ export function dayEmail() {
       "So today, embrace the power of the pause. It's a small shift that can prevent big arguments and create a much more peaceful, intentional connection. I can't wait to hear how this feels for you.",
       "Day 5: The Gratitude Text &mdash; unexpected appreciation that shifts your whole day.",
     ),
+    unsubscribeFooter(email, 'spark'),
   ].join('\n');
 
   return { subject, html: emailWrapper(body, previewText) };

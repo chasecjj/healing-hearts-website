@@ -1,10 +1,10 @@
 // Day 2: The Specific Spark Compliment
 import {
   emailWrapper, dayBadge, heading, paragraph, subheading,
-  callout, numberedList, bulletList, ctaButton, signOff,
+  callout, numberedList, bulletList, ctaButton, signOff, unsubscribeFooter,
 } from './spark-shared.js';
 
-export function dayEmail() {
+export function dayEmail(email) {
   const subject = 'Beyond "you look nice"';
   const previewText = "The compliment that landed differently than all the others.";
 
@@ -42,6 +42,7 @@ export function dayEmail() {
       "So go out there, notice those specific sparks, and let your partner know how much you truly appreciate them! I can't wait to hear about the warmth you create.",
       'Day 3: The 2-Minute Check-In &mdash; the gift of pure, undivided listening.',
     ),
+    unsubscribeFooter(email, 'spark'),
   ].join('\n');
 
   return { subject, html: emailWrapper(body, previewText) };

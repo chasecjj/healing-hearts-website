@@ -1,10 +1,10 @@
 // Webinar Follow-Up 5: Day +7 — Warm close, no pressure
 import {
   escapeHtml, emailWrapper, heading, paragraph,
-  callout, ctaButton, divider, signOff,
+  callout, ctaButton, divider, signOff, unsubscribeFooter,
 } from './spark-shared.js';
 
-export function followupEmail(name, webinar) {
+export function followupEmail(name, webinar, email) {
   const safeName = escapeHtml(name);
 
   const subject = 'Is this the year?';
@@ -26,6 +26,7 @@ export function followupEmail(name, webinar) {
     divider(),
     paragraph('Whatever you decide, Jeff and I are grateful you spent this time with us. Your marriage has a story worth fighting for, and we believe that with our whole hearts.'),
     signOff('With love and hope for your journey,'),
+    unsubscribeFooter(email, 'webinar'),
   ].join('\n');
 
   return { subject, html: emailWrapper(body, previewText) };

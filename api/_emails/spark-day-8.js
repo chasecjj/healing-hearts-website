@@ -1,10 +1,10 @@
 // Day 8: The spark was just the beginning
 import {
-  emailWrapper, heading, paragraph, subheading,
-  callout, ctaButton, signOff,
+  emailWrapper, heading, paragraph,
+  callout, signOff, unsubscribeFooter,
 } from './spark-shared.js';
 
-export function dayEmail() {
+export function dayEmail(email) {
   const subject = "The spark was just the beginning";
   const previewText = "A 7-day challenge can light a match. It cannot rebuild a house.";
 
@@ -22,6 +22,7 @@ export function dayEmail() {
       "I am so glad you are here. Truly.",
       "A couple who was two weeks from filing &mdash; and what happened next.",
     ),
+    unsubscribeFooter(email, 'spark'),
   ].join('\n');
 
   return { subject, html: emailWrapper(body, previewText) };
