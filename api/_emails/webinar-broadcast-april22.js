@@ -1,26 +1,29 @@
 // One-time broadcast: Live Q&A invite for Spark Challenge participants
 // Sent April 22, 2026 to all active Spark Challenge subscribers
+// AVNII: Acknowledge → Validate → Normalize → Illuminate → Invite
 import {
   emailWrapper, heading, paragraph,
-  callout, ctaButton, signOff,
+  callout, ctaButton, signOff, unsubscribeFooter,
 } from './spark-shared.js';
 
-export function broadcastEmail() {
-  const subject = "Trisha is live tonight — bring your questions";
-  const previewText = "A live Q&A just for Spark Challenge participants. Tonight at 7 PM MT.";
+export function broadcastEmail(email) {
+  const subject = "Trisha is live tonight \u2014 bring your questions";
+  const previewText = "The questions you\u2019ve been sitting with deserve a real conversation.";
 
   const body = [
-    heading("You Have Questions. Let\u2019s Talk."),
-    paragraph("Hey there \u2014 I know you\u2019re right in the middle of the Spark Challenge, and if you\u2019re anything like most couples who reach this point, things are starting to stir. Maybe something clicked. Maybe something felt harder than you expected. Maybe you\u2019re not sure what to do with what you\u2019re noticing."),
-    paragraph("That\u2019s exactly why I\u2019m going live tonight."),
-    paragraph("I\u2019m hosting a <strong>live Q&amp;A session tonight, Tuesday, April 22 at 7:00 PM MT</strong> \u2014 and it\u2019s specifically for people like you who are working through the challenge and want to go a little deeper."),
-    callout("This isn\u2019t a sales pitch or a scripted presentation. It\u2019s me, a cup of tea, and your real questions. If something from the challenge confused you, surprised you, or stirred up a conversation you weren\u2019t expecting \u2014 bring it."),
-    paragraph("I\u2019ve been doing this work long enough to know that the most powerful breakthroughs happen when someone finally says the thing out loud. This is your space to do that."),
+    heading("When a Spark Starts a Fire"),
+    paragraph("Hey there \u2014 you\u2019ve been doing the work this week. Maybe the \u201cI Noticed\u201d text landed differently than you expected. Maybe the practice from Day 3 brought up something you weren\u2019t quite ready for."),
+    paragraph("That\u2019s not a problem. That\u2019s the spark doing what it\u2019s supposed to do."),
+    paragraph("Here\u2019s what I\u2019ve learned after 20 years of working with couples: the moment things start to stir is exactly the moment most people pull back. It makes sense \u2014 when your system starts feeling something new, the Critter Brain reads that as danger and hits the brakes."),
+    paragraph("But what if you didn\u2019t have to figure out what to do with it alone?"),
+    paragraph("I\u2019m hosting a <strong>live Q&amp;A tonight \u2014 Tuesday, April 22 at 7:00 PM MT</strong> \u2014 and it\u2019s specifically for people like you who are in the middle of the challenge and want to go deeper."),
+    callout("Other couples in the challenge are feeling exactly what you\u2019re feeling right now. This is your chance to ask the questions you\u2019ve been sitting with \u2014 and hear that you\u2019re not the only one asking them."),
     paragraph("No prep required. No pressure. Just show up as you are."),
     ctaButton('Save Your Spot', 'https://healingheartscourse.com/webinar'),
     signOff(
-      "I\u2019d love to see you there tonight. These conversations are honestly my favorite part of what I do.",
+      "Some of the most meaningful next steps I\u2019ve seen couples take started with one honest question in a room like this. I\u2019d love to see you there tonight.",
     ),
+    unsubscribeFooter(email, 'spark'),
   ].join('\n');
 
   return { subject, html: emailWrapper(body, previewText) };

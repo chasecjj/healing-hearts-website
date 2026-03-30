@@ -7,6 +7,7 @@ import {
 export function reminderEmail(name, webinar) {
   const safeName = escapeHtml(name);
   const safeTitle = escapeHtml(webinar.title);
+  const joinUrl = webinar.meeting_url || webinar.riverside_audience_url || 'https://healingheartscourse.com/webinar/live';
 
   const date = new Date(webinar.starts_at);
   const formatted = date.toLocaleString('en-US', {
@@ -22,7 +23,7 @@ export function reminderEmail(name, webinar) {
     heading(`We Are Almost Live, ${safeName}`),
     paragraph(`<strong>${safeTitle}</strong> starts in about two hours &mdash; <strong>${escapeHtml(formatted)}</strong>.`),
     paragraph('Find a comfortable spot, grab something warm to drink, and click below to join when it is time. If your partner is with you, even better.'),
-    ctaButton('Join the Workshop', webinar.riverside_audience_url),
+    ctaButton('Join the Session', joinUrl),
     paragraph(`If the button above does not work, you can also join from our <a href="https://healingheartscourse.com/webinar/live" style="color:#1191B1; text-decoration:underline;">webinar page</a>.`),
     paragraph('We will be there right when it starts. See you soon.'),
     signOff('Here we go.'),

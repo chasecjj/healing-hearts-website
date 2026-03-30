@@ -56,7 +56,7 @@ export default async function handler(req, res) {
 
     const { data: webinars, error: webinarErr } = await supabaseAdmin
       .from('webinars')
-      .select('id, title, starts_at, duration_minutes, status')
+      .select('id, title, starts_at, duration_minutes, status, meeting_url, riverside_audience_url')
       .in('status', ['scheduled', 'live'])
       .gte('starts_at', windowStart)
       .lte('starts_at', windowEnd);
@@ -138,7 +138,7 @@ export default async function handler(req, res) {
 
     const { data: webinars, error: webinarErr } = await supabaseAdmin
       .from('webinars')
-      .select('id, title, starts_at, duration_minutes, status')
+      .select('id, title, starts_at, duration_minutes, status, meeting_url, riverside_audience_url')
       .in('status', ['scheduled', 'live'])
       .gte('starts_at', windowStart)
       .lte('starts_at', windowEnd);
