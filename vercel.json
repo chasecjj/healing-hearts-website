@@ -1,10 +1,10 @@
 {
   "redirects": [
-    { "source": "/go/magazine", "destination": "/spark?utm_source=magazine_ad&utm_medium=qr&utm_campaign=expo_april2026", "permanent": false },
-    { "source": "/go/banner", "destination": "/spark?utm_source=banner&utm_medium=qr&utm_campaign=expo_april2026", "permanent": false },
-    { "source": "/go/magnet", "destination": "/spark?utm_source=magnet&utm_medium=qr&utm_campaign=expo_april2026", "permanent": false },
-    { "source": "/go/swag", "destination": "/spark?utm_source=swag_card&utm_medium=qr&utm_campaign=expo_april2026", "permanent": false },
-    { "source": "/go/keynote", "destination": "/spark?utm_source=keynote_slide&utm_medium=qr&utm_campaign=expo_april2026", "permanent": false },
+    { "source": "/go/magazine", "destination": "/spark-challenge?utm_source=magazine_ad&utm_medium=qr&utm_campaign=expo_april2026", "permanent": false },
+    { "source": "/go/banner", "destination": "/spark-challenge?utm_source=banner&utm_medium=qr&utm_campaign=expo_april2026", "permanent": false },
+    { "source": "/go/magnet", "destination": "/spark-challenge?utm_source=magnet&utm_medium=qr&utm_campaign=expo_april2026", "permanent": false },
+    { "source": "/go/swag", "destination": "/spark-challenge?utm_source=swag_card&utm_medium=qr&utm_campaign=expo_april2026", "permanent": false },
+    { "source": "/go/keynote", "destination": "/spark-challenge?utm_source=keynote_slide&utm_medium=qr&utm_campaign=expo_april2026", "permanent": false },
     { "source": "/go/site", "destination": "/?utm_source=print&utm_medium=qr&utm_campaign=expo_april2026", "permanent": false },
     { "source": "/go/card", "destination": "/?utm_source=business_card&utm_medium=qr&utm_campaign=expo_april2026", "permanent": false }
   ],
