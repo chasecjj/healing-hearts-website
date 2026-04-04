@@ -1,4 +1,3 @@
-/* global process */
 // Vercel Serverless Function: POST /api/contact
 // Receives contact form submissions and sends notification + confirmation emails via Resend.
 

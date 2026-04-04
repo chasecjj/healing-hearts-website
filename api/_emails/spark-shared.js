@@ -2,16 +2,10 @@
 // All day templates import these helpers to maintain consistent styling.
 
 import crypto from 'crypto';
+import { escapeHtml } from '../_lib/escape-html.js';
 
-export function escapeHtml(str) {
-  if (!str) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
+// Re-export so email templates that import escapeHtml from here keep working.
+export { escapeHtml };
 
 export function emailWrapper(bodyContent, previewText) {
   const preheader = previewText

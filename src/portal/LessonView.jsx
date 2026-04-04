@@ -82,7 +82,7 @@ export default function LessonView({
       prevLesson: idx > 0 ? allLessons[idx - 1] : null,
       nextLesson: idx < allLessons.length - 1 ? allLessons[idx + 1] : null,
     };
-  }, [course, currentModule, currentLesson]);
+  }, [course, currentModule, currentLesson, isAdmin]);
 
   const handleMarkCompleteAndNext = async () => {
     if (!currentLesson) return;

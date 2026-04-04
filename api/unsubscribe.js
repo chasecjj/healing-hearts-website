@@ -1,4 +1,3 @@
-/* global process */
 import { supabaseAdmin } from './_lib/supabase-admin.js';
 import crypto from 'crypto';
 

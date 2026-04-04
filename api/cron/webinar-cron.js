@@ -1,10 +1,12 @@
-/* global process */
 // Vercel Cron Function: GET /api/cron/webinar-cron
 // Runs daily at 5 PM MT (23:00 UTC during MDT).
 // Handles three jobs: day-before reminders, day-of reminders, post-webinar follow-up.
 
 import { Resend } from 'resend';
 import { supabaseAdmin } from '../_lib/supabase-admin.js';
+import { paginatedQuery } from '../_lib/paginated-query.js';
+
+const FROM_ADDRESS = 'Healing Hearts <hello@healingheartscourse.com>';
 
 // Dynamic imports for reminder templates
 const reminderTemplates = {
@@ -21,7 +23,28 @@ const followupTemplates = {
   5: () => import('../_emails/webinar-followup-5.js'),
 };
 
-// Follow-up schedule: afterDays since webinar, which template to send, what followup_day the registrant should be at
+// ─── Reminder Job Config ────────────────────────────────────────
+// Jobs 1 & 2 are structurally identical — only the time window and
+// sent-flag column differ. This config drives a single function.
+const REMINDER_JOBS = [
+  {
+    name: 'dayBeforeReminders',
+    windowStartHours: 20,
+    windowEndHours: 26,
+    sentFlag: 'reminder_day_before_sent',
+    templateKey: 'day_before',
+  },
+  {
+    name: 'dayOfReminders',
+    windowStartHours: 0,
+    windowEndHours: 4,
+    sentFlag: 'reminder_day_of_sent',
+    templateKey: 'day_of',
+  },
+];
+
+// Follow-up schedule: afterDays since webinar, which template to send,
+// what followup_day the registrant should be at
 const FOLLOWUP_SCHEDULE = [
   { afterDays: 0, template: 1, atDay: 0 },
   { afterDays: 1, template: 2, atDay: 1 },
@@ -30,8 +53,140 @@ const FOLLOWUP_SCHEDULE = [
   { afterDays: 7, template: 5, atDay: 4 },
 ];
 
+// ─── Helpers ────────────────────────────────────────────────────
+
+/** Send one email and update the registrant record. */
+async function sendAndUpdate(resend, reg, subject, html, updateFields, results) {
+  try {
+    await resend.emails.send({ from: FROM_ADDRESS, to: reg.email, subject, html });
+
+    await supabaseAdmin
+      .from('webinar_registrations')
+      .update({ ...updateFields, last_email_sent_at: new Date().toISOString() })
+      .eq('id', reg.id);
+
+    results.sent++;
+  } catch (err) {
+    console.error(`[webinar-cron] Send failed for ${reg.email}:`, err);
+    results.errors.push({ email: reg.email, error: err.message });
+  }
+}
+
+// ─── Job: Reminders (day-before / day-of) ───────────────────────
+
+async function runReminderJob(job, resend, now) {
+  const results = { sent: 0, errors: [] };
+  const windowStart = new Date(now + job.windowStartHours * 60 * 60 * 1000).toISOString();
+  const windowEnd = new Date(now + job.windowEndHours * 60 * 60 * 1000).toISOString();
+
+  const { data: webinars, error: webinarErr } = await supabaseAdmin
+    .from('webinars')
+    .select('id, title, starts_at, duration_minutes, status, meeting_url, riverside_audience_url')
+    .in('status', ['scheduled', 'live'])
+    .gte('starts_at', windowStart)
+    .lte('starts_at', windowEnd);
+
+  if (webinarErr) {
+    console.error(`[webinar-cron] ${job.name} webinar query failed:`, webinarErr);
+    return results;
+  }
+
+  if (!webinars || webinars.length === 0) return results;
+
+  for (const webinar of webinars) {
+    try {
+      const templateModule = await reminderTemplates[job.templateKey]();
+
+      for await (const registrants of paginatedQuery(() =>
+        supabaseAdmin
+          .from('webinar_registrations')
+          .select(`id, email, name, ${job.sentFlag}, unsubscribed`)
+          .eq('webinar_id', webinar.id)
+          .eq(job.sentFlag, false)
+          .eq('unsubscribed', false)
+      )) {
+        for (const reg of registrants) {
+          const { subject, html } = templateModule.reminderEmail(reg.name, webinar, reg.email);
+          await sendAndUpdate(resend, reg, subject, html, { [job.sentFlag]: true }, results);
+        }
+      }
+    } catch (err) {
+      console.error(`[webinar-cron] ${job.name} failed for webinar ${webinar.id}:`, err);
+    }
+  }
+
+  return results;
+}
+
+// ─── Job: Post-Webinar Follow-Up ────────────────────────────────
+
+async function runFollowupJob(resend, now) {
+  const results = { sent: 0, errors: [] };
+
+  const { data: webinars, error: webinarErr } = await supabaseAdmin
+    .from('webinars')
+    .select('id, title, starts_at, duration_minutes, status')
+    .in('status', ['completed', 'evergreen']);
+
+  if (webinarErr) {
+    console.error('[webinar-cron] Follow-up webinar query failed:', webinarErr);
+    return results;
+  }
+
+  if (!webinars || webinars.length === 0) return results;
+
+  for (const webinar of webinars) {
+    try {
+      const daysSinceWebinar = Math.floor(
+        (now - new Date(webinar.starts_at).getTime()) / (24 * 60 * 60 * 1000)
+      );
+
+      const applicableSteps = FOLLOWUP_SCHEDULE.filter((s) => s.afterDays <= daysSinceWebinar);
+      if (applicableSteps.length === 0) continue;
+
+      // Track registrants already processed this run to avoid double-sends
+      // when multiple steps are applicable (handles missed cron runs)
+      const processedInThisRun = new Set();
+
+      for (const step of applicableSteps) {
+        const templateModule = await followupTemplates[step.template]();
+        const cooldownCutoff = new Date(now - 20 * 60 * 60 * 1000).toISOString();
+
+        for await (const registrants of paginatedQuery(() =>
+          supabaseAdmin
+            .from('webinar_registrations')
+            .select('id, email, name, followup_day, followup_completed, unsubscribed, last_email_sent_at')
+            .eq('webinar_id', webinar.id)
+            .eq('followup_day', step.atDay)
+            .eq('followup_completed', false)
+            .eq('unsubscribed', false)
+            .or(`last_email_sent_at.is.null,last_email_sent_at.lt.${cooldownCutoff}`)
+        )) {
+          for (const reg of registrants) {
+            if (processedInThisRun.has(reg.id)) continue;
+            processedInThisRun.add(reg.id);
+
+            const { subject, html } = templateModule.followupEmail(reg.name, webinar, reg.email);
+            const newFollowupDay = step.atDay + 1;
+
+            await sendAndUpdate(resend, reg, subject, html, {
+              followup_day: newFollowupDay,
+              followup_completed: newFollowupDay >= 5,
+            }, results);
+          }
+        }
+      }
+    } catch (err) {
+      console.error(`[webinar-cron] Follow-up failed for webinar ${webinar.id}:`, err);
+    }
+  }
+
+  return results;
+}
+
+// ─── Main Handler ───────────────────────────────────────────────
+
 export default async function handler(req, res) {
-  // Auth: Vercel sends CRON_SECRET header for cron invocations
   if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
@@ -42,273 +197,28 @@ export default async function handler(req, res) {
 
   const resend = new Resend(process.env.RESEND_API_KEY);
   const now = Date.now();
-  const results = {
-    dayBeforeReminders: { sent: 0, errors: [] },
-    dayOfReminders: { sent: 0, errors: [] },
-    followups: { sent: 0, errors: [] },
-  };
+  const results = {};
 
-  // ─── Job 1: Day-Before Reminders ───────────────────────────────────
-  // Find webinars starting 20-26 hours from now
-  try {
-    const windowStart = new Date(now + 20 * 60 * 60 * 1000).toISOString();
-    const windowEnd = new Date(now + 26 * 60 * 60 * 1000).toISOString();
-
-    const { data: webinars, error: webinarErr } = await supabaseAdmin
-      .from('webinars')
-      .select('id, title, starts_at, duration_minutes, status, meeting_url, riverside_audience_url')
-      .in('status', ['scheduled', 'live'])
-      .gte('starts_at', windowStart)
-      .lte('starts_at', windowEnd);
-
-    if (webinarErr) {
-      console.error('[webinar-cron] Day-before webinar query failed:', webinarErr);
-    } else if (webinars && webinars.length > 0) {
-      for (const webinar of webinars) {
-        const templateModule = await reminderTemplates.day_before();
-        let hasMoreRegs = true;
-        let lastRegId = null;
-
-        while (hasMoreRegs) {
-          let regQuery = supabaseAdmin
-            .from('webinar_registrations')
-            .select('id, email, name, reminder_day_before_sent, unsubscribed')
-            .eq('webinar_id', webinar.id)
-            .eq('reminder_day_before_sent', false)
-            .eq('unsubscribed', false)
-            .order('id', { ascending: true })
-            .limit(50);
-
-          if (lastRegId) {
-            regQuery = regQuery.gt('id', lastRegId);
-          }
-
-          const { data: registrants, error: regErr } = await regQuery;
-
-          if (regErr) {
-            console.error(`[webinar-cron] Day-before registrant query failed for webinar ${webinar.id}:`, regErr);
-            break;
-          }
-
-          if (!registrants || registrants.length === 0) {
-            hasMoreRegs = false;
-            break;
-          }
-
-          lastRegId = registrants[registrants.length - 1].id;
-          hasMoreRegs = registrants.length === 50;
-
-          for (const reg of registrants) {
-            try {
-              const { subject, html } = templateModule.reminderEmail(reg.name, webinar, reg.email);
-
-              await resend.emails.send({
-                from: 'Healing Hearts <hello@healingheartscourse.com>',
-                to: reg.email,
-                subject,
-                html,
-              });
-
-              await supabaseAdmin
-                .from('webinar_registrations')
-                .update({
-                  reminder_day_before_sent: true,
-                  last_email_sent_at: new Date().toISOString(),
-                })
-                .eq('id', reg.id);
-
-              results.dayBeforeReminders.sent++;
-            } catch (err) {
-              console.error(`[webinar-cron] Day-before failed for ${reg.email}:`, err);
-              results.dayBeforeReminders.errors.push({ email: reg.email, error: err.message });
-            }
-          }
-        }
-      }
+  // Run reminder jobs (day-before, day-of)
+  for (const job of REMINDER_JOBS) {
+    try {
+      results[job.name] = await runReminderJob(job, resend, now);
+    } catch (err) {
+      console.error(`[webinar-cron] ${job.name} job error:`, err);
+      results[job.name] = { sent: 0, errors: [{ error: err.message }] };
     }
-  } catch (err) {
-    console.error('[webinar-cron] Day-before job error:', err);
   }
 
-  // ─── Job 2: Day-Of Reminders ───────────────────────────────────────
-  // Find webinars starting 0-4 hours from now
+  // Run follow-up job
   try {
-    const windowStart = new Date(now).toISOString();
-    const windowEnd = new Date(now + 4 * 60 * 60 * 1000).toISOString();
-
-    const { data: webinars, error: webinarErr } = await supabaseAdmin
-      .from('webinars')
-      .select('id, title, starts_at, duration_minutes, status, meeting_url, riverside_audience_url')
-      .in('status', ['scheduled', 'live'])
-      .gte('starts_at', windowStart)
-      .lte('starts_at', windowEnd);
-
-    if (webinarErr) {
-      console.error('[webinar-cron] Day-of webinar query failed:', webinarErr);
-    } else if (webinars && webinars.length > 0) {
-      for (const webinar of webinars) {
-        const templateModule = await reminderTemplates.day_of();
-        let hasMoreRegs = true;
-        let lastRegId = null;
-
-        while (hasMoreRegs) {
-          let regQuery = supabaseAdmin
-            .from('webinar_registrations')
-            .select('id, email, name, reminder_day_of_sent, unsubscribed')
-            .eq('webinar_id', webinar.id)
-            .eq('reminder_day_of_sent', false)
-            .eq('unsubscribed', false)
-            .order('id', { ascending: true })
-            .limit(50);
-
-          if (lastRegId) {
-            regQuery = regQuery.gt('id', lastRegId);
-          }
-
-          const { data: registrants, error: regErr } = await regQuery;
-
-          if (regErr) {
-            console.error(`[webinar-cron] Day-of registrant query failed for webinar ${webinar.id}:`, regErr);
-            break;
-          }
-
-          if (!registrants || registrants.length === 0) {
-            hasMoreRegs = false;
-            break;
-          }
-
-          lastRegId = registrants[registrants.length - 1].id;
-          hasMoreRegs = registrants.length === 50;
-
-          for (const reg of registrants) {
-            try {
-              const { subject, html } = templateModule.reminderEmail(reg.name, webinar, reg.email);
-
-              await resend.emails.send({
-                from: 'Healing Hearts <hello@healingheartscourse.com>',
-                to: reg.email,
-                subject,
-                html,
-              });
-
-              await supabaseAdmin
-                .from('webinar_registrations')
-                .update({
-                  reminder_day_of_sent: true,
-                  last_email_sent_at: new Date().toISOString(),
-                })
-                .eq('id', reg.id);
-
-              results.dayOfReminders.sent++;
-            } catch (err) {
-              console.error(`[webinar-cron] Day-of failed for ${reg.email}:`, err);
-              results.dayOfReminders.errors.push({ email: reg.email, error: err.message });
-            }
-          }
-        }
-      }
-    }
-  } catch (err) {
-    console.error('[webinar-cron] Day-of job error:', err);
-  }
-
-  // ─── Job 3: Post-Webinar Follow-Up ────────────────────────────────
-  // Find completed/evergreen webinars and send follow-up sequence
-  try {
-    const { data: webinars, error: webinarErr } = await supabaseAdmin
-      .from('webinars')
-      .select('id, title, starts_at, duration_minutes, status')
-      .in('status', ['completed', 'evergreen']);
-
-    if (webinarErr) {
-      console.error('[webinar-cron] Follow-up webinar query failed:', webinarErr);
-    } else if (webinars && webinars.length > 0) {
-      for (const webinar of webinars) {
-        const daysSinceWebinar = Math.floor(
-          (now - new Date(webinar.starts_at).getTime()) / (24 * 60 * 60 * 1000)
-        );
-
-        // Find all applicable follow-up steps up to today (handles missed cron runs)
-        const applicableSteps = FOLLOWUP_SCHEDULE.filter((s) => s.afterDays <= daysSinceWebinar);
-        if (applicableSteps.length === 0) continue;
-
-        // Process each applicable step — registrants still at that step get their email
-        const processedInThisRun = new Set();
-        for (const step of applicableSteps) {
-          const templateModule = await followupTemplates[step.template]();
-          let hasMoreRegs = true;
-          let lastRegId = null;
-
-          while (hasMoreRegs) {
-            let regQuery = supabaseAdmin
-              .from('webinar_registrations')
-              .select('id, email, name, followup_day, followup_completed, unsubscribed, last_email_sent_at')
-              .eq('webinar_id', webinar.id)
-              .eq('followup_day', step.atDay)
-              .eq('followup_completed', false)
-              .eq('unsubscribed', false)
-              .or(`last_email_sent_at.is.null,last_email_sent_at.lt.${new Date(now - 20 * 60 * 60 * 1000).toISOString()}`)
-              .order('id', { ascending: true })
-              .limit(50);
-
-            if (lastRegId) {
-              regQuery = regQuery.gt('id', lastRegId);
-            }
-
-            const { data: registrants, error: regErr } = await regQuery;
-
-            if (regErr) {
-              console.error(`[webinar-cron] Follow-up registrant query failed for webinar ${webinar.id}:`, regErr);
-              break;
-            }
-
-            if (!registrants || registrants.length === 0) {
-              hasMoreRegs = false;
-              break;
-            }
-
-            lastRegId = registrants[registrants.length - 1].id;
-            hasMoreRegs = registrants.length === 50;
-
-            for (const reg of registrants) {
-              if (processedInThisRun.has(reg.id)) continue;
-              processedInThisRun.add(reg.id);
-              try {
-                const { subject, html } = templateModule.followupEmail(reg.name, webinar, reg.email);
-
-                await resend.emails.send({
-                  from: 'Healing Hearts <hello@healingheartscourse.com>',
-                  to: reg.email,
-                  subject,
-                  html,
-                });
-
-                const newFollowupDay = step.atDay + 1;
-                await supabaseAdmin
-                  .from('webinar_registrations')
-                  .update({
-                    followup_day: newFollowupDay,
-                    followup_completed: newFollowupDay >= 5,
-                    last_email_sent_at: new Date().toISOString(),
-                  })
-                  .eq('id', reg.id);
-
-                results.followups.sent++;
-              } catch (err) {
-                console.error(`[webinar-cron] Follow-up failed for ${reg.email} (template ${step.template}):`, err);
-                results.followups.errors.push({ email: reg.email, template: step.template, error: err.message });
-              }
-            }
-          }
-        }
-      }
-    }
+    results.followups = await runFollowupJob(resend, now);
   } catch (err) {
     console.error('[webinar-cron] Follow-up job error:', err);
+    results.followups = { sent: 0, errors: [{ error: err.message }] };
   }
 
-  const totalSent = results.dayBeforeReminders.sent + results.dayOfReminders.sent + results.followups.sent;
-  const totalErrors = results.dayBeforeReminders.errors.length + results.dayOfReminders.errors.length + results.followups.errors.length;
+  const totalSent = Object.values(results).reduce((sum, r) => sum + r.sent, 0);
+  const totalErrors = Object.values(results).reduce((sum, r) => sum + r.errors.length, 0);
   console.log(`[webinar-cron] Total sent: ${totalSent}, Total errors: ${totalErrors}`);
 
   return res.status(200).json(results);

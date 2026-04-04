@@ -1,10 +1,13 @@
-/* global process */
 // Vercel Cron Function: GET /api/cron/spark-drip
 // Runs daily at 7 AM MT (13:00 UTC during MDT).
 // Queries pending spark_signups and sends the next day's email.
 
 import { Resend } from 'resend';
 import { supabaseAdmin } from '../_lib/supabase-admin.js';
+import { paginatedQuery } from '../_lib/paginated-query.js';
+import { sendBatch } from '../_lib/send-emails.js';
+
+const FROM_ADDRESS = 'Healing Hearts <hello@healingheartscourse.com>';
 
 // Dynamic imports for day templates
 const dayTemplates = {
@@ -35,110 +38,69 @@ export default async function handler(req, res) {
   }
 
   const resend = new Resend(process.env.RESEND_API_KEY);
-
-  const BATCH_SIZE = 50;
+  const now = Date.now();
+  const sixHoursAgo = new Date(now - 6 * 60 * 60 * 1000).toISOString();
+  const twentyHoursAgo = new Date(now - 20 * 60 * 60 * 1000).toISOString();
   const results = { sent: 0, errors: [] };
-  let hasMore = true;
-  let lastId = null;
 
-  while (hasMore) {
-    let query = supabaseAdmin
-      .from('spark_signups')
-      .select('id, email, current_day, completed, unsubscribed, signed_up_at, last_email_sent_at')
-      .eq('completed', false)
-      .eq('unsubscribed', false)
-      .lt('current_day', 14)
-      .lt('signed_up_at', new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString())
-      .or(`last_email_sent_at.is.null,last_email_sent_at.lt.${new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString()}`)
-      .order('id', { ascending: true })
-      .limit(BATCH_SIZE);
+  try {
+    for await (const signups of paginatedQuery(() =>
+      supabaseAdmin
+        .from('spark_signups')
+        .select('id, email, current_day, completed, unsubscribed, signed_up_at, last_email_sent_at')
+        .eq('completed', false)
+        .eq('unsubscribed', false)
+        .lt('current_day', 14)
+        .lt('signed_up_at', sixHoursAgo)
+        .or(`last_email_sent_at.is.null,last_email_sent_at.lt.${twentyHoursAgo}`)
+    )) {
+      // Build email payloads for this page
+      const emailPayloads = [];
+      const payloadSignups = [];
 
-    if (lastId) {
-      query = query.gt('id', lastId);
-    }
-
-    const { data: signups, error: queryError } = await query;
-
-    if (queryError) {
-      console.error('[spark-drip] Query failed:', queryError);
-      return res.status(500).json({ error: 'Failed to query signups' });
-    }
-
-    if (!signups || signups.length === 0) {
-      hasMore = false;
-      break;
-    }
-
-    lastId = signups[signups.length - 1].id;
-    hasMore = signups.length === BATCH_SIZE;
-
-    // Build email payloads for this page of signups
-    const emailPayloads = [];
-    const payloadSignups = [];
-
-    for (const signup of signups) {
-      const nextDay = signup.current_day + 1;
-
-      try {
-        const templateModule = await dayTemplates[nextDay]();
-        const { subject, html } = templateModule.dayEmail(signup.email);
-
-        emailPayloads.push({
-          from: 'Healing Hearts <hello@healingheartscourse.com>',
-          to: signup.email,
-          subject,
-          html,
-        });
-        payloadSignups.push({ signup, nextDay });
-      } catch (err) {
-        console.error(`[spark-drip] Template load failed for ${signup.email} (day ${nextDay}):`, err);
-        results.errors.push({ email: signup.email, day: nextDay, error: err.message });
-      }
-    }
-
-    // Send in chunks of 100 (Resend batch limit)
-    const RESEND_CHUNK_SIZE = 100;
-    for (let i = 0; i < emailPayloads.length; i += RESEND_CHUNK_SIZE) {
-      const chunkPayloads = emailPayloads.slice(i, i + RESEND_CHUNK_SIZE);
-      const chunkSignups = payloadSignups.slice(i, i + RESEND_CHUNK_SIZE);
-
-      try {
-        const { error: batchError } = await resend.batch.send(chunkPayloads);
-
-        if (batchError) {
-          console.error('[spark-drip] Batch send error:', batchError);
-          for (const { signup, nextDay } of chunkSignups) {
-            results.errors.push({ email: signup.email, day: nextDay, error: batchError.message });
-          }
-          continue;
-        }
-
-        // Update Supabase for all successfully sent emails in this chunk
-        const now = new Date().toISOString();
-        for (const { signup, nextDay } of chunkSignups) {
-          try {
-            await supabaseAdmin
-              .from('spark_signups')
-              .update({
-                current_day: nextDay,
-                last_email_sent_at: now,
-                completed: nextDay === 14,
-              })
-              .eq('id', signup.id);
-
-            results.sent++;
-          } catch (updateErr) {
-            console.error(`[spark-drip] Supabase update failed for ${signup.email}:`, updateErr);
-            results.errors.push({ email: signup.email, day: nextDay, error: updateErr.message });
-          }
-        }
-      } catch (err) {
-        console.error('[spark-drip] Batch send threw:', err);
-        for (const { signup, nextDay } of chunkSignups) {
+      for (const signup of signups) {
+        const nextDay = signup.current_day + 1;
+        try {
+          const templateModule = await dayTemplates[nextDay]();
+          const { subject, html } = templateModule.dayEmail(signup.email);
+          emailPayloads.push({ from: FROM_ADDRESS, to: signup.email, subject, html });
+          payloadSignups.push({ signup, nextDay });
+        } catch (err) {
+          console.error(`[spark-drip] Template load failed for ${signup.email} (day ${nextDay}):`, err);
           results.errors.push({ email: signup.email, day: nextDay, error: err.message });
         }
       }
+
+      // Send batch and update records for each successful chunk
+      const batchResult = await sendBatch(resend, emailPayloads, {
+        onChunkSent: async (startIdx, count) => {
+          const sentAt = new Date().toISOString();
+          for (const { signup, nextDay } of payloadSignups.slice(startIdx, startIdx + count)) {
+            try {
+              await supabaseAdmin
+                .from('spark_signups')
+                .update({
+                  current_day: nextDay,
+                  last_email_sent_at: sentAt,
+                  completed: nextDay === 14,
+                })
+                .eq('id', signup.id);
+            } catch (updateErr) {
+              console.error(`[spark-drip] Supabase update failed for ${signup.email}:`, updateErr);
+              results.errors.push({ email: signup.email, day: nextDay, error: updateErr.message });
+            }
+          }
+        },
+      });
+
+      results.sent += batchResult.sent;
+      for (const e of batchResult.errors) {
+        results.errors.push(e);
+      }
     }
+  } catch (err) {
+    console.error('[spark-drip] Query failed:', err);
+    return res.status(500).json({ error: 'Failed to query signups' });
   }
 
   console.log(`[spark-drip] Sent: ${results.sent}, Errors: ${results.errors.length}`);

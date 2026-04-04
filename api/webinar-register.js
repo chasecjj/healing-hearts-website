@@ -1,4 +1,3 @@
-/* global process */
 // Vercel Serverless Function: POST /api/webinar-register
 // Registers a user for the next upcoming webinar, sends confirmation + team notification.
 

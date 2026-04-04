@@ -1,4 +1,3 @@
-/* global process */
 // Vercel Serverless Function: POST /api/spark-signup
 // Persists signup to Supabase, then sends welcome email via Resend.
 

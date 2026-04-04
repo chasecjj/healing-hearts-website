@@ -1,4 +1,3 @@
-/* global process */
 // Vercel Serverless Function: POST /api/checkout
 // Creates a Stripe Checkout Session for the Conflict Rescue Kit ($39).
 // Upserts a CRM contact and creates a pending order in Supabase.

@@ -1,4 +1,3 @@
-/* global process */
 // POST /api/admin/send-broadcast
 // One-time broadcast send endpoint. Auth via Bearer CRON_SECRET.
 // Body: { template: "webinar-broadcast-april22", audience: "spark", dryRun: true }
@@ -7,6 +6,10 @@
 
 import { Resend } from 'resend';
 import { supabaseAdmin } from '../_lib/supabase-admin.js';
+import { paginatedQuery } from '../_lib/paginated-query.js';
+import { sendBatch } from '../_lib/send-emails.js';
+
+const FROM_ADDRESS = 'Healing Hearts <hello@healingheartscourse.com>';
 
 const TEMPLATES = {
   'webinar-broadcast-april22': () => import('../_emails/webinar-broadcast-april22.js'),
@@ -51,42 +54,20 @@ export default async function handler(req, res) {
   const audienceCfg = AUDIENCES[audience];
 
   // Collect all recipient emails (paginated)
-  const BATCH_SIZE = 50;
   const allEmails = [];
-  let lastId = null;
-  let hasMore = true;
-
-  while (hasMore) {
-    let query = supabaseAdmin
-      .from(audienceCfg.table)
-      .select('id, email')
-      .order('id', { ascending: true })
-      .limit(BATCH_SIZE);
-
-    query = audienceCfg.filters(query);
-
-    if (lastId) {
-      query = query.gt('id', lastId);
+  try {
+    for await (const rows of paginatedQuery(() =>
+      audienceCfg.filters(
+        supabaseAdmin.from(audienceCfg.table).select('id, email')
+      )
+    )) {
+      for (const row of rows) {
+        allEmails.push(row.email);
+      }
     }
-
-    const { data: rows, error: queryError } = await query;
-
-    if (queryError) {
-      console.error('[send-broadcast] Query failed:', queryError);
-      return res.status(500).json({ error: 'Failed to query recipients' });
-    }
-
-    if (!rows || rows.length === 0) {
-      hasMore = false;
-      break;
-    }
-
-    lastId = rows[rows.length - 1].id;
-    hasMore = rows.length === BATCH_SIZE;
-
-    for (const row of rows) {
-      allEmails.push(row.email);
-    }
+  } catch (err) {
+    console.error('[send-broadcast] Query failed:', err);
+    return res.status(500).json({ error: 'Failed to query recipients' });
   }
 
   // Filter out already-sent emails
@@ -117,52 +98,28 @@ export default async function handler(req, res) {
     });
   }
 
-  // Load template
+  // Load template and build per-recipient payloads
   const templateModule = await TEMPLATES[template]();
-  const resend = new Resend(process.env.RESEND_API_KEY);
-  const results = { sent: 0, skipped: sentSet.size, errors: [] };
-
-  // Build per-recipient payloads (each gets a personalized unsubscribe link)
   const emailPayloads = [];
+  const payloadErrors = [];
+
   for (const email of recipients) {
     try {
       const { subject, html } = templateModule.broadcastEmail(email);
-      emailPayloads.push({
-        from: 'Healing Hearts <hello@healingheartscourse.com>',
-        to: email,
-        subject,
-        html,
-      });
+      emailPayloads.push({ from: FROM_ADDRESS, to: email, subject, html });
     } catch (err) {
       console.error(`[send-broadcast] Template render failed for ${email}:`, err);
-      results.errors.push({ email, error: err.message });
+      payloadErrors.push({ email, error: err.message });
     }
   }
 
-  // Send in chunks of 100 (Resend batch limit)
-  const RESEND_CHUNK_SIZE = 100;
-  for (let i = 0; i < emailPayloads.length; i += RESEND_CHUNK_SIZE) {
-    const chunk = emailPayloads.slice(i, i + RESEND_CHUNK_SIZE);
-    const chunkEmails = recipients.slice(i, i + RESEND_CHUNK_SIZE);
-
-    try {
-      const { error: batchError } = await resend.batch.send(chunk);
-
-      if (batchError) {
-        console.error('[send-broadcast] Batch send error:', batchError);
-        for (const email of chunkEmails) {
-          results.errors.push({ email, error: batchError.message });
-        }
-        continue;
-      }
-
-      // Record successful sends
-      const now = new Date().toISOString();
-      const sendRecords = chunkEmails.map((email) => ({
-        broadcast_id: broadcastId,
-        email,
-        sent_at: now,
-      }));
+  // Send batch and record successful sends
+  const batchResult = await sendBatch(new Resend(process.env.RESEND_API_KEY), emailPayloads, {
+    onChunkSent: async (startIdx, count) => {
+      const sentAt = new Date().toISOString();
+      const sendRecords = emailPayloads
+        .slice(startIdx, startIdx + count)
+        .map((p) => ({ broadcast_id: broadcastId, email: p.to, sent_at: sentAt }));
 
       const { error: insertError } = await supabaseAdmin
         .from('broadcast_sends')
@@ -170,17 +127,16 @@ export default async function handler(req, res) {
 
       if (insertError) {
         console.error('[send-broadcast] Failed to record sends:', insertError);
-        // Sends still went through — log but don't fail
+        // Sends still went through -- log but don't fail
       }
+    },
+  });
 
-      results.sent += chunkEmails.length;
-    } catch (err) {
-      console.error('[send-broadcast] Batch send threw:', err);
-      for (const email of chunkEmails) {
-        results.errors.push({ email, error: err.message });
-      }
-    }
-  }
+  const results = {
+    sent: batchResult.sent,
+    skipped: sentSet.size,
+    errors: [...payloadErrors, ...batchResult.errors],
+  };
 
   console.log(`[send-broadcast] ${broadcastId} complete: sent=${results.sent}, skipped=${results.skipped}, errors=${results.errors.length}`);
   return res.status(200).json(results);

@@ -1,4 +1,3 @@
-/* global process */
 import { supabaseAdmin } from './_lib/supabase-admin.js';
 import { Resend } from 'resend';
 import { applicationReceivedEmail } from './_emails/application-received.js';
