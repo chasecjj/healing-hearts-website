@@ -9,43 +9,93 @@ import {
   calculateCourseProgress,
 } from '../lib/courses';
 
+const CACHE_KEY = 'hh_course_cache';
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+function readCache() {
+  try {
+    const raw = sessionStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const cached = JSON.parse(raw);
+    if (Date.now() - cached.timestamp > CACHE_TTL) return null;
+    return cached;
+  } catch {
+    return null;
+  }
+}
+
+function writeCache(course, progress) {
+  try {
+    sessionStorage.setItem(
+      CACHE_KEY,
+      JSON.stringify({ course, progress, timestamp: Date.now() })
+    );
+  } catch {
+    // sessionStorage full or unavailable — no-op
+  }
+}
+
 /**
- * Hook that loads course data once and caches it in state.
- * Lesson navigation reads from cache — no refetch per click.
- * Progress mutations are optimistic: local state updates immediately,
- * Supabase fires async, reverts on failure.
+ * Hook that loads course data with stale-while-revalidate caching.
+ *
+ * 1. On mount: show cached data instantly (no loading spinner)
+ * 2. Fetch fresh data from Supabase in background
+ * 3. Update UI + cache when fresh data arrives
+ * 4. On failure: keep showing cached data, surface error
+ *
+ * Progress mutations remain optimistic with server sync + revert.
  */
 export function useCourseData(courseSlug = 'healing-hearts-journey') {
   const { user } = useAuth();
-  const [course, setCourse] = useState(null);
-  const [progress, setProgress] = useState([]);
-  const [loading, setLoading] = useState(true);
+
+  // Initialize from cache if available
+  const cached = useRef(readCache());
+  const [course, setCourse] = useState(cached.current?.course || null);
+  const [progress, setProgress] = useState(cached.current?.progress || []);
+  const [loading, setLoading] = useState(!cached.current);
   const [error, setError] = useState(null);
 
-  // Prevent duplicate fetches on mount
-  const hasFetched = useRef(false);
+  const fetchingRef = useRef(false);
 
   const loadData = useCallback(async () => {
-    if (!user) return;
+    if (!user || fetchingRef.current) return;
+    fetchingRef.current = true;
+
     try {
-      setLoading(true);
+      // Only show loading spinner if we have no cached data
+      if (!course) setLoading(true);
       setError(null);
+
       const courseData = await getCourseWithContent(courseSlug);
       const progressData = await getUserProgress(user.id, courseData.id);
+
       setCourse(courseData);
       setProgress(progressData);
+      writeCache(courseData, progressData);
     } catch (err) {
       console.error('Failed to load course data:', err);
       setError(err.message);
+      // If we have cached data, keep showing it — don't blank the screen
     } finally {
       setLoading(false);
+      fetchingRef.current = false;
     }
-  }, [user, courseSlug]);
+  }, [user, courseSlug, course]);
 
+  // Fetch on mount + revalidate when user returns to tab
   useEffect(() => {
-    if (hasFetched.current) return;
-    hasFetched.current = true;
     loadData();
+
+    function handleFocus() {
+      // Revalidate when user tabs back (catches DB changes)
+      const c = readCache();
+      if (!c || Date.now() - c.timestamp > CACHE_TTL) {
+        loadData();
+      }
+    }
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
   }, [loadData]);
 
   /**
@@ -61,13 +111,12 @@ export function useCourseData(courseSlug = 'healing-hearts-journey') {
       const previousProgress = [...progress];
 
       // Optimistic local update
+      let newProgress;
       if (wasCompleted) {
-        setProgress((prev) =>
-          prev.map((p) =>
-            p.lesson_id === lessonId
-              ? { ...p, completed: false, completed_at: null }
-              : p
-          )
+        newProgress = progress.map((p) =>
+          p.lesson_id === lessonId
+            ? { ...p, completed: false, completed_at: null }
+            : p
         );
       } else {
         const optimisticRecord = {
@@ -76,11 +125,12 @@ export function useCourseData(courseSlug = 'healing-hearts-journey') {
           completed: true,
           completed_at: new Date().toISOString(),
         };
-        setProgress((prev) => {
-          const filtered = prev.filter((p) => p.lesson_id !== lessonId);
-          return [...filtered, optimisticRecord];
-        });
+        const filtered = progress.filter((p) => p.lesson_id !== lessonId);
+        newProgress = [...filtered, optimisticRecord];
       }
+
+      setProgress(newProgress);
+      writeCache(course, newProgress);
 
       // Fire async Supabase call
       try {
@@ -91,11 +141,11 @@ export function useCourseData(courseSlug = 'healing-hearts-journey') {
         }
       } catch (err) {
         console.error('Failed to update progress, reverting:', err);
-        // Revert on failure
         setProgress(previousProgress);
+        writeCache(course, previousProgress);
       }
     },
-    [user, progress]
+    [user, progress, course]
   );
 
   const isLessonCompleted = useCallback(
