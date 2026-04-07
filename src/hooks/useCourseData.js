@@ -112,6 +112,13 @@ export function useCourseData(courseSlug = 'healing-hearts-journey') {
     [progress]
   );
 
+  const getProgressRecord = useCallback(
+    (lessonId) => {
+      return progress.find((p) => p.lesson_id === lessonId) || null;
+    },
+    [progress]
+  );
+
   const overallProgress = course?.modules
     ? calculateCourseProgress(course.modules, progress)
     : 0;
@@ -124,6 +131,7 @@ export function useCourseData(courseSlug = 'healing-hearts-journey') {
     toggleLessonComplete,
     isLessonCompleted,
     getModuleProgress,
+    getProgressRecord,
     overallProgress,
     refetch: loadData,
   };

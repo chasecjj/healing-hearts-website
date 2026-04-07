@@ -42,10 +42,10 @@ Supabase project ID: `qleojrlqnbiutyhfnqgb`
 - **Data layer:** `src/lib/courses.js` queries Supabase for course content + user progress
 - **React hook:** `src/hooks/useCourseData.js` — one-time fetch with cache, optimistic progress updates (revert on failure)
 - **Content format:** Lessons store content as `content_json` JSONB column with typed block arrays:
-  - Block types: `heading`, `subheading`, `text`, `bold_text`, `callout`, `exercise`, `quote`, `list`, `divider`
+  - Block types: `heading`, `subheading`, `text`, `bold_text`, `callout`, `exercise`, `quote`, `list`, `divider`, `reflection`, `video`, `audio`
   - Rendered by `src/components/LessonContent.jsx` using a BLOCK_COMPONENTS registry pattern
 - **Access control:** `is_preview` flag on modules gates access at both RLS policy and UI layers. Module 7 is the free preview (3 lessons).
-- **Progress:** `user_progress` table tracks lesson completion per user. Optimistic toggle with server sync.
+- **Progress:** `lesson_progress` table tracks lesson completion per user. Optimistic toggle with server sync.
 
 ### Marketing Site
 - 14+ marketing pages wrapped in `Layout` (Navbar + Footer) — includes Spark Challenge
@@ -148,5 +148,7 @@ Read scoria/skills/scoria-build/SKILL.md for --validate-only flag
 | Phase 2 — Course portal + real content | Done |
 | Phase 2.5 — Module 7 full content + sub-lessons | Done |
 | Phase 2.6 — Organic Flow redesign (Scoria + Forge Lite) | Done (Session 60) |
+| Phase 2.7 — Interactive Portal (intentions, notes, journal, audio) | Done |
+| Phase 2.8 — Video Integration (Mux player, video-first layout) | Done |
 | Phase 3 — Stripe payments | Next |
 | Phase 4 — React Native mobile app | Planned |

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
+    "@mux/mux-player-react": "^3.11.7",
     "@scoria/config": "file:./vendor/scoria-config-0.1.0.tgz",
     "@scoria/ui": "file:vendor/scoria-ui-0.1.0.tgz",
     "@supabase/supabase-js": "^2.97.0",

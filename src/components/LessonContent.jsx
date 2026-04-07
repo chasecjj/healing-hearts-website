@@ -1,5 +1,10 @@
 import React from 'react';
-import { Heart, Lightbulb, AlertCircle, BookOpen } from 'lucide-react';
+import { Heart, Lightbulb, AlertCircle, BookOpen, PenLine, Play } from 'lucide-react';
+import AudioPlayer from '../portal/AudioPlayer';
+
+const MuxVideoPlayer = React.lazy(() =>
+  import('../portal/MuxVideoPlayer')
+);
 
 // ─── Block Renderers (pure React, no dangerouslySetInnerHTML) ───
 
@@ -123,6 +128,53 @@ function DividerBlock() {
   return <hr className="border-t border-primary/10 my-8" />;
 }
 
+function ReflectionBlock({ content }) {
+  return (
+    <div className="bg-accent/5 border-l-4 border-accent rounded-2xl p-6 my-6 flex gap-4 items-start">
+      <PenLine className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
+      <div>
+        <h4 className="font-outfit font-bold text-sm text-accent uppercase tracking-wider mb-2">
+          Reflection
+        </h4>
+        <p className="font-sans text-foreground/80 leading-relaxed">{content}</p>
+      </div>
+    </div>
+  );
+}
+
+function VideoBlock({ playback_id, title, caption }) {
+  if (!playback_id) return null;
+  return (
+    <div className="my-8">
+      <React.Suspense
+        fallback={
+          <div className="bg-neutral-100 rounded-2xl aspect-video animate-pulse flex items-center justify-center">
+            <Play className="w-8 h-8 text-foreground/20" />
+          </div>
+        }
+      >
+        <MuxVideoPlayer playbackId={playback_id} title={title || 'Video'} />
+      </React.Suspense>
+      {caption && (
+        <p className="text-sm text-foreground/40 italic mt-3 text-center font-sans">
+          {caption}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function AudioBlock({ src, playback_id, title }) {
+  // Use MP4 rendition — native <audio> doesn't support HLS on Chrome/Firefox
+  const audioSrc = src || (playback_id ? `https://stream.mux.com/${playback_id}/low.mp4` : null);
+  if (!audioSrc) return null;
+  return (
+    <div className="my-6">
+      <AudioPlayer src={audioSrc} title={title} />
+    </div>
+  );
+}
+
 // ─── Graceful fallback for unknown block types ──────────────────
 
 function FallbackBlock({ content }) {
@@ -146,6 +198,9 @@ const BLOCK_COMPONENTS = {
   quote: QuoteBlock,
   list: ListBlock,
   divider: DividerBlock,
+  reflection: ReflectionBlock,
+  video: VideoBlock,
+  audio: AudioBlock,
 };
 
 // ─── Main Component ─────────────────────────────────────────────
@@ -164,8 +219,12 @@ export default function LessonContent({ contentJson }) {
   return (
     <div className="lesson-content">
       {contentJson.blocks.map((block, index) => {
-        const Component = BLOCK_COMPONENTS[block.type] || FallbackBlock;
-        return <Component key={index} {...block} />;
+        const Component = BLOCK_COMPONENTS[block.type];
+        if (!Component && import.meta.env.DEV) {
+          console.warn(`[LessonContent] Unknown block type: "${block.type}" at index ${index}`);
+        }
+        const Renderer = Component || FallbackBlock;
+        return <Renderer key={index} {...block} />;
       })}
     </div>
   );

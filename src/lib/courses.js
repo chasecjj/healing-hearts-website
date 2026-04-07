@@ -103,6 +103,78 @@ export async function markLessonIncomplete(userId, lessonId) {
   return data;
 }
 
+// ─── Lesson Notes ──────────────────────────────────────────────
+
+/**
+ * Save notes for a lesson. Uses upsert — payload is surgically minimal
+ * to avoid clobbering completed/last_position_seconds on existing rows.
+ */
+export async function saveLessonNotes(userId, lessonId, notes) {
+  const { data, error } = await supabase
+    .from('lesson_progress')
+    .upsert(
+      {
+        user_id: userId,
+        lesson_id: lessonId,
+        notes,
+      },
+      { onConflict: 'user_id,lesson_id' }
+    )
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * Get notes for a specific lesson.
+ */
+export async function getLessonNotes(userId, lessonId) {
+  const { data, error } = await supabase
+    .from('lesson_progress')
+    .select('notes')
+    .eq('user_id', userId)
+    .eq('lesson_id', lessonId)
+    .maybeSingle();
+  if (error) throw error;
+  return data?.notes || '';
+}
+
+// ─── Video Position ────────────────────────────────────────────
+
+/**
+ * Save video playback position. Surgically minimal upsert —
+ * only touches last_position_seconds, never completed or notes.
+ */
+export async function saveVideoPosition(userId, lessonId, positionSeconds) {
+  const { error } = await supabase
+    .from('lesson_progress')
+    .upsert(
+      {
+        user_id: userId,
+        lesson_id: lessonId,
+        last_position_seconds: positionSeconds,
+      },
+      { onConflict: 'user_id,lesson_id' }
+    );
+  if (error) throw error;
+}
+
+/**
+ * Get video playback position for resume-from-where-you-left-off.
+ */
+export async function getVideoPosition(userId, lessonId) {
+  const { data, error } = await supabase
+    .from('lesson_progress')
+    .select('last_position_seconds')
+    .eq('user_id', userId)
+    .eq('lesson_id', lessonId)
+    .maybeSingle();
+  if (error) throw error;
+  return data?.last_position_seconds || 0;
+}
+
 // ─── Pure Progress Calculators (no side effects, easy to test) ──
 
 /**

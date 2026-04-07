@@ -10,6 +10,7 @@ import {
   ChevronLeft,
   Quote,
 } from 'lucide-react';
+import DailyIntentionWidget from './DailyIntentionWidget';
 
 /**
  * Portal Dashboard — personalized welcome, journey progress, module library.
@@ -166,51 +167,9 @@ export default function PortalDashboard({
           </div>
         )}
 
-        {/* Daily intention space */}
+        {/* Daily intention widget */}
         <div className="lg:col-span-4 flex flex-col gap-6">
-          <div className="bg-primary/5 rounded-2xl p-8 border-l-4 border-primary h-full">
-            <h3 className="font-drama text-xl mb-6 flex items-center gap-2 text-foreground">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                className="text-primary"
-                aria-hidden="true"
-              >
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-              </svg>
-              Daily Intention
-            </h3>
-            <div className="space-y-6">
-              <p className="text-foreground/60 leading-relaxed italic font-drama text-base">
-                "Today, I will practice patience with my own healing pace. I am exactly where I need to be."
-              </p>
-              <div className="pt-6 border-t border-primary/10">
-                <label className="block text-xs font-outfit uppercase tracking-widest text-foreground/50 mb-4">
-                  Update your focus
-                </label>
-                <div className="bg-white rounded-xl p-4 flex items-center justify-between cursor-pointer hover:shadow-sm transition-all group/input">
-                  <span className="text-sm text-foreground/40">How do you feel?</span>
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    className="text-primary group-hover/input:translate-x-1 transition-transform"
-                    aria-hidden="true"
-                  >
-                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
-                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
+          <DailyIntentionWidget />
         </div>
       </section>
 

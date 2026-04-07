@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import LessonContent from '../components/LessonContent';
+import LessonNotesPanel from './LessonNotesPanel';
+import JournalPromptSection from './JournalPromptSection';
+import { useVideoProgress } from '../hooks/useVideoProgress';
 import {
   CheckCircle2,
   PlayCircle,
@@ -13,6 +16,8 @@ import {
   X,
   Clock,
 } from 'lucide-react';
+
+const MuxVideoPlayer = React.lazy(() => import('./MuxVideoPlayer'));
 
 /**
  * Lesson View — two-panel layout with collapsible sidebar navigation
@@ -129,6 +134,16 @@ export default function LessonView({
   );
 
   const completed = currentLesson ? isLessonCompleted(currentLesson.id) : false;
+  const hasVideo = !!currentLesson?.mux_playback_id;
+  const { startPosition, savePosition } = useVideoProgress(
+    hasVideo ? currentLesson.id : null
+  );
+
+  const handleVideoComplete = useCallback(() => {
+    if (currentLesson && !isLessonCompleted(currentLesson.id)) {
+      toggleLessonComplete(currentLesson.id);
+    }
+  }, [currentLesson, isLessonCompleted, toggleLessonComplete]);
 
   return (
     <div className="flex h-full bg-background font-sans">
@@ -370,6 +385,26 @@ export default function LessonView({
         {/* Lesson content scroll area */}
         <div className="flex-1 overflow-y-auto">
           <article className="px-4 sm:px-8 lg:px-12 py-8 sm:py-16 max-w-[960px] mx-auto w-full">
+            {/* Video player — rendered above content for video lessons */}
+            {hasVideo && (
+              <div className="mb-10" data-lesson-animate>
+                <React.Suspense
+                  fallback={
+                    <div className="bg-neutral-100 rounded-2xl aspect-video animate-pulse" />
+                  }
+                >
+                  <MuxVideoPlayer
+                    key={currentLesson.id}
+                    playbackId={currentLesson.mux_playback_id}
+                    title={currentLesson.title}
+                    startPosition={startPosition}
+                    onPositionUpdate={savePosition}
+                    onComplete={handleVideoComplete}
+                  />
+                </React.Suspense>
+              </div>
+            )}
+
             {/* Lesson header */}
             <header className="mb-12 sm:mb-16 space-y-4" data-lesson-animate>
               <span className="text-accent font-bold text-sm uppercase tracking-[0.3em]">
@@ -396,6 +431,28 @@ export default function LessonView({
               <LessonContent contentJson={currentLesson?.content_json} />
             </div>
           </article>
+
+          {/* ── Lesson Notes + Journal ─────────────────────── */}
+          {currentLesson && (
+            <div className="px-4 sm:px-8 lg:px-12 max-w-[960px] mx-auto w-full space-y-6 pb-8" data-lesson-animate>
+              <LessonNotesPanel lessonId={currentLesson.id} />
+
+              {/* Journal prompt — only if lesson has a reflection block */}
+              {currentLesson.content_json?.blocks?.some(
+                (b) => b.type === 'reflection'
+              ) && (
+                <JournalPromptSection
+                  lessonId={currentLesson.id}
+                  moduleId={currentModule?.id}
+                  prompt={
+                    currentLesson.content_json.blocks.find(
+                      (b) => b.type === 'reflection'
+                    )?.content
+                  }
+                />
+              )}
+            </div>
+          )}
 
           {/* ── Footer with navigation ─────────────────────── */}
           <footer className="w-full py-8 sm:py-12 px-4 sm:px-8 lg:px-12 bg-neutral-50 flex flex-col sm:flex-row justify-between items-center gap-6 mt-auto border-t border-neutral-100">

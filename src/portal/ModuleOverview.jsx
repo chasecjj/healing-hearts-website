@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import {
@@ -11,6 +11,8 @@ import {
   Headphones,
   Download,
 } from 'lucide-react';
+import AudioPlayer from './AudioPlayer';
+import { supabase } from '../lib/supabase';
 
 /**
  * Module Overview — teal gradient header, horizontal journey timeline,
@@ -90,6 +92,31 @@ export default function ModuleOverview({
   const goBackToDashboard = () => {
     navigate('/portal');
   };
+
+  // ── Resource handlers ────────────────────────────────────
+  const [showAudioPlayer, setShowAudioPlayer] = useState(false);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
+
+  const handleDownloadPdf = async () => {
+    if (!currentModule?.workbook_storage_path) return;
+    setDownloadingPdf(true);
+    try {
+      const { data, error } = await supabase.storage
+        .from('workbooks')
+        .createSignedUrl(currentModule.workbook_storage_path, 3600);
+      if (error) throw error;
+      window.open(data.signedUrl, '_blank');
+    } catch (err) {
+      console.error('Failed to generate PDF download link:', err);
+    } finally {
+      setDownloadingPdf(false);
+    }
+  };
+
+  // Use MP4 rendition (not HLS .m3u8) — native <audio> doesn't support HLS on Chrome/Firefox
+  const meditationSrc = currentModule?.meditation_mux_playback_id
+    ? `https://stream.mux.com/${currentModule.meditation_mux_playback_id}/low.mp4`
+    : null;
 
   // ── Progress circle SVG calculations ──────────────────────
   const circleSize = 192;
@@ -240,10 +267,20 @@ export default function ModuleOverview({
                 <p className="text-sm text-foreground/50 mb-6 leading-relaxed">
                   A guided worksheet to document your reflections and emotional triggers from this module.
                 </p>
-                <button className="flex items-center gap-2 text-primary font-outfit text-xs font-bold uppercase tracking-widest group/btn">
-                  Download PDF
-                  <Download className="w-4 h-4 group-hover/btn:translate-y-0.5 transition-transform" />
-                </button>
+                {currentModule?.workbook_storage_path ? (
+                  <button
+                    onClick={handleDownloadPdf}
+                    disabled={downloadingPdf}
+                    className="flex items-center gap-2 text-primary font-outfit text-xs font-bold uppercase tracking-widest group/btn disabled:opacity-50"
+                  >
+                    {downloadingPdf ? 'Generating...' : 'Download PDF'}
+                    <Download className="w-4 h-4 group-hover/btn:translate-y-0.5 transition-transform" />
+                  </button>
+                ) : (
+                  <span className="text-foreground/30 font-outfit text-xs font-bold uppercase tracking-widest">
+                    Coming Soon
+                  </span>
+                )}
               </div>
 
               <div className="group p-8 rounded-3xl bg-white transition-all hover:shadow-[0_8px_30px_-4px_rgba(7,58,71,0.12)] border border-neutral-100">
@@ -256,10 +293,29 @@ export default function ModuleOverview({
                 <p className="text-sm text-foreground/50 mb-6 leading-relaxed">
                   A guided audio experience to help you anchor yourself before deep exploration.
                 </p>
-                <button className="flex items-center gap-2 text-primary font-outfit text-xs font-bold uppercase tracking-widest group/btn">
-                  Play Audio
-                  <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-0.5 transition-transform" />
-                </button>
+                {meditationSrc ? (
+                  <div className="space-y-4 w-full">
+                    <button
+                      onClick={() => setShowAudioPlayer(!showAudioPlayer)}
+                      className="flex items-center gap-2 text-primary font-outfit text-xs font-bold uppercase tracking-widest group/btn"
+                    >
+                      {showAudioPlayer ? 'Hide Audio' : 'Play Audio'}
+                      <ChevronRight
+                        className={`w-4 h-4 transition-transform ${showAudioPlayer ? 'rotate-90' : 'group-hover/btn:translate-x-0.5'}`}
+                      />
+                    </button>
+                    {showAudioPlayer && (
+                      <AudioPlayer
+                        src={meditationSrc}
+                        title={`${currentModule.title} — Grounding Meditation`}
+                      />
+                    )}
+                  </div>
+                ) : (
+                  <span className="text-foreground/30 font-outfit text-xs font-bold uppercase tracking-widest">
+                    Coming Soon
+                  </span>
+                )}
               </div>
             </div>
           </section>
