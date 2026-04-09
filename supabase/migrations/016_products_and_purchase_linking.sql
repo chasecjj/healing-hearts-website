@@ -160,7 +160,11 @@ BEGIN
 EXCEPTION WHEN OTHERS THEN
   -- Never block signup due to purchase-linking failure.
   -- Log the error but let the user sign up.
-  RAISE WARNING 'link_purchases_on_signup failed for user %: %', NEW.id, SQLERRM;
+  DECLARE err_msg text;
+  BEGIN
+    GET STACKED DIAGNOSTICS err_msg = MESSAGE_TEXT;
+    RAISE WARNING 'link_purchases_on_signup failed: %', err_msg;
+  END;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
