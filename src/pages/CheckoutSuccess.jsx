@@ -90,10 +90,10 @@ export default function CheckoutSuccess() {
         {/* Next step based on auth state */}
         {user ? (
           <div className="flex flex-col items-center gap-4">
-            <p className="font-sans text-foreground/60">
+            <p className="font-sans text-foreground/60 leading-relaxed">
               {isDownload
-                ? 'Your download is waiting in your portal.'
-                : 'Your course is now unlocked in your portal.'}
+                ? 'Your resource is ready and waiting for you. We also sent a confirmation to your email.'
+                : 'All 8 modules are now unlocked in your portal. Start with Module 1 whenever you are ready -- there is no rush.'}
             </p>
             <Link
               to={isDownload ? '/portal/downloads' : '/portal'}
@@ -115,9 +115,9 @@ export default function CheckoutSuccess() {
         ) : (
           <div className="flex flex-col items-center gap-4">
             <p className="font-sans text-foreground/60 leading-relaxed">
-              Create your free account to access{' '}
-              <strong>{session.product_name}</strong>. We will use the same email
-              you just checked out with.
+              One quick step -- create your free account so you can access{' '}
+              <strong>{session.product_name}</strong> anytime. We have pre-filled
+              the email you just used at checkout.
             </p>
             <Link
               to={signupUrl}

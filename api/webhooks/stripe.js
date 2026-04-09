@@ -3,9 +3,12 @@
 // Source of truth for payment confirmation -- success page is UX only.
 
 import Stripe from 'stripe';
+import { Resend } from 'resend';
 import { supabaseAdmin } from '../_lib/supabase-admin.js';
+import { downloadPurchaseEmail, enrollmentPurchaseEmail } from '../_emails/purchase-confirmation.js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 // Vercel requires raw body for Stripe signature verification
@@ -191,6 +194,34 @@ async function handleCheckoutCompleted(session) {
       .from('orders')
       .update({ auth_user_id: authUserId })
       .eq('stripe_session_id', sessionId);
+  }
+
+  // Send purchase confirmation email (best-effort, non-blocking)
+  if (resend) {
+    try {
+      const productRecord = await supabaseAdmin
+        .from('products')
+        .select('name, access_grants')
+        .eq('slug', productSlug)
+        .single();
+
+      const prodName = productRecord?.data?.name || productSlug;
+      const grantType = productRecord?.data?.access_grants?.type;
+
+      const emailData = grantType === 'enrollment'
+        ? enrollmentPurchaseEmail(customerEmail, contact?.name)
+        : downloadPurchaseEmail(customerEmail, prodName);
+
+      await resend.emails.send({
+        from: 'Healing Hearts <hello@healingheartscourse.com>',
+        to: customerEmail,
+        subject: emailData.subject,
+        html: emailData.html,
+      });
+    } catch (emailErr) {
+      // Log but don't throw -- email failure should not block payment processing
+      console.error('[webhook] Confirmation email failed (non-blocking):', emailErr.message);
+    }
   }
 
   console.log('[webhook] Processed checkout.session.completed:', {
