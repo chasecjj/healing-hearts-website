@@ -489,7 +489,53 @@ Use existing QR code SOP with UTM params:
 
 ---
 
-## Component 12: Email Mismatch Fallback
+## Component 12: In-Person Payment Links (Expo)
+
+For the Be Healthy Utah expo (April 17-18), in-person sales use Stripe Payment Links
+with printed QR codes at the booth.
+
+### How it works
+
+Stripe Payment Links use Stripe Checkout under the hood -- the same webhook pipeline
+handles everything. No new code needed.
+
+### Setup (Stripe Dashboard)
+
+1. Create a Payment Link for each booth product (Rescue Kit $39, Card Pack $35)
+2. Enable `allow_promotion_codes` if booth promos are planned
+3. Append UTM params to each link: `?utm_source=expo-booth&utm_campaign=be-healthy-2026`
+4. Generate QR codes using the existing QR code SOP (`Projects/ai-os/sops/qr-code-generation-sop.md`)
+
+### Booth flow
+
+```
+Customer at booth
+    -> scans QR code on printed sign (or staff shares link)
+    -> Stripe Checkout on their phone
+    -> pays with Apple Pay / Google Pay / card entry
+    -> webhook fires -> order created
+    -> success page: "Create account to access your purchase"
+```
+
+### Print collateral needed
+- One QR code sign per product (product name + price + QR code)
+- Signs should include: "Scan to purchase -- instant access"
+- Consider a combined sign with multiple QR codes if booth space is tight
+
+### Limitations
+- Requires customer to use their phone (some friction)
+- No tap-to-pay card reader option (see Stripe Terminal handoff for future)
+- Customer must have internet connection
+
+### Future: Stripe Terminal
+A dedicated Stripe Terminal session is planned for next week to add physical
+card reader support (tap/chip/swipe). This will complement Payment Links for
+customers who prefer paying with a physical card without using their phone.
+See handoff: `docs/handoffs/2026-04-09-stripe-terminal-handoff.md`
+
+---
+
+## Component 13: Email Mismatch Fallback
 
 ### Primary prevention
 Success page pre-fills signup form with the email used on Stripe. This prevents ~90% of mismatches.
