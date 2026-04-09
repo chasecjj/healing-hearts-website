@@ -98,7 +98,7 @@ async function handleCheckoutCompleted(session) {
       },
       { onConflict: 'email', ignoreDuplicates: false }
     )
-    .select('id')
+    .select('id, name')
     .single();
 
   if (!contact) {
@@ -141,10 +141,10 @@ async function handleCheckoutCompleted(session) {
     });
   }
 
-  // Look up product access_grants
+  // Look up product (access_grants for enrollment, name for confirmation email)
   const { data: product } = await supabaseAdmin
     .from('products')
-    .select('access_grants')
+    .select('name, access_grants')
     .eq('slug', productSlug)
     .single();
 
@@ -197,20 +197,11 @@ async function handleCheckoutCompleted(session) {
   }
 
   // Send purchase confirmation email (best-effort, non-blocking)
-  if (resend) {
+  if (resend && product) {
     try {
-      const productRecord = await supabaseAdmin
-        .from('products')
-        .select('name, access_grants')
-        .eq('slug', productSlug)
-        .single();
-
-      const prodName = productRecord?.data?.name || productSlug;
-      const grantType = productRecord?.data?.access_grants?.type;
-
-      const emailData = grantType === 'enrollment'
+      const emailData = product.access_grants?.type === 'enrollment'
         ? enrollmentPurchaseEmail(customerEmail, contact?.name)
-        : downloadPurchaseEmail(customerEmail, prodName);
+        : downloadPurchaseEmail(customerEmail, product.name);
 
       await resend.emails.send({
         from: 'Healing Hearts <hello@healingheartscourse.com>',
