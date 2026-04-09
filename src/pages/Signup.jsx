@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Mail, Lock, User, ArrowRight } from 'lucide-react';
 
 export default function Signup() {
+  const [searchParams] = useSearchParams();
+  const prefillEmail = searchParams.get('email') || '';
+  const fromCheckout = searchParams.get('from') === 'checkout';
+
   const [displayName, setDisplayName] = useState('');
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(prefillEmail);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -113,9 +117,15 @@ export default function Signup() {
           </Link>
 
           <h1 className="font-outfit font-bold text-3xl text-primary mb-2">Create your account</h1>
-          <p className="font-sans text-foreground/60 mb-8">
-            Get free access to Module 7: Forgiveness & Letting Go — three full lessons, no payment required.
-          </p>
+          {fromCheckout ? (
+            <p className="font-sans text-foreground/60 mb-8">
+              Create your account to access your purchase. We have pre-filled the email you used at checkout.
+            </p>
+          ) : (
+            <p className="font-sans text-foreground/60 mb-8">
+              Get free access to Module 7: Forgiveness & Letting Go — three full lessons, no payment required.
+            </p>
+          )}
 
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl mb-6 text-sm font-sans">
