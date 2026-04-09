@@ -5,6 +5,13 @@
 -- =====================================================
 
 -- =====================================================
+-- FIX: Add unique constraint on enrollments for
+-- ON CONFLICT and upsert support
+-- =====================================================
+ALTER TABLE enrollments
+  ADD CONSTRAINT enrollments_user_course_unique UNIQUE (user_id, course_id);
+
+-- =====================================================
 -- PRODUCTS TABLE
 -- =====================================================
 CREATE TABLE products (
@@ -58,6 +65,10 @@ DECLARE
   course_uuid uuid;
 BEGIN
   SELECT id INTO course_uuid FROM courses WHERE slug = 'healing-hearts-journey' LIMIT 1;
+
+  IF course_uuid IS NULL THEN
+    RAISE WARNING 'Course healing-hearts-journey not found. Full-course product will have null course_id.';
+  END IF;
 
   INSERT INTO products (slug, name, description, price_cents, stripe_price_id, product_type, access_grants, is_active, is_public) VALUES
     (
@@ -145,6 +156,11 @@ BEGIN
     -- 'download' type: no enrollment row needed, Downloads page queries orders + products
   END LOOP;
 
+  RETURN NEW;
+EXCEPTION WHEN OTHERS THEN
+  -- Never block signup due to purchase-linking failure.
+  -- Log the error but let the user sign up.
+  RAISE WARNING 'link_purchases_on_signup failed for user %: %', NEW.id, SQLERRM;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

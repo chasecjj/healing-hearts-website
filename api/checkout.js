@@ -70,11 +70,16 @@ async function handleGetSession(req, res) {
 // ─── POST: Create a new checkout session ─────────────────
 async function handleCreateSession(req, res) {
   try {
-    const { slug, email, source, cancel_path } = req.body || {};
+    const { slug, email, source, cancel_path: rawCancelPath } = req.body || {};
 
     if (!slug || typeof slug !== 'string') {
       return res.status(400).json({ error: 'Missing product slug' });
     }
+
+    // Validate cancel_path to prevent open redirect
+    const cancel_path = (typeof rawCancelPath === 'string' && rawCancelPath.startsWith('/') && !rawCancelPath.startsWith('//'))
+      ? rawCancelPath
+      : '/';
 
     // Look up product in database
     const { data: product, error: productError } = await supabaseAdmin

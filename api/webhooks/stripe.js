@@ -46,12 +46,15 @@ export default async function handler(req, res) {
   }
 
   // Route by event type
-  if (event.type === 'checkout.session.completed') {
-    await handleCheckoutCompleted(event.data.object);
+  try {
+    if (event.type === 'checkout.session.completed') {
+      await handleCheckoutCompleted(event.data.object);
+    }
+    return res.status(200).json({ received: true });
+  } catch (err) {
+    console.error('[webhook] Processing failed, Stripe will retry:', err.message);
+    return res.status(500).json({ error: 'Webhook processing failed' });
   }
-
-  // Always return 200 to acknowledge receipt (even for unhandled event types)
-  return res.status(200).json({ received: true });
 }
 
 async function handleCheckoutCompleted(session) {
@@ -62,8 +65,9 @@ async function handleCheckoutCompleted(session) {
   const source = session.metadata?.source || '';
 
   if (!customerEmail || !productSlug) {
+    // Missing metadata is a permanent error -- don't retry
     console.error('[webhook] Missing email or product_slug in session:', sessionId);
-    return;
+    return; // Return without throwing so Stripe gets 200 (no point retrying bad data)
   }
 
   // Idempotency: skip if already processed
@@ -95,8 +99,7 @@ async function handleCheckoutCompleted(session) {
     .single();
 
   if (!contact) {
-    console.error('[webhook] Failed to upsert contact for:', customerEmail);
-    return;
+    throw new Error(`Failed to upsert CRM contact for: ${customerEmail}`);
   }
 
   // Update or create order
@@ -143,26 +146,25 @@ async function handleCheckoutCompleted(session) {
     .single();
 
   if (!product) {
-    console.error('[webhook] Product not found:', productSlug);
-    return;
+    throw new Error(`Product not found: ${productSlug}`);
   }
 
-  // Check if an auth user already exists with this email
-  const { data: authLookup } = await supabaseAdmin.auth.admin.listUsers({
-    page: 1,
-    perPage: 1,
-  });
-
-  // listUsers doesn't support email filter, so query auth.users via SQL
-  const { data: authUsers } = await supabaseAdmin
-    .rpc('get_user_by_email', { lookup_email: customerEmail })
+  // Check if an auth user already exists with this email.
+  // Query auth.users directly via the service role client.
+  let authUserId = null;
+  const { data: authUserRows } = await supabaseAdmin
+    .from('auth.users')
+    .select('id')
+    .eq('email', customerEmail)
+    .limit(1)
     .maybeSingle();
 
-  // Fallback: check via admin API if RPC not available
-  let authUserId = authUsers?.id || null;
-  if (!authUserId) {
-    const { data: allUsers } = await supabaseAdmin.auth.admin.listUsers();
-    const match = allUsers?.users?.find(
+  if (authUserRows?.id) {
+    authUserId = authUserRows.id;
+  } else {
+    // Fallback: use admin API (auth.users may not be queryable via PostgREST)
+    const { data: listResult } = await supabaseAdmin.auth.admin.listUsers();
+    const match = listResult?.users?.find(
       (u) => u.email?.toLowerCase() === customerEmail
     );
     authUserId = match?.id || null;
