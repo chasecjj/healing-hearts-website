@@ -119,6 +119,9 @@ const Navbar = () => {
               <Link to="/portal" className={`text-sm font-sans font-medium transition-colors duration-500 ${menuOpen ? 'text-background/70 hover:text-background' : 'text-foreground hover:text-accent'}`}>
                 My Portal
               </Link>
+              <Link to="/portal/downloads" className={`text-sm font-sans font-medium transition-colors duration-500 ${menuOpen ? 'text-background/70 hover:text-background' : 'text-foreground/70 hover:text-accent'}`}>
+                Downloads
+              </Link>
               <button onClick={handleLogout} className={`text-sm font-sans font-medium transition-colors duration-500 ${menuOpen ? 'text-background/70 hover:text-background' : 'text-foreground/70 hover:text-accent'}`}>
                 Log out
               </button>
@@ -187,6 +190,9 @@ const Navbar = () => {
                 <>
                   <Link to="/portal" className="font-sans font-semibold text-white/90 hover:text-white transition-colors flex items-center gap-2">
                     My Portal <ArrowRight className="w-4 h-4" />
+                  </Link>
+                  <Link to="/portal/downloads" className="font-sans font-semibold text-white/90 hover:text-white transition-colors flex items-center gap-2">
+                    My Downloads <ArrowRight className="w-4 h-4" />
                   </Link>
                   {isAdmin && (
                     <Link to="/admin" className="font-sans font-semibold text-white/90 hover:text-white transition-colors flex items-center gap-2">

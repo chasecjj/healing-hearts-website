@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
 import {
   getCourseWithContent,
   getUserProgress,
@@ -52,6 +53,7 @@ export function useCourseData(courseSlug = 'healing-hearts-journey') {
   const cached = useRef(readCache());
   const [course, setCourse] = useState(cached.current?.course || null);
   const [progress, setProgress] = useState(cached.current?.progress || []);
+  const [enrollments, setEnrollments] = useState([]);
   const [loading, setLoading] = useState(!cached.current);
   const [error, setError] = useState(null);
 
@@ -69,8 +71,22 @@ export function useCourseData(courseSlug = 'healing-hearts-journey') {
       const courseData = await getCourseWithContent(courseSlug);
       const progressData = await getUserProgress(user.id, courseData.id);
 
+      // Check for active enrollments
+      let enrollmentData = [];
+      try {
+        const { data } = await supabase
+          .from('enrollments')
+          .select('course_id, status')
+          .eq('user_id', user.id)
+          .eq('status', 'active');
+        enrollmentData = data || [];
+      } catch {
+        // Non-critical -- default to no enrollments
+      }
+
       setCourse(courseData);
       setProgress(progressData);
+      setEnrollments(enrollmentData);
       writeCache(courseData, progressData);
     } catch (err) {
       console.error('Failed to load course data:', err);
@@ -183,6 +199,7 @@ export function useCourseData(courseSlug = 'healing-hearts-journey') {
     getModuleProgress,
     getProgressRecord,
     overallProgress,
+    hasActiveEnrollment: enrollments.length > 0,
     refetch: loadData,
   };
 }

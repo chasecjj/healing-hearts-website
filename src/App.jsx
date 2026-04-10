@@ -36,6 +36,8 @@ import ApplicationSuccess from './pages/ApplicationSuccess';
 import WebinarRegister from './pages/WebinarRegister';
 import WebinarLive from './pages/WebinarLive';
 import WebinarReplay from './pages/WebinarReplay';
+import CheckoutSuccess from './pages/CheckoutSuccess';
+import Downloads from './portal/Downloads';
 import { Analytics } from '@vercel/analytics/react';
 
 /* Homepage swap: show ConferenceHome during Be Healthy Utah expo window */
@@ -83,6 +85,7 @@ function App() {
               <Route path="/enroll" element={<ComingSoon />} />
               <Route path="/enroll/:program" element={<ComingSoon />} />
               <Route path="/rescue-kit" element={<RescueKit />} />
+              <Route path="/checkout/success" element={<CheckoutSuccess />} />
               <Route path="/webinar" element={<WebinarRegister />} />
               <Route path="/webinar/live" element={<WebinarLive />} />
               <Route path="/webinar/replay" element={<WebinarReplay />} />
@@ -119,6 +122,16 @@ function App() {
               element={
                 <ProtectedRoute>
                   <CoursePortal />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Protected: Downloads */}
+            <Route
+              path="/portal/downloads"
+              element={
+                <ProtectedRoute>
+                  <Downloads />
                 </ProtectedRoute>
               }
             />

@@ -9,6 +9,7 @@ import {
   ChevronRight,
   ChevronLeft,
   Quote,
+  Download,
 } from 'lucide-react';
 import DailyIntentionWidget from './DailyIntentionWidget';
 
@@ -48,7 +49,11 @@ export default function PortalDashboard({
   }, []);
 
   // ── Derived data ──────────────────────────────────────────
-  const firstName = profile?.full_name?.split(' ')[0] || profile?.email?.split('@')[0] || 'Friend';
+  const firstName =
+    profile?.display_name?.split(' ')[0] ||
+    profile?.full_name?.split(' ')[0] ||
+    profile?.email?.split('@')[0] ||
+    'Friend';
 
   // Find the first in-progress module (has some but not all lessons completed)
   const activeModule = course?.modules?.find((mod) => {
@@ -116,6 +121,17 @@ export default function PortalDashboard({
         </div>
         {/* Decorative blur */}
         <div className="absolute -top-12 -right-12 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10" aria-hidden="true" />
+      </section>
+
+      {/* ── Quick Links ─────────────────────────────────────── */}
+      <section className="flex gap-3" data-animate>
+        <Link
+          to="/portal/downloads"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-primary border border-primary/20 hover:bg-primary/5 transition-colors"
+        >
+          <Download className="w-4 h-4" />
+          My Downloads
+        </Link>
       </section>
 
       {/* ── Current Focus + Daily Intention ────────────────── */}

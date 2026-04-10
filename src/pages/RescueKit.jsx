@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MagneticButton } from '../components/Layout';
@@ -16,6 +16,8 @@ import {
   Heart,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { startCheckout } from '../lib/checkout';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -415,7 +417,24 @@ const Quote = () => (
 /*  PRICING CTA                                                         */
 /* ------------------------------------------------------------------ */
 const PricingCta = () => {
+  const { user } = useAuth();
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState(null);
   const containerRef = useRef(null);
+
+  async function handleBuyClick() {
+    setCheckoutLoading(true);
+    setCheckoutError(null);
+    try {
+      await startCheckout('rescue-kit', {
+        email: user?.email,
+        cancelPath: '/rescue-kit',
+      });
+    } catch (err) {
+      setCheckoutError(err.message);
+      setCheckoutLoading(false);
+    }
+  }
 
   useEffect(() => {
     if (prefersReducedMotion()) return;
@@ -473,13 +492,16 @@ const PricingCta = () => {
           </div>
 
           <div className="rk-pricing-reveal">
-            <Link to="/apply">
-              <MagneticButton
-                className="bg-accent text-white px-8 sm:px-12 py-4 rounded-full text-base w-full sm:w-auto font-bold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 w-full md:w-auto"
-              >
-                Get the Conflict Rescue Kit
-              </MagneticButton>
-            </Link>
+            <MagneticButton
+              onClick={handleBuyClick}
+              disabled={checkoutLoading}
+              className="bg-accent text-white px-8 sm:px-12 py-4 rounded-full text-base w-full sm:w-auto font-bold shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 w-full md:w-auto disabled:opacity-60 disabled:cursor-wait"
+            >
+              {checkoutLoading ? 'Redirecting to checkout...' : 'Get the Conflict Rescue Kit'}
+            </MagneticButton>
+            {checkoutError && (
+              <p className="text-red-500 text-sm mt-3">{checkoutError}</p>
+            )}
           </div>
 
           <p className="rk-pricing-reveal font-sans text-foreground/60 text-sm mt-6 italic">

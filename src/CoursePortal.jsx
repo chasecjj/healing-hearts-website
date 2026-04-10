@@ -30,6 +30,7 @@ const CoursePortal = () => {
     isLessonCompleted,
     getModuleProgress,
     overallProgress,
+    hasActiveEnrollment,
     refetch,
   } = useCourseData();
 
@@ -47,7 +48,7 @@ const CoursePortal = () => {
       const modNum = moduleSlug.replace('module-', '');
       mod = course.modules.find((m) => m.module_number === modNum);
 
-      if (mod && !mod.is_preview && !isAdmin) {
+      if (mod && !mod.is_preview && !isAdmin && !hasActiveEnrollment) {
         denied = true;
       }
     }
@@ -61,7 +62,7 @@ const CoursePortal = () => {
       const lessonNum = parseInt(lessonSlug.replace('lesson-', ''), 10);
       lesson = mod.lessons.find((l) => l.sort_order === lessonNum);
 
-      if (lesson && !lesson.is_preview && !mod.is_preview && !isAdmin) {
+      if (lesson && !lesson.is_preview && !mod.is_preview && !isAdmin && !hasActiveEnrollment) {
         denied = true;
         lesson = null;
       }
@@ -72,7 +73,7 @@ const CoursePortal = () => {
     }
 
     return { currentModule: mod, currentLesson: lesson, isAccessDenied: denied };
-  }, [course, moduleSlug, lessonSlug, isAdmin]);
+  }, [course, moduleSlug, lessonSlug, isAdmin, hasActiveEnrollment]);
 
   // ─── Loading state ──────────────────────────────────────────
   if (loading) {
@@ -126,17 +127,25 @@ const CoursePortal = () => {
               This Content Is Locked
             </h2>
             <p className="font-sans text-foreground/60 leading-relaxed">
-              This module requires enrollment in the full Healing Hearts Program.
-              Continue exploring the free preview module to experience what's
-              inside.
+              This module is part of the full Healing Hearts Program.
+              Explore the free preview to experience what is inside, or learn
+              more about the program.
             </p>
           </div>
-          <button
-            onClick={() => navigate('/portal')}
-            className="px-8 py-3 rounded-full text-sm font-medium text-white bg-accent hover:bg-accent/90 transition-colors shadow-lg"
-          >
-            Back to Dashboard
-          </button>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={() => navigate('/course')}
+              className="px-8 py-3 rounded-full text-sm font-medium text-white bg-accent hover:bg-accent/90 transition-colors shadow-lg"
+            >
+              Learn About the Program
+            </button>
+            <button
+              onClick={() => navigate('/portal')}
+              className="px-8 py-3 rounded-full text-sm font-medium text-primary border border-primary/20 hover:bg-primary/5 transition-colors"
+            >
+              Back to Dashboard
+            </button>
+          </div>
         </div>
       </div>
     );
