@@ -199,9 +199,25 @@ async function handleCheckoutCompleted(session) {
   // Send purchase confirmation email (best-effort, non-blocking)
   if (resend && product) {
     try {
+      // Fetch the receipt URL + invoice URL so the email can link to both.
+      // Expand latest_charge on the payment intent to get receipt_url in one call.
+      let receiptUrl = null;
+      let invoiceUrl = null;
+      if (paymentIntent) {
+        try {
+          const pi = await stripe.paymentIntents.retrieve(paymentIntent, {
+            expand: ['latest_charge', 'invoice'],
+          });
+          receiptUrl = pi.latest_charge?.receipt_url || null;
+          invoiceUrl = pi.invoice?.hosted_invoice_url || null;
+        } catch (piErr) {
+          console.error('[webhook] Could not fetch payment intent details:', piErr.message);
+        }
+      }
+
       const emailData = product.access_grants?.type === 'enrollment'
-        ? enrollmentPurchaseEmail(customerEmail, contact?.name)
-        : downloadPurchaseEmail(customerEmail, product.name);
+        ? enrollmentPurchaseEmail(customerEmail, contact?.name, { receiptUrl, invoiceUrl })
+        : downloadPurchaseEmail(customerEmail, product.name, { receiptUrl, invoiceUrl });
 
       await resend.emails.send({
         from: 'Healing Hearts <hello@healingheartscourse.com>',

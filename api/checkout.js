@@ -121,6 +121,20 @@ async function handleCreateSession(req, res) {
       success_url: `${SITE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}${cancel_path || '/'}`,
       allow_promotion_codes: true,
+      // Generate a formal Stripe Invoice (with PDF) for every purchase.
+      // Customers get an invoice email from Stripe + we get queryable
+      // Invoice objects for bookkeeping and chargebacks.
+      invoice_creation: {
+        enabled: true,
+        invoice_data: {
+          description: `Healing Hearts: ${product.name}`,
+          metadata: {
+            product_slug: slug,
+            source: source || '',
+          },
+          footer: 'Thank you for investing in your relationship. If you have any questions about your order, reply to this email or contact hello@healingheartscourse.com.',
+        },
+      },
       metadata: {
         product_slug: slug,
         source: source || '',
