@@ -246,13 +246,14 @@ const Footer = () => {
               <h4 className="font-outfit font-bold text-sm text-background/50 mb-2">Legal</h4>
               <Link to="/privacy" className="font-sans font-light text-sm text-background/80 hover:text-accent transition-colors">Privacy Policy</Link>
               <Link to="/terms" className="font-sans font-light text-sm text-background/80 hover:text-accent transition-colors">Terms of Service</Link>
+              <Link to="/refund-policy" className="font-sans font-light text-sm text-background/80 hover:text-accent transition-colors">Refund Policy</Link>
             </div>
           </div>
         </div>
 
         <div className="border-t border-background/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
           <p className="font-sans font-light text-xs text-background/50">
-            © 2026 Healing Hearts LLC. All rights reserved.
+            © 2026 Healing Hearts Consulting, LLC. All rights reserved.
           </p>
           <p className="font-sans font-light text-xs text-background/50 max-w-sm">
             Clinically informed, faith-grounded relationship coaching. Not a licensed therapy practice.

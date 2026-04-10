@@ -50,8 +50,28 @@ export default async function handler(req, res) {
 
   // Route by event type
   try {
-    if (event.type === 'checkout.session.completed') {
-      await handleCheckoutCompleted(event.data.object);
+    switch (event.type) {
+      case 'checkout.session.completed':
+        await handleCheckoutCompleted(event.data.object);
+        break;
+      case 'checkout.session.expired':
+        await handleSessionExpired(event.data.object);
+        break;
+      case 'charge.refunded':
+        await handleChargeRefunded(event.data.object);
+        break;
+      case 'charge.dispute.created':
+        await handleDisputeCreated(event.data.object);
+        break;
+      case 'charge.dispute.closed':
+        await handleDisputeClosed(event.data.object);
+        break;
+      case 'payment_intent.payment_failed':
+        await handlePaymentFailed(event.data.object);
+        break;
+      default:
+        // Unhandled event type -- acknowledge without processing
+        console.log('[webhook] Unhandled event type:', event.type);
     }
     return res.status(200).json({ received: true });
   } catch (err) {
@@ -238,3 +258,224 @@ async function handleCheckoutCompleted(session) {
     userFound: !!authUserId,
   });
 }
+
+// ─── Session expired ─────────────────────────────────────
+// Customer started checkout but did not pay within the 24h window.
+// Stripe fires this to let us clean up stale pending orders.
+async function handleSessionExpired(session) {
+  const { error } = await supabaseAdmin
+    .from('orders')
+    .update({ status: 'failed', updated_at: new Date().toISOString() })
+    .eq('stripe_session_id', session.id)
+    .eq('status', 'pending');
+
+  if (error) {
+    console.error('[webhook] Failed to mark session expired:', error.message);
+    throw error;
+  }
+
+  console.log('[webhook] Marked expired session as failed:', session.id);
+}
+
+// ─── Charge refunded ─────────────────────────────────────
+// Refund issued via Stripe Dashboard or API. Revoke enrollment,
+// flip order status, and downgrade CRM stage from customer to lead.
+async function handleChargeRefunded(charge) {
+  const paymentIntent = charge.payment_intent;
+  if (!paymentIntent) {
+    console.error('[webhook] Refund missing payment_intent:', charge.id);
+    return;
+  }
+
+  // Look up the order
+  const { data: order } = await supabaseAdmin
+    .from('orders')
+    .select('id, contact_id, auth_user_id, product_slug')
+    .eq('stripe_payment_intent', paymentIntent)
+    .maybeSingle();
+
+  if (!order) {
+    console.error('[webhook] Refund: no order found for payment_intent:', paymentIntent);
+    return; // Not retryable -- bad data or a direct Stripe-dashboard charge
+  }
+
+  // Mark order refunded
+  await supabaseAdmin
+    .from('orders')
+    .update({ status: 'refunded', updated_at: new Date().toISOString() })
+    .eq('id', order.id);
+
+  // If the product grants enrollment, revoke it
+  const { data: product } = await supabaseAdmin
+    .from('products')
+    .select('access_grants')
+    .eq('slug', order.product_slug)
+    .single();
+
+  if (product?.access_grants?.type === 'enrollment' && order.auth_user_id) {
+    const courseId = product.access_grants.course_id;
+    if (courseId) {
+      await supabaseAdmin
+        .from('enrollments')
+        .update({ status: 'refunded' })
+        .eq('user_id', order.auth_user_id)
+        .eq('course_id', courseId);
+    }
+  }
+  // 'download' type: no enrollment row to revoke. Future work: soft-hide
+  // the order from the Downloads page (requires a query filter change).
+
+  // Downgrade CRM stage: customer -> lead (they were a customer, refunded back to lead)
+  if (order.contact_id) {
+    await supabaseAdmin
+      .from('crm_contacts')
+      .update({ stage: 'lead', last_activity_at: new Date().toISOString() })
+      .eq('id', order.contact_id);
+  }
+
+  console.log('[webhook] Processed refund:', {
+    charge: charge.id,
+    order: order.id,
+    user: order.auth_user_id,
+  });
+}
+
+// ─── Dispute created ─────────────────────────────────────
+// Customer filed a chargeback with their bank. Mark the order as
+// 'disputed' (NOT revoked) and alert the team. Dispute response
+// deadline is typically 7 days from this event.
+async function handleDisputeCreated(dispute) {
+  const chargeId = dispute.charge;
+  if (!chargeId) return;
+
+  // Fetch the charge to get the payment_intent
+  const charge = await stripe.charges.retrieve(chargeId);
+  const paymentIntent = charge.payment_intent;
+
+  const { data: order } = await supabaseAdmin
+    .from('orders')
+    .select('id, contact_id, product_slug, amount_cents')
+    .eq('stripe_payment_intent', paymentIntent)
+    .maybeSingle();
+
+  if (order) {
+    await supabaseAdmin
+      .from('orders')
+      .update({ status: 'disputed', updated_at: new Date().toISOString() })
+      .eq('id', order.id);
+  }
+
+  // Alert the team (best-effort, non-blocking)
+  if (resend) {
+    try {
+      await resend.emails.send({
+        from: 'Healing Hearts Alerts <hello@healingheartscourse.com>',
+        to: 'hello@healingheartscourse.com',
+        subject: `[URGENT] Chargeback dispute opened: $${(dispute.amount / 100).toFixed(2)}`,
+        html: `
+          <h2>Dispute Alert</h2>
+          <p>A customer has filed a chargeback with their bank.</p>
+          <ul>
+            <li><strong>Amount:</strong> $${(dispute.amount / 100).toFixed(2)} ${dispute.currency?.toUpperCase()}</li>
+            <li><strong>Reason:</strong> ${dispute.reason || 'unknown'}</li>
+            <li><strong>Stripe dispute ID:</strong> ${dispute.id}</li>
+            <li><strong>Charge ID:</strong> ${chargeId}</li>
+            <li><strong>Due by:</strong> ${dispute.evidence_details?.due_by ? new Date(dispute.evidence_details.due_by * 1000).toLocaleString() : 'check Stripe Dashboard'}</li>
+            <li><strong>Order:</strong> ${order?.id || 'not found in our DB'}</li>
+            <li><strong>Product:</strong> ${order?.product_slug || 'unknown'}</li>
+          </ul>
+          <p><strong>Action needed:</strong> Review the dispute in the Stripe Dashboard and submit evidence before the deadline. Missing the deadline results in automatic loss + $15-25 chargeback fee.</p>
+          <p><a href="https://dashboard.stripe.com/disputes/${dispute.id}">Open in Stripe Dashboard</a></p>
+        `,
+      });
+    } catch (emailErr) {
+      console.error('[webhook] Dispute alert email failed:', emailErr.message);
+    }
+  }
+
+  console.log('[webhook] Dispute created:', { dispute: dispute.id, reason: dispute.reason });
+}
+
+// ─── Dispute closed ──────────────────────────────────────
+// Outcome is known. If we won, restore status. If lost, revoke access.
+async function handleDisputeClosed(dispute) {
+  const chargeId = dispute.charge;
+  if (!chargeId) return;
+
+  const charge = await stripe.charges.retrieve(chargeId);
+  const paymentIntent = charge.payment_intent;
+
+  const { data: order } = await supabaseAdmin
+    .from('orders')
+    .select('id, auth_user_id, product_slug, contact_id')
+    .eq('stripe_payment_intent', paymentIntent)
+    .maybeSingle();
+
+  if (!order) return;
+
+  if (dispute.status === 'won') {
+    // Dispute resolved in our favor -- restore completed status
+    await supabaseAdmin
+      .from('orders')
+      .update({ status: 'completed', updated_at: new Date().toISOString() })
+      .eq('id', order.id);
+    console.log('[webhook] Dispute won, order restored:', order.id);
+  } else if (dispute.status === 'lost') {
+    // Dispute resolved against us -- treat as refund
+    await supabaseAdmin
+      .from('orders')
+      .update({ status: 'refunded', updated_at: new Date().toISOString() })
+      .eq('id', order.id);
+
+    // Revoke enrollment if applicable
+    const { data: product } = await supabaseAdmin
+      .from('products')
+      .select('access_grants')
+      .eq('slug', order.product_slug)
+      .single();
+
+    if (product?.access_grants?.type === 'enrollment' && order.auth_user_id) {
+      const courseId = product.access_grants.course_id;
+      if (courseId) {
+        await supabaseAdmin
+          .from('enrollments')
+          .update({ status: 'refunded' })
+          .eq('user_id', order.auth_user_id)
+          .eq('course_id', courseId);
+      }
+    }
+
+    if (order.contact_id) {
+      await supabaseAdmin
+        .from('crm_contacts')
+        .update({ stage: 'lead' })
+        .eq('id', order.contact_id);
+    }
+    console.log('[webhook] Dispute lost, access revoked:', order.id);
+  }
+}
+
+// ─── Payment failed ──────────────────────────────────────
+// Payment declined or processing error. Log for observability.
+// Future: send a gentle recovery email with a new checkout link.
+async function handlePaymentFailed(paymentIntent) {
+  const email = paymentIntent.receipt_email ||
+    paymentIntent.last_payment_error?.payment_method?.billing_details?.email ||
+    null;
+
+  const errorMessage = paymentIntent.last_payment_error?.message || 'unknown';
+  const errorCode = paymentIntent.last_payment_error?.code || 'unknown';
+
+  console.log('[webhook] Payment failed:', {
+    payment_intent: paymentIntent.id,
+    email,
+    error_code: errorCode,
+    error_message: errorMessage,
+  });
+
+  // TODO future: send "your payment didn't go through" recovery email
+  // with a regenerated checkout URL. Requires the product slug, which
+  // we don't have on the payment_intent alone -- need to look up via
+  // the original order record if it was created.
+}
+

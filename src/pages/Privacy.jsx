@@ -10,7 +10,7 @@ export default function Privacy() {
         <h1 className="font-drama italic text-5xl md:text-7xl text-primary leading-tight mb-8 text-center">
           Privacy Policy
         </h1>
-        <p className="font-sans text-foreground/60 text-center mb-16">Last updated: February 2026</p>
+        <p className="font-sans text-foreground/60 text-center mb-16">Effective Date: November 5, 2025 &middot; Last updated: April 10, 2026</p>
 
         <div className="bg-white rounded-[3rem] p-8 md:p-12 lg:p-16 shadow-xl border border-primary/5 space-y-8 font-sans text-foreground/80 font-light leading-relaxed">
 

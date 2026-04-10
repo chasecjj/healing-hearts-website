@@ -3,6 +3,7 @@
 // GET:  Verifies a completed session (used by success page).
 
 import Stripe from 'stripe';
+import crypto from 'crypto';
 import { supabaseAdmin } from './_lib/supabase-admin.js';
 
 const stripe = process.env.STRIPE_SECRET_KEY
@@ -121,6 +122,17 @@ async function handleCreateSession(req, res) {
       success_url: `${SITE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${SITE_URL}${cancel_path || '/'}`,
       allow_promotion_codes: true,
+      // Require explicit Terms acceptance. The custom_text message also
+      // includes the 18+ affirmation (COPPA/FTC compliance) and links to
+      // the Refund Policy per card-network disclosure rules.
+      consent_collection: {
+        terms_of_service: 'required',
+      },
+      custom_text: {
+        terms_of_service_acceptance: {
+          message: 'I am 18 or older and I agree to the [Terms of Service](https://www.healingheartscourse.com/terms) and [Refund Policy](https://www.healingheartscourse.com/refund-policy).',
+        },
+      },
       // Generate a formal Stripe Invoice (with PDF) for every purchase.
       // Customers get an invoice email from Stripe + we get queryable
       // Invoice objects for bookkeeping and chargebacks.
@@ -146,8 +158,20 @@ async function handleCreateSession(req, res) {
       sessionParams.customer_email = email.trim().toLowerCase();
     }
 
+    // Idempotency key: prevent duplicate session creation on double-click
+    // or network retry. Keyed to slug + email + 5-minute bucket so legitimate
+    // retries within ~5 min return the same session rather than creating duplicates.
+    const bucket = Math.floor(Date.now() / (5 * 60 * 1000));
+    const idempotencyKey = crypto
+      .createHash('sha256')
+      .update(`${slug}:${sessionParams.customer_email || 'anon'}:${bucket}`)
+      .digest('hex')
+      .slice(0, 40);
+
     // Create Stripe Checkout Session
-    const session = await stripe.checkout.sessions.create(sessionParams);
+    const session = await stripe.checkout.sessions.create(sessionParams, {
+      idempotencyKey,
+    });
 
     // Upsert CRM contact + create pending order (best-effort, non-blocking)
     const customerEmail = sessionParams.customer_email;

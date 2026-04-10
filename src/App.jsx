@@ -19,6 +19,7 @@ import Testimonials from './pages/Testimonials';
 import FAQ from './pages/FAQ';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
+import Refund from './pages/Refund';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ForgotPassword from './pages/ForgotPassword';
@@ -77,6 +78,7 @@ function App() {
               <Route path="/faq" element={<FAQ />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
+              <Route path="/refund-policy" element={<Refund />} />
               <Route path="/course" element={<CourseOverview />} />
               <Route path="/spark-challenge" element={<SparkChallenge />} />
               <Route path="/team" element={<Team />} />
