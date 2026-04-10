@@ -116,13 +116,18 @@ RETURNS TRIGGER AS $$
 DECLARE
   contact_record RECORD;
   order_record RECORD;
+  err_msg text;
+  linked_count integer := 0;
 BEGIN
   -- Find matching CRM contact by email
   SELECT * INTO contact_record
   FROM crm_contacts
   WHERE email = NEW.email;
 
-  IF contact_record IS NULL THEN
+  -- Use NOT FOUND (idiomatic PL/pgSQL) rather than `IS NULL` on RECORD types,
+  -- which behaves unreliably.
+  IF NOT FOUND THEN
+    RAISE LOG 'link_purchases_on_signup: no CRM contact for %', NEW.email;
     RETURN NEW;
   END IF;
 
@@ -133,14 +138,15 @@ BEGIN
 
   -- Process each completed order for this contact
   FOR order_record IN
-    SELECT o.*, p.access_grants
+    SELECT o.id as order_id, o.stripe_payment_intent, p.access_grants
     FROM orders o
     JOIN products p ON p.slug = o.product_slug
     WHERE o.contact_id = contact_record.id
       AND o.status = 'completed'
   LOOP
     -- Link order to auth user
-    UPDATE orders SET auth_user_id = NEW.id WHERE id = order_record.id;
+    UPDATE orders SET auth_user_id = NEW.id WHERE id = order_record.order_id;
+    linked_count := linked_count + 1;
 
     -- Process enrollment grants
     IF (order_record.access_grants->>'type') = 'enrollment' THEN
@@ -151,20 +157,21 @@ BEGIN
         'active',
         order_record.stripe_payment_intent
       )
-      ON CONFLICT DO NOTHING;
+      ON CONFLICT (user_id, course_id) DO NOTHING;
     END IF;
     -- 'download' type: no enrollment row needed, Downloads page queries orders + products
   END LOOP;
+
+  RAISE LOG 'link_purchases_on_signup: linked % orders for user % (email %)',
+    linked_count, NEW.id, NEW.email;
 
   RETURN NEW;
 EXCEPTION WHEN OTHERS THEN
   -- Never block signup due to purchase-linking failure.
   -- Log the error but let the user sign up.
-  DECLARE err_msg text;
-  BEGIN
-    GET STACKED DIAGNOSTICS err_msg = MESSAGE_TEXT;
-    RAISE WARNING 'link_purchases_on_signup failed: %', err_msg;
-  END;
+  GET STACKED DIAGNOSTICS err_msg = MESSAGE_TEXT;
+  RAISE WARNING 'link_purchases_on_signup FAILED for user % (email %): %',
+    NEW.id, NEW.email, err_msg;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

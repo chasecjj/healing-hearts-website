@@ -49,7 +49,11 @@ export default function PortalDashboard({
   }, []);
 
   // ── Derived data ──────────────────────────────────────────
-  const firstName = profile?.full_name?.split(' ')[0] || profile?.email?.split('@')[0] || 'Friend';
+  const firstName =
+    profile?.display_name?.split(' ')[0] ||
+    profile?.full_name?.split(' ')[0] ||
+    profile?.email?.split('@')[0] ||
+    'Friend';
 
   // Find the first in-progress module (has some but not all lessons completed)
   const activeModule = course?.modules?.find((mod) => {

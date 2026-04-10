@@ -98,7 +98,7 @@ export default function Downloads() {
               </p>
             </div>
             <Link
-              to="/rescue-kit"
+              to="/resources"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium text-white bg-accent hover:bg-accent/90 transition-colors"
             >
               <ShoppingBag className="w-4 h-4" />
