@@ -93,7 +93,7 @@ export default function CheckoutSuccess() {
             <p className="font-sans text-foreground/60 leading-relaxed">
               {isDownload
                 ? 'Your resource is ready and waiting for you. We also sent a confirmation to your email.'
-                : 'All 8 modules are now unlocked in your portal. Start with Module 1 whenever you are ready -- there is no rush.'}
+                : 'All 8 modules are now unlocked in your portal. Start with Module 1 whenever you are ready. There is no rush.'}
             </p>
             <Link
               to={isDownload ? '/portal/downloads' : '/portal'}
@@ -115,7 +115,7 @@ export default function CheckoutSuccess() {
         ) : (
           <div className="flex flex-col items-center gap-4">
             <p className="font-sans text-foreground/60 leading-relaxed">
-              One quick step -- create your free account so you can access{' '}
+              Create your free account so you can access{' '}
               <strong>{session.product_name}</strong> anytime. We have pre-filled
               the email you just used at checkout.
             </p>
