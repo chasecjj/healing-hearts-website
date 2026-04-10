@@ -9,6 +9,11 @@ const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY)
   : null;
 
+// Detect Stripe mode from secret key prefix. Test keys start with sk_test_,
+// live keys start with sk_live_. This determines which price ID column we
+// query in the products table.
+const IS_TEST_MODE = process.env.STRIPE_SECRET_KEY?.startsWith('sk_test_') ?? false;
+
 const SITE_URL = process.env.SITE_URL || 'https://healingheartscourse.com';
 
 export default async function handler(req, res) {
@@ -93,13 +98,23 @@ async function handleCreateSession(req, res) {
       return res.status(400).json({ error: 'Product not found or unavailable' });
     }
 
+    // Select the correct Stripe price ID based on mode.
+    // Test keys must use test price IDs; live keys must use live price IDs.
+    const priceId = IS_TEST_MODE ? product.stripe_price_id_test : product.stripe_price_id;
+
+    if (!priceId) {
+      return res.status(500).json({
+        error: `Product "${slug}" is not configured for ${IS_TEST_MODE ? 'test' : 'live'} mode. Missing ${IS_TEST_MODE ? 'stripe_price_id_test' : 'stripe_price_id'}.`
+      });
+    }
+
     // Build Stripe Checkout Session params
     const sessionParams = {
       mode: 'payment',
       payment_method_types: ['card'],
       line_items: [
         {
-          price: product.stripe_price_id,
+          price: priceId,
           quantity: 1,
         },
       ],
