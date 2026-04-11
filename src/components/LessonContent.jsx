@@ -1,6 +1,25 @@
+// LessonContent.jsx — PROPOSED for Monday deploy
+//
+// Changes from current src/components/LessonContent.jsx:
+//   1. Import the 3 new interactive block components from ./ContentBlocks/
+//   2. Import useAuth so we can pass the current user's UID to block components
+//   3. Accept a new `lessonId` prop (injected by LessonView.jsx)
+//   4. Register the 3 new block types in BLOCK_COMPONENTS
+//   5. Pass `lessonId` + `userId` to every rendered block (existing blocks
+//      ignore the extra props; only the interactive blocks use them)
+//
+// Copy this file to src/components/LessonContent.jsx on Monday and also
+// copy the 3 sandbox block JSX files into src/components/ContentBlocks/
+// (create the directory if it doesn't exist) + rescue-kit-helpers.js into
+// src/lib/.
+
 import React from 'react';
 import { Heart, Lightbulb, AlertCircle, BookOpen, PenLine, Play } from 'lucide-react';
 import AudioPlayer from '../portal/AudioPlayer';
+import { useAuth } from '../contexts/AuthContext';
+import AssessmentBlock from './ContentBlocks/AssessmentBlock';
+import FillableFormBlock from './ContentBlocks/FillableFormBlock';
+import PracticePlanBlock from './ContentBlocks/PracticePlanBlock';
 
 const MuxVideoPlayer = React.lazy(() =>
   import('../portal/MuxVideoPlayer')
@@ -201,11 +220,21 @@ const BLOCK_COMPONENTS = {
   reflection: ReflectionBlock,
   video: VideoBlock,
   audio: AudioBlock,
+  // Rescue Kit interactive blocks (Session 96)
+  assessment: AssessmentBlock,
+  fillable_form: FillableFormBlock,
+  practice_plan: PracticePlanBlock,
 };
+
+// Block types that need lessonId + userId injected for persistence.
+// The rest of the blocks ignore these extra props harmlessly.
+const INTERACTIVE_BLOCK_TYPES = new Set(['assessment', 'fillable_form', 'practice_plan']);
 
 // ─── Main Component ─────────────────────────────────────────────
 
-export default function LessonContent({ contentJson }) {
+export default function LessonContent({ contentJson, lessonId }) {
+  const { user } = useAuth();
+
   if (!contentJson || !contentJson.blocks || contentJson.blocks.length === 0) {
     return (
       <div className="text-center py-12">
@@ -224,6 +253,18 @@ export default function LessonContent({ contentJson }) {
           console.warn(`[LessonContent] Unknown block type: "${block.type}" at index ${index}`);
         }
         const Renderer = Component || FallbackBlock;
+        // Interactive blocks need lessonId + userId for Supabase persistence.
+        // Presentational blocks ignore the extras — spread-props is harmless.
+        if (INTERACTIVE_BLOCK_TYPES.has(block.type)) {
+          return (
+            <Renderer
+              key={index}
+              {...block}
+              lessonId={lessonId}
+              userId={user?.id}
+            />
+          );
+        }
         return <Renderer key={index} {...block} />;
       })}
     </div>

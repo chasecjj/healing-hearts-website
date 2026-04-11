@@ -428,7 +428,10 @@ export default function LessonView({
               className="max-w-[65ch] space-y-10 text-foreground/80 leading-[1.8] text-lg"
               data-lesson-animate
             >
-              <LessonContent contentJson={currentLesson?.content_json} />
+              <LessonContent
+                contentJson={currentLesson?.content_json}
+                lessonId={currentLesson?.id}
+              />
             </div>
           </article>
 
