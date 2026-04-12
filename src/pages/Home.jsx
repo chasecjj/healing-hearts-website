@@ -208,7 +208,7 @@ const Philosophy = () => {
                 className="group inline-flex items-center gap-3 text-accent hover:text-primary font-medium tracking-wide transition-colors"
               >
                 <span className="border-b border-accent/30 group-hover:border-primary pb-1 transition-colors">
-                  Read Our Philosophy
+                  Read Our Story
                 </span>
                 <svg
                   className="w-5 h-5 group-hover:translate-x-1 transition-transform"
