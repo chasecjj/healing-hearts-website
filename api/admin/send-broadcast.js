@@ -1,6 +1,6 @@
 // POST /api/admin/send-broadcast
 // One-time broadcast send endpoint. Auth via Bearer CRON_SECRET.
-// Body: { template: "webinar-broadcast-april22", audience: "spark", dryRun: true }
+// Body: { template: "webinar-broadcast-april23", audience: "spark", dryRun: true }
 //
 // Idempotent: uses broadcast_sends table to skip already-sent emails.
 
@@ -12,7 +12,7 @@ import { sendBatch } from '../_lib/send-emails.js';
 const FROM_ADDRESS = 'Healing Hearts <hello@healingheartscourse.com>';
 
 const TEMPLATES = {
-  'webinar-broadcast-april22': () => import('../_emails/webinar-broadcast-april22.js'),
+  'webinar-broadcast-april23': () => import('../_emails/webinar-broadcast-april23.js'),
 };
 
 const AUDIENCES = {

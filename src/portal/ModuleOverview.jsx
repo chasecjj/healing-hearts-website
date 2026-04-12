@@ -24,6 +24,7 @@ export default function ModuleOverview({
   currentModule,
   getModuleProgress,
   isLessonCompleted,
+  basePath = '/portal',
 }) {
   const navigate = useNavigate();
   const containerRef = useRef(null);
@@ -85,12 +86,12 @@ export default function ModuleOverview({
   // ── Navigation helpers ────────────────────────────────────
   const goToLesson = (lesson) => {
     navigate(
-      `/portal/module-${currentModule.module_number}/lesson-${lesson.sort_order}`
+      `${basePath}/module-${currentModule.module_number}/lesson-${lesson.sort_order}`
     );
   };
 
   const goBackToDashboard = () => {
-    navigate('/portal');
+    navigate(basePath);
   };
 
   // ── Resource handlers ────────────────────────────────────

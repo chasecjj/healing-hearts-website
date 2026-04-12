@@ -1,5 +1,22 @@
 import { supabase } from './supabase';
 
+// ─── Course Listing ────────────────────────────────────────────
+
+/**
+ * Fetch all active courses (slug, title, description, course_type).
+ * Used by the portal dashboard to show available courses.
+ */
+export async function getActiveCourses() {
+  const { data, error } = await supabase
+    .from('courses')
+    .select('id, slug, title, description, course_type')
+    .eq('is_active', true)
+    .order('created_at', { ascending: true });
+
+  if (error) throw error;
+  return data || [];
+}
+
 // ─── Course Data Queries ────────────────────────────────────────
 
 /**

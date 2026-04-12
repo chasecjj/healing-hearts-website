@@ -34,6 +34,7 @@ export default function LessonView({
   getModuleProgress,
   overallProgress,
   isAdmin = false,
+  basePath = '/portal',
 }) {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -61,10 +62,10 @@ export default function LessonView({
   // ── Navigation helpers ────────────────────────────────────
   const navigateToLesson = useCallback(
     (mod, lesson) => {
-      navigate(`/portal/module-${mod.module_number}/lesson-${lesson.sort_order}`);
+      navigate(`${basePath}/module-${mod.module_number}/lesson-${lesson.sort_order}`);
       setSidebarOpen(false);
     },
-    [navigate]
+    [navigate, basePath]
   );
 
   // Flatten all accessible lessons across modules for prev/next
@@ -330,7 +331,7 @@ export default function LessonView({
         {/* Bottom links */}
         <div className="mt-auto px-4 pt-4 border-t border-primary/5">
           <button
-            onClick={() => navigate('/portal')}
+            onClick={() => navigate(basePath)}
             className="flex items-center gap-3 px-4 py-3 text-foreground/60 hover:text-primary transition-colors cursor-pointer text-sm font-medium w-full"
           >
             <ChevronLeft className="w-4 h-4" />
@@ -362,7 +363,7 @@ export default function LessonView({
             <span
               className="hover:text-primary cursor-pointer transition-colors truncate"
               onClick={() =>
-                navigate(`/portal/module-${currentModule?.module_number}`)
+                navigate(`${basePath}/module-${currentModule?.module_number}`)
               }
             >
               Module {currentModule?.module_number}

@@ -10,12 +10,16 @@ import {
   calculateCourseProgress,
 } from '../lib/courses';
 
-const CACHE_KEY = 'hh_course_cache';
+const CACHE_KEY_PREFIX = 'hh_course_cache';
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
-function readCache() {
+function cacheKey(courseSlug) {
+  return `${CACHE_KEY_PREFIX}_${courseSlug}`;
+}
+
+function readCache(courseSlug) {
   try {
-    const raw = sessionStorage.getItem(CACHE_KEY);
+    const raw = sessionStorage.getItem(cacheKey(courseSlug));
     if (!raw) return null;
     const cached = JSON.parse(raw);
     if (Date.now() - cached.timestamp > CACHE_TTL) return null;
@@ -25,10 +29,10 @@ function readCache() {
   }
 }
 
-function writeCache(course, progress) {
+function writeCache(courseSlug, course, progress) {
   try {
     sessionStorage.setItem(
-      CACHE_KEY,
+      cacheKey(courseSlug),
       JSON.stringify({ course, progress, timestamp: Date.now() })
     );
   } catch {
@@ -50,7 +54,7 @@ export function useCourseData(courseSlug = 'healing-hearts-journey') {
   const { user } = useAuth();
 
   // Initialize from cache if available
-  const cached = useRef(readCache());
+  const cached = useRef(readCache(courseSlug));
   const [course, setCourse] = useState(cached.current?.course || null);
   const [progress, setProgress] = useState(cached.current?.progress || []);
   const [enrollments, setEnrollments] = useState([]);
@@ -87,7 +91,7 @@ export function useCourseData(courseSlug = 'healing-hearts-journey') {
       setCourse(courseData);
       setProgress(progressData);
       setEnrollments(enrollmentData);
-      writeCache(courseData, progressData);
+      writeCache(courseSlug, courseData, progressData);
     } catch (err) {
       console.error('Failed to load course data:', err);
       setError(err.message);
@@ -104,7 +108,7 @@ export function useCourseData(courseSlug = 'healing-hearts-journey') {
 
     function handleFocus() {
       // Revalidate when user tabs back (catches DB changes)
-      const c = readCache();
+      const c = readCache(courseSlug);
       if (!c || Date.now() - c.timestamp > CACHE_TTL) {
         loadData();
       }
@@ -146,7 +150,7 @@ export function useCourseData(courseSlug = 'healing-hearts-journey') {
       }
 
       setProgress(newProgress);
-      writeCache(course, newProgress);
+      writeCache(courseSlug, course, newProgress);
 
       // Fire async Supabase call
       try {
@@ -158,10 +162,10 @@ export function useCourseData(courseSlug = 'healing-hearts-journey') {
       } catch (err) {
         console.error('Failed to update progress, reverting:', err);
         setProgress(previousProgress);
-        writeCache(course, previousProgress);
+        writeCache(courseSlug, course, previousProgress);
       }
     },
-    [user, progress, course]
+    [user, progress, course, courseSlug]
   );
 
   const isLessonCompleted = useCallback(

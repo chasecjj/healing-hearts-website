@@ -13,14 +13,26 @@ import { Lock, ShieldAlert } from 'lucide-react';
  * Handles auth, loads course data via useCourseData, and renders
  * the appropriate view component based on URL params:
  *
- *   /portal                          → PortalDashboard
- *   /portal/:moduleSlug              → ModuleOverview
- *   /portal/:moduleSlug/:lessonSlug  → LessonView
+ *   /portal                                              → PortalDashboard
+ *   /portal/:moduleSlug                                  → ModuleOverview (HH)
+ *   /portal/:moduleSlug/:lessonSlug                      → LessonView (HH)
+ *   /portal/course/:courseSlug                            → PortalDashboard (course-scoped)
+ *   /portal/course/:courseSlug/:moduleSlug                → ModuleOverview
+ *   /portal/course/:courseSlug/:moduleSlug/:lessonSlug    → LessonView
  */
 const CoursePortal = () => {
   const { profile, isAdmin } = useAuth();
   const navigate = useNavigate();
-  const { moduleSlug, lessonSlug } = useParams();
+  const { courseSlug, moduleSlug, lessonSlug } = useParams();
+
+  // When accessed via /portal/course/:courseSlug/... use the slug from the URL,
+  // otherwise fall back to the default healing-hearts-journey course.
+  const resolvedCourseSlug = courseSlug || 'healing-hearts-journey';
+
+  // Build the base path prefix for all internal portal navigation.
+  // Course-scoped routes: /portal/course/rescue-kit
+  // Legacy routes:        /portal
+  const basePath = courseSlug ? `/portal/course/${courseSlug}` : '/portal';
 
   const {
     course,
@@ -32,7 +44,7 @@ const CoursePortal = () => {
     overallProgress,
     hasActiveEnrollment,
     refetch,
-  } = useCourseData();
+  } = useCourseData(resolvedCourseSlug);
 
   // ─── Derive active module/lesson from URL params ────────────
   const { currentModule, currentLesson, isAccessDenied } = useMemo(() => {
@@ -164,6 +176,7 @@ const CoursePortal = () => {
         isLessonCompleted={isLessonCompleted}
         isAdmin={isAdmin}
         hasActiveEnrollment={hasActiveEnrollment}
+        basePath={basePath}
       />
     );
   }
@@ -177,6 +190,7 @@ const CoursePortal = () => {
         getModuleProgress={getModuleProgress}
         isLessonCompleted={isLessonCompleted}
         isAdmin={isAdmin}
+        basePath={basePath}
       />
     );
   }
@@ -192,6 +206,7 @@ const CoursePortal = () => {
       isAdmin={isAdmin}
       getModuleProgress={getModuleProgress}
       overallProgress={overallProgress}
+      basePath={basePath}
     />
   );
 };

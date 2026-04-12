@@ -1,5 +1,5 @@
 // One-time broadcast: Live Q&A invite for Spark Challenge participants
-// Sent April 22, 2026 to all active Spark Challenge subscribers
+// Sent April 23, 2026 to all active Spark Challenge subscribers
 // AVNII: Acknowledge → Validate → Normalize → Illuminate → Invite
 import {
   emailWrapper, heading, paragraph,
@@ -16,7 +16,7 @@ export function broadcastEmail(email) {
     paragraph("That\u2019s not a problem. That\u2019s the spark doing what it\u2019s supposed to do."),
     paragraph("Here\u2019s what I\u2019ve learned after 20 years of working with couples: the moment things start to stir is exactly the moment most people pull back. It makes sense \u2014 when your system starts feeling something new, the Critter Brain reads that as danger and hits the brakes."),
     paragraph("But what if you didn\u2019t have to figure out what to do with it alone?"),
-    paragraph("I\u2019m hosting a <strong>live Q&amp;A tonight \u2014 Tuesday, April 22 at 7:00 PM MT</strong> \u2014 and it\u2019s specifically for people like you who are in the middle of the challenge and want to go deeper."),
+    paragraph("I\u2019m hosting a <strong>live Q&amp;A tonight \u2014 Thursday, April 23 at 7:00 PM MT</strong> \u2014 and it\u2019s specifically for people like you who are in the middle of the challenge and want to go deeper."),
     callout("Other couples in the challenge are feeling exactly what you\u2019re feeling right now. This is your chance to ask the questions you\u2019ve been sitting with \u2014 and hear that you\u2019re not the only one asking them."),
     paragraph("No prep required. No pressure. Just show up as you are."),
     ctaButton('Save Your Spot', 'https://healingheartscourse.com/webinar'),

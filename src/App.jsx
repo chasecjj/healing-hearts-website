@@ -102,7 +102,43 @@ function App() {
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/apply/success" element={<ApplicationSuccess />} />
 
-            {/* Protected: Course Portal (URL-driven lesson navigation) */}
+            {/* Protected: Downloads (must come before parameterized portal routes) */}
+            <Route
+              path="/portal/downloads"
+              element={
+                <ProtectedRoute>
+                  <Downloads />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Protected: Course Portal — course-scoped routes */}
+            <Route
+              path="/portal/course/:courseSlug"
+              element={
+                <ProtectedRoute>
+                  <CoursePortal />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/course/:courseSlug/:moduleSlug"
+              element={
+                <ProtectedRoute>
+                  <CoursePortal />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/portal/course/:courseSlug/:moduleSlug/:lessonSlug"
+              element={
+                <ProtectedRoute>
+                  <CoursePortal />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Protected: Course Portal — legacy routes (default to healing-hearts-journey) */}
             <Route
               path="/portal"
               element={
@@ -124,16 +160,6 @@ function App() {
               element={
                 <ProtectedRoute>
                   <CoursePortal />
-                </ProtectedRoute>
-              }
-            />
-
-            {/* Protected: Downloads */}
-            <Route
-              path="/portal/downloads"
-              element={
-                <ProtectedRoute>
-                  <Downloads />
                 </ProtectedRoute>
               }
             />

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { gsap } from 'gsap';
 import {
@@ -10,8 +10,10 @@ import {
   ChevronLeft,
   Quote,
   Download,
+  Library,
 } from 'lucide-react';
 import DailyIntentionWidget from './DailyIntentionWidget';
+import { getActiveCourses } from '../lib/courses';
 
 /**
  * Portal Dashboard — personalized welcome, journey progress, module library.
@@ -27,10 +29,12 @@ export default function PortalDashboard({
   isLessonCompleted,
   isAdmin = false,
   hasActiveEnrollment = false,
+  basePath = '/portal',
 }) {
   const showStartJourney = !hasActiveEnrollment && !isAdmin;
   const navigate = useNavigate();
   const containerRef = useRef(null);
+  const [availableCourses, setAvailableCourses] = useState([]);
 
   // ── GSAP entrance animations ──────────────────────────────
   useEffect(() => {
@@ -48,6 +52,19 @@ export default function PortalDashboard({
     }, containerRef);
 
     return () => ctx.revert();
+  }, []);
+
+  // ── Fetch available courses for the course catalog section ──
+  useEffect(() => {
+    let cancelled = false;
+    getActiveCourses()
+      .then((courses) => {
+        if (!cancelled) setAvailableCourses(courses);
+      })
+      .catch((err) => {
+        console.error('Failed to load available courses:', err);
+      });
+    return () => { cancelled = true; };
   }, []);
 
   // ── Derived data ──────────────────────────────────────────
@@ -87,11 +104,11 @@ export default function PortalDashboard({
 
   // ── Navigate to module/lesson ─────────────────────────────
   const goToModule = (mod) => {
-    navigate(`/portal/module-${mod.module_number}`);
+    navigate(`${basePath}/module-${mod.module_number}`);
   };
 
   const goToLesson = (mod, lesson) => {
-    navigate(`/portal/module-${mod.module_number}/lesson-${lesson.sort_order}`);
+    navigate(`${basePath}/module-${mod.module_number}/lesson-${lesson.sort_order}`);
   };
 
   return (
@@ -135,6 +152,65 @@ export default function PortalDashboard({
           My Downloads
         </Link>
       </section>
+
+      {/* ── My Courses (multi-course catalog) ─────────────── */}
+      {availableCourses.length > 1 && (
+        <section data-animate>
+          <div className="flex items-center gap-3 mb-6">
+            <Library className="w-5 h-5 text-primary" />
+            <h2 className="font-drama text-2xl text-foreground">My Courses</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {availableCourses.map((c) => {
+              // The default course (healing-hearts-journey) uses legacy basePath,
+              // all others use the course-scoped path.
+              const courseBasePath =
+                c.slug === 'healing-hearts-journey'
+                  ? '/portal'
+                  : `/portal/course/${c.slug}`;
+              const isCurrentCourse = c.slug === course?.slug;
+
+              return (
+                <div
+                  key={c.id}
+                  className={`group bg-white rounded-2xl overflow-hidden shadow-[0_4px_20px_-4px_rgba(7,58,71,0.08)] transition-all duration-200 cursor-pointer hover:shadow-[0_8px_30px_-4px_rgba(7,58,71,0.12)] hover:scale-[1.02] ${
+                    isCurrentCourse ? 'ring-2 ring-primary' : ''
+                  }`}
+                  onClick={() => navigate(courseBasePath)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      navigate(courseBasePath);
+                    }
+                  }}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`${c.title}${isCurrentCourse ? ' (current)' : ''}`}
+                >
+                  <div className="h-24 bg-gradient-to-br from-primary/10 to-accent/5 relative flex items-end p-5">
+                    <span className="bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-outfit font-bold uppercase tracking-wider">
+                      {c.course_type === 'flagship' ? 'Full Program' : 'Toolkit'}
+                    </span>
+                    {isCurrentCourse && (
+                      <span className="absolute top-3 right-3 bg-primary text-white text-[10px] font-outfit font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
+                        Current
+                      </span>
+                    )}
+                  </div>
+                  <div className="p-5">
+                    <h3 className="font-outfit text-base font-semibold mb-1 group-hover:text-primary transition-colors">
+                      {c.title}
+                    </h3>
+                    <p className="text-sm text-foreground/50 line-clamp-2 leading-relaxed">
+                      {c.description}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* ── Start Your Journey (unenrolled users) ──────────── */}
       {showStartJourney && (
