@@ -55,8 +55,8 @@ const Hero = () => {
           {/* Text + CTA — Left */}
           <div className="flex flex-col items-start text-left gap-6">
             <h1 className="flex flex-col text-primary">
-              <span className="hero-reveal font-sans font-medium text-lg md:text-xl tracking-widest uppercase opacity-80 mb-6 text-primary">
-                Healing Hearts
+              <span className="hero-reveal font-outfit font-medium text-sm md:text-base tracking-widest uppercase text-accent mb-6">
+                Science-based couples coaching
               </span>
               <span className="hero-reveal font-drama italic text-5xl md:text-7xl lg:text-[5.5rem] leading-[1.05] tracking-tight text-primary">
                 Your marriage is not broken.
@@ -78,38 +78,24 @@ const Hero = () => {
                 to="/about"
                 className="group inline-flex items-center gap-2 text-primary font-medium border-b-2 border-primary/20 hover:border-primary pb-1 transition-colors self-center"
               >
-                Explore Our Philosophy
+                Meet Jeff &amp; Trisha
               </Link>
             </div>
           </div>
 
-          {/* Teardrop image — Right */}
+          {/* Jeff & Trisha — Right */}
           <div className="hero-reveal hidden lg:flex justify-center items-center">
-            <div className="relative w-full max-w-sm aspect-[3/4]">
-              {/* SVG clip definition */}
-              <svg className="absolute w-0 h-0" aria-hidden="true">
-                <defs>
-                  <clipPath id="teardrop-hero" clipPathUnits="objectBoundingBox">
-                    <path d="M0.5 0 C0.7 0.2 0.9 0.4 0.9 0.7 C0.9 0.9 0.7 1 0.5 1 C0.3 1 0.1 0.9 0.1 0.7 C0.1 0.4 0.3 0.2 0.5 0" />
-                  </clipPath>
-                </defs>
-              </svg>
-              <div
-                className="w-full h-full overflow-hidden shadow-2xl"
-                style={{ clipPath: 'url(#teardrop-hero)' }}
-              >
-                <img
-                  src="https://images.unsplash.com/photo-1474552226712-ac0f0961a954?q=80&w=1287&auto=format&fit=crop"
-                  alt="Couple walking together at sunset"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-primary/10 mix-blend-overlay pointer-events-none" />
-              </div>
+            <div className="relative w-full max-w-md">
+              <img
+                src="/images/team/jeff-and-trisha.jpg"
+                alt="Jeff and Trisha Jamison, founders of Healing Hearts"
+                className="w-full aspect-[3/4] object-cover object-top rounded-3xl shadow-2xl"
+              />
 
               {/* Floating accent bubble */}
               <div className="absolute -bottom-6 -left-6 w-44 h-44 bg-white rounded-full flex items-center justify-center p-6 border border-primary/10 shadow-lg">
                 <p className="font-drama italic text-sm text-primary leading-snug text-center">
-                  "Healing happens in the spaces between words."
+                  "We're a marriage that studied its way back."
                 </p>
               </div>
             </div>

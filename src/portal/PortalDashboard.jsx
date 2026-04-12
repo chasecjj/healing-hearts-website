@@ -322,7 +322,11 @@ export default function PortalDashboard({
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
             { value: completedLessons, label: 'Lessons Completed', icon: BookOpen },
-            { value: completedModules, label: 'Modules Completed', icon: Flame },
+            {
+              value: completedModules > 0 ? completedModules : completedLessons > 0 ? '...' : '0',
+              label: completedModules > 0 ? 'Modules Completed' : completedLessons > 0 ? 'Module In Progress' : 'Modules Completed',
+              icon: Flame,
+            },
             { value: totalLessons, label: 'Total Lessons', icon: Clock },
             { value: `${overallProgress}%`, label: 'Overall Progress', icon: ChevronRight },
           ].map(({ value, label }) => (
