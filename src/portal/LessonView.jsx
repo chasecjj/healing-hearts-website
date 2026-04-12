@@ -15,6 +15,7 @@ import {
   Menu,
   X,
   Clock,
+  HeartHandshake,
 } from 'lucide-react';
 
 const MuxVideoPlayer = React.lazy(() => import('./MuxVideoPlayer'));
@@ -328,8 +329,37 @@ export default function LessonView({
           })}
         </nav>
 
+        {/* Safety resources */}
+        <div className="px-4 pt-4 mt-auto">
+          <details className="group">
+            <summary className="flex items-center gap-2 px-4 py-2 text-foreground/40 hover:text-foreground/60 transition-colors cursor-pointer text-xs font-outfit uppercase tracking-widest list-none">
+              <HeartHandshake className="w-3.5 h-3.5" />
+              <span>Safety &amp; Support</span>
+            </summary>
+            <div className="px-4 pt-2 pb-3 space-y-2 text-xs text-foreground/50 font-sans leading-relaxed">
+              <p>
+                This program is educational, not clinical. It is not a substitute for professional therapy.
+              </p>
+              <p className="font-medium text-foreground/60">
+                If you or someone you know is in crisis:
+              </p>
+              <ul className="space-y-1.5">
+                <li>
+                  <strong>988</strong> Suicide &amp; Crisis Lifeline
+                </li>
+                <li>
+                  <strong>1-800-799-7233</strong> Domestic Violence Hotline
+                </li>
+                <li>
+                  Text <strong>HOME</strong> to <strong>741741</strong> Crisis Text Line
+                </li>
+              </ul>
+            </div>
+          </details>
+        </div>
+
         {/* Bottom links */}
-        <div className="mt-auto px-4 pt-4 border-t border-primary/5">
+        <div className="px-4 pt-2 pb-4 border-t border-primary/5">
           <button
             onClick={() => navigate(basePath)}
             className="flex items-center gap-3 px-4 py-3 text-foreground/60 hover:text-primary transition-colors cursor-pointer text-sm font-medium w-full"

@@ -145,7 +145,7 @@ export default function PortalDashboard({
       </section>
 
       {/* ── Quick Links ─────────────────────────────────────── */}
-      <section className="flex gap-3" data-animate>
+      <section className="flex flex-wrap gap-3" data-animate>
         <Link
           to="/portal/downloads"
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-primary border border-primary/20 hover:bg-primary/5 transition-colors"
@@ -154,6 +154,12 @@ export default function PortalDashboard({
           My Downloads
         </Link>
       </section>
+
+      {/* ── Educational disclaimer ─────────────────────────── */}
+      <p className="font-sans text-xs text-foreground/30 leading-relaxed max-w-2xl -mt-10" data-animate>
+        This program is for educational purposes only and is not a substitute for professional therapy, medical advice, or clinical treatment.
+        If you are in crisis, please call <strong className="text-foreground/40">988</strong> (Suicide &amp; Crisis Lifeline) or <strong className="text-foreground/40">1-800-799-7233</strong> (Domestic Violence Hotline).
+      </p>
 
       {/* ── My Courses (multi-course catalog) ─────────────── */}
       {availableCourses.length > 1 && (

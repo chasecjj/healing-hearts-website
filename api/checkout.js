@@ -130,7 +130,7 @@ async function handleCreateSession(req, res) {
       },
       custom_text: {
         terms_of_service_acceptance: {
-          message: 'I am 18 or older and I agree to the [Terms of Service](https://www.healingheartscourse.com/terms) and [Refund Policy](https://www.healingheartscourse.com/refund-policy).',
+          message: 'I am 18 or older, I agree to the [Terms of Service](https://www.healingheartscourse.com/terms) and [Refund Policy](https://www.healingheartscourse.com/refund-policy), and I understand this is an educational product, not a substitute for professional therapy or medical advice.',
         },
       },
       // Generate a formal Stripe Invoice (with PDF) for every purchase.
