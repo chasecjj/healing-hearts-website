@@ -27,10 +27,14 @@ const prefersReducedMotion = () =>
 /*  Data                                                                */
 /* ------------------------------------------------------------------ */
 const MODULES = [
-  { num: 1, title: 'Love\'s Foundation', desc: 'Personality blueprint, attachment style, and love language.' },
-  { num: 2, title: 'Invisible Chains', desc: 'Recognize toxic patterns hiding in plain sight.' },
-  { num: 3, title: 'The Deep Roots', desc: 'Understand how your childhood wrote a Mindprint.' },
-  { num: 4, title: 'Breakthrough Communication', desc: 'Express needs without blame, listen without defending.' },
+  { num: 1, title: 'The Seven Devils', desc: 'Name the seven patterns destroying your relationship. Learn the SPARK Method.', lessons: 28 },
+  { num: 2, title: 'The Devils Up Close', desc: 'Face Criticism, Contempt, Defensiveness, Stonewalling. Build your Devil Audit.', lessons: 24 },
+  { num: 3, title: 'The Deep Roots', desc: 'Trace your patterns to their origin. Your childhood wrote a Mindprint.', lessons: 3 },
+  { num: 4, title: 'Breakthrough Communication', desc: 'Master active listening and the "I Feel / I Need" formula.', lessons: 3 },
+  { num: 5, title: 'Nervous System Regulation', desc: 'The 90-Second Wave. Zones of Resilience. Co-regulation practices.', lessons: 3 },
+  { num: 6, title: 'Emotional Zones', desc: 'Critter Brain vs. CEO Brain. Emotional Maturity Assessment.', lessons: 3 },
+  { num: 7, title: 'Subconscious Core Wounds', desc: 'The 12 Subconscious Principles. Core wounds. True forgiveness.', lessons: 18 },
+  { num: 8, title: 'Legacy of Love', desc: 'Integration, resilience, and future-proofing your marriage.', lessons: 8 },
 ];
 
 const STANDALONE_PACKAGES = [
@@ -181,19 +185,22 @@ const FlagshipProgram = () => {
                 Healing Hearts <span className="font-drama italic font-normal">Program</span>
               </h2>
               <p className="flagship-reveal font-sans text-white/80 text-lg leading-relaxed font-light mb-8">
-                Our complete 8-module program takes you from the foundations of understanding yourself and your partner all the way through nervous system regulation, subconscious healing, and building a legacy marriage.
+                90+ lessons across 8 modules. From naming the Seven Devils destroying your connection, through nervous system regulation and the SPARK Method, to subconscious core wound healing and building a legacy marriage.
               </p>
               <p className="flagship-reveal font-sans text-white/80 text-lg leading-relaxed font-light mb-12">
-                This is the deep work—the kind that doesn't just improve your relationship but transforms the people in it.
+                This is the deep work — the kind that doesn't just improve your relationship but transforms the people in it. Weekly coaching with Trisha. Interactive practice plans. A community of couples on the same path.
               </p>
 
               <blockquote className="flagship-reveal border-l-2 border-accent pl-6 py-2 mb-12 hidden lg:block">
                 <p className="font-drama italic text-2xl text-white leading-tight">
-                  "This isn't a weekend workshop. It's a transformation. Give it 32 milestones and we'll give you a different marriage."
+                  "The bad days somehow find a way to look good still, because it's communicating. We have tools now that we didn't have before."
                 </p>
+                <cite className="not-italic font-outfit text-xs text-white/50 uppercase tracking-widest mt-2 block">
+                  -- Program participant
+                </cite>
               </blockquote>
 
-              <div className="flagship-reveal">
+              <div className="flagship-reveal flex flex-col sm:flex-row gap-4">
                 <Link to="/apply">
                   <MagneticButton
                     className="bg-accent text-white px-10 py-4 rounded-full text-sm font-bold shadow-xl w-full md:w-auto hover:scale-105 transition-all duration-300"
@@ -201,26 +208,32 @@ const FlagshipProgram = () => {
                     Apply for Healing Hearts
                   </MagneticButton>
                 </Link>
+                <Link
+                  to="/journey"
+                  className="inline-flex items-center gap-2 text-white/80 font-medium border-b-2 border-white/20 hover:border-white pb-1 transition-colors self-center text-sm"
+                >
+                  Explore the Full Journey
+                </Link>
               </div>
             </div>
 
             {/* Right — Module list */}
             <div className="flagship-reveal bg-white/10 p-10 md:p-14 rounded-3xl border border-white/20">
               <h3 className="font-outfit font-bold text-2xl mb-8 text-white">What's Inside (8 Modules)</h3>
-              <div className="space-y-8">
+              <div className="space-y-6">
                 {MODULES.map((mod) => (
                   <div key={mod.num}>
-                    <h4 className="font-sans font-semibold text-orange-100 text-lg">
-                      {mod.num}. {mod.title}
-                    </h4>
-                    <p className="font-sans text-sm font-light text-white/80 mt-1">{mod.desc}</p>
+                    <div className="flex items-baseline justify-between gap-4">
+                      <h4 className="font-sans font-semibold text-orange-100 text-base">
+                        {mod.num}. {mod.title}
+                      </h4>
+                      <span className="font-outfit text-[10px] text-white/40 uppercase tracking-widest flex-shrink-0">
+                        {mod.lessons} lessons
+                      </span>
+                    </div>
+                    <p className="font-sans text-sm font-light text-white/70 mt-1">{mod.desc}</p>
                   </div>
                 ))}
-                <div className="pt-4 border-t border-white/20 mt-8">
-                  <h4 className="font-sans text-sm font-medium text-white/90 italic leading-relaxed">
-                    + 4 advanced modules on Nervous System, Emotional Zones, Subconscious Core Wounds, and Legacy Building.
-                  </h4>
-                </div>
               </div>
             </div>
           </div>
