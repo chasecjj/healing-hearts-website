@@ -26,7 +26,9 @@ export default function PortalDashboard({
   getModuleProgress,
   isLessonCompleted,
   isAdmin = false,
+  hasActiveEnrollment = false,
 }) {
+  const showStartJourney = !hasActiveEnrollment && !isAdmin;
   const navigate = useNavigate();
   const containerRef = useRef(null);
 
@@ -133,6 +135,43 @@ export default function PortalDashboard({
           My Downloads
         </Link>
       </section>
+
+      {/* ── Start Your Journey (unenrolled users) ──────────── */}
+      {showStartJourney && (
+        <section className="relative" data-animate>
+          <div className="rounded-3xl bg-primary text-white p-10 md:p-14 relative overflow-hidden">
+            <div
+              className="absolute top-0 right-0 w-96 h-96 bg-accent/20 rounded-full blur-[120px] pointer-events-none"
+              aria-hidden="true"
+            />
+            <div className="relative z-10 max-w-2xl">
+              <p className="font-outfit text-xs uppercase tracking-widest text-accent/90 mb-3">
+                Start Your Journey
+              </p>
+              <h2 className="font-drama italic text-3xl sm:text-4xl text-white mb-5 leading-tight">
+                You have not enrolled yet.
+              </h2>
+              <p className="font-sans text-white/80 text-base leading-relaxed mb-8">
+                The Healing Hearts Program is 8 modules, 32 milestones, live weekly coaching with Trisha, and a community of couples walking the same road. Ready to begin? Start with the free 7-Day Spark Challenge — a daily practice delivered to your inbox — or apply for the full program.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Link
+                  to="/spark-challenge"
+                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-accent text-white font-outfit text-sm font-medium shadow-lg hover:scale-105 transition-transform"
+                >
+                  Start the Spark Challenge <ChevronRight className="w-4 h-4" />
+                </Link>
+                <Link
+                  to="/apply"
+                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-white/30 text-white font-outfit text-sm font-medium hover:bg-white/10 transition-colors"
+                >
+                  Apply for Healing Hearts
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── Current Focus + Daily Intention ────────────────── */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-8" data-animate>

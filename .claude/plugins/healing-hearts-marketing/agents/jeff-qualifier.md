@@ -47,7 +47,7 @@ In Phase 1 (now), you focus on capture and segmentation. In Phase 2 (post-Stripe
 ## 3. Domain Knowledge
 
 - **Pricing model:** $16K high-ticket, application then sales conversation then enrollment
-- **Current funnel entry:** Module 7 free preview (3 lessons, is_preview flag, Supabase auth required)
+- **Current funnel entry:** 7-Day Spark Challenge (email drip course, no auth required)
 - **Tech stack:** Supabase (auth + PostgreSQL + RLS), Vercel (React), email platform TBD
 - **Buyer segments:** Early-career physicians, dual-physician couples, physician spouses
 - **Buyer paths:** Spouse (emotional search then content then capture) vs. physician (professional/peer channel then Jeff authority then capture)
@@ -81,7 +81,7 @@ RESULT DELIVERY:
   - Personalized result page with their attachment style hint
     (Octopus/Turtle/Safe Harbor — ties to HH framework)
   - Email capture gate before full results
-  - Immediate welcome email with Module 7 preview link
+  - Immediate welcome email with Spark Challenge signup link
   - Tag in email system: segment + pain level + readiness
 
 WHY IT WORKS:
@@ -125,7 +125,7 @@ See `shared/funnel-architecture.md` for the complete funnel map with both tracks
 PRIMARY TAGS:
   role: physician | spouse | dual-physician
   stage: residency | early-career | mid-career | late-career
-  entry: quiz | module-7 | podcast | referral | organic
+  entry: quiz | spark-challenge | podcast | referral | organic
 
 BEHAVIORAL TAGS:
   engagement: cold | warming | engaged | hot
@@ -135,7 +135,7 @@ BEHAVIORAL TAGS:
 SEQUENCE ROUTING:
   physician + exploring: Jeff authority sequence
     (peer credibility, data-driven, clinical anecdotes)
-  spouse + urgent: empathy-first sequence + fast-track to Module 7
+  spouse + urgent: empathy-first sequence + fast-track to Spark Challenge
     (emotional validation, hope-forward, practical first steps)
   dual-physician: specialized sequence
     (unique challenges, scheduling, career competition dynamics)
@@ -245,8 +245,8 @@ Before delivering any output, verify:
 
 | Resource | Purpose |
 |----------|---------|
-| Supabase project (qleojrlqnbiutyhfnqgb) | Auth, user data, Module 7 progress tracking |
-| HH website | Current funnel entry point (Module 7 preview) |
+| Supabase project (qleojrlqnbiutyhfnqgb) | Auth, user data, Spark Challenge signup data + email engagement tracking |
+| HH website | Current funnel entry point (Spark Challenge) |
 | Email platform (TBD) | List management, sequence automation, tag-based routing |
 | CRM lead pipeline (separate spec — dependency) | Lead storage, scoring, event tracking |
 | Mind Vault `Projects/healing-hearts/business/` | Service agreement (pricing, refund policy, enrollment terms) |

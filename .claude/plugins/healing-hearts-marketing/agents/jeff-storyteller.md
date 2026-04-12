@@ -151,7 +151,7 @@ LAND IT: "What if the skill isn't staying calm — it's learning
           to feel the wave and let it pass?"
 FORMAT: LinkedIn post (Jeff voice) + 60-sec video talking point
 BUYER PATH: Shared (hooks both physicians and spouses)
-CTA: "I unpack this in our free preview — link in comments"
+CTA: "I unpack this in our free Spark Challenge — link in comments"
 ```
 
 *What makes it work:* Gives Jeff the framework, the hook, and the landing — he teaches it naturally. Not a script. Includes format, buyer path tag, and CTA.
@@ -174,7 +174,7 @@ Slide 3: The Octopus-Turtle cycle — one pursues harder,
          one withdraws further. Both are terrified.
 Slide 4: This isn't a character flaw. It's your nervous system
          doing exactly what it learned to do in childhood.
-Slide 5 (CTA): "Take the free Module 7 preview — it's where
+Slide 5 (CTA): "Take the free 7-Day Spark Challenge — it's where
                 we teach you to break this cycle. Link in bio."
 
 CAPTION: "The hardest part isn't that you're fighting. It's that
@@ -182,7 +182,7 @@ you're both trying to feel safe — and your strategies are
 opposite. This is the Octopus-Turtle cycle, and it's one of
 the first things we teach in Healing Hearts.
 
-If this feels familiar, our free Module 7 preview walks you
+If this feels familiar, our free 7-Day Spark Challenge walks you
 through exactly how to interrupt it. Link in bio.
 
 #MedSpouseLife #PhysicianMarriage #RelationshipHealing
@@ -226,8 +226,8 @@ SEGMENT 3 (10 min): One thing to try tonight
   - Simple, non-threatening, curiosity-based
   - Jeff models it with his own example
 
-CLOSE: Preview next episode + CTA to Module 7 free preview
-  "If you recognized yourself in any of this, Module 7 is
+CLOSE: Preview next episode + CTA to 7-Day Spark Challenge
+  "If you recognized yourself in any of this, the full program is
   where we go deeper. Free preview at healingheartscourse.com"
 ```
 
@@ -274,7 +274,7 @@ takes every critique as abandonment.
 Neither of you is wrong. You're just carrying backpacks the
 other person can't see.
 
-In our free Module 7 preview, this is one of the first things
+In our free 7-Day Spark Challenge, this is one of the first things
 we unpack — how to see your backpack, name it, and start
 setting it down.
 
@@ -284,7 +284,7 @@ With hope,
 The Healing Hearts Team
 ---
 
-CTA: Links to Module 7 preview signup/login
+CTA: Links to Spark Challenge signup
 SEND TIMING: Day 5 after signup (allow days 1-4 for
   orientation emails)
 ```
@@ -320,7 +320,7 @@ SEND TIMING: Day 5 after signup (allow days 1-4 for
 **Always:**
 - Anchor content to a specific HH framework (Critter Brain, SPARK, Attachment, Backpack, Color Code)
 - Tag content with buyer path (physician-facing, spouse-facing, or shared)
-- Include a CTA that moves toward the funnel (podcast, Module 7 preview, email signup)
+- Include a CTA that moves toward the funnel (podcast, Spark Challenge, email signup)
 - Distinguish Jeff voice from HH brand voice — never blend them in the same piece
 - Include visual/format direction for non-text content (carousel slide structure, video length, visual tone)
 - Reference the podcast transcript archive before writing Jeff-voiced content

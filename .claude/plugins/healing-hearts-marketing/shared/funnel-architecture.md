@@ -9,7 +9,7 @@ Unified funnel and scoring system for both marketing tracks. Both Jeff and Trish
 - **Flagship program:** ~$16K high-ticket
 - **Sales path:** Application, then sales conversation, then enrollment (both partners required)
 - **Standalone packages:** $29-$197 (digital downloads, mini-courses, standalone workshops)
-- **Free entry points:** Module 7 preview (3 lessons, Supabase auth required), 7-Day Spark Challenge, lead magnet quiz
+- **Free entry points:** 7-Day Spark Challenge (email course — the primary free lead magnet), lead magnet quiz. (Module 7 was formerly offered as an in-portal preview; that was retired in migration 021 — do not reintroduce.)
 - **Team capacity constraint:** Chase + Makayla execute all lead management. Every system must be automatable with tags and simple rules — no manual judgment calls per lead.
 
 ---
@@ -46,7 +46,7 @@ Entry points by track:
 
 **Jeff track capture points:**
 - Lead magnet quiz (“Is Your Marriage in Survival Mode?” — captures role, career stage, pain level, readiness)
-- Module 7 signup (Supabase auth — captures email + engagement intent)
+- 7-Day Spark Challenge signup (captures email + engagement intent via daily email drip)
 - Podcast CTA email signup (captures entry source + content preference)
 - LinkedIn lead magnet link (captures professional context)
 
@@ -76,7 +76,7 @@ Entry points by track:
 **Trisha-track nurture:**
 - Trisha-voiced nurture for natural health seekers: warm, story-driven, grounded in personal experience
 - Conference follow-up sequence (accelerated — they’ve already experienced Trisha live, so skip the “who are we” phase)
-- Spark Challenge completers: bridge sequence from challenge to Module 7 preview
+- Spark Challenge completers: bridge sequence from challenge to full program enrollment
 
 **Shared nurture paths:**
 - Dual-physician sequence: specialized content addressing unique challenges (scheduling conflicts, career competition dynamics, mutual physician conditioning)
@@ -136,8 +136,8 @@ Demographic signals set the baseline but never determine qualification alone. En
 | Points | Signal | Track |
 |--------|--------|-------|
 | +10 | Completed lead magnet quiz | Both |
-| +15 | Signed up for Module 7 preview | Both |
-| +20 | Completed 2+ Module 7 lessons | Both |
+| +15 | Replied to a nurture email | Both |
+| +20 | Clicked into deep-content articles from nurture sequence | Both |
 | +10 | Opened 3+ emails in nurture sequence | Both |
 | +5 | Each podcast episode listened to completion | Both (future — requires listen tracking) |
 | +10 | Replied to an email or DM’d | Both |
@@ -193,7 +193,7 @@ Tags are specific enough to route content but simple enough for Chase + Makayla 
 ```
 role: physician | spouse | dual-physician | natural-health-seeker
 stage: residency | early-career | mid-career | late-career
-entry: quiz | module-7 | podcast | referral | organic | conference | instagram | spark-challenge | magazine-ad | linkedin | booth-qr
+entry: quiz | podcast | referral | organic | conference | instagram | spark-challenge | magazine-ad | linkedin | booth-qr
 track: jeff | trisha
 ```
 
@@ -211,12 +211,12 @@ partner-status: both-engaged | solo-seeker | partner-aware | partner-unaware
 | Segment Combination | Route To | Rationale |
 |---------------------|----------|-----------|
 | physician + exploring | Jeff authority sequence | Peer credibility, data-driven, clinical anecdotes. Physicians respond to physician voice. |
-| spouse + urgent | Empathy-first sequence + fast-track to Module 7 | Emotional validation, hope-forward, practical first steps. Spouse in pain needs to feel seen before anything else. |
+| spouse + urgent | Empathy-first sequence + fast-track to Spark Challenge | Emotional validation, hope-forward, practical first steps. Spouse in pain needs to feel seen before anything else. |
 | spouse + exploring | Trisha-voiced nurture sequence | Warm, story-driven, personal. Low pressure. |
 | dual-physician | Specialized dual-physician sequence | Unique challenges: scheduling, career competition, mutual conditioning. Neither standard physician nor spouse path fits. |
 | solo-seeker (any role) | Solo validation sequence | Normalize seeking help alone. Teach “how to bring it up” using Critter Brain framing. Provide shareable content. Goal: convert to both-partners-engaged. |
 | natural-health-seeker + exploring | Trisha-voiced nurture sequence | Community alignment, holistic framing, wellness language. |
-| conference + engaged | Accelerated nurture | They’ve already seen Trisha live — skip the “who are we” phase. Go straight to framework teaching and Module 7. |
+| conference + engaged | Accelerated nurture | They’ve already seen Trisha live — skip the “who are we” phase. Go straight to framework teaching and the Spark Challenge. |
 | conference + hot | Application invitation | High-intent in-person leads. Both partners at booth = strongest signal. Route to application quickly. |
 | booth-qr + any readiness | Conference follow-up sequence | Time-sensitive — follow up within 24 hours of event. Reference the specific event by name. |
 | any + hot | Application invitation sequence (Phase 2) | Score threshold crossed. Check partner-status before sending application. |
@@ -229,10 +229,10 @@ partner-status: both-engaged | solo-seeker | partner-aware | partner-unaware
 
 **Phase 2 activates when ALL of the following criteria are met:**
 
-1. **Course content written** — enough modules to deliver on the enrollment promise. Currently: M1-2 rebuilt (needs fixes), M7 live (free preview), M8 migrated. M3-6 not yet written.
-2. **Stripe integrated** — HH website Phase 3 (payment processing, enrollment flow, access control beyond preview).
+1. **Course content written** — enough modules to deliver on the enrollment promise. Currently: M1-2 rebuilt (needs fixes), M7 enrollment-gated (Session 96 retrofit + migration 021 lockdown), M8 migrated. M3-6 not yet written.
+2. **Stripe integrated** — HH website Phase 3 (payment processing, enrollment flow, access control). ✅ shipped Session 93.
 3. **Email list has 100+ qualified subscribers** — “qualified” means tagged, scored, and in active nurture. Not just email addresses.
-4. **Content performance baseline exists** — 4+ weeks of Phase 1 data: open rates, click rates, quiz completion rates, Module 7 engagement. Enough data to know what is working.
+4. **Content performance baseline exists** — 4+ weeks of Phase 1 data: open rates, click rates, quiz completion rates, Spark Challenge engagement. Enough data to know what is working.
 5. **CRM lead pipeline built and live** — lead storage, scoring automation, event tracking, and application flow all functional. Not spreadsheets.
 
 Until ALL five criteria are met, do not build conversion content, application flows, or sales sequences. Phase 1 work is valuable on its own — a well-segmented, well-nurtured list converts better when Phase 2 activates than a rushed list that was sold to too early.

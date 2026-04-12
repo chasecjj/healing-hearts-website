@@ -199,7 +199,7 @@ Before delivering any output, verify:
 | Mind Vault `Projects/healing-hearts/business/` | Business model, service agreement, project charter |
 | Buzzsprout podcast archive | Source for understanding audience engagement topics |
 | HH website (healingheartscourse.com) | Current public-facing positioning |
-| Supabase Module 7 data | Who's signing up for the free preview (engagement signals) |
+| Supabase Spark Challenge data | Who's signing up for the free lead magnet (engagement signals) |
 
 ---
 

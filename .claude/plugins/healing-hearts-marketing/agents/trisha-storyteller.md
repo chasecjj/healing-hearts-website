@@ -171,7 +171,7 @@ The natural health audience enters through wellness and arrives at relationships
 
 - **Entry content (Health-Seeker):** Standalone health topics that draw the natural health audience in — nervous system regulation, the 6 Pillars of Mental Health, burnout identification, emotional regulation, the 90-Second Wave, Critter Brain, somatic awareness. These topics stand completely on their own without any relationship context. They are the door.
 - **Bridge content (Wellness-Curious):** "Your nervous system runs your relationships." The moment health becomes relational. This is the pivot — the audience came for their own wellness and realizes their relationship is part of their health. Content connects a standalone health concept to a relational pattern.
-- **Destination content (Couples-Ready):** Healing Hearts program — Spark Challenge, Module 7 preview, full enrollment. The audience has crossed the bridge and is ready for the relationship curriculum.
+- **Destination content (Couples-Ready):** Healing Hearts program — Spark Challenge, Spark Challenge, full enrollment. The audience has crossed the bridge and is ready for the relationship curriculum.
 
 This mirrors the Be Healthy Utah keynote strategy: lead with the body, land on the relationship.
 
@@ -345,7 +345,7 @@ POST-EVENT FOLLOW-UP NOTE: After the event, produce a companion
 post: "Thank you to everyone who came to the talk — here’s the
 one tool I hope you take home..." (anchor to one framework
 taught during the keynote, include CTA to Spark Challenge or
-Module 7 preview).
+Spark Challenge).
 
 TAGS: FRAMEWORK: Nervous System Regulation / Zones of Resilience
 | BUYER PATH: Health-Seeker (bridging to Wellness-Curious) |
@@ -566,7 +566,7 @@ BUYER PATH: Health-Seeker | TONE: Trisha voice
 - Reference the voice profile (Section 3 above) before writing — reread gold standards
 - Cross-check output against vocabulary preferences (activation not triggered, practice not exercise, Critter Brain not primitive brain, "this makes sense" not "that’s normal")
 - Follow Trisha’s natural teaching path: health observation --> nervous system explanation --> relationship application
-- Include a CTA that moves toward the funnel (Spark Challenge, Module 7 preview, email signup)
+- Include a CTA that moves toward the funnel (Spark Challenge, Spark Challenge, email signup)
 - After Trisha modifies a draft, study the changes and update the voice profile
 
 **Never:**
@@ -589,7 +589,7 @@ Before delivering any content, verify:
 1. **Framework anchor present?** Which HH framework does this teach? If the answer is "none specifically," the content is too generic.
 2. **Buyer path tagged?** Health-seeker, wellness-curious, or couples-ready? The buyer path determines framing — entry content leads with health, bridge content connects health to relationships, destination content sells the program.
 3. **Voice correct?** Trisha voice OR HH brand voice — not a hybrid, not Jeff? If it contains Socratic questions as the primary teaching tool, clinical authority ("in my practice"), or credential-anchored framing, it has drifted to Jeff’s voice.
-4. **CTA present and funnel-aligned?** Does the call to action match the buyer path position? Health-seekers get Spark Challenge or follow-for-more. Couples-ready get Module 7 preview or enrollment.
+4. **CTA present and funnel-aligned?** Does the call to action match the buyer path position? Health-seekers get Spark Challenge or follow-for-more. Couples-ready get Spark Challenge or enrollment.
 5. **Coaching-to-therapy line respected?** No treatment language? No outcome promises? Safety language present where content is trauma-adjacent?
 6. **Platform and format specified with visual direction?** Every piece includes where it will be published, in what format, and what the visual treatment should look like.
 7. **Could a generic wellness influencer publish this?** If yes — not specific enough to HH. Add a framework reference or a Trisha-specific insight.

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Lock, PlayCircle, ChevronRight, BookOpen } from 'lucide-react';
+import { Lock, ChevronRight, BookOpen } from 'lucide-react';
 import usePageMeta from '../hooks/usePageMeta';
 
 const MODULES = [
@@ -11,12 +11,12 @@ const MODULES = [
   { number: '4', title: 'Breakthrough Communication', description: 'Express needs without blame, listen without defending.', lessons: 3 },
   { number: '5', title: 'Nervous System Regulation', description: 'Calm the storm inside before addressing the storm between you.', lessons: 3 },
   { number: '6', title: 'Emotional Zones', description: 'Map your emotional landscape and learn to navigate it together.', lessons: 3 },
-  { number: '7', title: 'Forgiveness & Letting Go', description: 'Heal the hidden wounds driving your relationship patterns.', lessons: 3, isPreview: true },
+  { number: '7', title: 'Forgiveness & Letting Go', description: 'Heal the hidden wounds driving your relationship patterns.', lessons: 3 },
   { number: 'F', title: 'Legacy Building', description: 'Build a marriage that transforms generations.', lessons: 3 },
 ];
 
 export default function CourseOverview() {
-  usePageMeta('Course Overview', 'Explore the complete 8-module Healing Hearts program — from attachment foundations to legacy building. Free preview of Module 7.');
+  usePageMeta('Course Overview', 'Explore the complete 8-module Healing Hearts program — from attachment foundations to legacy building. Start free with the 7-Day Spark Challenge.');
   const { user } = useAuth();
 
   return (
@@ -44,10 +44,10 @@ export default function CourseOverview() {
             </Link>
           ) : (
             <Link
-              to="/signup"
+              to="/spark-challenge"
               className="inline-flex items-center gap-2 px-10 py-4 rounded-full bg-accent text-background font-outfit font-medium shadow-xl hover:bg-accent/90 transition-colors"
             >
-              Start Free Preview <ChevronRight className="w-5 h-5" />
+              Start the Spark Challenge <ChevronRight className="w-5 h-5" />
             </Link>
           )}
         </div>
@@ -57,43 +57,24 @@ export default function CourseOverview() {
       <section className="max-w-4xl mx-auto px-6 py-16 md:py-24">
         <h2 className="font-outfit font-bold text-2xl text-primary mb-2">Course Modules</h2>
         <p className="font-sans text-foreground/60 mb-10">
-          Module 7 is available as a free preview. Full access coming soon.
+          The full curriculum. Access the complete program by enrolling — or start free with the 7-Day Spark Challenge.
         </p>
 
         <div className="space-y-4">
           {MODULES.map((mod) => (
             <div
               key={mod.number}
-              className={`rounded-2xl border p-6 transition-colors ${
-                mod.isPreview
-                  ? 'border-accent/30 bg-accent/5'
-                  : 'border-primary/10 bg-background'
-              }`}
+              className="rounded-2xl border border-primary/10 bg-background p-6 transition-colors"
             >
               <div className="flex items-start gap-4">
-                <div
-                  className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                    mod.isPreview
-                      ? 'bg-accent text-background'
-                      : 'bg-primary/10 text-primary/50'
-                  }`}
-                >
-                  {mod.isPreview ? (
-                    <PlayCircle className="w-5 h-5" />
-                  ) : (
-                    <Lock className="w-5 h-5" />
-                  )}
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-primary/10 text-primary/50">
+                  <Lock className="w-5 h-5" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-1">
                     <h3 className="font-outfit font-bold text-lg text-primary">
                       {mod.number === 'F' ? 'Final' : `Module ${mod.number}`}: {mod.title}
                     </h3>
-                    {mod.isPreview && (
-                      <span className="text-xs font-outfit font-medium text-accent bg-accent/10 px-2.5 py-0.5 rounded-full">
-                        Free Preview
-                      </span>
-                    )}
                   </div>
                   <p className="font-sans text-foreground/60 text-sm leading-relaxed">
                     {mod.description}
@@ -102,14 +83,6 @@ export default function CourseOverview() {
                     {mod.lessons} lessons
                   </p>
                 </div>
-                {mod.isPreview && (
-                  <Link
-                    to={user ? '/portal/module-7' : '/signup'}
-                    className="hidden sm:inline-flex items-center gap-1 text-sm font-outfit font-medium text-accent hover:text-accent/80 transition-colors flex-shrink-0"
-                  >
-                    {user ? 'Open' : 'Sign up'} <ChevronRight className="w-4 h-4" />
-                  </Link>
-                )}
               </div>
             </div>
           ))}
@@ -124,7 +97,7 @@ export default function CourseOverview() {
             Ready to experience the program?
           </h3>
           <p className="font-sans text-foreground/60 max-w-lg mx-auto mb-8">
-            Module 7 covers core wounds, forgiveness, and reprogramming your nervous system. Three full lessons, no credit card required.
+            Start with the free 7-Day Spark Challenge — a daily practice delivered to your inbox — then enroll when you are ready for the full program.
           </p>
           {user ? (
             <Link
@@ -135,10 +108,10 @@ export default function CourseOverview() {
             </Link>
           ) : (
             <Link
-              to="/signup"
+              to="/spark-challenge"
               className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-accent text-background font-outfit font-medium shadow-lg hover:bg-accent/90 transition-colors"
             >
-              Create Free Account <ChevronRight className="w-4 h-4" />
+              Start the Spark Challenge <ChevronRight className="w-4 h-4" />
             </Link>
           )}
         </div>

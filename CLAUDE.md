@@ -44,7 +44,7 @@ Supabase project ID: `qleojrlqnbiutyhfnqgb`
 - **Content format:** Lessons store content as `content_json` JSONB column with typed block arrays:
   - Block types: `heading`, `subheading`, `text`, `bold_text`, `callout`, `exercise`, `quote`, `list`, `divider`, `reflection`, `video`, `audio`
   - Rendered by `src/components/LessonContent.jsx` using a BLOCK_COMPONENTS registry pattern
-- **Access control:** `is_preview` flag on modules gates access at both RLS policy and UI layers. Module 7 is the free preview (3 lessons).
+- **Access control:** Module access is enrollment-gated via the `lessons_read` RLS policy (active enrollment OR admin role). The `is_preview` flag exists in the schema but is currently set to `false` on all modules — do not reintroduce `is_preview=true` without an explicit product decision. The free lead magnet is the 7-Day Spark Challenge email course at `/spark-challenge`, not an in-portal preview.
 - **Progress:** `lesson_progress` table tracks lesson completion per user. Optimistic toggle with server sync.
 
 ### Marketing Site
@@ -137,7 +137,7 @@ Read scoria/skills/scoria-build/SKILL.md for --validate-only flag
 
 - 9 tables: users (Supabase auth), courses, modules, lessons, enrollments, user_progress, payments, coupons, coupon_usage
 - Row Level Security on all tables
-- Module access gated by `is_preview` flag (true = free, false = requires enrollment)
+- Module access gated by enrollment (active row in `enrollments` table for the course) or admin role, enforced via RLS on the `lessons` table. The `is_preview` flag exists but is `false` on all modules — legacy of the former Module 7 free preview; see migration 021.
 
 ## Phase Status
 

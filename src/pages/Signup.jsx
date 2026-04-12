@@ -99,7 +99,7 @@ export default function Signup() {
             Begin your healing journey today.
           </h2>
           <p className="font-sans font-light text-background/80 text-lg leading-relaxed max-w-md">
-            Create a free account to access Module 7: Forgiveness & Letting Go — a complete preview of the Healing Hearts experience.
+            Create a free account to start the 7-Day Spark Challenge — and explore the Healing Hearts experience.
           </p>
         </div>
         <div className="relative z-10">
@@ -123,7 +123,7 @@ export default function Signup() {
             </p>
           ) : (
             <p className="font-sans text-foreground/60 mb-8">
-              Get free access to Module 7: Forgiveness & Letting Go — three full lessons, no payment required.
+              Create a free account to start the 7-Day Spark Challenge — a daily practice delivered to your inbox. No payment required.
             </p>
           )}
 

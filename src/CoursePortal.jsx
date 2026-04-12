@@ -127,23 +127,23 @@ const CoursePortal = () => {
               This Content Is Locked
             </h2>
             <p className="font-sans text-foreground/60 leading-relaxed">
-              This module is part of the full Healing Hearts Program.
-              Explore the free preview to experience what is inside, or learn
-              more about the program.
+              Enroll to access the full Healing Hearts Program, or start with
+              the free 7-Day Spark Challenge — a daily practice delivered to
+              your inbox.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
             <button
-              onClick={() => navigate('/course')}
+              onClick={() => navigate('/apply')}
               className="px-8 py-3 rounded-full text-sm font-medium text-white bg-accent hover:bg-accent/90 transition-colors shadow-lg"
             >
-              Learn About the Program
+              Apply for Healing Hearts
             </button>
             <button
-              onClick={() => navigate('/portal')}
+              onClick={() => navigate('/spark-challenge')}
               className="px-8 py-3 rounded-full text-sm font-medium text-primary border border-primary/20 hover:bg-primary/5 transition-colors"
             >
-              Back to Dashboard
+              Start the Spark Challenge
             </button>
           </div>
         </div>
@@ -163,6 +163,7 @@ const CoursePortal = () => {
         getModuleProgress={getModuleProgress}
         isLessonCompleted={isLessonCompleted}
         isAdmin={isAdmin}
+        hasActiveEnrollment={hasActiveEnrollment}
       />
     );
   }

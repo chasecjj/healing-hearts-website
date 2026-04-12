@@ -100,7 +100,6 @@ const PHASES = [
         title: 'Forgiveness & Letting Go',
         desc: 'Heal the hidden core wounds driving your reactions. Learn the BTEA Cycle and reprogram the beliefs your younger self wrote for survival.',
         icon: Sparkles,
-        isPreview: true,
       },
       {
         num: 'F',
@@ -196,10 +195,10 @@ const Hero = () => {
             </MagneticButton>
           </Link>
           <Link
-            to="/course"
+            to="/spark-challenge"
             className="group inline-flex items-center gap-2 text-primary font-medium border-b-2 border-primary/20 hover:border-primary pb-1 transition-colors self-center"
           >
-            Preview Module 7 Free
+            Try the Free Spark Challenge
           </Link>
         </div>
       </div>
@@ -399,14 +398,6 @@ const JourneyArc = () => {
                         <p className="font-sans text-foreground/70 text-sm leading-relaxed font-light">
                           {mod.desc}
                         </p>
-                        {mod.isPreview && (
-                          <Link
-                            to="/course"
-                            className="inline-flex items-center gap-1 mt-4 text-sm font-outfit font-medium text-accent hover:text-accent/80 transition-colors"
-                          >
-                            Preview free <ChevronRight className="w-4 h-4" />
-                          </Link>
-                        )}
                       </div>
                     </div>
                   );
@@ -582,21 +573,21 @@ const ClosingCta = () => {
 
       <div className="max-w-5xl mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Free Preview card */}
+          {/* Spark Challenge card — free first step */}
           <div
             className="jcta-reveal bg-[#F9F8F5] rounded-3xl p-10 md:p-12 border border-primary/5 flex flex-col"
             style={{ boxShadow: '0 10px 40px -10px rgba(17, 145, 177, 0.06)' }}
           >
-            <p className="font-outfit font-bold text-xs text-accent uppercase tracking-widest mb-3">Free Preview</p>
+            <p className="font-outfit font-bold text-xs text-accent uppercase tracking-widest mb-3">Start Free</p>
             <h3 className="font-drama italic text-3xl text-primary mb-4">
-              Try before you commit.
+              Start before you commit.
             </h3>
             <p className="font-sans text-foreground/70 text-base leading-relaxed font-light mb-8 flex-grow">
-              Module 7 — Forgiveness & Letting Go — is completely free. Three full lessons on core wounds, forgiveness, and belief reprogramming. No credit card. No commitment.
+              The 7-Day Spark Challenge is a free daily practice delivered to your inbox. One small shift a day, for seven days — no credit card, no commitment, just a taste of the work we do in the full program.
             </p>
-            <Link to="/course">
+            <Link to="/spark-challenge">
               <MagneticButton className="w-full py-4 rounded-full border-2 border-primary/20 text-primary font-outfit font-semibold text-sm hover:bg-primary hover:text-white hover:border-primary transition-all duration-300">
-                Start Free Preview
+                Start the Spark Challenge
               </MagneticButton>
             </Link>
           </div>

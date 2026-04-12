@@ -45,9 +45,9 @@ Scan every file in scope against all 5 audit dimensions below. Cite `file:line` 
 
 ### 4. Content Access Control
 
-- **`is_preview` flag integrity:** Module access is gated by `is_preview` (true = free, false = paid). Any change that removes this check from queries or RLS policies gives unauthorized access to paid content.
-- **Enrollment verification:** Queries fetching lesson content for non-preview modules must join or filter on `enrollments` table to verify the user has paid.
-- **Direct URL access:** Verify that navigating directly to `/portal/module-1/lesson-1` (a paid lesson) without authentication redirects to login, not to the content.
+- **Enrollment-gated access:** All module content is gated by the `lessons_read` RLS policy, which requires an active row in `enrollments` for the user/course OR an admin role. Any change that removes the enrollment join from Supabase queries or weakens the RLS policy gives unauthorized access to paid content.
+- **`is_preview` flag status (historical):** The `is_preview` column exists on `modules` and `lessons` but is `false` on all rows as of migration 021. It should remain `false` unless a product decision explicitly approves a new preview offer. Any PR that flips `is_preview=true` without an accompanying product-decision note is a Critical finding — the former Module 7 free preview was retired deliberately and replaced by the 7-Day Spark Challenge lead magnet.
+- **Direct URL access:** Verify that navigating directly to `/portal/module-1/lesson-1` without an active enrollment returns the lock wall (not the content) and that the API returns no lesson rows.
 - **Content leaking in source:** Course content stored in JS bundles (instead of fetched from Supabase at runtime) is accessible to anyone who views source.
 
 ### 5. Data Integrity
@@ -69,7 +69,8 @@ These are known footguns specific to this codebase. Check for all of them explic
 | `process.env` in client code | Undefined in Vite browser builds — causes silent undefined values | `process.env.` in `src/` files |
 | Supabase `service_role` in client | Bypasses RLS, gives full DB access to anyone who opens DevTools | `service_role`, `supabase.createClient` with non-anon key in `src/` |
 | Hardcoded Supabase URL/key | Should come from `import.meta.env` — hardcoded values leak in git history | Literal `supabase.co` URLs or key strings outside `.env` files |
-| Missing `is_preview` check | Removes paywall — all content becomes free | Supabase queries on modules/lessons without `is_preview` filter |
+| Missing enrollment check in portal queries | Removes paywall — all authenticated users see paid content | Supabase queries on `lessons` that don't rely on the `lessons_read` RLS policy, or frontend gates that check `is_preview` without also checking `hasActiveEnrollment`/`isAdmin` |
+| Reintroducing `is_preview=true` | Retired lead magnet — Spark Challenge is the new free hook | Migrations that set `is_preview=true`, or UI code that assumes any module is `is_preview=true` without a product note |
 | Unprotected portal routes | Exposes paid content without login | Routes under `/portal` without `ProtectedRoute` wrapper |
 
 ---
@@ -94,7 +95,7 @@ Always produce your report in exactly this format:
 
 **Files scanned:** N
 **Audit dimensions checked:** Injection/XSS, Authentication/Authorization, Credential Exposure, Content Access Control, Data Integrity
-**HH anti-patterns checked:** dangerouslySetInnerHTML, process.env, service_role, hardcoded keys, is_preview bypass, unprotected routes
+**HH anti-patterns checked:** dangerouslySetInnerHTML, process.env, service_role, hardcoded keys, missing enrollment check, reintroduced `is_preview=true`, unprotected routes
 
 ---
 
@@ -135,7 +136,7 @@ Always produce your report in exactly this format:
    - XSS: `dangerouslySetInnerHTML`, `eval(`, `new Function(`, `innerHTML`
    - Auth: files in `src/pages/` that import from `supabase` but don't use `ProtectedRoute`
    - Credentials: `service_role`, `sk_live_`, `sk_test_`, `supabase.co` with inline keys, `eyJ`
-   - Access control: `is_preview`, `enrollments` in query contexts
+   - Access control: `enrollments` join on portal queries, `is_preview=true` reintroduction in migrations or UI code
    - Data integrity: Supabase calls missing `error` destructuring
    - Env vars: `process.env` in `src/`, `import.meta.env` without `VITE_` prefix
 3. For each file flagged by any Grep sweep, Read it fully in context and verify the finding against all 5 dimensions.

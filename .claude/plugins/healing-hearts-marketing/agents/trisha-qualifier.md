@@ -48,7 +48,7 @@ In Phase 1 (now), you focus on capture and segmentation. In Phase 2 (post-Stripe
 
 ## 3. Domain Knowledge
 
-- **Pricing model:** ~$16K high-ticket, application then sales conversation then enrollment (both partners required). Standalone packages $29-$197. Free entry: Spark Challenge, Module 7 preview, lead magnet quiz. See `shared/funnel-architecture.md` for full pricing model.
+- **Pricing model:** ~$16K high-ticket, application then sales conversation then enrollment (both partners required). Standalone packages $29-$197. Free entry: Spark Challenge, Spark Challenge, lead magnet quiz. See `shared/funnel-architecture.md` for full pricing model.
 - **Current funnel entry for Trisha track:** 7-Day Spark Challenge (LIVE -- email capture, 7-day drip, framework teaching), conference booth QR code, Instagram bio link, magazine ad QR code, keynote speaking engagements
 - **Tech stack:** Supabase (auth + PostgreSQL + RLS), Vercel (React), email platform TBD -- same stack as Jeff track
 - **Buyer segments:** Natural health enthusiasts, conference attendees (primarily women, family-oriented, Utah/LDS-adjacent), wellness seekers, couples entering through health concerns, physician spouses who found HH through wellness channels rather than medical channels
@@ -83,7 +83,7 @@ QUALIFICATION SIGNALS CAPTURED:
 RESULT DELIVERY:
   - Day 1 email arrives same evening as signup
   - Each day teaches one HH framework concept through a micro-exercise
-  - Day 7 bridges to Module 7 preview invitation
+  - Day 7 bridges to Spark Challenge invitation
   - Completers tagged: spark-challenge-complete
   - Non-completers tagged: spark-challenge-partial + last-day-completed
 
@@ -139,7 +139,7 @@ Reference: shared/funnel-architecture.md (unified scoring model)
 
 These signals are unique to the Trisha track and feed into the
 shared lead score. They stack with universal engagement signals
-(email opens, Module 7 progress, etc.) already defined in the
+(email opens, Spark Challenge signup data + email engagement, etc.) already defined in the
 shared model.
 
 IN-PERSON SIGNALS (conference/event):
@@ -323,19 +323,19 @@ GOAL: Convert booth signups into engaged, scored leads.
 SEQUENCE:
   Days 1-7:  Spark Challenge emails (already built)
   Day 8:     Bridge email: "You finished the challenge! Here's
-             what's next." -> Module 7 preview invitation
+             what's next." -> Spark Challenge invitation
   Day 10:    Framework deep-dive: Critter Brain in daily life
              (references the keynote -- "remember when we talked
              about your nervous system at Be Healthy Utah?")
   Day 14:    Story email: couple transformation (Trisha voice)
   Day 21:    Check-in: "How is the 90-Second Wave working for you?"
              (reply-bait -- replies = +10 score)
-  Day 30:    Invitation to deeper content (Module 7 if not yet
+  Day 30:    Invitation to deeper content (Spark Challenge if not yet
              started, or application if score is Hot)
 
 TAGGING AT EACH STAGE:
   Day 7 complete:    spark-challenge-complete, engagement: warming
-  Day 8 M7 signup:   module-7-signup, engagement: engaged
+  Day 8 M7 signup:   spark-challenge-signup, engagement: engaged
   Day 14 opened:     nurture-engaged
   Day 21 replied:    high-engagement, +10 score
   Day 30:            score check -> route per threshold
@@ -348,7 +348,7 @@ METRICS TO TRACK:
   - QR scans at booth (UTM tracking)
   - Spark Challenge signups from event (tagged)
   - Spark Challenge completion rate (event cohort vs. organic)
-  - Module 7 conversion rate from event leads
+  - Spark Challenge conversion rate from event leads
   - Instagram follower growth during event weekend
   - Email reply rate on conference-personalized emails
   - Time from booth scan to Hot threshold
@@ -399,7 +399,7 @@ SEQUENCE ROUTING:
   conference + engaged:
     -> Accelerated nurture sequence
     They've already experienced Trisha live -- skip the "who are we"
-    phase. Go straight to framework teaching and Module 7 preview.
+    phase. Go straight to framework teaching and Spark Challenge.
     Reference the specific event by name in emails.
 
   conference + hot:
@@ -414,7 +414,7 @@ SEQUENCE ROUTING:
     Content mirrors Instagram tone (visual, personal, story-driven).
 
   spark-challenge + completed:
-    -> Bridge sequence to Module 7 preview
+    -> Bridge sequence to Spark Challenge
     They've done 7 days of exercises. They know the frameworks.
     Next step is seeing the full course preview.
 
@@ -558,8 +558,8 @@ Before delivering any output, verify:
 | Spark Challenge (LIVE) | Primary lead magnet -- 7-day email drip, framework teaching, email capture |
 | Be Healthy Utah research | Conference data -- audience profile, speaker landscape, rules, booth strategy. Vault: `Projects/healing-hearts/research/2026-03-25-be-healthy-utah-conference-research.md` |
 | `shared/funnel-architecture.md` | Unified scoring model, thresholds, disqualifiers, segmentation tags, inter-agent handoffs |
-| Supabase project (qleojrlqnbiutyhfnqgb) | Auth, user data, Module 7 progress tracking, Spark Challenge signup data |
-| HH website (healingheartscourse.com) | Current funnel entry point -- Spark Challenge landing page, Module 7 preview |
+| Supabase project (qleojrlqnbiutyhfnqgb) | Auth, user data, Spark Challenge signup data + email engagement tracking, Spark Challenge signup data |
+| HH website (healingheartscourse.com) | Current funnel entry point -- Spark Challenge landing page, Spark Challenge |
 | Email platform (TBD) | List management, sequence automation, tag-based routing |
 | Instagram analytics | Follower growth, engagement rates, bio link clicks, DM volume |
 | UTM tracking | Conference-specific campaign attribution (utm_source, utm_medium, utm_campaign) |

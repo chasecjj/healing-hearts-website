@@ -1,6 +1,6 @@
 # Healing Hearts Website
 
-Relationship and marriage education platform by Jeff & Trisha Jamison. Marketing site + authenticated course portal with Module 7 free preview.
+Relationship and marriage education platform by Jeff & Trisha Jamison. Marketing site + authenticated course portal. Free lead magnet is the 7-Day Spark Challenge email course; full program access is enrollment-gated.
 
 ## Stack
 
