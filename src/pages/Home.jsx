@@ -463,7 +463,7 @@ const Testimonials = () => {
   return (
     <section
       ref={containerRef}
-      className="w-full py-[clamp(4rem,8vw,6rem)] bg-[#F9F8F5] relative overflow-hidden"
+      className="w-full py-[clamp(4rem,8vw,6rem)] bg-[#F9F8F5] relative z-10 overflow-hidden"
     >
       <div className="absolute bottom-0 left-0 w-[30vw] h-[30vw] bg-primary/5 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/4 pointer-events-none" aria-hidden="true" />
 
@@ -685,7 +685,7 @@ const FinalCta = () => {
 /*  PAGE EXPORT                                                        */
 /* ------------------------------------------------------------------ */
 export default function Home() {
-  usePageMeta('Couples Coaching & Relationship Tools', 'Healing Hearts helps couples move from disconnection to deep, lasting connection through science-backed coaching, the SPARK Method, and practical relationship tools.');
+  usePageMeta('Science-Based Relationship Coaching for Couples', 'Healing Hearts helps couples move from disconnection to deep, lasting connection through science-backed coaching, the SPARK Method, and practical relationship tools.');
   return (
     <>
       <Hero />
