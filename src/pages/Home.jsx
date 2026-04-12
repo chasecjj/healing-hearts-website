@@ -434,8 +434,8 @@ const ProgramsTeaser = () => {
     },
     {
       name: 'Healing Hearts Journey',
-      desc: 'Our complete 8-module premium program.',
-      features: ['All 8 Transformation Modules', 'Subconscious Healing Guides', 'Nervous System Regulation', '1-on-1 Coaching Option'],
+      desc: 'The complete transformation. 8 modules. 90+ lessons.',
+      features: ['The Seven Devils + Devil Audit', 'SPARK Method + Critter Brain', 'Core Wounds + Forgiveness', 'Weekly Coaching with Trisha'],
       cta: 'Explore the Journey',
       popular: true,
       href: '/journey',

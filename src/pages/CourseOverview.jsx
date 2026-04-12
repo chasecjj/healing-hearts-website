@@ -5,14 +5,14 @@ import { Lock, ChevronRight, BookOpen } from 'lucide-react';
 import usePageMeta from '../hooks/usePageMeta';
 
 const MODULES = [
-  { number: '1', title: "Love's Foundation", description: 'Personality blueprint, attachment style, and love language.', lessons: 4 },
-  { number: '2', title: 'Invisible Chains', description: 'Recognize toxic patterns hiding in plain sight.', lessons: 3 },
-  { number: '3', title: 'The Deep Roots', description: 'Understand how your childhood wrote a Mindprint.', lessons: 3 },
-  { number: '4', title: 'Breakthrough Communication', description: 'Express needs without blame, listen without defending.', lessons: 3 },
-  { number: '5', title: 'Nervous System Regulation', description: 'Calm the storm inside before addressing the storm between you.', lessons: 3 },
-  { number: '6', title: 'Emotional Zones', description: 'Map your emotional landscape and learn to navigate it together.', lessons: 3 },
-  { number: '7', title: 'Forgiveness & Letting Go', description: 'Heal the hidden wounds driving your relationship patterns.', lessons: 3 },
-  { number: 'F', title: 'Legacy Building', description: 'Build a marriage that transforms generations.', lessons: 3 },
+  { number: '1', title: 'The Seven Devils', description: 'Name the seven patterns destroying your relationship. Learn the SPARK Method. Meet your Critter Brain and CEO Brain. Build your first week of practice.', lessons: 28 },
+  { number: '2', title: 'The Devils Up Close', description: 'Face Criticism, Contempt, Defensiveness, Stonewalling, Avoidance, and Unhealthy Coping. Complete your Devil Audit and build a practice plan.', lessons: 24 },
+  { number: '3', title: 'The Deep Roots', description: 'Trace your patterns to their origin. Your childhood wrote a Mindprint — now you get to read it.', lessons: 3 },
+  { number: '4', title: 'Breakthrough Communication', description: 'Master active listening, the "I Feel / I Need" formula, and repair conversations that actually land.', lessons: 3 },
+  { number: '5', title: 'Nervous System Regulation', description: 'Master the 90-Second Wave. Map your Zones of Resilience. Learn co-regulation practices.', lessons: 3 },
+  { number: '6', title: 'Emotional Zones', description: 'Meet your Critter Brain and CEO Brain. Take the Emotional Maturity Assessment. Grow together.', lessons: 3 },
+  { number: '7', title: 'Subconscious Core Wounds', description: 'Identify the 12 Subconscious Principles. Uncover core wounds. Walk the path to true intimacy and forgiveness.', lessons: 18 },
+  { number: '8', title: 'Legacy of Love', description: 'Integration, resilience, and a secured future. Financial freedom, healthy coping, and future-proofing your marriage.', lessons: 8 },
 ];
 
 export default function CourseOverview() {

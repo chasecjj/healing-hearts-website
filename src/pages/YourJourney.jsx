@@ -34,28 +34,31 @@ const PHASES = [
   {
     phase: 1,
     label: 'Understand',
-    tagline: 'See yourself clearly — maybe for the first time.',
+    tagline: 'Name the patterns. Understand your body. Learn the tools.',
     description:
-      'Before you can change anything, you need to understand what\'s actually driving the disconnect. This phase peels back the layers — your personality wiring, your attachment patterns, and the childhood blueprint that still runs the show.',
+      'Before you can change anything, you need to see what\'s actually running the show. This phase names the Seven Devils destroying your relationship, teaches you why your nervous system hijacks conversations, gives you the SPARK Method for repair, and traces everything back to the childhood blueprint that still writes the script.',
     color: 'primary',
     modules: [
       {
         num: 1,
-        title: "Love's Foundation",
-        desc: 'Discover your personality blueprint, attachment style, and love language — the invisible forces shaping every interaction with your partner.',
+        title: 'The Seven Devils',
+        desc: 'Name the seven patterns that quietly dismantle relationships — Criticism, Contempt, Defensiveness, Stonewalling, Avoidance, Unhealthy Coping, and Lost Intimacy. Learn the SPARK Method for repair and build your first week of practice.',
         icon: Heart,
+        lessonCount: 28,
       },
       {
         num: 2,
-        title: 'Invisible Chains',
-        desc: 'Recognize the toxic patterns hiding in plain sight — gaslighting, projection, emotional immaturity — and name what you\'ve been feeling.',
+        title: 'The Devils Up Close',
+        desc: 'Face each Devil honestly. Understand how Criticism and Contempt attack, how Defensiveness and Stonewalling protect, and how Avoidance and Unhealthy Coping become escape routes. Complete your Devil Audit and build a practice plan.',
         icon: Shield,
+        lessonCount: 24,
       },
       {
         num: 3,
         title: 'The Deep Roots',
-        desc: 'Trace your relationship patterns back to their origin. Your childhood wrote a Mindprint. Now you get to read it.',
+        desc: 'Trace your relationship patterns back to their origin. Your childhood wrote a Mindprint — a blueprint that still runs your reactions. Now you get to read it and start rewriting.',
         icon: Brain,
+        lessonCount: 3,
       },
     ],
   },
@@ -64,26 +67,29 @@ const PHASES = [
     label: 'Transform',
     tagline: 'New tools. New responses. A new way of being together.',
     description:
-      'Understanding isn\'t enough — you need real tools that work in real arguments, real silences, real Tuesday nights. This phase gives you the SPARK Method, nervous system regulation, and emotional mastery frameworks that change how you show up.',
+      'Understanding isn\'t enough — you need real tools that work in real arguments, real silences, real Tuesday nights. This phase deepens the SPARK Method into active listening, teaches nervous system regulation through the 90-Second Wave and Zones of Resilience, and helps you master the Critter Brain vs. CEO Brain framework.',
     color: 'accent',
     modules: [
       {
         num: 4,
         title: 'Breakthrough Communication',
-        desc: 'Learn the SPARK Method — our 5-step framework for expressing needs without blame and listening without defending.',
+        desc: 'Go deeper with the SPARK Method — master active listening, learn to express needs without blame using the "I Feel / I Need" formula, and practice repair conversations that actually land.',
         icon: MessageCircleHeart,
+        lessonCount: 3,
       },
       {
         num: 5,
         title: 'Nervous System Regulation',
-        desc: 'Master the 90-Second Wave. Understand your Zones of Resilience. Calm the storm inside before addressing the storm between you.',
+        desc: 'Master the 90-Second Wave. Map your Zones of Resilience (Red, Yellow, Green, Blue). Learn co-regulation practices so you can calm each other — not just yourself.',
         icon: Activity,
+        lessonCount: 3,
       },
       {
         num: 6,
         title: 'Emotional Zones',
-        desc: 'Meet your Critter Brain and CEO Brain. Map your emotional landscape and learn to navigate it together.',
+        desc: 'Meet your Critter Brain and CEO Brain face to face. Take the Emotional Maturity Assessment. Build a shared emotional vocabulary and a plan for growing together.',
         icon: Compass,
+        lessonCount: 3,
       },
     ],
   },
@@ -92,20 +98,22 @@ const PHASES = [
     label: 'Rebuild',
     tagline: 'Heal what\'s deepest. Build what lasts.',
     description:
-      'This is the deep work that most programs never touch. Core wound healing, belief reprogramming, forgiveness that actually frees you — and then building a marriage that transforms not just your life, but your family for generations.',
+      'This is the deep work that most programs never touch. Subconscious wound healing, true forgiveness, the six levels of intimacy — and then building a marriage that transforms not just your life, but your family for generations.',
     color: 'primary',
     modules: [
       {
         num: 7,
-        title: 'Forgiveness & Letting Go',
-        desc: 'Heal the hidden core wounds driving your reactions. Learn the BTEA Cycle and reprogram the beliefs your younger self wrote for survival.',
+        title: 'Subconscious Core Wounds',
+        desc: 'Identify the 12 Subconscious Principles driving your reactions. Uncover your core wounds — Abandonment, Unworthiness, Defectiveness. Walk the path to true intimacy and real forgiveness.',
         icon: Sparkles,
+        lessonCount: 18,
       },
       {
-        num: 'F',
-        title: 'Legacy Building',
-        desc: 'Build a marriage that transforms generations. This is where everything comes together — your legacy starts here.',
+        num: 8,
+        title: 'Legacy of Love',
+        desc: 'Integration, resilience, and a secured future. Address running on empty, healthy coping, financial freedom, and future-proof your marriage against the storms ahead.',
         icon: Crown,
+        lessonCount: 8,
       },
     ],
   },
@@ -114,8 +122,8 @@ const PHASES = [
 const INCLUDED = [
   {
     icon: BookOpen,
-    title: '8 Deep-Dive Modules',
-    desc: '25+ lessons with our proprietary frameworks, reflection prompts, and guided practices designed for real couples in real life.',
+    title: '8 Modules, 90+ Lessons',
+    desc: 'From the Seven Devils to Legacy of Love — interactive lessons with reflection prompts, fillable practice plans, and guided exercises designed for real couples in real life.',
   },
   {
     icon: Video,
@@ -183,7 +191,7 @@ const Hero = () => {
           Your path back <br className="hidden md:block" />to each other.
         </h1>
         <p className="journey-hero-reveal font-sans text-foreground/80 md:text-xl leading-relaxed font-light mx-auto max-w-3xl mb-6">
-          This isn't a weekend workshop or a list of tips. It's a guided transformation through 32 milestones — from understanding why you shut down, to building a marriage that lasts generations.
+          This isn't a weekend workshop or a list of tips. It's a guided transformation through 90+ lessons across 8 modules — from naming the patterns destroying your connection, to building a marriage that lasts generations.
         </p>
         <p className="journey-hero-reveal font-sans text-foreground/60 md:text-lg leading-relaxed font-light mx-auto max-w-2xl mb-12">
           Built by Jeff & Trisha Jamison from the trenches of their own marriage. Every framework has been tested in real life first.
@@ -398,6 +406,11 @@ const JourneyArc = () => {
                         <p className="font-sans text-foreground/70 text-sm leading-relaxed font-light">
                           {mod.desc}
                         </p>
+                        {mod.lessonCount && (
+                          <p className="font-outfit text-xs text-foreground/40 mt-3 uppercase tracking-widest">
+                            {mod.lessonCount} lessons
+                          </p>
+                        )}
                       </div>
                     </div>
                   );
@@ -450,7 +463,7 @@ const TealQuote = () => {
           &ldquo;
         </span>
         <blockquote className="jquote-reveal font-drama italic text-3xl sm:text-4xl md:text-5xl text-white leading-tight mb-10">
-          This isn't a weekend workshop. It's a transformation. Give it 32 milestones and we'll give you a different marriage.
+          This isn't a weekend workshop. It's a transformation. Name the Seven Devils, learn the SPARK Method, heal the core wounds — and we'll give you a different marriage.
         </blockquote>
         <cite className="jquote-reveal not-italic text-base sm:text-lg text-white/70 font-medium tracking-wide uppercase block">
           — Trisha Jamison
@@ -605,7 +618,7 @@ const ClosingCta = () => {
                 Ready to do the real work?
               </h3>
               <p className="font-sans text-white/80 text-base leading-relaxed font-light mb-8 flex-grow">
-                8 modules. 32 milestones. 36 coaching sessions with Trisha. A private community of couples on the same path. And a transformation that changes not just your marriage — but your family tree.
+                8 modules. 90+ lessons. Weekly coaching sessions with Trisha. A private community of couples on the same path. And a transformation that changes not just your marriage — but your family tree.
               </p>
               <Link to="/apply">
                 <MagneticButton className="w-full py-4 rounded-full bg-accent text-white font-outfit font-semibold text-sm shadow-xl hover:scale-105 transition-all duration-300">
