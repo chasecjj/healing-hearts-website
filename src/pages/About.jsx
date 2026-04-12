@@ -159,10 +159,10 @@ const HonestVersion = () => {
 
             <div className="space-y-6">
               <p className="story-p font-sans text-foreground/80 text-lg leading-relaxed font-light">
-                Jeff is a family physician. Trisha is a coach. They've been married for over 38 years. And for a long stretch of those years, they looked like any other successful couple on the outside — his clinic running, her work growing, the calendar full. But behind closed doors, they were two strangers sharing a house. The kind of quiet disconnection that doesn't shout but slowly suffocates.
+                Jeff is a family physician who ran his own practice for nearly 30 years. Trisha is a coach with over two decades of experience. They've been married for more than 38 years. And for a long stretch of those years, they looked like any other successful couple on the outside — his clinic running, her work growing, the calendar full. But behind closed doors, they were two strangers sharing a house. The kind of quiet disconnection that doesn't shout but slowly suffocates.
               </p>
               <p className="story-p font-sans text-foreground/80 text-lg leading-relaxed font-light">
-                Trisha felt invisible. Jeff felt criticized. And both of them were running survival patterns they'd carried since childhood without ever knowing it. Jeff's medical training had taught him to compartmentalize emotion — useful in an exam room, devastating in a marriage. Trisha's instinct for connection kept hitting a wall she couldn't name.
+                Trisha felt invisible. Jeff felt criticized. His patients and staff got the best of him — and his family got whatever was left. Jeff's medical training had taught him to compartmentalize emotion. Useful in an exam room. Devastating in a marriage. Trisha's instinct for connection kept hitting a wall she couldn't name.
               </p>
               <p className="story-p font-sans text-foreground/80 text-lg leading-relaxed font-light">
                 They didn't just survive it. They studied it. Jeff brought the clinical lens — polyvagal theory, nervous system regulation, the biology of why your body hijacks a conversation before your mind catches up. Trisha brought 20 years of coaching instinct and an ear for what people actually need to hear. Together, they built frameworks that worked — not in theory, but at 11pm on a Tuesday when the old patterns came roaring back.
@@ -374,12 +374,12 @@ const ClinicalFrameworks = () => {
           >
             <div className="w-12 h-1 bg-accent rounded-full mb-6" />
             <h4 className="font-drama italic text-2xl text-primary mb-4">Trisha Jamison</h4>
-            <p className="font-outfit font-bold text-xs text-foreground/40 uppercase tracking-widest mb-4">Founder &amp; Lead Coach</p>
+            <p className="font-outfit font-bold text-xs text-foreground/40 uppercase tracking-widest mb-4">Founder &amp; Lead Coach &middot; Certified Relationship Coach</p>
             <p className="font-sans text-foreground/70 font-light text-base leading-relaxed mb-4">
-              Trisha has spent over 20 years coaching individuals and couples through their hardest moments. She built the Healing Hearts program from lived experience — 38 years of marriage to a physician, raising a family while navigating the quiet disconnection that high-stress lives create.
+              Trisha has spent over two decades coaching individuals and couples through their hardest moments — studying under teachers like Leah Davidson and Thais Gibson while building her own frameworks from 38 years of marriage to a busy physician. She knows what it looks like when your partner's career gets the best of them and your family gets whatever's left.
             </p>
             <p className="font-sans text-foreground/70 font-light text-base leading-relaxed">
-              She created the SPARK Method, the Seven Devils framework, the Zones of Resilience, and every other tool in this program. Her teaching style is warm, story-driven, and grounded in the work of Gottman, Porges, and Sue Johnson — translated into language that actually lands at 11pm when the patterns come back.
+              She created the SPARK Method, the Seven Devils framework, the Zones of Resilience, and every other tool in this program. Her teaching is warm, story-driven, and grounded in the research of Gottman, Porges, and Sue Johnson — translated into language that actually lands at 11pm when the old patterns come roaring back.
             </p>
           </div>
 
@@ -390,12 +390,15 @@ const ClinicalFrameworks = () => {
           >
             <div className="w-12 h-1 bg-primary rounded-full mb-6" />
             <h4 className="font-drama italic text-2xl text-primary mb-4">Dr. Jeff Jamison</h4>
-            <p className="font-outfit font-bold text-xs text-foreground/40 uppercase tracking-widest mb-4">DO, FAAFP &mdash; Family Physician</p>
+            <p className="font-outfit font-bold text-xs text-foreground/40 uppercase tracking-widest mb-4">DO, FAAFP &mdash; Board-Certified Family Physician</p>
             <p className="font-sans text-foreground/70 font-light text-base leading-relaxed mb-4">
-              Jeff is a board-certified family physician who spent years building and running his own primary care practice. He built his career on relationships with his patients — understanding not just what ails them, but the life around the ailment. That same instinct shapes how he approaches relationship work.
+              Jeff owned and operated his own primary care practice for nearly 30 years. He built his career on relationships with his patients — understanding not just what ails them, but the life around the ailment. He also helped place the very first cohort of medical students in family practice clinical rotations, building medical education from the ground up.
+            </p>
+            <p className="font-sans text-foreground/70 font-light text-base leading-relaxed mb-4">
+              He brings the clinical lens to Healing Hearts — nervous system regulation, the biology of stress responses, and a firsthand understanding of how careers that demand everything leave nothing for the people at home. In his own words: "My patients and staff got the best of me, and sometimes, my family got the worst of me."
             </p>
             <p className="font-sans text-foreground/70 font-light text-base leading-relaxed">
-              He brings the clinical lens to Healing Hearts — nervous system regulation, the biology of stress responses, and a deep understanding of how high-performance careers erode intimacy. He also brings something rarer: a willingness to talk honestly about the ways men learn to armor themselves against vulnerability.
+              That honesty — the willingness to say the quiet part out loud — is what Jeff brings to every couple who walks through this program.
             </p>
           </div>
         </div>
