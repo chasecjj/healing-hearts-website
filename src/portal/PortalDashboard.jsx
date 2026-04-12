@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import DailyIntentionWidget from './DailyIntentionWidget';
 import { getActiveCourses } from '../lib/courses';
+import { useAuth } from '../contexts/AuthContext';
 
 /**
  * Portal Dashboard — personalized welcome, journey progress, module library.
@@ -35,6 +36,7 @@ export default function PortalDashboard({
   const navigate = useNavigate();
   const containerRef = useRef(null);
   const [availableCourses, setAvailableCourses] = useState([]);
+  const { user } = useAuth();
 
   // ── GSAP entrance animations ──────────────────────────────
   useEffect(() => {
@@ -70,8 +72,8 @@ export default function PortalDashboard({
   // ── Derived data ──────────────────────────────────────────
   const firstName =
     profile?.display_name?.split(' ')[0] ||
-    profile?.full_name?.split(' ')[0] ||
-    profile?.email?.split('@')[0] ||
+    user?.user_metadata?.display_name?.split(' ')[0] ||
+    user?.email?.split('@')[0] ||
     'Friend';
 
   // Find the first in-progress module (has some but not all lessons completed)
