@@ -7,11 +7,7 @@ import { OrganicDivider, Button } from '@scoria/ui';
 import usePageMeta from '../hooks/usePageMeta';
 import {
   CheckCircle2,
-  Flame,
-  MessageCircleHeart,
   ShieldAlert,
-  Sparkles,
-  Landmark,
 } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -41,43 +37,12 @@ const STANDALONE_PACKAGES = [
   {
     title: 'The Conflict Rescue Kit',
     subtitle: 'Stop the bleeding. Learn to fight without destroying.',
-    desc: 'If your arguments have become a warzone\u2014or if you\'ve stopped fighting altogether because it feels pointless\u2014this is where you start.',
-    includes: ['SPARK Method training', 'Critter Brain vs. CEO Brain framework', 'Zones of Resilience assessment', 'The 90-Second Wave guide', 'Printable Conflict Recovery Plan'],
+    desc: 'If your arguments have become a warzone — or if you\'ve stopped fighting altogether because it feels pointless — this is where you start. First aid for couples who can\'t wait to feel better.',
+    includes: ['SPARK Method training', 'Critter Brain vs. CEO Brain framework', 'Zones of Resilience self-assessment', 'The 90-Second Wave guide', 'Conflict Recovery Plan + 7-day practice plan'],
     icon: ShieldAlert,
-    span: 'lg:col-span-2',
-    href: '/rescue-kit',
-  },
-  {
-    title: 'Communication Mastery Toolkit',
-    subtitle: 'Say what you mean\u2014and hear what they\'re really saying.',
-    desc: 'Most couples don\'t have a communication problem. They have a safety problem. This toolkit teaches you to express needs without blame.',
-    includes: ['Attachment style deep-dive', 'Needs expression framework', 'Active listening techniques', 'The SPARK repair process', 'Guided daily practices'],
-    icon: MessageCircleHeart,
-    span: 'lg:col-span-1',
-  },
-  {
-    title: 'Toxic Pattern Breaker',
-    subtitle: 'Name it. Trace it. Break the cycle.',
-    desc: 'Some patterns erode trust at the foundation. Gaslighting, manipulation, emotional immaturity. We give you the vocabulary to see these patterns clearly.',
-    includes: ['Gaslighting identification guide', 'Manipulation pattern analysis', 'Projection and shadow work', 'Emotional maturity assessment', 'Action plan'],
-    icon: Flame,
-    span: 'lg:col-span-1',
-  },
-  {
-    title: 'Spark & Intimacy Bundle',
-    subtitle: 'From roommates back to lovers.',
-    desc: 'You share a bed. You coordinate schedules. But somewhere along the way, the spark went dark. This bundle addresses the full spectrum of intimacy.',
-    includes: ['The 6 Levels of Intimacy framework', 'Desire and connection assessment', 'Rebuilding physical safety', 'Emotional vulnerability practices', '30-day reset plan'],
-    icon: Sparkles,
-    span: 'lg:col-span-2',
-  },
-  {
-    title: 'Financial Unity System',
-    subtitle: 'Because money fights are never really about money.',
-    desc: 'Stop fighting about money and start building with it. Understand how your financial childhoods shaped your spending identities.',
-    includes: ['Budget meeting framework', 'Debt reduction strategies', 'Financial childhood exploration', 'Spending personality assessment', 'Decision-making toolbox'],
-    icon: Landmark,
     span: 'lg:col-span-3',
+    href: '/rescue-kit',
+    price: '$39',
   },
 ];
 
@@ -292,11 +257,11 @@ const StandalonePackages = () => {
         {/* Section heading */}
         <div className="text-center mb-20 max-w-3xl mx-auto">
           <h2 className="standalone-heading font-outfit font-bold text-4xl md:text-5xl text-primary mb-4">
-            Standalone Packages
+            Start Smaller
           </h2>
           <div className="standalone-heading w-24 h-1 bg-primary/20 mx-auto rounded-full mb-6" />
           <p className="standalone-heading font-sans text-foreground/70 text-lg leading-relaxed font-light">
-            Not ready for the full program? Start with one of our focused packages. Each one tackles a specific pain point with the same depth and science that drives our flagship program.
+            Not ready for the full program? The Rescue Kit tackles the most urgent pain point — conflict — with the same depth and science that drives our flagship program. One purchase, instant access, keep it forever.
           </p>
         </div>
 
@@ -323,6 +288,11 @@ const StandalonePackages = () => {
                       <h3 className="font-drama italic text-3xl text-primary mb-1 leading-tight">{pkg.title}</h3>
                       <h4 className="font-outfit font-bold text-sm text-accent">{pkg.subtitle}</h4>
                     </div>
+                    {pkg.price && (
+                      <span className="bg-accent text-white font-outfit font-bold text-sm px-4 py-1.5 rounded-full flex-shrink-0">
+                        {pkg.price}
+                      </span>
+                    )}
                   </div>
 
                   {/* Description */}
@@ -346,7 +316,7 @@ const StandalonePackages = () => {
                     to={pkg.href || '/apply'}
                     className="block w-full py-3 rounded-full border-2 border-primary/20 text-primary font-outfit font-semibold text-sm hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 mt-auto text-center"
                   >
-                    View Details
+                    {pkg.href === '/rescue-kit' ? 'Get the Rescue Kit' : 'Learn More'}
                   </Link>
                 </div>
 
