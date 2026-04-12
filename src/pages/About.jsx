@@ -159,16 +159,16 @@ const HonestVersion = () => {
 
             <div className="space-y-6">
               <p className="story-p font-sans text-foreground/80 text-lg leading-relaxed font-light">
-                There was a season when Jeff and Trisha looked like any other successful couple on the outside—careers moving, kids growing, calendar full. But behind closed doors, they were two strangers sharing a house. The kind of quiet disconnection that doesn't shout but slowly suffocates.
+                Jeff is a family physician. Trisha is a coach. They've been married for over 38 years. And for a long stretch of those years, they looked like any other successful couple on the outside — his clinic running, her work growing, the calendar full. But behind closed doors, they were two strangers sharing a house. The kind of quiet disconnection that doesn't shout but slowly suffocates.
               </p>
               <p className="story-p font-sans text-foreground/80 text-lg leading-relaxed font-light">
-                Trisha felt invisible. Jeff felt criticized. And both of them were running survival patterns they'd carried since childhood without ever knowing it.
+                Trisha felt invisible. Jeff felt criticized. And both of them were running survival patterns they'd carried since childhood without ever knowing it. Jeff's medical training had taught him to compartmentalize emotion — useful in an exam room, devastating in a marriage. Trisha's instinct for connection kept hitting a wall she couldn't name.
               </p>
               <p className="story-p font-sans text-foreground/80 text-lg leading-relaxed font-light">
-                They didn't just survive it. They studied it. They dug into the neuroscience of why their nervous systems hijacked every hard conversation. They learned why Trisha's need for connection activated Jeff's impulse to withdraw. They discovered that their worst patterns weren't character flaws—they were protection strategies written by a much younger version of themselves.
+                They didn't just survive it. They studied it. Jeff brought the clinical lens — polyvagal theory, nervous system regulation, the biology of why your body hijacks a conversation before your mind catches up. Trisha brought 20 years of coaching instinct and an ear for what people actually need to hear. Together, they built frameworks that worked — not in theory, but at 11pm on a Tuesday when the old patterns came roaring back.
               </p>
               <p className="story-p font-sans text-foreground/80 text-lg leading-relaxed font-medium text-primary/80 pt-4">
-                Healing Hearts is what grew from the wreckage—and the rebuilding.
+                Healing Hearts is what grew from the wreckage — and the rebuilding. The Seven Devils. The SPARK Method. The Zones of Resilience. Every framework in this program was tested in their own marriage first.
               </p>
             </div>
           </div>
@@ -359,11 +359,11 @@ const ClinicalFrameworks = () => {
         <div className="clinical-reveal w-24 h-1 bg-primary rounded-full mx-auto mb-8" />
 
         <h2 className="clinical-reveal font-outfit font-bold text-3xl md:text-4xl text-primary mb-8 text-center">
-          Clinical Frameworks + Lived Experience
+          A Physician and a Coach. A Marriage and a Mission.
         </h2>
 
         <p className="clinical-reveal font-sans text-foreground/80 text-lg leading-relaxed font-light mb-12 text-center max-w-[65ch] mx-auto">
-          Jeff and Trisha's approach is informed by the work of Dr. John Gottman (relationship research), Dr. Stephen Porges (polyvagal theory), Dr. Sue Johnson (Emotionally Focused Therapy), and Dr. Andrew Huberman (neuroscience of emotional regulation)—translated through their own lived experience and refined through years of coaching real couples.
+          Their approach combines clinical science with coaching instinct. Informed by the research of Dr. John Gottman, Dr. Stephen Porges (polyvagal theory), Dr. Sue Johnson (Emotionally Focused Therapy), and Dr. Andrew Huberman — then tested in their own 38-year marriage before it ever reached a client.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-16">
@@ -373,9 +373,13 @@ const ClinicalFrameworks = () => {
             style={{ boxShadow: '0 10px 40px -10px rgba(17, 145, 177, 0.06)' }}
           >
             <div className="w-12 h-1 bg-accent rounded-full mb-6" />
-            <h4 className="font-drama italic text-2xl text-primary mb-4">Trisha's Background</h4>
+            <h4 className="font-drama italic text-2xl text-primary mb-4">Trisha Jamison</h4>
+            <p className="font-outfit font-bold text-xs text-foreground/40 uppercase tracking-widest mb-4">Founder &amp; Lead Coach</p>
+            <p className="font-sans text-foreground/70 font-light text-base leading-relaxed mb-4">
+              Trisha has spent over 20 years coaching individuals and couples through their hardest moments. She built the Healing Hearts program from lived experience — 38 years of marriage to a physician, raising a family while navigating the quiet disconnection that high-stress lives create.
+            </p>
             <p className="font-sans text-foreground/70 font-light text-base leading-relaxed">
-              Trisha brings a background in healthcare and a deep understanding of how high-stress, high-performance environments erode intimacy—particularly in physician marriages, where emotional detachment becomes a survival skill that follows you home.
+              She created the SPARK Method, the Seven Devils framework, the Zones of Resilience, and every other tool in this program. Her teaching style is warm, story-driven, and grounded in the work of Gottman, Porges, and Sue Johnson — translated into language that actually lands at 11pm when the patterns come back.
             </p>
           </div>
 
@@ -385,9 +389,13 @@ const ClinicalFrameworks = () => {
             style={{ boxShadow: '0 10px 40px -10px rgba(17, 145, 177, 0.06)' }}
           >
             <div className="w-12 h-1 bg-primary rounded-full mb-6" />
-            <h4 className="font-drama italic text-2xl text-primary mb-4">Jeff's Background</h4>
+            <h4 className="font-drama italic text-2xl text-primary mb-4">Dr. Jeff Jamison</h4>
+            <p className="font-outfit font-bold text-xs text-foreground/40 uppercase tracking-widest mb-4">DO, FAAFP &mdash; Family Physician</p>
+            <p className="font-sans text-foreground/70 font-light text-base leading-relaxed mb-4">
+              Jeff is a board-certified family physician who spent years building and running his own primary care practice. He built his career on relationships with his patients — understanding not just what ails them, but the life around the ailment. That same instinct shapes how he approaches relationship work.
+            </p>
             <p className="font-sans text-foreground/70 font-light text-base leading-relaxed">
-              Jeff brings strategic clarity, a gift for frameworks, and the rare willingness to talk honestly about the ways men learn to armor themselves against vulnerability.
+              He brings the clinical lens to Healing Hearts — nervous system regulation, the biology of stress responses, and a deep understanding of how high-performance careers erode intimacy. He also brings something rarer: a willingness to talk honestly about the ways men learn to armor themselves against vulnerability.
             </p>
           </div>
         </div>
