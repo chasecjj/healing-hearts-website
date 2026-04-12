@@ -130,7 +130,7 @@ const HonestVersion = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 xl:gap-24 items-center">
           {/* TeardropImage — Left */}
-          <div className="honest-reveal order-last lg:order-first relative">
+          <div className="honest-reveal order-first relative">
             <TeardropImage
               src="/images/team/jeff-and-trisha.jpg"
               alt="Jeff and Trisha Jamison, Healing Hearts founders"
