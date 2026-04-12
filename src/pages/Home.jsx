@@ -418,6 +418,88 @@ const TealQuote = () => {
 };
 
 /* ------------------------------------------------------------------ */
+/*  TESTIMONIALS — Real voices from real couples                       */
+/* ------------------------------------------------------------------ */
+const testimonials = [
+  {
+    quote:
+      'In the past, those busy weeks would cause friction. Now when one of us is down, it\'s "how do I help support this?" We have tools now that we didn\'t have before.',
+    attribution: 'Program participant',
+  },
+  {
+    quote:
+      'I could see an inner peace in him. He started doing things he would have never done before -- being flexible, putting us first.',
+    attribution: 'Program participant',
+  },
+  {
+    quote:
+      'Now I feel like we\'re in this rebuilding phase -- like, let\'s get to know each other again. This is a whole new marriage for us.',
+    attribution: 'Program participant',
+  },
+];
+
+const Testimonials = () => {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (prefersReducedMotion()) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        '.testimonial-reveal',
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          stagger: 0.2,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: containerRef.current, start: 'top 70%' },
+        }
+      );
+    }, containerRef);
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section
+      ref={containerRef}
+      className="w-full py-[clamp(4rem,8vw,6rem)] bg-[#F9F8F5] relative overflow-hidden"
+    >
+      <div className="absolute bottom-0 left-0 w-[30vw] h-[30vw] bg-primary/5 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/4 pointer-events-none" aria-hidden="true" />
+
+      <div className="max-w-6xl mx-auto px-6 sm:px-12">
+        <div className="testimonial-reveal text-center mb-16">
+          <h2 className="font-drama italic text-4xl md:text-5xl text-primary mb-4">
+            Real couples. Real shifts.
+          </h2>
+          <div className="w-24 h-1 bg-primary/20 mx-auto rounded-full" />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {testimonials.map((t, i) => (
+            <div
+              key={i}
+              className="testimonial-reveal bg-white rounded-3xl p-8 md:p-10 border border-primary/5 flex flex-col"
+              style={{ boxShadow: '0 10px 40px -10px rgba(17, 145, 177, 0.06)' }}
+            >
+              <span className="text-5xl text-primary/15 font-drama leading-none select-none mb-4" aria-hidden="true">
+                &ldquo;
+              </span>
+              <blockquote className="font-sans text-foreground/80 text-base leading-relaxed font-light flex-grow">
+                {t.quote}
+              </blockquote>
+              <cite className="mt-6 not-italic font-outfit text-xs text-foreground/40 uppercase tracking-widest">
+                -- {t.attribution}
+              </cite>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* ------------------------------------------------------------------ */
 /*  PROGRAMS TEASER — "Where Do We Start?"                             */
 /*  Organic program cards with warm photography feel.                   */
 /* ------------------------------------------------------------------ */
@@ -610,6 +692,7 @@ export default function Home() {
       <Philosophy />
       <Pillars />
       <TealQuote />
+      <Testimonials />
       <ProgramsTeaser />
       <FinalCta />
     </>

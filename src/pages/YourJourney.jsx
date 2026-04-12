@@ -256,9 +256,17 @@ const TheProblem = () => {
             <p className="problem-reveal font-sans text-foreground/80 text-lg leading-relaxed font-light mb-6">
               The books. The late-night conversations that felt like breakthroughs but changed nothing by Tuesday. Maybe even a therapist's office where you nodded along while the clock ran out.
             </p>
-            <p className="problem-reveal font-sans text-foreground/80 text-lg leading-relaxed font-light">
+            <p className="problem-reveal font-sans text-foreground/80 text-lg leading-relaxed font-light mb-8">
               Here's what nobody told you: most relationship advice treats symptoms. It teaches you better words to say during a fight. But it never touches the part of your brain that's actually <em>running</em> the fight.
             </p>
+            <div className="problem-reveal border-l-4 border-accent/30 pl-6 py-2">
+              <p className="font-drama italic text-lg text-foreground/60 leading-relaxed">
+                "We both end up shutting down, disconnecting emotionally, and that can go on for days. It just feels awful for both of us."
+              </p>
+              <cite className="not-italic font-outfit text-xs text-foreground/40 uppercase tracking-widest mt-2 block">
+                -- Before starting the program
+              </cite>
+            </div>
           </div>
           <div className="problem-reveal">
             <div className="bg-white rounded-3xl p-8 md:p-10 border border-primary/5" style={{ boxShadow: '0 10px 40px -10px rgba(17, 145, 177, 0.06)' }}>
