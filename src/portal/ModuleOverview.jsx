@@ -10,6 +10,7 @@ import {
   FileText,
   Headphones,
   Download,
+  Sprout,
 } from 'lucide-react';
 import AudioPlayer from './AudioPlayer';
 import { supabase } from '../lib/supabase';
@@ -370,16 +371,7 @@ export default function ModuleOverview({
                   />
                 </svg>
                 <div className="relative z-10 flex flex-col items-center">
-                  <svg
-                    width="40"
-                    height="40"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="text-primary mb-2 rotate-180"
-                    aria-hidden="true"
-                  >
-                    <path d="M6.05 8.05a7 7 0 0011.9 0A6 6 0 0112 20a6 6 0 01-5.95-11.95zM12 2a5 5 0 014.95 4.37A8.94 8.94 0 0012 5a8.94 8.94 0 00-4.95 1.37A5 5 0 0112 2z" />
-                  </svg>
+                  <Sprout className="w-10 h-10 text-primary mb-2" aria-hidden="true" />
                   <span className="font-drama text-3xl font-bold text-foreground">
                     {moduleProgress}%
                   </span>
