@@ -83,17 +83,17 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* Jeff & Trisha — Right */}
-          <div className="hero-reveal hidden lg:flex justify-center items-center">
-            <div className="relative w-full max-w-md">
+          {/* Jeff & Trisha — Right on desktop, above headline on mobile */}
+          <div className="hero-reveal flex justify-center items-center order-first lg:order-none">
+            <div className="relative w-full max-w-[280px] lg:max-w-md">
               <img
                 src="/images/team/jeff-and-trisha.jpg"
                 alt="Jeff and Trisha Jamison, founders of Healing Hearts"
                 className="w-full aspect-[3/4] object-cover object-top rounded-3xl shadow-2xl"
               />
 
-              {/* Floating accent bubble */}
-              <div className="absolute -bottom-6 -left-6 w-44 h-44 bg-white rounded-full flex items-center justify-center p-6 border border-primary/10 shadow-lg">
+              {/* Floating accent bubble — desktop only */}
+              <div className="absolute -bottom-6 -left-6 w-44 h-44 bg-white rounded-full hidden lg:flex items-center justify-center p-6 border border-primary/10 shadow-lg">
                 <p className="font-drama italic text-sm text-primary leading-snug text-center">
                   "We're a marriage that studied its way back."
                 </p>
