@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Mail, ArrowLeft, ArrowRight } from 'lucide-react';
+import usePageMeta from '../hooks/usePageMeta';
 
 export default function ForgotPassword() {
+  usePageMeta('Reset Password', 'Reset your Healing Hearts account password.');
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);

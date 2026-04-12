@@ -45,7 +45,7 @@ export default function Physicians() {
       <div className="absolute inset-0 z-0 pointer-events-none">
         <img 
           src="https://images.unsplash.com/photo-1542884748-2b87b3ee3af5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2850&q=80" 
-          alt="Dark textured background" 
+          alt="" aria-hidden="true"
           className="w-full h-full object-cover opacity-10 mix-blend-screen grayscale"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-primary via-primary/80 to-primary"></div>

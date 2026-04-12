@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Mail, Lock, ArrowRight, Sparkles, CheckCircle } from 'lucide-react';
+import usePageMeta from '../hooks/usePageMeta';
 
 export default function Login() {
+  usePageMeta('Login', 'Sign in to your Healing Hearts account.');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');

@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Mail, Lock, User, ArrowRight } from 'lucide-react';
+import usePageMeta from '../hooks/usePageMeta';
 
 export default function Signup() {
+  usePageMeta('Create Account', 'Create your Healing Hearts account to access the course portal.');
   const [searchParams] = useSearchParams();
   const prefillEmail = searchParams.get('email') || '';
   const fromCheckout = searchParams.get('from') === 'checkout';

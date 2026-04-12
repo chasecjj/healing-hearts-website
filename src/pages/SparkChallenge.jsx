@@ -266,7 +266,7 @@ export default function SparkChallenge() {
   const [formState, setFormState] = useState('idle')
 
   usePageMeta(
-    'Free 7-Day Spark Challenge | Healing Hearts',
+    'Free 7-Day Spark Challenge',
     'Join the free 7-Day Spark Challenge. Daily practices that help couples move from disconnection to deep, meaningful connection.'
   )
 

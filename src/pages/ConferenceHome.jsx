@@ -146,11 +146,10 @@ function StickyBar() {
 /*  Main page                                                          */
 /* ------------------------------------------------------------------ */
 export default function ConferenceHome() {
-  usePageMeta({
-    title: 'The Secret Behind How Your Brain Hijacks Relationships | Healing Hearts',
-    description:
-      'Relationship stress is a health crisis. Discover how to tame your critter brain with science-backed tools. Start the free 7-Day Spark Challenge.',
-  })
+  usePageMeta(
+    'The Secret Behind How Your Brain Hijacks Relationships',
+    'Relationship stress is a health crisis. Discover how to tame your critter brain with science-backed tools. Start the free 7-Day Spark Challenge.'
+  )
 
   return (
     <div className="w-full" style={{ backgroundColor: P.warmWhite }}>

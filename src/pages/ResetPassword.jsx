@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Lock, ArrowRight, CheckCircle2 } from 'lucide-react';
+import usePageMeta from '../hooks/usePageMeta';
 
 export default function ResetPassword() {
+  usePageMeta('Set New Password', 'Choose a new password for your Healing Hearts account.');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');

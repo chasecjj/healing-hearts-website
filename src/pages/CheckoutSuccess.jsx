@@ -3,8 +3,10 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { verifyCheckoutSession } from '../lib/checkout';
 import { CheckCircle, ShieldAlert, ArrowRight, Download } from 'lucide-react';
+import usePageMeta from '../hooks/usePageMeta';
 
 export default function CheckoutSuccess() {
+  usePageMeta('Order Confirmed', 'Your purchase was successful. Welcome to Healing Hearts.');
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('session_id');
   const { user } = useAuth();
