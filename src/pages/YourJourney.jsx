@@ -38,6 +38,7 @@ const PHASES = [
     description:
       'Before you can change anything, you need to see what\'s actually running the show. This phase names the Seven Devils destroying your relationship, teaches you why your nervous system hijacks conversations, gives you the SPARK Method for repair, and traces everything back to the childhood blueprint that still writes the script.',
     color: 'primary',
+    testimonial: null,
     modules: [
       {
         num: 1,
@@ -69,6 +70,10 @@ const PHASES = [
     description:
       'Understanding isn\'t enough — you need real tools that work in real arguments, real silences, real Tuesday nights. This phase deepens the SPARK Method into active listening, teaches nervous system regulation through the 90-Second Wave and Zones of Resilience, and helps you master the Critter Brain vs. CEO Brain framework.',
     color: 'accent',
+    testimonial: {
+      quote: 'We\'ve had a lot of good days, and the bad days somehow find a way to look good still, because it\'s communicating. Previously, we would allow the critter brain to roar and it was dangerous. Now we have these tools.',
+      attribution: 'Couple in the program',
+    },
     modules: [
       {
         num: 4,
@@ -100,6 +105,10 @@ const PHASES = [
     description:
       'This is the deep work that most programs never touch. Subconscious wound healing, true forgiveness, the six levels of intimacy — and then building a marriage that transforms not just your life, but your family for generations.',
     color: 'primary',
+    testimonial: {
+      quote: 'I was able to articulate my feelings and emotions in a way I never could before, because I could sense my body. I was becoming agitated, annoyed -- but I was able to regulate it. And he noticed. He said, "you let go of that control." It gave me confidence.',
+      attribution: 'Program participant',
+    },
     modules: [
       {
         num: 7,
@@ -371,6 +380,18 @@ const JourneyArc = () => {
               <p className="font-sans text-foreground/80 text-lg leading-relaxed font-light mb-10 max-w-3xl">
                 {phase.description}
               </p>
+
+              {/* Testimonial — real voice from this phase */}
+              {phase.testimonial && (
+                <div className="mb-10 border-l-4 border-accent/30 pl-6 py-2 max-w-2xl">
+                  <p className="font-drama italic text-lg text-foreground/60 leading-relaxed">
+                    "{phase.testimonial.quote}"
+                  </p>
+                  <cite className="not-italic font-outfit text-xs text-foreground/40 uppercase tracking-widest mt-2 block">
+                    -- {phase.testimonial.attribution}
+                  </cite>
+                </div>
+              )}
 
               {/* Module cards */}
               <div className={`grid grid-cols-1 ${phase.modules.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-6`}>
