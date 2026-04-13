@@ -11,7 +11,6 @@ import About from './pages/About';
 import Programs from './pages/Programs';
 import Tools from './pages/Tools';
 import PhysicianMarriages from './pages/PhysicianMarriages';
-import Physicians from './pages/Physicians';
 import Contact from './pages/Contact';
 import Resources from './pages/Resources';
 import Frameworks from './pages/Frameworks';
@@ -69,7 +68,7 @@ function App() {
               <Route path="/tools" element={<Tools />} />
               <Route path="/frameworks" element={<Frameworks />} />
               <Route path="/physician" element={<PhysicianMarriages />} />
-              <Route path="/physicians" element={<Physicians />} />
+              <Route path="/physicians" element={<Navigate to="/physician" replace />} />
               <Route path="/resources" element={<Resources />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/book" element={<BookCall />} />
