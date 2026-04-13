@@ -7,7 +7,8 @@
     { "source": "/go/keynote", "destination": "/spark-challenge?utm_source=keynote_slide&utm_medium=qr&utm_campaign=expo_april2026", "permanent": false },
     { "source": "/go/site", "destination": "/?utm_source=print&utm_medium=qr&utm_campaign=expo_april2026", "permanent": false },
     { "source": "/go/card", "destination": "/?utm_source=business_card&utm_medium=qr&utm_campaign=expo_april2026", "permanent": false },
-    { "source": "/go/programs", "destination": "/programs?utm_source=vendor_flyer&utm_medium=qr&utm_campaign=expo_april2026", "permanent": false }
+    { "source": "/go/programs", "destination": "/programs?utm_source=vendor_flyer&utm_medium=qr&utm_campaign=expo_april2026", "permanent": false },
+    { "source": "/go/webinar", "destination": "/webinar?utm_source=webinar_banner&utm_medium=qr&utm_campaign=expo_april2026", "permanent": false }
   ],
   "crons": [
     {
