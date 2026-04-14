@@ -39,7 +39,7 @@ export default function Tools() {
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full bg-[#F7F6F2] pt-32 md:pt-48 pb-24">
+    <div ref={containerRef} className="w-full bg-background pt-32 md:pt-48 pb-24">
       {/* Header */}
       <section className="max-w-4xl mx-auto px-6 text-center mb-24">
         <p className="tools-reveal font-sans text-primary/60 tracking-widest uppercase text-sm mb-6">Our Tools & Frameworks</p>

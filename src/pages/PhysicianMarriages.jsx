@@ -40,7 +40,7 @@ export default function PhysicianMarriages() {
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full bg-[#F7F6F2]">
+    <div ref={containerRef} className="w-full bg-background">
       
       {/* Hero */}
       <section className="relative w-full py-32 md:py-48 flex flex-col items-center justify-center overflow-hidden bg-primary text-background rounded-b-[4rem]">
@@ -79,7 +79,7 @@ export default function PhysicianMarriages() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             
-            <div className="pressure-card bg-[#F7F6F2] p-10 rounded-[2.5rem] border border-primary/5 hover:-translate-y-2 transition-transform duration-500">
+            <div className="pressure-card bg-background p-10 rounded-[2.5rem] border border-primary/5 hover:-translate-y-2 transition-transform duration-500">
               <ShieldAlert className="w-10 h-10 text-accent mb-6" />
               <h3 className="font-drama italic text-3xl text-primary mb-4">Clinical dissociation doesn’t have an off switch.</h3>
               <p className="font-sans text-foreground/70 font-light leading-relaxed">
@@ -87,7 +87,7 @@ export default function PhysicianMarriages() {
               </p>
             </div>
 
-            <div className="pressure-card bg-[#F7F6F2] p-10 rounded-[2.5rem] border border-primary/5 hover:-translate-y-2 transition-transform duration-500">
+            <div className="pressure-card bg-background p-10 rounded-[2.5rem] border border-primary/5 hover:-translate-y-2 transition-transform duration-500">
               <Clock className="w-10 h-10 text-accent mb-6" />
               <h3 className="font-drama italic text-3xl text-primary mb-4">Your schedule is an intimacy killer by design.</h3>
               <p className="font-sans text-foreground/70 font-light leading-relaxed">
@@ -95,7 +95,7 @@ export default function PhysicianMarriages() {
               </p>
             </div>
 
-            <div className="pressure-card bg-[#F7F6F2] p-10 rounded-[2.5rem] border border-primary/5 hover:-translate-y-2 transition-transform duration-500">
+            <div className="pressure-card bg-background p-10 rounded-[2.5rem] border border-primary/5 hover:-translate-y-2 transition-transform duration-500">
               <Coins className="w-10 h-10 text-accent mb-6" />
               <h3 className="font-drama italic text-3xl text-primary mb-4">High income doesn’t mean low financial stress.</h3>
               <p className="font-sans text-foreground/70 font-light leading-relaxed">
@@ -103,7 +103,7 @@ export default function PhysicianMarriages() {
               </p>
             </div>
 
-            <div className="pressure-card bg-[#F7F6F2] p-10 rounded-[2.5rem] border border-primary/5 hover:-translate-y-2 transition-transform duration-500">
+            <div className="pressure-card bg-background p-10 rounded-[2.5rem] border border-primary/5 hover:-translate-y-2 transition-transform duration-500">
               <Network className="w-10 h-10 text-accent mb-6" />
               <h3 className="font-drama italic text-3xl text-primary mb-4">The authority problem.</h3>
               <p className="font-sans text-foreground/70 font-light leading-relaxed">

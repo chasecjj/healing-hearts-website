@@ -9,7 +9,7 @@ export default {
       colors: {
         primary: "#1191B1", // Teal
         accent: "#B96A5F", // Darkened Salmon for contrast
-        background: "#FFFFFF", // White
+        background: "#F9F8F5", // Warm cream — HH brand base (diverges from Scoria neutral-50 #fafafa for emotional warmth)
         foreground: "#2D2D2D", // Dark Charcoal
       },
       fontFamily: {

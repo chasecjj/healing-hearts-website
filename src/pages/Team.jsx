@@ -270,7 +270,7 @@ const BottomCTA = () => {
     <section ref={ref} className="relative py-24 md:py-32 overflow-hidden" style={{
       backgroundImage: 'radial-gradient(circle at 30% 50%, rgba(17,145,177,0.08) 0%, transparent 50%), radial-gradient(circle at 70% 50%, rgba(185,106,95,0.06) 0%, transparent 50%)',
     }}>
-      <div className="max-w-4xl mx-auto px-6 sm:px-12 text-center relative z-10 bg-[#F9F8F5]/60 backdrop-blur-sm p-12 md:p-20 rounded-3xl" style={{ boxShadow: '0 10px 40px -10px rgba(17, 145, 177, 0.06)' }}>
+      <div className="max-w-4xl mx-auto px-6 sm:px-12 text-center relative z-10 bg-background/60 backdrop-blur-sm p-12 md:p-20 rounded-3xl" style={{ boxShadow: '0 10px 40px -10px rgba(17, 145, 177, 0.06)' }}>
         <p className="cta-reveal text-primary font-medium tracking-widest uppercase text-sm mb-4">Ready to Start?</p>
         <h2 className="cta-reveal font-drama italic text-4xl md:text-5xl text-foreground mb-6">Try the Free 7-Day Challenge</h2>
         <p className="cta-reveal text-foreground/70 text-lg leading-relaxed mb-10 max-w-xl mx-auto">

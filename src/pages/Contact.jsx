@@ -90,7 +90,7 @@ const ContactForm = () => {
             required
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full px-5 py-4 rounded-2xl bg-[#F7F6F2] border border-primary/10 font-sans text-foreground focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
+            className="w-full px-5 py-4 rounded-2xl bg-background border border-primary/10 font-sans text-foreground focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
             placeholder="Jeff & Trisha"
           />
         </div>
@@ -103,7 +103,7 @@ const ContactForm = () => {
             required
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="w-full px-5 py-4 rounded-2xl bg-[#F7F6F2] border border-primary/10 font-sans text-foreground focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
+            className="w-full px-5 py-4 rounded-2xl bg-background border border-primary/10 font-sans text-foreground focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
             placeholder="you@example.com"
           />
         </div>
@@ -113,7 +113,7 @@ const ContactForm = () => {
             type="tel"
             value={formData.phone}
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-            className="w-full px-5 py-4 rounded-2xl bg-[#F7F6F2] border border-primary/10 font-sans text-foreground focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
+            className="w-full px-5 py-4 rounded-2xl bg-background border border-primary/10 font-sans text-foreground focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
             placeholder="(555) 123-4567"
           />
         </div>
@@ -122,7 +122,7 @@ const ContactForm = () => {
           <select
             value={formData.interest}
             onChange={(e) => setFormData({ ...formData, interest: e.target.value })}
-            className="w-full px-5 py-4 rounded-2xl bg-[#F7F6F2] border border-primary/10 font-sans text-foreground focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all appearance-none"
+            className="w-full px-5 py-4 rounded-2xl bg-background border border-primary/10 font-sans text-foreground focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all appearance-none"
           >
             <option value="">Select an option...</option>
             <option value="Full Program">The Full Healing Hearts Program</option>
@@ -141,7 +141,7 @@ const ContactForm = () => {
           rows={5}
           value={formData.message}
           onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-          className="w-full px-5 py-4 rounded-2xl bg-[#F7F6F2] border border-primary/10 font-sans text-foreground focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all resize-none"
+          className="w-full px-5 py-4 rounded-2xl bg-background border border-primary/10 font-sans text-foreground focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all resize-none"
           placeholder="Tell us a little about where you are and what you're looking for..."
         />
       </div>
@@ -239,7 +239,7 @@ export default function Contact() {
       </section>
 
       {/* 3 Ways to Begin */}
-      <section className="bg-[#F7F6F2] py-24 rounded-[4rem] mb-32 mx-4 md:mx-6">
+      <section className="bg-background py-24 rounded-[4rem] mb-32 mx-4 md:mx-6">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="font-outfit font-bold text-4xl text-primary">Three Ways to Begin</h2>

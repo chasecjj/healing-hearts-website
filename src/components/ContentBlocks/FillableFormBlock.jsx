@@ -133,7 +133,7 @@ export default function FillableFormBlock({
                 value={values[field.id] || ''}
                 onChange={(e) => handleChange(field.id, e.target.value)}
                 placeholder={field.placeholder}
-                className="mt-2 w-full rounded-xl border border-primary/10 bg-[#F9F8F5] px-4 py-3 font-sans text-base text-foreground/90 placeholder:text-foreground/40 focus:border-primary focus:outline-none"
+                className="mt-2 w-full rounded-xl border border-primary/10 bg-background px-4 py-3 font-sans text-base text-foreground/90 placeholder:text-foreground/40 focus:border-primary focus:outline-none"
               />
             )}
 
@@ -144,7 +144,7 @@ export default function FillableFormBlock({
                 value={values[field.id] || ''}
                 onChange={(e) => handleChange(field.id, e.target.value)}
                 placeholder={field.placeholder}
-                className="mt-2 w-full rounded-xl border border-primary/10 bg-[#F9F8F5] px-4 py-3 font-sans text-base text-foreground/90 placeholder:text-foreground/40 focus:border-primary focus:outline-none"
+                className="mt-2 w-full rounded-xl border border-primary/10 bg-background px-4 py-3 font-sans text-base text-foreground/90 placeholder:text-foreground/40 focus:border-primary focus:outline-none"
               />
             )}
 
@@ -197,7 +197,7 @@ export default function FillableFormBlock({
       </div>
 
       {instructions && (
-        <div className="mt-8 rounded-2xl border-l-2 border-accent bg-[#F9F8F5] p-5">
+        <div className="mt-8 rounded-2xl border-l-2 border-accent bg-background p-5">
           <p className="font-sans text-sm leading-relaxed text-foreground/80">
             {instructions}
           </p>

@@ -13,7 +13,7 @@ const prefersReducedMotion = () =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const INPUT_CLASS =
-  'w-full px-5 py-4 rounded-2xl bg-[#F7F6F2] border border-primary/10 font-sans text-foreground focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all';
+  'w-full px-5 py-4 rounded-2xl bg-background border border-primary/10 font-sans text-foreground focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all';
 
 /* ------------------------------------------------------------------ */
 /*  Data                                                               */

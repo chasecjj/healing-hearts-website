@@ -166,7 +166,7 @@ const TheProblem = () => {
   }, []);
 
   return (
-    <section ref={containerRef} className="w-full py-[clamp(4rem,8vw,6rem)] bg-[#F9F8F5] relative overflow-hidden">
+    <section ref={containerRef} className="w-full py-[clamp(4rem,8vw,6rem)] bg-background relative overflow-hidden">
       <div className="absolute bottom-0 left-0 w-[30vw] h-[30vw] bg-primary/5 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2 pointer-events-none" aria-hidden="true" />
 
       <div className="max-w-4xl mx-auto px-6 sm:px-10">
@@ -245,7 +245,7 @@ const WhatsInside = () => {
           {KIT_INCLUDES.map((item, i) => (
             <div
               key={i}
-              className="rk-inside-reveal flex items-start gap-4 bg-[#F9F8F5] rounded-2xl p-6 border border-primary/5 transition-all duration-500 hover:-translate-y-1"
+              className="rk-inside-reveal flex items-start gap-4 bg-background rounded-2xl p-6 border border-primary/5 transition-all duration-500 hover:-translate-y-1"
               style={{ boxShadow: '0 6px 24px -6px rgba(17, 145, 177, 0.05)' }}
             >
               <CheckCircle2 className="w-6 h-6 text-accent flex-shrink-0 mt-0.5" />
@@ -355,7 +355,7 @@ const CritterCeoPreview = () => {
   }, []);
 
   return (
-    <section ref={containerRef} className="w-full py-[clamp(4rem,8vw,6rem)] bg-[#F9F8F5] relative overflow-hidden">
+    <section ref={containerRef} className="w-full py-[clamp(4rem,8vw,6rem)] bg-background relative overflow-hidden">
       <div className="max-w-5xl mx-auto px-6 sm:px-10">
         <div className="rk-brain-reveal text-center mb-16">
           <h2 className="font-outfit font-bold text-4xl md:text-5xl text-primary mb-4">
@@ -457,7 +457,7 @@ const PricingCta = () => {
 
       <div className="max-w-3xl mx-auto px-6 sm:px-10 relative z-10">
         <div
-          className="rk-pricing-reveal bg-[#F9F8F5] rounded-3xl p-10 md:p-16 border border-primary/10 text-center"
+          className="rk-pricing-reveal bg-background rounded-3xl p-10 md:p-16 border border-primary/10 text-center"
           style={{ boxShadow: '0 20px 60px -15px rgba(17, 145, 177, 0.1)' }}
         >
           <div className="inline-flex items-center gap-2 bg-primary/10 text-primary font-outfit font-bold px-5 py-2 rounded-full text-xs uppercase tracking-widest mb-8">
@@ -551,7 +551,7 @@ const Faq = () => {
   }, []);
 
   return (
-    <section ref={containerRef} className="w-full py-[clamp(4rem,8vw,6rem)] bg-[#F9F8F5] relative overflow-hidden">
+    <section ref={containerRef} className="w-full py-[clamp(4rem,8vw,6rem)] bg-background relative overflow-hidden">
       <div className="max-w-3xl mx-auto px-6 sm:px-10">
         <div className="rk-faq-reveal text-center mb-12">
           <h2 className="font-outfit font-bold text-4xl text-primary mb-4">
@@ -622,18 +622,18 @@ export default function RescueKit() {
   return (
     <>
       <Hero />
-      <OrganicDivider variant="wave-1" fillClass="text-[#F9F8F5]" />
+      <OrganicDivider variant="wave-1" fillClass="text-background" />
       <TheProblem />
       <OrganicDivider variant="wave-2" fillClass="text-white" />
       <WhatsInside />
       <OrganicDivider variant="wave-3" fillClass="text-primary" />
       <SparkPreview />
-      <OrganicDivider variant="wave-1" fillClass="text-[#F9F8F5]" />
+      <OrganicDivider variant="wave-1" fillClass="text-background" />
       <CritterCeoPreview />
       <Quote />
       <OrganicDivider variant="wave-2" fillClass="text-white" />
       <PricingCta />
-      <OrganicDivider variant="wave-3" fillClass="text-[#F9F8F5]" />
+      <OrganicDivider variant="wave-3" fillClass="text-background" />
       <Faq />
       <OrganicDivider variant="wave-1" fillClass="text-white" />
       <ClosingCta />

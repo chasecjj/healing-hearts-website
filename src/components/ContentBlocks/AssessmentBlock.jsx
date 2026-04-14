@@ -133,7 +133,7 @@ export default function AssessmentBlock({
   // If we have a result and the user hasn't asked to retake, show it
   if (result && !showRetake) {
     return (
-      <div className="my-8 rounded-3xl border border-primary/10 bg-[#F9F8F5] p-8 md:p-12">
+      <div className="my-8 rounded-3xl border border-primary/10 bg-background p-8 md:p-12">
         <p className="font-outfit text-xs font-bold uppercase tracking-widest text-primary/60">
           Your current zone
         </p>

@@ -143,7 +143,7 @@ export default function PracticePlanBlock({
               className={`rounded-2xl border p-6 transition-colors ${
                 isComplete
                   ? 'border-accent/40 bg-accent/5'
-                  : 'border-primary/10 bg-[#F9F8F5]'
+                  : 'border-primary/10 bg-background'
               }`}
             >
               <div className="flex items-start gap-4">

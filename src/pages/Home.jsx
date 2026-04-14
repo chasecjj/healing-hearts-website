@@ -108,7 +108,7 @@ const Hero = () => {
         <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-auto block">
           <path
             d="M0,192L48,176C96,160,192,128,288,128C384,128,480,160,576,181.3C672,203,768,213,864,197.3C960,181,1056,139,1152,122.7C1248,107,1344,117,1392,122.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
-            className="fill-[#F9F8F5]"
+            className="fill-background"
           />
         </svg>
       </div>
@@ -144,7 +144,7 @@ const Philosophy = () => {
   return (
     <section
       ref={containerRef}
-      className="w-full py-[clamp(4rem,8vw,6rem)] bg-[#F9F8F5] relative z-10 overflow-hidden"
+      className="w-full py-[clamp(4rem,8vw,6rem)] bg-background relative z-10 overflow-hidden"
     >
       {/* Subtle botanical vines */}
       <div className="absolute inset-0 opacity-[0.04] pointer-events-none" aria-hidden="true">
@@ -312,7 +312,7 @@ const Pillars = () => {
           {pillars.map((pillar, i) => (
             <div
               key={i}
-              className={`pillar-reveal group relative bg-[#F9F8F5] p-8 md:p-10 rounded-3xl border border-primary/5 overflow-hidden transition-all duration-500 hover:-translate-y-1 ${
+              className={`pillar-reveal group relative bg-background p-8 md:p-10 rounded-3xl border border-primary/5 overflow-hidden transition-all duration-500 hover:-translate-y-1 ${
                 i === 1 ? 'md:mt-12' : i === 2 ? 'md:mt-6' : ''
               }`}
               style={{
@@ -463,7 +463,7 @@ const Testimonials = () => {
   return (
     <section
       ref={containerRef}
-      className="w-full py-[clamp(4rem,8vw,6rem)] bg-[#F9F8F5] relative z-10 overflow-hidden"
+      className="w-full py-[clamp(4rem,8vw,6rem)] bg-background relative z-10 overflow-hidden"
     >
       <div className="absolute bottom-0 left-0 w-[30vw] h-[30vw] bg-primary/5 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/4 pointer-events-none" aria-hidden="true" />
 
@@ -544,13 +544,13 @@ const ProgramsTeaser = () => {
   }, []);
 
   return (
-    <section ref={containerRef} className="w-full bg-[#F9F8F5] py-[clamp(4rem,8vw,6rem)] relative z-10">
+    <section ref={containerRef} className="w-full bg-background py-[clamp(4rem,8vw,6rem)] relative z-10">
       {/* Wave transition from teal */}
       <div className="absolute top-0 left-0 w-full leading-[0] pointer-events-none -translate-y-[99%]" aria-hidden="true">
         <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-auto block rotate-180">
           <path
             d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"
-            className="fill-[#F9F8F5]"
+            className="fill-background"
           />
         </svg>
       </div>
@@ -662,7 +662,7 @@ const FinalCta = () => {
         aria-hidden="true"
       />
 
-      <div className="max-w-4xl mx-auto px-6 sm:px-12 text-center relative z-10 bg-[#F9F8F5]/60 backdrop-blur-sm p-12 md:p-20 rounded-3xl" style={{ boxShadow: '0 10px 40px -10px rgba(17, 145, 177, 0.06)' }}>
+      <div className="max-w-4xl mx-auto px-6 sm:px-12 text-center relative z-10 bg-background/60 backdrop-blur-sm p-12 md:p-20 rounded-3xl" style={{ boxShadow: '0 10px 40px -10px rgba(17, 145, 177, 0.06)' }}>
         <h2 className="cta-reveal font-drama italic text-4xl md:text-5xl text-primary mb-8">
           Take the first step.
         </h2>

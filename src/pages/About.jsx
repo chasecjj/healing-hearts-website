@@ -117,7 +117,7 @@ const HonestVersion = () => {
   return (
     <section
       ref={containerRef}
-      className="w-full py-[clamp(4rem,8vw,6rem)] bg-[#F9F8F5] overflow-hidden relative"
+      className="w-full py-[clamp(4rem,8vw,6rem)] bg-background overflow-hidden relative"
     >
       {/* Decorative blur */}
       <div className="absolute top-20 right-0 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[80px] translate-x-1/2 pointer-events-none" aria-hidden="true" />
@@ -294,7 +294,7 @@ const Beliefs = () => {
 
                   {/* Text side — organic card */}
                   <div
-                    className={`bg-[#F9F8F5] p-8 md:p-10 rounded-3xl border border-primary/5 transition-all duration-500 hover:-translate-y-1 ${!isEven ? 'md:order-1 md:text-right' : 'md:order-2'}`}
+                    className={`bg-background p-8 md:p-10 rounded-3xl border border-primary/5 transition-all duration-500 hover:-translate-y-1 ${!isEven ? 'md:order-1 md:text-right' : 'md:order-2'}`}
                     style={{
                       boxShadow: '0 10px 40px -10px rgba(17, 145, 177, 0.06)',
                     }}
@@ -343,7 +343,7 @@ const ClinicalFrameworks = () => {
   return (
     <section
       ref={containerRef}
-      className="w-full py-[clamp(4rem,8vw,6rem)] bg-[#F9F8F5] relative overflow-hidden"
+      className="w-full py-[clamp(4rem,8vw,6rem)] bg-background relative overflow-hidden"
     >
       {/* Subtle teal-tinted background wash */}
       <div
@@ -445,7 +445,7 @@ const WorkWithUsCta = () => {
       />
 
       <div
-        className="max-w-4xl mx-auto px-6 sm:px-12 text-center relative z-10 bg-[#F9F8F5]/60 backdrop-blur-sm p-12 md:p-20 rounded-3xl"
+        className="max-w-4xl mx-auto px-6 sm:px-12 text-center relative z-10 bg-background/60 backdrop-blur-sm p-12 md:p-20 rounded-3xl"
         style={{ boxShadow: '0 10px 40px -10px rgba(17, 145, 177, 0.06)' }}
       >
         <h2 className="cta-reveal font-drama italic text-4xl md:text-5xl text-primary mb-8">
@@ -474,11 +474,11 @@ export default function About() {
   return (
     <>
       <Hero />
-      <OrganicDivider variant="wave-1" fillClass="text-[#F9F8F5]" />
+      <OrganicDivider variant="wave-1" fillClass="text-background" />
       <HonestVersion />
       <OrganicDivider variant="wave-2" fillClass="text-white" />
       <Beliefs />
-      <OrganicDivider variant="wave-3" fillClass="text-[#F9F8F5]" />
+      <OrganicDivider variant="wave-3" fillClass="text-background" />
       <ClinicalFrameworks />
       <OrganicDivider variant="wave-1" fillClass="text-white" />
       <WorkWithUsCta />

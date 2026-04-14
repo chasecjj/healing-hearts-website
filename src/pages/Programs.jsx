@@ -128,7 +128,7 @@ const FlagshipProgram = () => {
   }, []);
 
   return (
-    <section ref={containerRef} className="w-full py-[clamp(4rem,8vw,6rem)] bg-[#F9F8F5] relative overflow-hidden">
+    <section ref={containerRef} className="w-full py-[clamp(4rem,8vw,6rem)] bg-background relative overflow-hidden">
       {/* Decorative blur */}
       <div className="absolute top-0 right-0 w-[40vw] h-[40vw] bg-accent/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 pointer-events-none" aria-hidden="true" />
 
@@ -272,7 +272,7 @@ const StandalonePackages = () => {
             return (
               <div
                 key={idx}
-                className={`standalone-card group relative bg-[#F9F8F5] rounded-3xl border border-primary/5 overflow-hidden transition-all duration-500 hover:-translate-y-1 flex flex-col ${pkg.span}`}
+                className={`standalone-card group relative bg-background rounded-3xl border border-primary/5 overflow-hidden transition-all duration-500 hover:-translate-y-1 flex flex-col ${pkg.span}`}
                 style={{ boxShadow: '0 10px 40px -10px rgba(17, 145, 177, 0.06)' }}
               >
                 {/* Top accent bar */}
@@ -360,7 +360,7 @@ const ClosingCta = () => {
   }, []);
 
   return (
-    <section ref={containerRef} className="w-full py-[clamp(4rem,8vw,6rem)] bg-[#F9F8F5] relative overflow-hidden">
+    <section ref={containerRef} className="w-full py-[clamp(4rem,8vw,6rem)] bg-background relative overflow-hidden">
       <div
         className="max-w-4xl mx-auto px-6 sm:px-12 text-center relative z-10 bg-white/60 backdrop-blur-sm p-12 md:p-20 rounded-3xl"
         style={{ boxShadow: '0 10px 40px -10px rgba(17, 145, 177, 0.06)' }}
@@ -399,11 +399,11 @@ export default function Programs() {
   return (
     <>
       <Hero />
-      <OrganicDivider variant="wave-1" fillClass="text-[#F9F8F5]" />
+      <OrganicDivider variant="wave-1" fillClass="text-background" />
       <FlagshipProgram />
       <OrganicDivider variant="wave-2" fillClass="text-white" />
       <StandalonePackages />
-      <OrganicDivider variant="wave-3" fillClass="text-[#F9F8F5]" />
+      <OrganicDivider variant="wave-3" fillClass="text-background" />
       <ClosingCta />
     </>
   );

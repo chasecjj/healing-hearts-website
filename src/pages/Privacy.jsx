@@ -102,7 +102,7 @@ export default function Privacy() {
             <p>
               If you have any questions about this Privacy Policy or our data practices, please contact us at:
             </p>
-            <div className="mt-4 p-6 bg-[#F7F6F2] rounded-2xl">
+            <div className="mt-4 p-6 bg-background rounded-2xl">
               <p className="font-outfit font-bold text-primary">Healing Hearts Consulting, LLC</p>
               <p>Email: <a href="mailto:hello@healingheartscourse.com" className="text-accent hover:text-primary underline underline-offset-4 transition-colors">hello@healingheartscourse.com</a></p>
               <p>Governing Law: State of Utah, USA</p>
