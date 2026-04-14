@@ -63,6 +63,7 @@ function App() {
             <Route element={<Layout />}>
               <Route path="/" element={isExpoWindow ? <ConferenceHome /> : <Home />} />
               <Route path="/conference" element={<ConferenceHome />} />
+              <Route path="/expo" element={<ConferenceHome />} />
               <Route path="/about" element={<About />} />
               <Route path="/programs" element={<Programs />} />
               <Route path="/tools" element={<Tools />} />
