@@ -1,11 +1,14 @@
 // Vercel Cron Function: GET /api/cron/spark-drip
 // Runs daily at 7 AM MT (13:00 UTC during MDT).
 // Queries pending spark_signups and sends the next day's email.
+// Also handles rescue_kit_drip: Day 3 check-in and Day 7 progress + upsell emails.
 
 import { Resend } from 'resend';
 import { supabaseAdmin } from '../_lib/supabase-admin.js';
 import { paginatedQuery } from '../_lib/paginated-query.js';
 import { sendBatch } from '../_lib/send-emails.js';
+import { rescueKitDay3Email } from '../_emails/rescue-kit-day3.js';
+import { rescueKitDay7Email } from '../_emails/rescue-kit-day7.js';
 
 const FROM_ADDRESS = 'Healing Hearts <hello@healingheartscourse.com>';
 
@@ -104,5 +107,113 @@ export default async function handler(req, res) {
   }
 
   console.log(`[spark-drip] Sent: ${results.sent}, Errors: ${results.errors.length}`);
-  return res.status(200).json(results);
+
+  // ─── Rescue Kit drip scan ─────────────────────────────────────────────────
+  // Reuses this cron (no new cron job allowed). Scans rescue_kit_drip rows:
+  //   Day 3 email: current_day < 3 AND purchased_at was 3+ days ago
+  //   Day 7 email: current_day >= 3 AND current_day < 7 AND purchased_at was 7+ days ago
+  const rkResults = { sent: 0, errors: [] };
+  const threeDaysAgo = new Date(now - 3 * 24 * 60 * 60 * 1000).toISOString();
+  const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+  // Resend instance (may already be initialized above if RESEND_API_KEY is set)
+  const rkResend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+
+  if (rkResend) {
+    // --- Day 3 candidates ---
+    try {
+      for await (const rows of paginatedQuery(() =>
+        supabaseAdmin
+          .from('rescue_kit_drip')
+          .select('id, email, name, current_day, purchased_at')
+          .eq('unsubscribed', false)
+          .lt('current_day', 3)
+          .lt('purchased_at', threeDaysAgo)
+      )) {
+        const payloads = [];
+        const rowMap = [];
+
+        for (const row of rows) {
+          const emailData = rescueKitDay3Email(row.email, row.name);
+          payloads.push({ from: FROM_ADDRESS, to: row.email, subject: emailData.subject, html: emailData.html });
+          rowMap.push(row);
+        }
+
+        const batchResult = await sendBatch(rkResend, payloads, {
+          onChunkSent: async (startIdx, count) => {
+            const sentAt = new Date().toISOString();
+            for (const row of rowMap.slice(startIdx, startIdx + count)) {
+              try {
+                await supabaseAdmin
+                  .from('rescue_kit_drip')
+                  .update({ current_day: 3 })
+                  .eq('id', row.id);
+              } catch (updateErr) {
+                console.error(`[spark-drip] rescue-kit day3 update failed for ${row.email}:`, updateErr);
+                rkResults.errors.push({ email: row.email, day: 3, error: updateErr.message });
+              }
+            }
+          },
+        });
+
+        rkResults.sent += batchResult.sent;
+        for (const e of batchResult.errors) rkResults.errors.push(e);
+      }
+    } catch (err) {
+      console.error('[spark-drip] rescue-kit day3 query failed:', err);
+      rkResults.errors.push({ day: 3, error: err.message });
+    }
+
+    // --- Day 7 candidates ---
+    try {
+      for await (const rows of paginatedQuery(() =>
+        supabaseAdmin
+          .from('rescue_kit_drip')
+          .select('id, email, name, current_day, purchased_at')
+          .eq('unsubscribed', false)
+          .gte('current_day', 3)
+          .lt('current_day', 7)
+          .lt('purchased_at', sevenDaysAgo)
+      )) {
+        const payloads = [];
+        const rowMap = [];
+
+        for (const row of rows) {
+          const emailData = rescueKitDay7Email(row.email, row.name);
+          payloads.push({ from: FROM_ADDRESS, to: row.email, subject: emailData.subject, html: emailData.html });
+          rowMap.push(row);
+        }
+
+        const batchResult = await sendBatch(rkResend, payloads, {
+          onChunkSent: async (startIdx, count) => {
+            for (const row of rowMap.slice(startIdx, startIdx + count)) {
+              try {
+                await supabaseAdmin
+                  .from('rescue_kit_drip')
+                  .update({ current_day: 7 })
+                  .eq('id', row.id);
+              } catch (updateErr) {
+                console.error(`[spark-drip] rescue-kit day7 update failed for ${row.email}:`, updateErr);
+                rkResults.errors.push({ email: row.email, day: 7, error: updateErr.message });
+              }
+            }
+          },
+        });
+
+        rkResults.sent += batchResult.sent;
+        for (const e of batchResult.errors) rkResults.errors.push(e);
+      }
+    } catch (err) {
+      console.error('[spark-drip] rescue-kit day7 query failed:', err);
+      rkResults.errors.push({ day: 7, error: err.message });
+    }
+  } else {
+    console.warn('[spark-drip] Skipping rescue-kit drip: RESEND_API_KEY not configured');
+  }
+
+  console.log(`[spark-drip] rescue-kit: Sent: ${rkResults.sent}, Errors: ${rkResults.errors.length}`);
+  return res.status(200).json({
+    spark: results,
+    rescue_kit: rkResults,
+  });
 }

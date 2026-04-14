@@ -6,6 +6,7 @@ import Stripe from 'stripe';
 import { Resend } from 'resend';
 import { supabaseAdmin } from '../_lib/supabase-admin.js';
 import { downloadPurchaseEmail, enrollmentPurchaseEmail } from '../_emails/purchase-confirmation.js';
+import { sendRescueKitWelcome } from '../_emails/rescue-kit-welcome.js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -248,6 +249,39 @@ async function handleCheckoutCompleted(session) {
     } catch (emailErr) {
       // Log but don't throw -- email failure should not block payment processing
       console.error('[webhook] Confirmation email failed (non-blocking):', emailErr.message);
+    }
+  }
+
+  // Rescue Kit drip onboarding: seed the drip row so the daily cron
+  // sends Day 3 check-in and Day 7 progress + upsell emails.
+  // Only for the rescue-kit product (download, not enrollment).
+  if (productSlug === 'rescue-kit') {
+    try {
+      await supabaseAdmin
+        .from('rescue_kit_drip')
+        .upsert(
+          {
+            email: customerEmail,
+            name: contact?.name || null,
+            purchased_at: new Date().toISOString(),
+            current_day: 0,
+            unsubscribed: false,
+          },
+          { onConflict: 'email', ignoreDuplicates: true }
+        );
+
+      // Send welcome email immediately (best-effort, non-blocking)
+      try {
+        const welcomeResult = await sendRescueKitWelcome(customerEmail, contact?.name || null);
+        if (!welcomeResult.sent) {
+          console.warn('[webhook] Rescue Kit welcome email not sent:', welcomeResult.reason);
+        }
+      } catch (welcomeErr) {
+        console.error('[webhook] Rescue Kit welcome email threw (non-blocking):', welcomeErr.message);
+      }
+    } catch (dripErr) {
+      // Log but don't throw — drip failure should not block payment confirmation
+      console.error('[webhook] rescue_kit_drip upsert failed (non-blocking):', dripErr.message);
     }
   }
 
