@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { verifyCheckoutSession } from '../lib/checkout';
-import { trackPurchase } from '../lib/pixels';
 import { CheckCircle, ShieldAlert, ArrowRight, Download } from 'lucide-react';
 import usePageMeta from '../hooks/usePageMeta';
 
@@ -24,15 +23,7 @@ export default function CheckoutSuccess() {
     }
 
     verifyCheckoutSession(sessionId)
-      .then((data) => {
-        setSession(data);
-        // Fire purchase pixel (no-op until placeholder IDs are replaced)
-        trackPurchase({
-          value: data.amount_cents ? data.amount_cents / 100 : 39,
-          currency: 'USD',
-          orderId: sessionId,
-        });
-      })
+      .then((data) => setSession(data))
       .catch(() => setError('We could not verify your purchase. Please contact us for help.'))
       .finally(() => setLoading(false));
   }, [sessionId]);
