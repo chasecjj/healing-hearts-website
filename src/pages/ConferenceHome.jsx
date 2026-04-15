@@ -56,18 +56,30 @@ function CaptureForm({ source = 'conference' }) {
 
   if (state === 'success') {
     return (
-      <div className="py-4 text-center">
+      <div className="py-6 text-center">
         <div
-          className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3"
-          style={{ backgroundColor: `${P.teal}15` }}
+          className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+          style={{ backgroundColor: `${P.teal}18` }}
         >
-          <CheckCircle2 size={28} color={P.teal} />
+          <CheckCircle2 size={36} color={P.teal} strokeWidth={2.25} />
         </div>
-        <p className="font-heading font-semibold text-lg" style={{ color: P.charcoal }}>
+        <p
+          className="font-heading font-bold text-2xl mb-3"
+          style={{ color: P.charcoal }}
+        >
           You're in!
         </p>
-        <p className="text-sm mt-1" style={{ color: P.muted }}>
-          Check your inbox — Day 1 is on its way.
+        <p
+          className="font-body font-semibold text-base leading-relaxed mb-2 max-w-[28ch] mx-auto"
+          style={{ color: P.charcoal }}
+        >
+          Show this screen at the booth to claim your raffle ticket.
+        </p>
+        <p
+          className="font-body text-sm leading-relaxed max-w-[32ch] mx-auto"
+          style={{ color: P.muted }}
+        >
+          Drop it in the bowl by Saturday 5 PM. Also check your inbox — Day 1 is on its way.
         </p>
       </div>
     )
