@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { CheckCircle2, Shield, Heart, Brain, Sparkles } from 'lucide-react'
+import { CheckCircle2, Shield, Heart, Brain, Sparkles, Calendar } from 'lucide-react'
 import usePageMeta from '../hooks/usePageMeta'
 
 /* ------------------------------------------------------------------ */
@@ -149,6 +149,12 @@ function StickyBar() {
 /*  Main page                                                          */
 /* ------------------------------------------------------------------ */
 export default function ConferenceHome() {
+  const [searchParams] = useSearchParams()
+  const isExpoBannerTraffic =
+    searchParams.get('utm_campaign') === 'be-healthy-utah' ||
+    searchParams.get('src') === 'table' ||
+    searchParams.get('src') === 'retractable'
+
   usePageMeta(
     'The Secret Behind How Your Brain Hijacks Relationships',
     'Relationship stress is a health crisis. Discover how to tame your critter brain with science-backed tools. Start the free 7-Day Spark Challenge.'
@@ -311,6 +317,45 @@ export default function ConferenceHome() {
           </div>
         </div>
       </section>
+
+      {/* ============================================================ */}
+      {/* TRISHA'S TALK — conditional: expo banner traffic only         */}
+      {/* ============================================================ */}
+      {isExpoBannerTraffic && (
+        <section
+          className="w-full py-10 lg:py-12"
+          style={{ backgroundColor: P.cream }}
+        >
+          <div className="max-w-2xl mx-auto px-6 sm:px-10">
+            <div
+              className="flex items-start gap-4 p-5 rounded-2xl"
+              style={{ backgroundColor: 'white', border: `1px solid ${P.teal}20` }}
+            >
+              <div
+                className="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center"
+                style={{ backgroundColor: `${P.teal}12` }}
+              >
+                <Calendar size={22} color={P.teal} />
+              </div>
+              <div>
+                <p
+                  className="font-heading font-bold text-base mb-1"
+                  style={{ color: P.charcoal }}
+                >
+                  Don't miss Trisha's talk — Saturday 4 PM.
+                </p>
+                <p
+                  className="font-body text-sm leading-relaxed"
+                  style={{ color: P.muted }}
+                >
+                  Earn <strong style={{ color: P.coral }}>4× extra raffle entries</strong> when
+                  you attend. Location posted at booth.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ============================================================ */}
       {/* SOCIAL PROOF — One powerful testimonial                       */}
