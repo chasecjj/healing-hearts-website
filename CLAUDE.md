@@ -150,5 +150,14 @@ Read scoria/skills/scoria-build/SKILL.md for --validate-only flag
 | Phase 2.6 — Organic Flow redesign (Scoria + Forge Lite) | Done (Session 60) |
 | Phase 2.7 — Interactive Portal (intentions, notes, journal, audio) | Done |
 | Phase 2.8 — Video Integration (Mux player, video-first layout) | Done |
-| Phase 3 — Stripe payments | Next |
+| Phase 3 — Stripe payments (dual-mode test/live, Checkout Sessions + webhooks) | **Done (LIVE, Session 105, 2026-04-15)** |
+| Phase 3.5 — Webhook hardening (secret fallback, `findAuthUserIdByEmail()`, `collectEnrollmentGrants()` multi-grant) | **Done (commit `2dc1549`, deploy `dpl_5MQx8UcqMaR8PP5MJsZkeADfe6v1`)** |
 | Phase 4 — React Native mobile app | Planned |
+
+### Stripe Webhook Notes (Phase 3.5)
+
+- `STRIPE_WEBHOOK_SECRET` is set in Vercel Production. Missing secret returns 200 (graceful) rather than 500 so Stripe doesn't retry-storm.
+- `findAuthUserIdByEmail()` replaced broken `auth.users` PostgREST lookup. Uses service-role RPC.
+- `collectEnrollmentGrants()` normalizes the single/multi-grant shape so Rescue Kit + Course purchases both resolve.
+- Supabase RLS CRITICAL cleared via migration `enable_rls_on_lessons_backup_module7` (ERROR → INFO advisor).
+- 17 failed webhook events from pre-hardening window need replay — outstanding task as of 2026-04-15.
