@@ -195,7 +195,7 @@ Use quadruple-backtick fences around the output block so the inner JSON triple-b
 
 **Viewports analyzed:** mobile, tablet, laptop, desktop
 **Dimensions run:** 1, 2, 3, 4 (delegated), 5, 6 (if enabled)
-**Screenshots:** C:/Users/chase/Pictures/Ai Screenshot Ref/{session-id}/
+**Screenshots:** C:/Users/chase/Pictures/Ai Screenshot Ref/qa-20260415-001/
 
 ### Findings
 
