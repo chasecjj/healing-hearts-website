@@ -54,6 +54,9 @@ You receive a `findings[]` array. Each finding has:
 | Never refactor surrounding code | Fix the symptom, not nearby code cleanliness |
 | Prefer @scoria/ui components when `suggested_fix` recommends it | Validated components over custom UI |
 | Preserve GSAP animation structure | Fix only the specific property causing the issue |
+| When `line` is null, use Grep with `grep_match` to locate the target before editing | Findings may omit line numbers; Grep recovers the location |
+| If both `line` and `grep_match` are null, skip that finding | Insufficient location data — list under Unmodified findings with reason: "insufficient location data" |
+| If the file in a finding does not exist on disk, skip that finding | List under Unmodified findings with reason: "file not found" |
 
 ## Bash Usage (strictly limited)
 
@@ -69,31 +72,36 @@ NOT permitted: dev server, lint, git operations, any other bash. If you need any
 
 Emit this markdown block after applying all fixes:
 
-```markdown
+````markdown
 ## Fixes Applied
 
-| Finding ID | File | Change | Build Status |
-|-----------|------|--------|-------------|
-| F-001 | src/pages/About.jsx:142 | Changed `overflow-hidden` → `overflow-visible` on testimonial wrapper | OK |
-| F-002 | src/pages/Home.jsx:87 | Replaced hardcoded `#1191B1` with Tailwind `text-primary` | OK |
+| Finding ID | File | Change |
+|-----------|------|--------|
+| F-001 | src/pages/About.jsx:142 | Changed `overflow-hidden` → `overflow-visible` on testimonial wrapper |
+| F-002 | src/pages/Home.jsx:87 | Replaced hardcoded `#1191B1` with Tailwind `text-primary` |
 
 **Build result:** PASS
 
 **Unmodified findings:** [List any findings you did NOT fix, with reason]
-```
+````
 
-If build FAILS after all fixes, emit this instead:
+If build FAILS after all fixes, you MUST take the following steps before emitting any output:
 
-```markdown
-## Build Failed — No Fixes Committed
+1. Re-read each file you edited.
+2. Apply a reverse Edit to each file to restore its original content.
+3. Re-run `npm run build` to confirm the build now passes (confirming you have restored pre-edit state).
+4. Then emit the failure block below.
+
+````markdown
+## Build Failed — No Fixes Applied — Edits Reverted
 
 **Error:**
 ```
 <npm run build stderr tail>
 ```
 
-**Attempted fixes (now reverted via your last Edit being reconsidered — do NOT commit):**
-<list of attempted Edits>
-```
+**Attempted fixes (now reverted by applying reverse Edits):**
+<list of attempted Edits, each with the reverse Edit that was applied>
+````
 
 Then stop. Do not attempt further fixes.
