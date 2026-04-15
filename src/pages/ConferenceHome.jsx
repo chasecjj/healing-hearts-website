@@ -103,7 +103,7 @@ function CaptureForm({ source = 'conference' }) {
             opacity: state === 'loading' ? 0.7 : 1,
           }}
         >
-          {state === 'loading' ? 'Sending...' : 'Start my free challenge'}
+          {state === 'loading' ? 'Sending...' : 'Start my free couples challenge'}
         </button>
       </div>
       {state === 'error' && (
@@ -139,7 +139,7 @@ function StickyBar() {
                    shadow-lg active:scale-[0.98] transition-transform"
         style={{ backgroundColor: P.coral }}
       >
-        Start the free 7-day challenge
+        Start the free 7-day couples challenge
       </button>
     </div>
   )
@@ -199,12 +199,28 @@ export default function ConferenceHome() {
               </h1>
 
               <p
+                className="font-heading text-xs tracking-wide uppercase -mt-2"
+                style={{ color: P.muted }}
+              >
+                The 7-Day Couples Challenge — also known as the Spark Challenge
+              </p>
+
+              <p
                 className="font-body text-base md:text-lg leading-relaxed max-w-[44ch]"
                 style={{ color: P.muted }}
               >
                 That stress response hijacking your closest relationship?
                 It has a name — your Critter Brain. And you can learn to
                 tame it in 7 days.
+              </p>
+              <p
+                className="font-body text-sm md:text-base leading-relaxed max-w-[44ch]"
+                style={{ color: P.charcoal }}
+              >
+                Sign up for the <strong>free 7-Day Couples Challenge</strong> and
+                you're automatically entered to win our{' '}
+                <strong>$1,000+ Date Night Prize Package</strong> — drawing
+                Saturday 5 PM at the booth.
               </p>
 
               {/* Form — above fold on mobile */}
