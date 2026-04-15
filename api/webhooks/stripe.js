@@ -10,7 +10,14 @@ import { sendRescueKitWelcome } from '../_emails/rescue-kit-welcome.js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+// Resolve signing secret from any of the known env var names. Session 93's
+// dual-mode expansion introduced _LIVE/_TEST variants; the original
+// STRIPE_WEBHOOK_SECRET is still the production default. Fall back through
+// all three so a missed rename in Vercel doesn't brick the webhook.
+const webhookSecret =
+  process.env.STRIPE_WEBHOOK_SECRET ||
+  process.env.STRIPE_WEBHOOK_SECRET_LIVE ||
+  process.env.STRIPE_WEBHOOK_SECRET_TEST;
 
 // Vercel requires raw body for Stripe signature verification
 export const config = {
@@ -34,8 +41,10 @@ export default async function handler(req, res) {
   }
 
   if (!webhookSecret) {
-    console.error('[webhook] STRIPE_WEBHOOK_SECRET not configured');
-    return res.status(500).json({ error: 'Webhook not configured' });
+    // Return 200 so Stripe stops retrying (retries won't fix a missing env var).
+    // This is loud on purpose — fix the Vercel env var ASAP when this fires.
+    console.error('[webhook] CRITICAL: STRIPE_WEBHOOK_SECRET not configured — events are being acknowledged without processing. Set the env var in Vercel immediately.');
+    return res.status(200).json({ received: false, error: 'webhook_not_configured' });
   }
 
   // Verify Stripe signature
@@ -173,34 +182,18 @@ async function handleCheckoutCompleted(session) {
     throw new Error(`Product not found: ${productSlug}`);
   }
 
-  // Check if an auth user already exists with this email.
-  // Query auth.users directly via the service role client.
-  let authUserId = null;
-  const { data: authUserRows } = await supabaseAdmin
-    .from('auth.users')
-    .select('id')
-    .eq('email', customerEmail)
-    .limit(1)
-    .maybeSingle();
+  // Resolve auth user via admin API — auth.users is not queryable through PostgREST.
+  const authUserId = await findAuthUserIdByEmail(customerEmail);
 
-  if (authUserRows?.id) {
-    authUserId = authUserRows.id;
-  } else {
-    // Fallback: use admin API (auth.users may not be queryable via PostgREST)
-    const { data: listResult } = await supabaseAdmin.auth.admin.listUsers();
-    const match = listResult?.users?.find(
-      (u) => u.email?.toLowerCase() === customerEmail
-    );
-    authUserId = match?.id || null;
-  }
+  // Normalize access_grants into a flat enrollment list (supports single + multi shapes).
+  const enrollmentGrants = collectEnrollmentGrants(product.access_grants);
 
-  if (authUserId && product.access_grants?.type === 'enrollment') {
-    const courseId = product.access_grants.course_id;
-    if (courseId) {
+  if (authUserId && enrollmentGrants.length > 0) {
+    for (const grant of enrollmentGrants) {
       await supabaseAdmin.from('enrollments').upsert(
         {
           user_id: authUserId,
-          course_id: courseId,
+          course_id: grant.course_id,
           status: 'active',
           stripe_payment_id: paymentIntent,
         },
@@ -236,7 +229,7 @@ async function handleCheckoutCompleted(session) {
         }
       }
 
-      const emailData = product.access_grants?.type === 'enrollment'
+      const emailData = enrollmentGrants.length > 0
         ? enrollmentPurchaseEmail(customerEmail, contact?.name, { receiptUrl, invoiceUrl })
         : downloadPurchaseEmail(customerEmail, product.name, { receiptUrl, invoiceUrl });
 
@@ -346,14 +339,14 @@ async function handleChargeRefunded(charge) {
     .eq('slug', order.product_slug)
     .single();
 
-  if (product?.access_grants?.type === 'enrollment' && order.auth_user_id) {
-    const courseId = product.access_grants.course_id;
-    if (courseId) {
+  const refundGrants = collectEnrollmentGrants(product?.access_grants);
+  if (order.auth_user_id && refundGrants.length > 0) {
+    for (const grant of refundGrants) {
       await supabaseAdmin
         .from('enrollments')
         .update({ status: 'refunded' })
         .eq('user_id', order.auth_user_id)
-        .eq('course_id', courseId);
+        .eq('course_id', grant.course_id);
     }
   }
   // 'download' type: no enrollment row to revoke. Future work: soft-hide
@@ -468,14 +461,14 @@ async function handleDisputeClosed(dispute) {
       .eq('slug', order.product_slug)
       .single();
 
-    if (product?.access_grants?.type === 'enrollment' && order.auth_user_id) {
-      const courseId = product.access_grants.course_id;
-      if (courseId) {
+    const disputeGrants = collectEnrollmentGrants(product?.access_grants);
+    if (order.auth_user_id && disputeGrants.length > 0) {
+      for (const grant of disputeGrants) {
         await supabaseAdmin
           .from('enrollments')
           .update({ status: 'refunded' })
           .eq('user_id', order.auth_user_id)
-          .eq('course_id', courseId);
+          .eq('course_id', grant.course_id);
       }
     }
 
@@ -511,5 +504,40 @@ async function handlePaymentFailed(paymentIntent) {
   // with a regenerated checkout URL. Requires the product slug, which
   // we don't have on the payment_intent alone -- need to look up via
   // the original order record if it was created.
+}
+
+// ─── Helpers ─────────────────────────────────────────────
+
+// auth.users is not queryable via PostgREST. Use the admin API instead.
+async function findAuthUserIdByEmail(email) {
+  if (!email) return null;
+  try {
+    const { data: listResult } = await supabaseAdmin.auth.admin.listUsers();
+    const match = listResult?.users?.find(
+      (u) => u.email?.toLowerCase() === email.toLowerCase()
+    );
+    return match?.id || null;
+  } catch (err) {
+    console.error('[webhook] findAuthUserIdByEmail failed:', err.message);
+    return null;
+  }
+}
+
+// Normalize access_grants into a flat list of enrollment grants.
+// Supports both shapes:
+//   { type: 'enrollment', course_id: '...' }
+//   { type: 'multi', grants: [{ type: 'enrollment', course_id: '...' }, ...] }
+// Returns [] for download-only or unrecognized shapes.
+function collectEnrollmentGrants(accessGrants) {
+  if (!accessGrants) return [];
+  if (accessGrants.type === 'enrollment' && accessGrants.course_id) {
+    return [{ course_id: accessGrants.course_id }];
+  }
+  if (accessGrants.type === 'multi' && Array.isArray(accessGrants.grants)) {
+    return accessGrants.grants
+      .filter((g) => g?.type === 'enrollment' && g.course_id)
+      .map((g) => ({ course_id: g.course_id }));
+  }
+  return [];
 }
 
