@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email, source, utm_source, utm_medium, utm_campaign } = req.body || {};
+  const { email, source, utm_source, utm_medium, utm_campaign, utm_content } = req.body || {};
 
   if (!email || typeof email !== 'string' || !EMAIL_REGEX.test(email.trim())) {
     return res.status(400).json({ error: 'A valid email address is required.' });
@@ -34,6 +34,7 @@ export default async function handler(req, res) {
     if (utm_source) row.utm_source = String(utm_source).slice(0, 100);
     if (utm_medium) row.utm_medium = String(utm_medium).slice(0, 100);
     if (utm_campaign) row.utm_campaign = String(utm_campaign).slice(0, 100);
+    if (utm_content) row.utm_content = String(utm_content).slice(0, 100);
 
     const { error } = await supabaseAdmin
       .from('spark_signups')

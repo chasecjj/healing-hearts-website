@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { CheckCircle2, Shield, Heart, Brain, Sparkles } from 'lucide-react'
+import { Link, useSearchParams } from 'react-router-dom'
+import { CheckCircle2, Shield, Heart, Brain, Sparkles, Calendar } from 'lucide-react'
 import usePageMeta from '../hooks/usePageMeta'
 
 /* ------------------------------------------------------------------ */
@@ -26,6 +26,8 @@ const P = {
 /* ------------------------------------------------------------------ */
 function CaptureForm({ source = 'conference' }) {
   const [state, setState] = useState('idle')
+  const [searchParams] = useSearchParams()
+  const src = searchParams.get('src') // 'table' | 'retractable' | null
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -43,6 +45,7 @@ function CaptureForm({ source = 'conference' }) {
           utm_source: 'expo',
           utm_medium: 'qr',
           utm_campaign: 'be-healthy-utah',
+          utm_content: src || 'unknown',
         }),
       })
       setState(res.ok ? 'success' : 'error')
@@ -53,18 +56,30 @@ function CaptureForm({ source = 'conference' }) {
 
   if (state === 'success') {
     return (
-      <div className="py-4 text-center">
+      <div className="py-6 text-center">
         <div
-          className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3"
-          style={{ backgroundColor: `${P.teal}15` }}
+          className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+          style={{ backgroundColor: `${P.teal}18` }}
         >
-          <CheckCircle2 size={28} color={P.teal} />
+          <CheckCircle2 size={36} color={P.teal} strokeWidth={2.25} />
         </div>
-        <p className="font-heading font-semibold text-lg" style={{ color: P.charcoal }}>
+        <p
+          className="font-heading font-bold text-2xl mb-3"
+          style={{ color: P.charcoal }}
+        >
           You're in!
         </p>
-        <p className="text-sm mt-1" style={{ color: P.muted }}>
-          Check your inbox — Day 1 is on its way.
+        <p
+          className="font-body font-semibold text-base leading-relaxed mb-2 max-w-[28ch] mx-auto"
+          style={{ color: P.charcoal }}
+        >
+          Show this screen at the booth to claim your raffle ticket.
+        </p>
+        <p
+          className="font-body text-sm leading-relaxed max-w-[32ch] mx-auto"
+          style={{ color: P.muted }}
+        >
+          Drop it in the bowl by Saturday 5 PM. Also check your inbox — Day 1 is on its way.
         </p>
       </div>
     )
@@ -100,7 +115,7 @@ function CaptureForm({ source = 'conference' }) {
             opacity: state === 'loading' ? 0.7 : 1,
           }}
         >
-          {state === 'loading' ? 'Sending...' : 'Start my free challenge'}
+          {state === 'loading' ? 'Sending...' : 'Start my free couples challenge'}
         </button>
       </div>
       {state === 'error' && (
@@ -136,7 +151,7 @@ function StickyBar() {
                    shadow-lg active:scale-[0.98] transition-transform"
         style={{ backgroundColor: P.coral }}
       >
-        Start the free 7-day challenge
+        Start the free 7-day couples challenge
       </button>
     </div>
   )
@@ -146,6 +161,12 @@ function StickyBar() {
 /*  Main page                                                          */
 /* ------------------------------------------------------------------ */
 export default function ConferenceHome() {
+  const [searchParams] = useSearchParams()
+  const isExpoBannerTraffic =
+    searchParams.get('utm_campaign') === 'be-healthy-utah' ||
+    searchParams.get('src') === 'table' ||
+    searchParams.get('src') === 'retractable'
+
   usePageMeta(
     'The Secret Behind How Your Brain Hijacks Relationships',
     'Relationship stress is a health crisis. Discover how to tame your critter brain with science-backed tools. Start the free 7-Day Spark Challenge.'
@@ -196,12 +217,28 @@ export default function ConferenceHome() {
               </h1>
 
               <p
+                className="font-heading text-xs tracking-wide uppercase -mt-2"
+                style={{ color: P.muted }}
+              >
+                The 7-Day Couples Challenge — also known as the Spark Challenge
+              </p>
+
+              <p
                 className="font-body text-base md:text-lg leading-relaxed max-w-[44ch]"
                 style={{ color: P.muted }}
               >
                 That stress response hijacking your closest relationship?
                 It has a name — your Critter Brain. And you can learn to
                 tame it in 7 days.
+              </p>
+              <p
+                className="font-body text-sm md:text-base leading-relaxed max-w-[44ch]"
+                style={{ color: P.charcoal }}
+              >
+                Sign up for the <strong>free 7-Day Couples Challenge</strong> and
+                you're automatically entered to win our{' '}
+                <strong>$1,000+ Date Night Prize Package</strong> — drawing
+                Saturday 5 PM at the booth.
               </p>
 
               {/* Form — above fold on mobile */}
@@ -292,6 +329,45 @@ export default function ConferenceHome() {
           </div>
         </div>
       </section>
+
+      {/* ============================================================ */}
+      {/* TRISHA'S TALK — conditional: expo banner traffic only         */}
+      {/* ============================================================ */}
+      {isExpoBannerTraffic && (
+        <section
+          className="w-full py-10 lg:py-12"
+          style={{ backgroundColor: P.cream }}
+        >
+          <div className="max-w-2xl mx-auto px-6 sm:px-10">
+            <div
+              className="flex items-start gap-4 p-5 rounded-2xl"
+              style={{ backgroundColor: 'white', border: `1px solid ${P.teal}20` }}
+            >
+              <div
+                className="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center"
+                style={{ backgroundColor: `${P.teal}12` }}
+              >
+                <Calendar size={22} color={P.teal} />
+              </div>
+              <div>
+                <p
+                  className="font-heading font-bold text-base mb-1"
+                  style={{ color: P.charcoal }}
+                >
+                  Don't miss Trisha's talk — Saturday 4 PM.
+                </p>
+                <p
+                  className="font-body text-sm leading-relaxed"
+                  style={{ color: P.muted }}
+                >
+                  Earn <strong style={{ color: P.coral }}>4× extra raffle entries</strong> when
+                  you attend. Location posted at booth.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ============================================================ */}
       {/* SOCIAL PROOF — One powerful testimonial                       */}
