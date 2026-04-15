@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { CheckCircle2, Shield, Heart, Brain, Sparkles } from 'lucide-react'
 import usePageMeta from '../hooks/usePageMeta'
 
@@ -26,6 +26,8 @@ const P = {
 /* ------------------------------------------------------------------ */
 function CaptureForm({ source = 'conference' }) {
   const [state, setState] = useState('idle')
+  const [searchParams] = useSearchParams()
+  const src = searchParams.get('src') // 'table' | 'retractable' | null
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -43,6 +45,7 @@ function CaptureForm({ source = 'conference' }) {
           utm_source: 'expo',
           utm_medium: 'qr',
           utm_campaign: 'be-healthy-utah',
+          utm_content: src || 'unknown',
         }),
       })
       setState(res.ok ? 'success' : 'error')
