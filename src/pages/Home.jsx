@@ -685,7 +685,14 @@ const FinalCta = () => {
 /*  PAGE EXPORT                                                        */
 /* ------------------------------------------------------------------ */
 export default function Home() {
-  usePageMeta('Science-Based Relationship Coaching for Couples', 'Healing Hearts helps couples move from disconnection to deep, lasting connection through science-backed coaching, the SPARK Method, and practical relationship tools.');
+  usePageMeta(
+    'Science-Based Relationship Coaching for Couples',
+    'Healing Hearts helps couples move from disconnection to deep, lasting connection through science-backed coaching, the SPARK Method, and practical relationship tools.',
+    {
+      ogTitle: 'Healing Hearts — Science-Based Relationship Coaching',
+      ogUrl: 'https://healingheartscourse.com',
+    }
+  );
   return (
     <>
       <Hero />

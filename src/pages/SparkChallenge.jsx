@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { CheckCircle } from 'lucide-react'
@@ -210,6 +211,53 @@ function SignupForm({ formState, onSubmit, variant }) {
           Check your inbox for a welcome message from Trisha. Day 1 arrives
           tomorrow morning.
         </p>
+
+        {/* Cross-sell: Rescue Kit */}
+        <div
+          className="mt-8 pt-6"
+          style={{ borderTop: `1px solid ${P.gold}26` }}
+        >
+          <p
+            className="font-sans text-sm mb-2"
+            style={{ color: `${P.charcoal}66` }}
+          >
+            Want tools you can use tonight?
+          </p>
+          <Link
+            to="/rescue-kit"
+            className="inline-flex items-center gap-2 font-sans text-base font-medium transition-opacity hover:opacity-75"
+            style={{ color: P.coral }}
+          >
+            <span>Get the Conflict Rescue Kit</span>
+            <span
+              className="font-sans text-sm font-normal"
+              style={{ color: `${P.charcoal}66` }}
+            >
+              &middot; $39
+            </span>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M2.5 7h9M7.5 3.5 11 7l-3.5 3.5"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </Link>
+          <p
+            className="font-sans text-xs mt-1"
+            style={{ color: `${P.charcoal}4D` }}
+          >
+            Instant access after purchase
+          </p>
+        </div>
       </div>
     )
   }
@@ -267,7 +315,12 @@ export default function SparkChallenge() {
 
   usePageMeta(
     'Free 7-Day Spark Challenge',
-    'Join the free 7-Day Spark Challenge. Daily practices that help couples move from disconnection to deep, meaningful connection.'
+    'Join the free 7-Day Spark Challenge. Daily practices that help couples move from disconnection to deep, meaningful connection.',
+    {
+      ogTitle: 'Free 7-Day Spark Challenge',
+      ogDescription: 'Seven days. One small practice per day. Scientifically grounded tools to help couples reconnect and reignite. Join free — no credit card required.',
+      ogUrl: 'https://healingheartscourse.com/spark-challenge',
+    }
   )
 
   /* GSAP scroll animations */
@@ -315,12 +368,20 @@ export default function SparkChallenge() {
     const email = formData.get('email')
     if (!email) return
 
+    const params = new URLSearchParams(window.location.search)
+
     setFormState('loading')
     try {
       const res = await fetch('/api/spark-signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({
+          email,
+          source: 'spark-challenge',
+          utm_source: params.get('utm_source') || undefined,
+          utm_medium: params.get('utm_medium') || undefined,
+          utm_campaign: params.get('utm_campaign') || undefined,
+        }),
       })
       if (res.ok) {
         setFormState('success')

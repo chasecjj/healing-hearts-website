@@ -6,5 +6,7 @@ Disallow: /signup
 Disallow: /forgot-password
 Disallow: /reset-password
 Disallow: /admin
+Disallow: /checkout/success
+Disallow: /upsell
 
 Sitemap: https://healingheartscourse.com/sitemap.xml

@@ -15,7 +15,8 @@
   <url><loc>https://healingheartscourse.com/resources</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://healingheartscourse.com/faq</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://healingheartscourse.com/physician</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://healingheartscourse.com/physicians</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://healingheartscourse.com/conference</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://healingheartscourse.com/webinar</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://healingheartscourse.com/terms</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
   <url><loc>https://healingheartscourse.com/privacy</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
 </urlset>
