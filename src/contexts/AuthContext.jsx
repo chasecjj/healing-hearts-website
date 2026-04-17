@@ -48,30 +48,61 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      const currentUser = session?.user ?? null;
-      setUser(currentUser);
+    let cancelled = false;
+    let loadingCleared = false;
 
-      if (currentUser) {
-        fetchProfile(currentUser.id)
-          .then((p) => {
-            setProfile(p);
-          })
-          .catch((err) => {
-            console.error('Profile fetch failed:', err);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      } else {
-        setLoading(false);
-      }
-    });
+    // Single chokepoint for ending the loading state. Idempotent — first caller
+    // wins, subsequent calls are no-ops. Also clears the hangGuard so it doesn't
+    // fire after loading has already been cleared by a success path.
+    // ALL paths must route through here. Do NOT call setLoading(false) directly
+    // elsewhere in this effect — it breaks the single-chokepoint contract.
+    const finishLoading = () => {
+      if (cancelled || loadingCleared) return;
+      loadingCleared = true;
+      clearTimeout(hangGuard);
+      setLoading(false);
+    };
 
-    // Listen for auth changes
+    // Hard safety. getSession() can orphan (neither resolve nor reject) after
+    // long-idle tabs or during internal auto-refresh edge cases. If nothing
+    // else has cleared the loading state in 8s, force the spinner off so the
+    // user isn't stranded. Also covers hangs inside fetchProfile/ensureProfile
+    // called from onAuthStateChange — see §9 of the spec.
+    // Routes through finishLoading() to keep the single-chokepoint contract;
+    // the clearTimeout inside finishLoading is a harmless no-op on a timer
+    // that has already fired.
+    const hangGuard = setTimeout(() => {
+      if (cancelled || loadingCleared) return;
+      console.warn('[AuthContext] loading did not clear in 8s; forcing it off.');
+      finishLoading();
+    }, 8000);
+
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        if (cancelled) return;
+        const currentUser = session?.user ?? null;
+        setUser(currentUser);
+
+        if (currentUser) {
+          // NOTE: .catch() only logs. finishLoading() runs via .finally() for
+          // both resolve and reject. Do not remove .finally() without adding
+          // finishLoading() to the .catch() branch, or the reject path hangs.
+          fetchProfile(currentUser.id)
+            .then((p) => { if (!cancelled) setProfile(p); })
+            .catch((err) => { console.error('Profile fetch failed:', err); })
+            .finally(() => { finishLoading(); });
+        } else {
+          finishLoading();
+        }
+      })
+      .catch((err) => {
+        console.error('[AuthContext] getSession() rejected:', err);
+        finishLoading();
+      });
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        if (cancelled) return;
         const currentUser = session?.user ?? null;
         setUser(currentUser);
 
@@ -83,22 +114,28 @@ export function AuthProvider({ children }) {
                 currentUser.email,
                 currentUser.user_metadata?.display_name
               );
-              setProfile(p);
+              if (!cancelled) setProfile(p);
             } else {
               const p = await fetchProfile(currentUser.id);
-              setProfile(p);
+              if (!cancelled) setProfile(p);
             }
           } catch (err) {
             console.error('Profile load failed:', err);
-            setProfile(null);
+            if (!cancelled) setProfile(null);
           }
         } else {
-          setProfile(null);
+          if (!cancelled) setProfile(null);
         }
+
+        finishLoading();
       }
     );
 
-    return () => subscription.unsubscribe();
+    return () => {
+      cancelled = true;
+      clearTimeout(hangGuard);
+      subscription.unsubscribe();
+    };
   }, []);
 
   // Auth methods
