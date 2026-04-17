@@ -4,6 +4,21 @@ import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { Download, Package, ArrowLeft, ShoppingBag } from 'lucide-react';
 
+// Extract the download slug from either an access_grants shape:
+//   { type: 'download', download_slug: '...' }
+//   { type: 'multi', grants: [{ type: 'download', download_slug: '...' }, ...] }
+// Migration 019 converted rescue-kit to the 'multi' shape; the prior
+// top-level read silently returned undefined and hid the product.
+function getDownloadSlug(accessGrants) {
+  if (!accessGrants) return null;
+  if (accessGrants.type === 'download') return accessGrants.download_slug || null;
+  if (accessGrants.type === 'multi' && Array.isArray(accessGrants.grants)) {
+    const downloadGrant = accessGrants.grants.find((g) => g?.type === 'download');
+    return downloadGrant?.download_slug || null;
+  }
+  return null;
+}
+
 export default function Downloads() {
   const { user } = useAuth();
   const [purchases, setPurchases] = useState([]);
@@ -38,9 +53,13 @@ export default function Downloads() {
           (products || []).map((p) => [p.slug, p])
         );
 
-        // Filter to download-type products only
+        // Filter to products that grant a download. Handles both shapes:
+        //   { type: 'download', download_slug: '...' }
+        //   { type: 'multi', grants: [{ type: 'download', download_slug: '...' }, ...] }
+        // Migration 019 changed rescue-kit to 'multi'; without this helper the
+        // old equality check silently drops every rescue-kit purchase.
         const downloads = orders
-          .filter((o) => productMap[o.product_slug]?.access_grants?.type === 'download')
+          .filter((o) => !!getDownloadSlug(productMap[o.product_slug]?.access_grants))
           .map((o) => ({ ...o, product: productMap[o.product_slug] }));
 
         setPurchases(downloads);
@@ -126,7 +145,7 @@ export default function Downloads() {
                 <button
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium text-white bg-primary hover:bg-primary/90 transition-colors shrink-0"
                   onClick={async () => {
-                    const downloadSlug = purchase.product?.access_grants?.download_slug;
+                    const downloadSlug = getDownloadSlug(purchase.product?.access_grants);
                     if (!downloadSlug) return;
                     const { data, error } = await supabase.storage
                       .from('downloads')
