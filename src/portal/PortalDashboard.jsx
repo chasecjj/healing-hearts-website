@@ -100,12 +100,16 @@ export default function PortalDashboard({
     user?.email?.split('@')[0] ||
     'Friend';
 
+  // Enrolled students should see the same modules as admins. is_preview was
+  // for the legacy free-preview flag, but is false on every module now.
+  const canAccessContent = isAdmin || hasActiveEnrollment;
+
   // Find the first in-progress module (has some but not all lessons completed)
   const activeModule = course?.modules?.find((mod) => {
-    if (!mod.is_preview && !isAdmin) return false;
+    if (!mod.is_preview && !canAccessContent) return false;
     const progress = getModuleProgress(mod);
     return progress > 0 && progress < 100;
-  }) || course?.modules?.find((m) => m.is_preview || isAdmin);
+  }) || course?.modules?.find((m) => m.is_preview || canAccessContent);
 
   const activeModuleProgress = activeModule ? getModuleProgress(activeModule) : 0;
 
@@ -116,7 +120,7 @@ export default function PortalDashboard({
 
   // Stats
   const completedModules = course?.modules?.filter(
-    (m) => (m.is_preview || isAdmin) && getModuleProgress(m) === 100
+    (m) => (m.is_preview || canAccessContent) && getModuleProgress(m) === 100
   ).length || 0;
   const totalLessons = course?.modules?.reduce(
     (sum, m) => sum + (m.lessons?.length || 0),
@@ -404,8 +408,8 @@ export default function PortalDashboard({
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {course?.modules?.map((mod) => {
-            const modProgress = (mod.is_preview || isAdmin) ? getModuleProgress(mod) : 0;
-            const isLocked = !mod.is_preview && !isAdmin;
+            const modProgress = (mod.is_preview || canAccessContent) ? getModuleProgress(mod) : 0;
+            const isLocked = !mod.is_preview && !canAccessContent;
 
             return (
               <div
