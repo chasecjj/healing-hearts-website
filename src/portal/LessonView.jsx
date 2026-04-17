@@ -35,8 +35,16 @@ export default function LessonView({
   getModuleProgress,
   overallProgress,
   isAdmin = false,
+  hasActiveEnrollment = false,
   basePath = '/portal',
 }) {
+  // Students with an active enrollment should have the same lesson/module
+  // access as admins. Previously the gating relied on mod.is_preview (used
+  // only for the legacy free-preview flag, now false on all modules) OR
+  // isAdmin — which blocked enrolled buyers from clicking past the first
+  // lesson because nextLesson/prevLesson were computed from a preview-only
+  // set and the sidebar modules were all disabled.
+  const canAccessContent = isAdmin || hasActiveEnrollment;
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedParents, setExpandedParents] = useState({});
@@ -76,7 +84,7 @@ export default function LessonView({
     }
     const allLessons = [];
     course.modules.forEach((mod) => {
-      if ((mod.is_preview || isAdmin) && mod.lessons) {
+      if ((mod.is_preview || canAccessContent) && mod.lessons) {
         mod.lessons.forEach((l) => {
           allLessons.push({ module: mod, lesson: l });
         });
@@ -210,26 +218,26 @@ export default function LessonView({
         <nav className="flex-1 px-2 pb-6 space-y-1">
           {course?.modules?.map((mod) => {
             const isActiveMod = currentModule?.id === mod.id;
-            const modProgress = (mod.is_preview || isAdmin) ? getModuleProgress(mod) : 0;
+            const modProgress = (mod.is_preview || canAccessContent) ? getModuleProgress(mod) : 0;
 
             return (
               <div key={mod.id}>
                 <button
                   onClick={() => {
-                    if ((mod.is_preview || isAdmin) && mod.lessons?.length) {
+                    if ((mod.is_preview || canAccessContent) && mod.lessons?.length) {
                       navigateToLesson(mod, mod.lessons[0]);
                     }
                   }}
                   className={`w-full text-left px-4 py-3 rounded-xl transition-all flex items-center gap-3 ${
                     isActiveMod
                       ? 'bg-white/50 text-primary font-bold border-l-4 border-primary rounded-l-none'
-                      : (mod.is_preview || isAdmin)
+                      : (mod.is_preview || canAccessContent)
                       ? 'text-foreground/60 hover:text-primary hover:bg-white/30'
                       : 'text-foreground/40 opacity-60 cursor-not-allowed'
                   }`}
-                  disabled={!mod.is_preview && !isAdmin}
+                  disabled={!mod.is_preview && !canAccessContent}
                 >
-                  {(mod.is_preview || isAdmin) ? (
+                  {(mod.is_preview || canAccessContent) ? (
                     modProgress === 100 ? (
                       <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0" />
                     ) : isActiveMod ? (
@@ -246,7 +254,7 @@ export default function LessonView({
                 </button>
 
                 {/* Expanded lesson list for active module */}
-                {isActiveMod && (mod.is_preview || isAdmin) && (() => {
+                {isActiveMod && (mod.is_preview || canAccessContent) && (() => {
                   const { topLevel, childrenByParent } = getLessonGroups(mod.lessons);
                   return (
                     <div className="ml-7 mt-2 space-y-1 border-l-2 border-primary/10 pl-3">

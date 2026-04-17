@@ -204,6 +204,7 @@ const CoursePortal = () => {
       isLessonCompleted={isLessonCompleted}
       toggleLessonComplete={toggleLessonComplete}
       isAdmin={isAdmin}
+      hasActiveEnrollment={hasActiveEnrollment}
       getModuleProgress={getModuleProgress}
       overallProgress={overallProgress}
       basePath={basePath}
