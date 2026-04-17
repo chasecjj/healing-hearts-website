@@ -79,6 +79,9 @@ export default async function handler(req, res) {
       case 'payment_intent.payment_failed':
         await handlePaymentFailed(event.data.object);
         break;
+      case 'payment_intent.succeeded':
+        await handlePaymentIntentSucceeded(event.data.object);
+        break;
       default:
         // Unhandled event type -- acknowledge without processing
         console.log('[webhook] Unhandled event type:', event.type);
@@ -504,6 +507,205 @@ async function handlePaymentFailed(paymentIntent) {
   // with a regenerated checkout URL. Requires the product slug, which
   // we don't have on the payment_intent alone -- need to look up via
   // the original order record if it was created.
+}
+
+// ─── Payment intent succeeded (Terminal / booth sales) ──
+// Fires for BOTH online Checkout Sessions and in-person Terminal charges.
+// Online sales are already handled via checkout.session.completed -- we
+// filter those out by checking payment_method_types for 'card_present'.
+// Only card_present (physical reader) charges get processed here.
+//
+// Booth SOP assumption: staff collects customer email via the "Send receipt"
+// step in the Stripe Dashboard mobile app. That sets receipt_email on the PI.
+// Without receipt_email we cannot grant access -- order lands as pending_email.
+//
+// Product inference: the Stripe app has no product concept. We map amount to
+// slug (3900 -> rescue-kit, 3500 -> card-pack). Unknown amounts get flagged
+// for manual reconciliation by Makayla post-event.
+async function handlePaymentIntentSucceeded(paymentIntent) {
+  const paymentMethodTypes = paymentIntent.payment_method_types || [];
+  if (!paymentMethodTypes.includes('card_present')) {
+    // Online Checkout -- already handled by checkout.session.completed. Skip.
+    return;
+  }
+
+  const piId = paymentIntent.id;
+  const customerEmail = (paymentIntent.receipt_email || '').toLowerCase();
+  const amountCents = paymentIntent.amount;
+
+  // Idempotency: skip if we've already recorded this PI
+  const { data: existingOrder } = await supabaseAdmin
+    .from('orders')
+    .select('id, status')
+    .eq('stripe_payment_intent', piId)
+    .maybeSingle();
+
+  if (existingOrder && existingOrder.status === 'completed') {
+    console.log('[webhook] Terminal PI already processed:', piId);
+    return;
+  }
+
+  // Amount -> product slug map. Keep in sync with migration 016 prices.
+  const productSlug =
+    amountCents === 3900 ? 'rescue-kit'
+    : amountCents === 3500 ? 'card-pack'
+    : null;
+
+  // Error paths: we can't insert into orders (contact_id NOT NULL) without a
+  // valid email + mapped product. Log loud and rely on Makayla reconciling via
+  // Stripe Dashboard + booth paper log after the event. Vercel log retention is
+  // 30 days — fine for a 2-day expo.
+  if (!productSlug) {
+    console.error('[webhook] BOOTH_RECONCILE unmapped_amount:', { piId, amountCents, email: customerEmail || null });
+    return;
+  }
+
+  if (!customerEmail) {
+    console.error('[webhook] BOOTH_RECONCILE missing_receipt_email:', { piId, productSlug, amountCents });
+    return;
+  }
+
+  // Upsert CRM contact (booth sales are a high-intent lead -> customer event)
+  const { data: contact } = await supabaseAdmin
+    .from('crm_contacts')
+    .upsert(
+      {
+        email: customerEmail,
+        stage: 'customer',
+        source: 'expo-booth',
+        last_activity_at: new Date().toISOString(),
+      },
+      { onConflict: 'email', ignoreDuplicates: false }
+    )
+    .select('id, name')
+    .single();
+
+  if (!contact) {
+    throw new Error(`Failed to upsert CRM contact for booth sale: ${customerEmail}`);
+  }
+
+  // Insert or update order
+  if (existingOrder) {
+    await supabaseAdmin
+      .from('orders')
+      .update({
+        status: 'completed',
+        contact_id: contact.id,
+        product_slug: productSlug,
+        amount_cents: amountCents,
+        metadata: { source: 'expo-booth' },
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', existingOrder.id);
+  } else {
+    await supabaseAdmin.from('orders').insert({
+      contact_id: contact.id,
+      stripe_payment_intent: piId,
+      product_slug: productSlug,
+      amount_cents: amountCents,
+      currency: paymentIntent.currency || 'usd',
+      status: 'completed',
+      metadata: { source: 'expo-booth' },
+    });
+  }
+
+  // Look up product metadata (access_grants + name for the confirmation email)
+  const { data: product } = await supabaseAdmin
+    .from('products')
+    .select('name, access_grants')
+    .eq('slug', productSlug)
+    .single();
+
+  if (!product) {
+    throw new Error(`Product not found for booth sale: ${productSlug}`);
+  }
+
+  // Grant enrollment if the product is enrollment-type (rescue-kit + card-pack
+  // are download type, so this will be a no-op for booth sales today).
+  const authUserId = await findAuthUserIdByEmail(customerEmail);
+  const enrollmentGrants = collectEnrollmentGrants(product.access_grants);
+
+  if (authUserId && enrollmentGrants.length > 0) {
+    for (const grant of enrollmentGrants) {
+      await supabaseAdmin.from('enrollments').upsert(
+        {
+          user_id: authUserId,
+          course_id: grant.course_id,
+          status: 'active',
+          stripe_payment_id: piId,
+        },
+        { onConflict: 'user_id,course_id' }
+      );
+    }
+  }
+
+  if (authUserId) {
+    await supabaseAdmin
+      .from('orders')
+      .update({ auth_user_id: authUserId })
+      .eq('stripe_payment_intent', piId);
+  }
+
+  // Purchase confirmation email (best-effort, non-blocking)
+  if (resend) {
+    try {
+      // Use the same retrieve-with-expand pattern as handleCheckoutCompleted —
+      // raw webhook `charges` field is deprecated in newer API versions.
+      let receiptUrl = null;
+      try {
+        const pi = await stripe.paymentIntents.retrieve(piId, { expand: ['latest_charge'] });
+        receiptUrl = pi.latest_charge?.receipt_url || null;
+      } catch (piErr) {
+        console.error('[webhook] Booth: could not fetch PI for receipt URL:', piErr.message);
+      }
+
+      const emailData = enrollmentGrants.length > 0
+        ? enrollmentPurchaseEmail(customerEmail, contact?.name, { receiptUrl })
+        : downloadPurchaseEmail(customerEmail, product.name, { receiptUrl });
+
+      await resend.emails.send({
+        from: 'Healing Hearts <hello@healingheartscourse.com>',
+        to: customerEmail,
+        subject: emailData.subject,
+        html: emailData.html,
+      });
+    } catch (emailErr) {
+      console.error('[webhook] Booth confirmation email failed (non-blocking):', emailErr.message);
+    }
+  }
+
+  // Rescue Kit drip onboarding (mirrors the online flow)
+  if (productSlug === 'rescue-kit') {
+    try {
+      await supabaseAdmin
+        .from('rescue_kit_drip')
+        .upsert(
+          {
+            email: customerEmail,
+            name: contact?.name || null,
+            purchased_at: new Date().toISOString(),
+            current_day: 0,
+            unsubscribed: false,
+          },
+          { onConflict: 'email', ignoreDuplicates: true }
+        );
+      try {
+        await sendRescueKitWelcome(customerEmail, contact?.name || null);
+      } catch (welcomeErr) {
+        console.error('[webhook] Booth rescue-kit welcome email threw (non-blocking):', welcomeErr.message);
+      }
+    } catch (dripErr) {
+      console.error('[webhook] Booth rescue_kit_drip upsert failed (non-blocking):', dripErr.message);
+    }
+  }
+
+  console.log('[webhook] Processed Terminal/booth payment_intent.succeeded:', {
+    pi: piId,
+    email: customerEmail,
+    product: productSlug,
+    amount: amountCents,
+    userFound: !!authUserId,
+  });
 }
 
 // ─── Helpers ─────────────────────────────────────────────
