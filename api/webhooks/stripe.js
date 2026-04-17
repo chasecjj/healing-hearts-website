@@ -97,12 +97,38 @@ async function handleCheckoutCompleted(session) {
   const sessionId = session.id;
   const customerEmail = (session.customer_details?.email || session.customer_email || '').toLowerCase();
   const paymentIntent = session.payment_intent;
-  const productSlug = session.metadata?.product_slug;
+  let productSlug = session.metadata?.product_slug;
   const source = session.metadata?.source || '';
 
+  // Fallback: if metadata didn't carry product_slug, resolve it from the
+  // session's line-item price_id against products.stripe_price_id. This
+  // covers Payment Links (Stripe Dashboard UI doesn't always expose link
+  // metadata), manually-created Checkout Sessions, admin tools, etc.
+  if (!productSlug) {
+    try {
+      const fullSession = await stripe.checkout.sessions.retrieve(sessionId, {
+        expand: ['line_items.data.price'],
+      });
+      const priceId = fullSession.line_items?.data?.[0]?.price?.id;
+      if (priceId) {
+        const { data: priceMatch } = await supabaseAdmin
+          .from('products')
+          .select('slug')
+          .eq('stripe_price_id', priceId)
+          .maybeSingle();
+        if (priceMatch?.slug) {
+          productSlug = priceMatch.slug;
+          console.log('[webhook] Resolved product_slug via price_id fallback:', { sessionId, priceId, productSlug });
+        }
+      }
+    } catch (fallbackErr) {
+      console.error('[webhook] price_id fallback failed:', fallbackErr.message);
+    }
+  }
+
   if (!customerEmail || !productSlug) {
-    // Missing metadata is a permanent error -- don't retry
-    console.error('[webhook] Missing email or product_slug in session:', sessionId);
+    // Missing metadata AND no price_id match -- permanent error, don't retry
+    console.error('[webhook] Missing email or product_slug in session (after fallback):', sessionId);
     return; // Return without throwing so Stripe gets 200 (no point retrying bad data)
   }
 
