@@ -149,18 +149,23 @@ async function handleCheckoutCompleted(session) {
     return;
   }
 
-  // Upsert CRM contact (in case checkout.js didn't have email at session creation)
+  // Upsert CRM contact (in case checkout.js didn't have email at session creation).
+  // Capture name from Stripe when provided (depends on whether the checkout flow
+  // had "Collect customer names" enabled on the Payment Link / Checkout Session).
+  // Only overwrites existing name when we have a non-empty value from Stripe —
+  // otherwise an in-flight guest checkout would wipe a name Trisha entered manually.
+  const customerName = session.customer_details?.name?.trim() || null;
+  const contactUpsert = {
+    email: customerEmail,
+    stage: 'customer',
+    source: source || productSlug,
+    last_activity_at: new Date().toISOString(),
+  };
+  if (customerName) contactUpsert.name = customerName;
+
   const { data: contact } = await supabaseAdmin
     .from('crm_contacts')
-    .upsert(
-      {
-        email: customerEmail,
-        stage: 'customer',
-        source: source || productSlug,
-        last_activity_at: new Date().toISOString(),
-      },
-      { onConflict: 'email', ignoreDuplicates: false }
-    )
+    .upsert(contactUpsert, { onConflict: 'email', ignoreDuplicates: false })
     .select('id, name')
     .single();
 
@@ -607,18 +612,25 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
     return;
   }
 
-  // Upsert CRM contact (booth sales are a high-intent lead -> customer event)
+  // Upsert CRM contact (booth sales are a high-intent lead -> customer event).
+  // Terminal charges pass name via `receipt_email` + billing_details; we read
+  // billing_details.name when available. Only overwrite existing name with a
+  // non-empty value so we don't wipe names added manually.
+  const boothCustomerName =
+    paymentIntent.latest_charge?.billing_details?.name?.trim() ||
+    paymentIntent.charges?.data?.[0]?.billing_details?.name?.trim() ||
+    null;
+  const boothContactUpsert = {
+    email: customerEmail,
+    stage: 'customer',
+    source: 'expo-booth',
+    last_activity_at: new Date().toISOString(),
+  };
+  if (boothCustomerName) boothContactUpsert.name = boothCustomerName;
+
   const { data: contact } = await supabaseAdmin
     .from('crm_contacts')
-    .upsert(
-      {
-        email: customerEmail,
-        stage: 'customer',
-        source: 'expo-booth',
-        last_activity_at: new Date().toISOString(),
-      },
-      { onConflict: 'email', ignoreDuplicates: false }
-    )
+    .upsert(boothContactUpsert, { onConflict: 'email', ignoreDuplicates: false })
     .select('id, name')
     .single();
 

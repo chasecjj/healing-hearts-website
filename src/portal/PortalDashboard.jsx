@@ -36,6 +36,7 @@ export default function PortalDashboard({
   const navigate = useNavigate();
   const containerRef = useRef(null);
   const [availableCourses, setAvailableCourses] = useState([]);
+  const [enrolledCourseIds, setEnrolledCourseIds] = useState(new Set());
   const { user } = useAuth();
 
   // ── GSAP entrance animations ──────────────────────────────
@@ -68,6 +69,29 @@ export default function PortalDashboard({
       });
     return () => { cancelled = true; };
   }, []);
+
+  // ── Fetch which courses the current user is actively enrolled in ──
+  // Used by the "My Courses" cards to show accurate enrollment state and
+  // route clicks correctly (owned → into course, unowned → to purchase page).
+  useEffect(() => {
+    if (!user?.id) return;
+    let cancelled = false;
+    import('../lib/supabase').then(({ supabase }) =>
+      supabase
+        .from('enrollments')
+        .select('course_id')
+        .eq('user_id', user.id)
+        .eq('status', 'active')
+    ).then(({ data, error }) => {
+      if (cancelled) return;
+      if (error) {
+        console.error('Failed to load enrollments:', error);
+        return;
+      }
+      setEnrolledCourseIds(new Set((data || []).map((row) => row.course_id)));
+    });
+    return () => { cancelled = true; };
+  }, [user?.id]);
 
   // ── Derived data ──────────────────────────────────────────
   const firstName =
@@ -170,38 +194,54 @@ export default function PortalDashboard({
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {availableCourses.map((c) => {
-              // The default course (healing-hearts-journey) uses legacy basePath,
-              // all others use the course-scoped path.
-              const courseBasePath =
-                c.slug === 'healing-hearts-journey'
-                  ? '/portal'
-                  : `/portal/course/${c.slug}`;
-              const isCurrentCourse = c.slug === course?.slug;
+              // Enrollment-aware routing: owned → first module, unowned → purchase page.
+              const isEnrolled = enrolledCourseIds.has(c.id);
+
+              let destination;
+              if (isEnrolled) {
+                // Legacy flagship uses /portal/:moduleSlug; other courses are scoped.
+                destination =
+                  c.slug === 'healing-hearts-journey'
+                    ? '/portal/module-1'
+                    : `/portal/course/${c.slug}/module-1`;
+              } else {
+                // Per-course marketing page. Fall back to /{slug} if unknown.
+                destination =
+                  c.slug === 'healing-hearts-journey'
+                    ? '/apply'
+                    : c.slug === 'rescue-kit'
+                      ? '/rescue-kit'
+                      : `/${c.slug}`;
+              }
 
               return (
                 <div
                   key={c.id}
                   className={`group bg-white rounded-2xl overflow-hidden shadow-[0_4px_20px_-4px_rgba(7,58,71,0.08)] transition-all duration-200 cursor-pointer hover:shadow-[0_8px_30px_-4px_rgba(7,58,71,0.12)] hover:scale-[1.02] ${
-                    isCurrentCourse ? 'ring-2 ring-primary' : ''
+                    isEnrolled ? 'ring-2 ring-primary' : ''
                   }`}
-                  onClick={() => navigate(courseBasePath)}
+                  onClick={() => navigate(destination)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault();
-                      navigate(courseBasePath);
+                      navigate(destination);
                     }
                   }}
                   tabIndex={0}
                   role="button"
-                  aria-label={`${c.title}${isCurrentCourse ? ' (current)' : ''}`}
+                  aria-label={`${c.title}${isEnrolled ? ' (enrolled)' : ' (not enrolled)'}`}
                 >
                   <div className="h-24 bg-gradient-to-br from-primary/10 to-accent/5 relative flex items-end p-5">
                     <span className="bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-outfit font-bold uppercase tracking-wider">
                       {c.course_type === 'flagship' ? 'Full Program' : 'Toolkit'}
                     </span>
-                    {isCurrentCourse && (
+                    {isEnrolled ? (
                       <span className="absolute top-3 right-3 bg-primary text-white text-[10px] font-outfit font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
-                        Current
+                        Unlocked
+                      </span>
+                    ) : (
+                      <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-md text-foreground/60 text-[10px] font-outfit font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
+                        Not enrolled
                       </span>
                     )}
                   </div>
@@ -209,8 +249,11 @@ export default function PortalDashboard({
                     <h3 className="font-outfit text-base font-semibold mb-1 group-hover:text-primary transition-colors">
                       {c.title}
                     </h3>
-                    <p className="text-sm text-foreground/50 line-clamp-2 leading-relaxed">
+                    <p className="text-sm text-foreground/50 line-clamp-2 leading-relaxed mb-3">
                       {c.description}
+                    </p>
+                    <p className="text-xs font-outfit font-medium text-primary group-hover:text-primary/80">
+                      {isEnrolled ? 'Start Course →' : 'Learn more →'}
                     </p>
                   </div>
                 </div>
@@ -229,7 +272,7 @@ export default function PortalDashboard({
               aria-hidden="true"
             />
             <div className="relative z-10 max-w-2xl">
-              <p className="font-outfit text-xs uppercase tracking-widest text-accent/90 mb-3">
+              <p className="font-outfit text-xs uppercase tracking-widest text-white/80 mb-3">
                 Start Your Journey
               </p>
               <h2 className="font-drama italic text-3xl sm:text-4xl text-white mb-5 leading-tight">
