@@ -27,12 +27,15 @@ export function rescueKitWelcomeEmail(email, name) {
       `Most people think about changing how they fight for months before they ever do anything. You did it. That tells me everything I need to know about who you are and how much your relationship means to you.`
     ),
     paragraph(
-      `Your <strong>Conflict Rescue Kit</strong> is waiting in your portal right now. Inside, you will find the four frameworks we have seen change the most stuck couples — the SPARK Method, the Critter Brain vs. CEO Brain guide, Zones of Resilience, and the 90-Second Wave.`
+      `Your <strong>Conflict Rescue Kit</strong> is ready and waiting. Inside, you will find the four frameworks we have seen change the most stuck couples — the SPARK Method, the Critter Brain vs. CEO Brain guide, Zones of Resilience, and the 90-Second Wave.`
+    ),
+    paragraph(
+      `One quick step before you dive in: tap the button below to create your free account. It only takes about 30 seconds, and we will drop you right into Part I as soon as you are done.`
     ),
     callout(
-      `One thing I always tell people: the tools that actually stick are the ones you try within 48 hours of reading about them. Tonight, even if you are tired, pick up your kit and read through the SPARK Method. You do not have to use it tonight. Just let it land.`
+      `One thing I always tell people: the tools that actually stick are the ones you try within 48 hours of reading about them. Once you are in, pick up Part I and read through the SPARK Method. You do not have to use it tonight. Just let it land.`
     ),
-    ctaButton('Access Your Conflict Rescue Kit', 'https://healingheartscourse.com/portal/downloads'),
+    ctaButton('Create Your Account &amp; Start', `https://healingheartscourse.com/signup?from=rescue-kit&email=${encodeURIComponent(email)}`),
     paragraph(
       `Day 1 starts tomorrow. I am going to check in with you in a few days — not to grade you, but because I genuinely want to know how it is going.`
     ),
@@ -47,9 +50,11 @@ export function rescueKitWelcomeEmail(email, name) {
 
   const text = `${safeName}, you just did something brave.
 
-Your Conflict Rescue Kit is ready at: https://healingheartscourse.com/portal/downloads
+One quick step before you dive in: create your free account (about 30 seconds) and we will drop you right into Part I.
 
-Inside: the SPARK Method, Critter Brain vs. CEO Brain, Zones of Resilience, and the 90-Second Wave.
+Create your account: https://healingheartscourse.com/signup?from=rescue-kit&email=${encodeURIComponent(email)}
+
+Inside the kit: the SPARK Method, Critter Brain vs. CEO Brain, Zones of Resilience, and the 90-Second Wave.
 
 Day 1 starts tomorrow. I will check in with you in a few days.
 
