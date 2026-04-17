@@ -5,7 +5,11 @@
 import Stripe from 'stripe';
 import { Resend } from 'resend';
 import { supabaseAdmin } from '../_lib/supabase-admin.js';
-import { downloadPurchaseEmail, enrollmentPurchaseEmail } from '../_emails/purchase-confirmation.js';
+import {
+  downloadPurchaseEmail,
+  enrollmentPurchaseEmail,
+  shippingConfirmationEmail,
+} from '../_emails/purchase-confirmation.js';
 import { sendRescueKitWelcome } from '../_emails/rescue-kit-welcome.js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -258,16 +262,27 @@ async function handleCheckoutCompleted(session) {
         }
       }
 
-      const emailData = enrollmentGrants.length > 0
-        ? enrollmentPurchaseEmail(customerEmail, contact?.name, { receiptUrl, invoiceUrl })
-        : downloadPurchaseEmail(customerEmail, product.name, { receiptUrl, invoiceUrl });
-
-      await resend.emails.send({
-        from: 'Healing Hearts <hello@healingheartscourse.com>',
-        to: customerEmail,
-        subject: emailData.subject,
-        html: emailData.html,
+      // Pick the confirmation template per product slug. rescue-kit gets a
+      // dedicated welcome email below (fired from the drip-seeding block), so
+      // we skip the generic confirmation here to avoid duplicate messages.
+      const emailData = pickConfirmationEmail({
+        productSlug,
+        customerEmail,
+        contactName: contact?.name,
+        productName: product.name,
+        enrollmentGrants,
+        receiptUrl,
+        invoiceUrl,
       });
+
+      if (emailData) {
+        await resend.emails.send({
+          from: 'Healing Hearts <hello@healingheartscourse.com>',
+          to: customerEmail,
+          subject: emailData.subject,
+          html: emailData.html,
+        });
+      }
     } catch (emailErr) {
       // Log but don't throw -- email failure should not block payment processing
       console.error('[webhook] Confirmation email failed (non-blocking):', emailErr.message);
@@ -275,8 +290,9 @@ async function handleCheckoutCompleted(session) {
   }
 
   // Rescue Kit drip onboarding: seed the drip row so the daily cron
-  // sends Day 3 check-in and Day 7 progress + upsell emails.
-  // Only for the rescue-kit product (download, not enrollment).
+  // sends Day 3 check-in and Day 7 progress + upsell emails. Also sends
+  // the branded rescue-kit welcome email immediately (this replaces the
+  // generic confirmation that we skip above for rescue-kit).
   if (productSlug === 'rescue-kit') {
     try {
       await supabaseAdmin
@@ -685,22 +701,32 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
         console.error('[webhook] Booth: could not fetch PI for receipt URL:', piErr.message);
       }
 
-      const emailData = enrollmentGrants.length > 0
-        ? enrollmentPurchaseEmail(customerEmail, contact?.name, { receiptUrl })
-        : downloadPurchaseEmail(customerEmail, product.name, { receiptUrl });
-
-      await resend.emails.send({
-        from: 'Healing Hearts <hello@healingheartscourse.com>',
-        to: customerEmail,
-        subject: emailData.subject,
-        html: emailData.html,
+      const emailData = pickConfirmationEmail({
+        productSlug,
+        customerEmail,
+        contactName: contact?.name,
+        productName: product.name,
+        enrollmentGrants,
+        receiptUrl,
+        invoiceUrl: null,
       });
+
+      if (emailData) {
+        await resend.emails.send({
+          from: 'Healing Hearts <hello@healingheartscourse.com>',
+          to: customerEmail,
+          subject: emailData.subject,
+          html: emailData.html,
+        });
+      }
     } catch (emailErr) {
       console.error('[webhook] Booth confirmation email failed (non-blocking):', emailErr.message);
     }
   }
 
-  // Rescue Kit drip onboarding (mirrors the online flow)
+  // Rescue Kit drip onboarding (mirrors the online flow). The drip block
+  // also fires the branded rescueKitWelcomeEmail, which is why pickConfirmationEmail
+  // returns null for rescue-kit above — avoids sending two emails.
   if (productSlug === 'rescue-kit') {
     try {
       await supabaseAdmin
@@ -735,6 +761,36 @@ async function handlePaymentIntentSucceeded(paymentIntent) {
 }
 
 // ─── Helpers ─────────────────────────────────────────────
+
+// Select the confirmation email template for a given product.
+// Routing is per product_slug rather than per access_grants shape because
+// rescue-kit's multi-grant structure (migration 019) was matching the generic
+// enrollment email, which then described the Full Course — wrong for buyers
+// who purchased the 3-module Rescue Kit.
+//
+// Returns null for rescue-kit: the dedicated rescueKitWelcomeEmail fires
+// from the drip-onboarding block in the caller; skipping here prevents
+// sending two emails.
+function pickConfirmationEmail({
+  productSlug,
+  customerEmail,
+  contactName,
+  productName,
+  enrollmentGrants,
+  receiptUrl,
+  invoiceUrl,
+}) {
+  if (productSlug === 'rescue-kit') {
+    return null;
+  }
+  if (productSlug === 'card-pack') {
+    return shippingConfirmationEmail(customerEmail, productName, { receiptUrl, invoiceUrl });
+  }
+  if (enrollmentGrants && enrollmentGrants.length > 0) {
+    return enrollmentPurchaseEmail(customerEmail, contactName, { receiptUrl, invoiceUrl });
+  }
+  return downloadPurchaseEmail(customerEmail, productName, { receiptUrl, invoiceUrl });
+}
 
 // auth.users is not queryable via PostgREST. Use the admin API instead.
 async function findAuthUserIdByEmail(email) {

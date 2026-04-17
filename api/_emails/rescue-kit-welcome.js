@@ -27,7 +27,7 @@ export function rescueKitWelcomeEmail(email, name) {
       `Most people think about changing how they fight for months before they ever do anything. You did it. That tells me everything I need to know about who you are and how much your relationship means to you.`
     ),
     paragraph(
-      `Your <strong>Conflict Rescue Kit</strong> is waiting in your portal right now. Inside, you will find the five frameworks we have seen change the most stuck couples — the SPARK Method, the Critter Brain vs. CEO Brain guide, Zones of Resilience, the 90-Second Wave, and your Printable Conflict Recovery Plan.`
+      `Your <strong>Conflict Rescue Kit</strong> is waiting in your portal right now. Inside, you will find the four frameworks we have seen change the most stuck couples — the SPARK Method, the Critter Brain vs. CEO Brain guide, Zones of Resilience, and the 90-Second Wave.`
     ),
     callout(
       `One thing I always tell people: the tools that actually stick are the ones you try within 48 hours of reading about them. Tonight, even if you are tired, pick up your kit and read through the SPARK Method. You do not have to use it tonight. Just let it land.`
@@ -49,7 +49,7 @@ export function rescueKitWelcomeEmail(email, name) {
 
 Your Conflict Rescue Kit is ready at: https://healingheartscourse.com/portal/downloads
 
-Inside: the SPARK Method, Critter Brain vs. CEO Brain, Zones of Resilience, the 90-Second Wave, and your Conflict Recovery Plan.
+Inside: the SPARK Method, Critter Brain vs. CEO Brain, Zones of Resilience, and the 90-Second Wave.
 
 Day 1 starts tomorrow. I will check in with you in a few days.
 

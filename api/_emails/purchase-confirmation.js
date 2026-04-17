@@ -65,6 +65,42 @@ export function downloadPurchaseEmail(email, productName, receipts = {}) {
 }
 
 /**
+ * Shipping confirmation (Card Pack and other physical products).
+ * Sent when a customer buys a physical product that will be mailed.
+ *
+ * @param {string} email - Customer email
+ * @param {string} productName - Name of the purchased product
+ * @param {object} [receipts] - Optional receipt/invoice URLs
+ * @param {string} [receipts.receiptUrl] - Stripe-hosted receipt URL
+ * @param {string} [receipts.invoiceUrl] - Stripe-hosted invoice URL
+ */
+export function shippingConfirmationEmail(email, productName, receipts = {}) {
+  const subject = `Your ${productName} is on its way`;
+  const previewText = `We are getting your order ready to ship.`;
+
+  const body = [
+    heading('Thank you for your order'),
+    paragraph(
+      `I cannot tell you how glad I am that these are going home with you. My hope is that they become worn at the edges, tucked into nightstands, reached for on hard days and ordinary ones.`
+    ),
+    paragraph(
+      `Your <strong>${productName}</strong> will ship within 3 to 5 business days to the address you entered at checkout. You will get a separate email with tracking as soon as it is on the way.`
+    ),
+    callout(
+      `While you wait: if you want something to work on tonight, our Spark 7-Day Challenge is a free email course for couples who want a small daily practice to start with. No pressure — just saying it is there if you want it.`
+    ),
+    receiptBlock(receipts),
+    paragraph(
+      `If anything about your order needs changing — address, quantity, anything — just reply to this email and we will take care of it right away.`
+    ),
+    signOff('With so much warmth,'),
+    unsubscribeFooter(email, 'purchase'),
+  ].join('\n');
+
+  return { subject, html: emailWrapper(body, previewText) };
+}
+
+/**
  * Full course enrollment confirmation.
  * Sent when a customer enrolls in the Healing Hearts Journey Program.
  *
