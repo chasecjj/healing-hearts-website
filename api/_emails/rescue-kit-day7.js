@@ -53,7 +53,7 @@ export function rescueKitDay7Email(email, name) {
       `Whatever you decide, I am glad you took this first step. Keep going. Your relationship is worth the work.`
     ),
     signOff('With all the hope in the world,'),
-    unsubscribeFooter(email, 'rescue-kit'),
+    unsubscribeFooter(email, ''),
   ].join('\n');
 
   const html = emailWrapper(body, previewText);

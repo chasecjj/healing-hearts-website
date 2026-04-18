@@ -40,7 +40,7 @@ export function rescueKitDay3Email(email, name) {
     ),
     ctaButton('Go to Your Conflict Rescue Kit', 'https://healingheartscourse.com/portal/downloads'),
     signOff('Still cheering for you,'),
-    unsubscribeFooter(email, 'rescue-kit'),
+    unsubscribeFooter(email, ''),
   ].join('\n');
 
   const html = emailWrapper(body, previewText);
