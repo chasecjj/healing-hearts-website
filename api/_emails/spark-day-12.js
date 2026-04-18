@@ -1,3 +1,4 @@
+// [CHASE_REVIEW_PENDING: hardcoded date April 23 2026 — update when webinar series rolls]
 // Day 12: Jeff and Trisha are going live
 import {
   emailWrapper, heading, paragraph,
