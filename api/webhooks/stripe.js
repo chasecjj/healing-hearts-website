@@ -173,40 +173,59 @@ async function handleCheckoutCompleted(session) {
     throw new Error(`Failed to upsert CRM contact for: ${customerEmail}`);
   }
 
-  // Update or create order
-  const { data: existingPending } = await supabaseAdmin
+  // Atomic state-transition as idempotency gate.
+  // Only ONE concurrent invocation can win the race: either it promotes a
+  // pending→completed row (CAS on status='pending'), or it inserts a fresh
+  // completed row (upsert with ignoreDuplicates). If neither write returns a
+  // row, another invocation already claimed this session — bail immediately so
+  // downstream fires exactly once (no duplicate email, no duplicate grant).
+
+  // Path A: pending row exists → promote it atomically. The .eq('status','pending')
+  // predicate acts as a compare-and-swap; a concurrent promotion will have already
+  // flipped status to 'completed', so this UPDATE matches 0 rows and returns null.
+  const { data: promoted } = await supabaseAdmin
     .from('orders')
-    .select('id')
+    .update({
+      status: 'completed',
+      stripe_payment_intent: paymentIntent,
+      metadata: { source },
+      updated_at: new Date().toISOString(),
+    })
     .eq('stripe_session_id', sessionId)
+    .eq('status', 'pending')
+    .select()
     .maybeSingle();
 
-  if (existingPending) {
-    await supabaseAdmin
-      .from('orders')
-      .update({
-        status: 'completed',
-        stripe_payment_intent: paymentIntent,
-        metadata: { source },
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', existingPending.id);
-  } else {
-    const { data: product } = await supabaseAdmin
+  // Path B: no pending row → insert fresh. ignoreDuplicates means a concurrent
+  // insert wins the unique constraint and this returns null (no error, 0 rows).
+  let inserted = null;
+  if (!promoted) {
+    const { data: priceRow } = await supabaseAdmin
       .from('products')
       .select('price_cents')
       .eq('slug', productSlug)
       .single();
 
-    await supabaseAdmin.from('orders').upsert({
+    const { data: upsertResult } = await supabaseAdmin.from('orders').upsert({
       contact_id: contact.id,
       stripe_session_id: sessionId,
       stripe_payment_intent: paymentIntent,
       product_slug: productSlug,
-      amount_cents: product?.price_cents || 0,
+      amount_cents: priceRow?.price_cents || 0,
       currency: 'usd',
       status: 'completed',
       metadata: { source },
-    }, { onConflict: 'stripe_session_id', ignoreDuplicates: true });
+    }, { onConflict: 'stripe_session_id', ignoreDuplicates: true })
+      .select()
+      .maybeSingle();
+
+    inserted = upsertResult;
+  }
+
+  // Gate: if neither path claimed the transition, another invocation won the race.
+  if (!promoted && !inserted) {
+    console.log('[webhook] Concurrent completion detected, downstream skipped for session:', sessionId);
+    return;
   }
 
   // Look up product (access_grants for enrollment, name for confirmation email)
