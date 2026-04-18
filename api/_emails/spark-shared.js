@@ -114,6 +114,18 @@ export function dayBadge(dayNumber) {
   return `<div style="display:inline-block; background-color:#1191B1; color:#ffffff; font-size:13px; font-weight:700; padding:6px 14px; border-radius:50px; margin-bottom:16px;">Day ${dayNumber} of 7</div>`;
 }
 
+export function footerNav() {
+  return `<div style="text-align:center; margin:32px 0 0; padding-top:16px; border-top:1px solid #e5e5e5;">
+  <p style="margin:0 0 8px; font-size:13px; color:#a3a3a3; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+    <a href="https://healingheartscourse.com/programs" style="color:#1191B1; text-decoration:none;">Programs</a>
+    &nbsp;&middot;&nbsp;
+    <a href="https://healingheartscourse.com/about" style="color:#1191B1; text-decoration:none;">About</a>
+    &nbsp;&middot;&nbsp;
+    <a href="https://healingheartscourse.com/tools" style="color:#1191B1; text-decoration:none;">Tools</a>
+  </p>
+</div>`;
+}
+
 export function unsubscribeFooter(email, list) {
   const secret = process.env.CRON_SECRET || 'healing-hearts-unsub';
   const sig = crypto.createHmac('sha256', secret).update(`${email}:${list}`).digest('hex').slice(0, 16);

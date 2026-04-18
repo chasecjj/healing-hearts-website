@@ -4,7 +4,7 @@
 
 import { Resend } from 'resend';
 import {
-  emailWrapper, heading, paragraph, callout, ctaButton, signOff, unsubscribeFooter,
+  emailWrapper, heading, paragraph, callout, ctaButton, signOff, unsubscribeFooter, footerNav,
 } from './spark-shared.js';
 
 const FROM_ADDRESS = 'Healing Hearts <hello@healingheartscourse.com>';
@@ -43,6 +43,7 @@ export function rescueKitWelcomeEmail(email, name) {
       `If you have a question before then, just reply to this email. It goes directly to me.`
     ),
     signOff('With so much hope for you,'),
+    footerNav(),
     unsubscribeFooter(email, 'rescue-kit'),
   ].join('\n');
 
