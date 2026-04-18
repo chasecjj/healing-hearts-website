@@ -1,4 +1,4 @@
-import { emailWrapper, escapeHtml, heading, paragraph, callout, ctaButton, divider, signOff, unsubscribeFooter } from './spark-shared.js';
+import { emailWrapper, escapeHtml, heading, paragraph, callout, ctaButton, divider, signOff, unsubscribeFooter, footerNav } from './spark-shared.js';
 
 /**
  * Format a TIMESTAMPTZ / ISO date string for display in Mountain Time.
@@ -53,6 +53,7 @@ export function webinarConfirmationEmail(name, webinar, email) {
       `<strong>A quick tip:</strong> Add this event to your calendar right now so it does not slip away. Life gets busy &mdash; we get it. But this hour could change everything.`
     ),
     signOff('Cheering for you and your marriage,'),
+    footerNav(),
     unsubscribeFooter(email, 'webinar'),
   ].join('');
 

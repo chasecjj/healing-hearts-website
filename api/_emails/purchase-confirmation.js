@@ -2,7 +2,7 @@
 // Two variants: download products (Rescue Kit, Card Pack) and enrollment (Full Course).
 // Voice: Trisha Jamison. Framework: AVNII (Acknowledge, Validate, Normalize, Illuminate, Invite).
 import {
-  emailWrapper, heading, paragraph, callout, ctaButton, signOff, unsubscribeFooter,
+  emailWrapper, heading, paragraph, callout, ctaButton, signOff, unsubscribeFooter, footerNav,
 } from './spark-shared.js';
 
 /**
@@ -58,6 +58,7 @@ export function downloadPurchaseEmail(email, productName, receipts = {}) {
       `If you are doing this on your own right now, without your partner knowing, that is completely okay. Some of the most beautiful transformations I have seen started with one person quietly showing up differently. That counts. That matters.`
     ),
     signOff('I am cheering for you,'),
+    footerNav(),
     unsubscribeFooter(email, ''),
   ].join('\n');
 
@@ -94,6 +95,7 @@ export function shippingConfirmationEmail(email, productName, receipts = {}) {
       `If anything about your order needs changing — address, quantity, anything — just reply to this email and we will take care of it right away.`
     ),
     signOff('With so much warmth,'),
+    footerNav(),
     unsubscribeFooter(email, ''),
   ].join('\n');
 
@@ -132,6 +134,7 @@ export function enrollmentPurchaseEmail(email, name, receipts = {}) {
       `One more thing. You are not alone in this. If you get stuck, if something comes up that feels too big, if you just need someone to say "this makes sense," reach out. Jeff and I are here.`
     ),
     signOff('With so much hope for what is ahead,'),
+    footerNav(),
     unsubscribeFooter(email, ''),
   ].join('\n');
 
