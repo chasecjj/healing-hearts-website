@@ -1,3 +1,4 @@
+// [TRISHA_VOICE_REVIEW_PENDING] — voice-sensitive template; edits require Trisha sign-off
 // Rescue Kit — Day 3 check-in email
 // Triggered by: api/cron/spark-drip.js when current_day < 3 and 3+ days since purchased_at
 // Voice: Trisha Jamison. Tone: warm, curious, non-judgmental.

@@ -1,3 +1,4 @@
+// [TRISHA_VOICE_REVIEW_PENDING] — voice-sensitive template; edits require Trisha sign-off
 // Rescue Kit — Day 7 progress + upsell email
 // Triggered by: api/cron/spark-drip.js when current_day < 7 and 7+ days since purchased_at
 // Voice: Trisha Jamison. Tone: proud, inviting, honest about the deeper journey.
