@@ -10,6 +10,7 @@ import {
   FAQAccordion,
   Input,
 } from '@scoria/ui'
+import { trackLeadSignup } from '../lib/pixels.js'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -324,6 +325,8 @@ export default function SparkChallenge() {
       })
       if (res.ok) {
         setFormState('success')
+        // Fire lead pixel — no-op until real pixel IDs are provisioned
+        trackLeadSignup({ source: 'spark-challenge' })
       } else {
         setFormState('error')
       }

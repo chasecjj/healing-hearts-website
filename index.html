@@ -25,6 +25,80 @@
     <!-- Favicon (heart emoji as SVG data URI) -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💛</text></svg>" />
 
+    <!-- ================================================================
+         Analytics — Meta Pixel + Google Analytics 4
+         [BRANCH_DO_NOT_MERGE_UNTIL_IDS_PROVISIONED]
+
+         Swap instructions:
+           1. Provision IDs (see docs/pixel-ga-swap-in.md)
+           2. Add VITE_META_PIXEL_ID and VITE_GA_MEASUREMENT_ID to Vercel
+              env (Production + Preview environments)
+           3. Replace __META_PIXEL_ID__ and __GA_MEASUREMENT_ID__ below
+              with the real IDs, OR update vite.config.js to inject them
+              at build time via define: { ... }
+           4. Remove this block comment when IDs are live
+
+         IMPORTANT: The sentinel strings __META_PIXEL_ID__ and
+         __GA_MEASUREMENT_ID__ are intentionally invalid — no network
+         requests are sent when sentinels are present because:
+           - fbq('init', ...) only fires for real pixel IDs; an invalid
+             ID is accepted by the fbevents.js stub but produces no
+             network traffic to facebook.com until a real ID is used.
+           - gtag('config', ...) with an invalid G-XXXXXXXX stream ID
+             sends no hits because Google Tag Manager rejects unknown IDs.
+           - Additionally, pixels.js guards all tracking calls behind
+             isMetaReady() / isGAReady() which check for the sentinel.
+         ================================================================ -->
+
+    <!-- Meta Pixel Base Code -->
+    <!-- PROVISIONING: replace __META_PIXEL_ID__ with real ID from
+         https://business.facebook.com/events_manager (Data Sources > Pixel) -->
+    <script>
+      (function() {
+        var pixelId = '__META_PIXEL_ID__';
+        // Sentinel guard — abort if placeholder not yet replaced
+        if (pixelId === '__META_PIXEL_ID__') return;
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window,document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+      })();
+    </script>
+    <noscript>
+      <!-- noscript pixel is also gated — only renders when real ID is present -->
+      <!-- Replace __META_PIXEL_ID__ before enabling:
+      <img height="1" width="1" style="display:none"
+        src="https://www.facebook.com/tr?id=__META_PIXEL_ID__&ev=PageView&noscript=1"
+      />
+      -->
+    </noscript>
+    <!-- End Meta Pixel Base Code -->
+
+    <!-- Google Analytics 4 (gtag.js) -->
+    <!-- PROVISIONING: replace __GA_MEASUREMENT_ID__ with real ID from
+         https://analytics.google.com (Admin > Data Streams > Web stream) -->
+    <script>
+      (function() {
+        var gaMeasurementId = '__GA_MEASUREMENT_ID__';
+        // Sentinel guard — abort if placeholder not yet replaced
+        if (gaMeasurementId === '__GA_MEASUREMENT_ID__') return;
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaMeasurementId;
+        document.head.appendChild(s);
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', gaMeasurementId);
+      })();
+    </script>
+    <!-- End Google Analytics 4 -->
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

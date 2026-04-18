@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { CheckCircle2, Shield, Heart, Brain, Sparkles, Calendar } from 'lucide-react'
 import usePageMeta from '../hooks/usePageMeta'
+import { trackLeadSignup } from '../lib/pixels.js'
 
 /* ------------------------------------------------------------------ */
 /*  ConferenceHome — lightweight expo landing page                     */
@@ -48,7 +49,13 @@ function CaptureForm({ source = 'conference' }) {
           utm_content: src || 'unknown',
         }),
       })
-      setState(res.ok ? 'success' : 'error')
+      if (res.ok) {
+        setState('success')
+        // Fire lead pixel — no-op until real pixel IDs are provisioned
+        trackLeadSignup({ source: `expo-${source}` })
+      } else {
+        setState('error')
+      }
     } catch {
       setState('error')
     }

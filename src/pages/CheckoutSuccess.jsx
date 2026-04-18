@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { verifyCheckoutSession } from '../lib/checkout';
+import { trackPurchase } from '../lib/pixels.js';
 import { CheckCircle, ShieldAlert, ArrowRight, Download } from 'lucide-react';
 import usePageMeta from '../hooks/usePageMeta';
 
@@ -23,7 +24,16 @@ export default function CheckoutSuccess() {
     }
 
     verifyCheckoutSession(sessionId)
-      .then((data) => setSession(data))
+      .then((data) => {
+        setSession(data);
+        // Fire purchase pixel on verified success — no-op until real IDs provisioned
+        trackPurchase({
+          product_slug: data.product_slug || '',
+          amount_cents: data.amount_cents || 0,
+          currency: 'USD',
+          transaction_id: sessionId,
+        });
+      })
       .catch(() => setError('We could not verify your purchase. Please contact us for help.'))
       .finally(() => setLoading(false));
   }, [sessionId]);
