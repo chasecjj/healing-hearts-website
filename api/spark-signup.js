@@ -62,7 +62,7 @@ export default async function handler(req, res) {
       });
 
     } catch (err) {
-      console.error('[spark-signup] Email send failed:', err);
+      console.error('[spark-signup] Welcome email send failed for:', cleanEmail, 'template: welcome, error:', err?.message || err);
       // Don't fail the request — user is already in DB and will get drip emails
     }
   } else {
