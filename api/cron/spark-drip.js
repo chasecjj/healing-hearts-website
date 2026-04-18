@@ -63,6 +63,14 @@ export default async function handler(req, res) {
 
       for (const signup of signups) {
         const nextDay = signup.current_day + 1;
+        if (nextDay > 14) {
+          console.warn('[spark-drip] Signup past day 14 without completion, marking completed:', signup.email, 'current_day:', signup.current_day);
+          await supabaseAdmin
+            .from('spark_signups')
+            .update({ completed: true })
+            .eq('id', signup.id);
+          continue;
+        }
         try {
           const templateModule = await dayTemplates[nextDay]();
           const { subject, html } = templateModule.dayEmail(signup.email);
