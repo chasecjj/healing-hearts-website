@@ -13,6 +13,9 @@ const FROM_ADDRESS = 'Healing Hearts <hello@healingheartscourse.com>';
 
 const TEMPLATES = {
   'webinar-broadcast-april23': () => import('../_emails/webinar-broadcast-april23.js'),
+  // [CHASE_REVIEW_PENDING] Confirm audience for apr30 broadcast: 'spark' (all signups),
+  // 'webinar_apr23' (Apr 23 registrants), or both via two separate sends.
+  'webinar-broadcast-april30': () => import('../_emails/webinar-broadcast-april30.js'),
 };
 
 const AUDIENCES = {
@@ -20,6 +23,18 @@ const AUDIENCES = {
     table: 'spark_signups',
     emailCol: 'email',
     filters: (query) => query.eq('unsubscribed', false),
+  },
+  // [CHASE_REVIEW_PENDING] webinar_apr23 audience targets people who registered for the
+  // April 23 session. Requires the webinar row to exist in the 'webinars' table with
+  // status 'completed'. Replace WEBINAR_APR23_ID below with the actual UUID before sending.
+  // To find it: SELECT id, title, starts_at FROM webinars WHERE starts_at LIKE '2026-04-23%';
+  webinar_apr23: {
+    table: 'webinar_registrations',
+    emailCol: 'email',
+    filters: (query) =>
+      query
+        .eq('webinar_id', process.env.WEBINAR_APR23_ID || '')
+        .eq('unsubscribed', false),
   },
 };
 
