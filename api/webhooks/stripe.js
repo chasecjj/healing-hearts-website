@@ -197,7 +197,7 @@ async function handleCheckoutCompleted(session) {
       .eq('slug', productSlug)
       .single();
 
-    await supabaseAdmin.from('orders').insert({
+    await supabaseAdmin.from('orders').upsert({
       contact_id: contact.id,
       stripe_session_id: sessionId,
       stripe_payment_intent: paymentIntent,
@@ -206,7 +206,7 @@ async function handleCheckoutCompleted(session) {
       currency: 'usd',
       status: 'completed',
       metadata: { source },
-    });
+    }, { onConflict: 'stripe_session_id', ignoreDuplicates: true });
   }
 
   // Look up product (access_grants for enrollment, name for confirmation email)
