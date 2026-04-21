@@ -1,3 +1,4 @@
+// [TRISHA_VOICE_REVIEW_PENDING] — voice-sensitive template; edits require Trisha sign-off
 // Rescue Kit — Day 7 progress + upsell email
 // Triggered by: api/cron/spark-drip.js when current_day < 7 and 7+ days since purchased_at
 // Voice: Trisha Jamison. Tone: proud, inviting, honest about the deeper journey.
@@ -53,7 +54,7 @@ export function rescueKitDay7Email(email, name) {
       `Whatever you decide, I am glad you took this first step. Keep going. Your relationship is worth the work.`
     ),
     signOff('With all the hope in the world,'),
-    unsubscribeFooter(email, 'rescue-kit'),
+    unsubscribeFooter(email, ''),
   ].join('\n');
 
   const html = emailWrapper(body, previewText);

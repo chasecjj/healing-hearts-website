@@ -1,3 +1,4 @@
+// [CHASE_REVIEW_PENDING: hardcoded date Thursday April 23 2026 at 7:00 PM MT — update before reuse]
 // One-time broadcast: Live Q&A invite for Spark Challenge participants
 // Sent April 23, 2026 to all active Spark Challenge subscribers
 // AVNII: Acknowledge → Validate → Normalize → Illuminate → Invite

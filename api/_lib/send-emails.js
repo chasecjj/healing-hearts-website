@@ -5,6 +5,15 @@
  * per chunk. An optional onChunkSent callback fires after each successful chunk,
  * receiving the start index and count so callers can update their own records.
  *
+ * ISOLATION SCOPE: chunk-level only, NOT per-recipient.
+ * - A failed chunk does not halt subsequent chunks (cross-chunk isolation is guaranteed).
+ * - Within a chunk, resend.batch.send() is a single API call for up to 100 recipients.
+ *   If Resend returns an error for a chunk, ALL recipients in that chunk are flagged as
+ *   failed — there is no per-recipient error isolation within a chunk.
+ * - If per-recipient isolation is required (e.g., for validation failures or high-value
+ *   sends where double-send risk is unacceptable), use resend.emails.send() per recipient
+ *   in a loop instead, at the cost of rate-limit headroom.
+ *
  * @param {import('resend').Resend} resend - Resend client instance.
  * @param {Array<{ from: string, to: string, subject: string, html: string }>} payloads
  * @param {Object} [options]

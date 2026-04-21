@@ -123,7 +123,7 @@ export default async function handler(req, res) {
 
       const { error: insertError } = await supabaseAdmin
         .from('broadcast_sends')
-        .insert(sendRecords);
+        .upsert(sendRecords, { onConflict: 'broadcast_id,email', ignoreDuplicates: true });
 
       if (insertError) {
         console.error('[send-broadcast] Failed to record sends:', insertError);

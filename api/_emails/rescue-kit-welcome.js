@@ -43,7 +43,7 @@ export function rescueKitWelcomeEmail(email, name) {
       `If you have a question before then, just reply to this email. It goes directly to me.`
     ),
     signOff('With so much hope for you,'),
-    unsubscribeFooter(email, 'rescue-kit'),
+    unsubscribeFooter(email, ''),
   ].join('\n');
 
   const html = emailWrapper(body, previewText);

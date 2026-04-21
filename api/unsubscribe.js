@@ -36,6 +36,7 @@ export default async function handler(req, res) {
     const tables = [];
     if (list === 'spark' || !list) tables.push('spark_signups');
     if (list === 'webinar' || !list) tables.push('webinar_registrations');
+    if (!list) tables.push('rescue_kit_drip');
 
     for (const table of tables) {
       await supabaseAdmin
