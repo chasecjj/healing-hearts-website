@@ -58,7 +58,7 @@ export default function Tools() {
           
           <div className="relative z-10 flex flex-col md:flex-row gap-12 items-center">
             <div className="md:w-1/2">
-               <h2 className="font-outfit font-bold text-4xl text-primary mb-4">The SPARK Method™</h2>
+               <h2 className="font-outfit font-bold text-4xl text-primary mb-4">Trisha's SPARK Method™</h2>
                <p className="font-drama italic text-2xl text-accent mb-6 leading-tight">Your five-step rescue plan for any conflict.</p>
                <p className="font-sans text-foreground/70 font-light leading-relaxed mb-8">
                  SPARK works because it interrupts the biological cascade that turns a disagreement into a disaster. It gives your CEO Brain time to get back in the room.
