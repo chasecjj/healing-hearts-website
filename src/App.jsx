@@ -40,18 +40,7 @@ import CheckoutSuccess from './pages/CheckoutSuccess';
 import Downloads from './portal/Downloads';
 import { Analytics } from '@vercel/analytics/react';
 
-/* Homepage swap: show ConferenceHome during Be Healthy Utah expo window */
-function useExpoHomepage() {
-  const now = new Date();
-  const month = now.getMonth(); // 0-indexed: 3 = April
-  const day = now.getDate();
-  const year = now.getFullYear();
-  // April 16-20, 2026: day before expo through 2 days after
-  return year === 2026 && month === 3 && day >= 16 && day <= 20;
-}
-
 function App() {
-  const isExpoWindow = useExpoHomepage();
   return (
     <Router>
       <ScrollToTop />
@@ -61,7 +50,7 @@ function App() {
           <Routes>
             {/* Main Marketing Site with Layout (Navbar + Footer) */}
             <Route element={<Layout />}>
-              <Route path="/" element={isExpoWindow ? <ConferenceHome /> : <Home />} />
+              <Route path="/" element={<Home />} />
               <Route path="/conference" element={<ConferenceHome />} />
               <Route path="/expo" element={<ConferenceHome />} />
               <Route path="/about" element={<About />} />
