@@ -297,7 +297,7 @@ const SparkPreview = () => {
       <div className="relative z-10 max-w-5xl mx-auto px-6 sm:px-10">
         <div className="text-center mb-16">
           <h2 className="rk-spark-heading font-outfit font-bold text-4xl md:text-5xl text-white mb-4">
-            The SPARK Method&trade;
+            Trisha's SPARK Method&trade;
           </h2>
           <p className="rk-spark-heading font-drama italic text-2xl text-accent mb-6">
             Your five-step rescue plan for any conflict.

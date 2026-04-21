@@ -7,7 +7,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const frameworks = [
   {
-    title: "The SPARK Method™",
+    title: "Trisha's SPARK Method™",
     subtitle: "Your five-step rescue plan for any conflict.",
     desc: "SPARK works because it interrupts the biological cascade that turns a disagreement into a disaster. It gives your CEO Brain time to get back in the room.",
     points: [
