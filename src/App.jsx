@@ -4,6 +4,7 @@ import ScrollToTop from './components/ScrollToTop';
 import { AuthProvider } from './contexts/AuthContext';
 import { Layout } from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
+import ErrorBoundary from './components/ErrorBoundary';
 import CoursePortal from './CoursePortal';
 import Home from './pages/Home';
 import ConferenceHome from './pages/ConferenceHome';
@@ -47,6 +48,7 @@ function App() {
       <Analytics />
       <AuthProvider>
         <div className="w-full min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-accent/20 selection:text-accent">
+          <ErrorBoundary>
           <Routes>
             {/* Main Marketing Site with Layout (Navbar + Footer) */}
             <Route element={<Layout />}>
@@ -156,6 +158,7 @@ function App() {
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          </ErrorBoundary>
         </div>
       </AuthProvider>
     </Router>
