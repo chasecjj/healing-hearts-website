@@ -27,16 +27,16 @@ function SidebarContent({ onNavClick }) {
   const rolePill = isAdmin ? 'Admin' : 'Student';
 
   const navLinkClass = ({ isActive }) =>
-    `flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+    `flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
       isActive
-        ? 'bg-primary/10 text-primary font-semibold'
-        : 'text-foreground/60 hover:text-foreground hover:bg-primary/5'
+        ? 'bg-primary/10 text-primary font-semibold border-l-[3px] border-primary'
+        : 'text-foreground/60 hover:text-primary hover:bg-primary/5 hover:shadow-sm'
     }`;
 
   return (
     <div className="flex flex-col h-full px-4 py-6 gap-6">
       {/* ── Account card ─────────────────────────────────── */}
-      <div className="rounded-2xl bg-primary/5 border border-primary/10 p-4 flex flex-col gap-3">
+      <div className="rounded-2xl bg-white shadow-sm border border-primary/15 p-4 flex flex-col gap-3">
         <div>
           <p className="font-outfit font-semibold text-foreground text-sm leading-tight">
             {displayName}
@@ -67,7 +67,7 @@ function SidebarContent({ onNavClick }) {
 
       {/* ── Student nav ──────────────────────────────────── */}
       <nav className="flex flex-col gap-1">
-        <p className="px-3 mb-1 text-[10px] font-outfit font-bold uppercase tracking-widest text-foreground/30">
+        <p className="px-3 mb-1 text-[10px] font-outfit font-bold uppercase tracking-widest text-primary/50">
           My Portal
         </p>
         <NavLink to="/portal" end className={navLinkClass} onClick={onNavClick}>
@@ -85,7 +85,7 @@ function SidebarContent({ onNavClick }) {
         <>
           <div className="h-px bg-primary/10" />
           <nav className="flex flex-col gap-1">
-            <p className="px-3 mb-1 text-[10px] font-outfit font-bold uppercase tracking-widest text-foreground/30">
+            <p className="px-3 mb-1 text-[10px] font-outfit font-bold uppercase tracking-widest text-primary/50">
               Admin
             </p>
             <NavLink to="/admin" end className={navLinkClass} onClick={onNavClick}>
@@ -106,7 +106,7 @@ function SidebarContent({ onNavClick }) {
 
       {/* ── Footer spacer + contact ──────────────────────── */}
       <div className="mt-auto pt-4 border-t border-primary/10">
-        <p className="px-3 text-[10px] text-foreground/30 leading-relaxed">
+        <p className="px-3 text-[10px] text-foreground/40 leading-relaxed">
           Healing Hearts v2026 ·{' '}
           <a href="/contact" className="hover:text-primary transition-colors">
             Contact
@@ -140,7 +140,7 @@ export default function PortalLayout() {
   return (
     <div className="flex min-h-screen bg-background text-foreground">
       {/* ── Desktop sidebar (fixed) ─────────────────────────── */}
-      <aside className="hidden md:flex flex-col fixed left-0 top-0 h-screen w-64 bg-background border-r border-primary/10 z-40 overflow-y-auto">
+      <aside className="hidden md:flex flex-col fixed left-0 top-0 h-screen w-64 bg-[#EFE8DC] border-r border-primary/20 z-40 overflow-y-auto">
         <SidebarContent onNavClick={() => {}} />
       </aside>
 
@@ -155,7 +155,7 @@ export default function PortalLayout() {
 
       {/* ── Mobile sidebar overlay ───────────────────────────── */}
       <aside
-        className={`fixed left-0 top-0 h-screen w-64 bg-background border-r border-primary/10 z-50 overflow-y-auto transition-transform duration-300 ease-in-out md:hidden ${
+        className={`fixed left-0 top-0 h-screen w-64 bg-[#EFE8DC] border-r border-primary/20 z-50 overflow-y-auto transition-transform duration-300 ease-in-out md:hidden ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
