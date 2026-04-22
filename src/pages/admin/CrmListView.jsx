@@ -35,6 +35,8 @@ export default function CrmListView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [statusFilter, setStatusFilter] = useState('all');
+  const [hotLeadIds, setHotLeadIds] = useState(new Set());
+  const [hotLeadsOnly, setHotLeadsOnly] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -59,10 +61,28 @@ export default function CrmListView() {
     return () => { cancelled = true; };
   }, []);
 
+  useEffect(() => {
+    async function loadHotLeads() {
+      const { data } = await supabase
+        .from('crm_webinar_hot_leads')
+        .select('application_id');
+      if (data) {
+        setHotLeadIds(new Set(data.map((r) => r.application_id)));
+      }
+    }
+    loadHotLeads();
+  }, []);
+
   const filtered = useMemo(() => {
-    if (statusFilter === 'all') return leads;
-    return leads.filter((l) => l.status === statusFilter);
-  }, [leads, statusFilter]);
+    let result = statusFilter === 'all' ? leads : leads.filter((l) => l.status === statusFilter);
+    if (hotLeadsOnly) result = result.filter((l) => hotLeadIds.has(l.id));
+    return result;
+  }, [leads, statusFilter, hotLeadsOnly, hotLeadIds]);
+
+  const hotLeadsCount = useMemo(
+    () => leads.filter((l) => hotLeadIds.has(l.id)).length,
+    [leads, hotLeadIds]
+  );
 
   const counts = useMemo(() => {
     const c = {};
@@ -124,6 +144,16 @@ export default function CrmListView() {
               </button>
             );
           })}
+          <button
+            onClick={() => setHotLeadsOnly(!hotLeadsOnly)}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+              hotLeadsOnly
+                ? 'bg-orange-500 text-white'
+                : 'bg-white text-orange-600 border border-orange-200 hover:border-orange-400'
+            }`}
+          >
+            🔥 Hot Leads <span className="opacity-60">({hotLeadsCount})</span>
+          </button>
         </div>
 
         {/* Body */}
@@ -169,12 +199,19 @@ export default function CrmListView() {
                       }`}
                     >
                       <td className="px-6 py-4">
-                        <Link
-                          to={`/admin/crm/${lead.id}`}
-                          className="font-medium text-primary hover:underline"
-                        >
-                          {lead.name || '(no name)'}
-                        </Link>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Link
+                            to={`/admin/crm/${lead.id}`}
+                            className="font-medium text-primary hover:underline"
+                          >
+                            {lead.name || '(no name)'}
+                          </Link>
+                          {hotLeadIds.has(lead.id) && (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-orange-100 text-orange-700">
+                              🔥 Hot Lead
+                            </span>
+                          )}
+                        </div>
                         <div className="text-xs text-foreground/50 mt-0.5 flex items-center gap-2">
                           <Mail className="w-3 h-3" />
                           {lead.email}

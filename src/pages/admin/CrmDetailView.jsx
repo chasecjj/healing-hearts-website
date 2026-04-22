@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, AlertCircle, Mail, Phone, Calendar, Heart, Church, Sparkles } from 'lucide-react';
+import { ArrowLeft, AlertCircle, Mail, Phone, Calendar, Heart, Church, Sparkles, Activity } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import usePageMeta from '../../hooks/usePageMeta';
+import Contact360Timeline from '../../components/admin/Contact360Timeline';
 
 const STATUS_VALUES = ['new', 'reviewing', 'contacted', 'responded', 'converted', 'archived'];
 
@@ -35,6 +36,10 @@ export default function CrmDetailView() {
   const [application, setApplication] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Contact 360 state
+  const [contact360, setContact360] = useState(null);
+  const [contact360Loading, setContact360Loading] = useState(false);
 
   // Edit form state
   const [status, setStatus] = useState('new');
@@ -69,6 +74,25 @@ export default function CrmDetailView() {
     load();
     return () => { cancelled = true; };
   }, [applicationId]);
+
+  useEffect(() => {
+    if (!application?.email) return;
+    let cancelled = false;
+    async function load360() {
+      setContact360Loading(true);
+      const { data } = await supabase
+        .from('crm_contact_360')
+        .select('*')
+        .eq('email', application.email)
+        .maybeSingle();
+      if (!cancelled) {
+        setContact360(data ?? null);
+        setContact360Loading(false);
+      }
+    }
+    load360();
+    return () => { cancelled = true; };
+  }, [application?.email]);
 
   async function refresh() {
     const { data, error } = await supabase
@@ -238,6 +262,18 @@ export default function CrmDetailView() {
                   </div>
                   <p className="text-foreground/80 whitespace-pre-wrap text-sm">{application.additional_notes}</p>
                 </div>
+              )}
+            </Section>
+
+            {/* Contact 360° */}
+            <Section title="Contact 360°" icon={Activity}>
+              {contact360Loading ? (
+                <p className="text-foreground/50 text-sm">Loading signals…</p>
+              ) : (
+                <Contact360Timeline
+                  data={contact360}
+                  applicationCreatedAt={application.created_at}
+                />
               )}
             </Section>
 
