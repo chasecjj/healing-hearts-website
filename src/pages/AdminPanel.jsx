@@ -35,8 +35,15 @@ export default function AdminPanel() {
         {/* Quick Links */}
         <div className="flex flex-wrap items-center justify-center gap-4 mb-16">
           <Link
+            to="/admin/crm"
+            className="px-6 py-3 rounded-full bg-primary text-white font-medium text-sm hover:bg-primary/90 transition-colors shadow-lg inline-flex items-center gap-2"
+          >
+            <Users className="w-4 h-4" />
+            CRM — Leads
+          </Link>
+          <Link
             to="/portal"
-            className="px-6 py-3 rounded-full bg-primary text-white font-medium text-sm hover:bg-primary/90 transition-colors shadow-lg"
+            className="px-6 py-3 rounded-full border-2 border-primary/20 text-primary font-medium text-sm hover:bg-primary hover:text-white transition-all"
           >
             Course Portal (Full Access)
           </Link>
