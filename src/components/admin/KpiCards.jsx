@@ -6,13 +6,13 @@ import { useAuth } from '../../contexts/AuthContext';
 // ─── Skeleton shimmer ────────────────────────────────────────────────────────
 function SkeletonCard() {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-primary/5 animate-pulse">
+    <div className="bg-white rounded-2xl p-5 shadow-md border border-primary/15 animate-pulse">
       <div className="flex items-center gap-3 mb-4">
-        <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-xl" />
-        <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-28" />
+        <div className="w-10 h-10 bg-gray-200 rounded-xl" />
+        <div className="h-3 bg-gray-200 rounded w-28" />
       </div>
-      <div className="h-9 bg-gray-200 dark:bg-gray-700 rounded w-20 mb-2" />
-      <div className="h-3 bg-gray-100 dark:bg-gray-700 rounded w-36" />
+      <div className="h-9 bg-gray-200 rounded w-20 mb-2" />
+      <div className="h-3 bg-gray-100 rounded w-36" />
     </div>
   );
 }
@@ -20,7 +20,7 @@ function SkeletonCard() {
 // ─── Stat card ───────────────────────────────────────────────────────────────
 function StatCard({ icon: Icon, title, primary, subtitle }) {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-primary/5">
+    <div className="bg-white rounded-2xl p-5 shadow-md border border-primary/15">
       <div className="flex items-center gap-3 mb-4">
         <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
           <Icon className="w-5 h-5 text-primary" />
@@ -143,7 +143,7 @@ export default function KpiCards() {
   // ── Loading state ────────────────────────────────────────────────────────
   if (loading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
         {Array.from({ length: 7 }).map((_, i) => (
           <SkeletonCard key={i} />
         ))}
@@ -215,7 +215,7 @@ export default function KpiCards() {
 
   // ── Render cards ─────────────────────────────────────────────────────────
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
       <StatCard
         icon={BarChart3}
         title="Pipeline Status"
