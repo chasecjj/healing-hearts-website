@@ -143,20 +143,14 @@ export default function PortalDashboard({
 
   return (
     <div ref={containerRef} className="pb-24 px-4 sm:px-8 max-w-7xl mx-auto flex flex-col gap-16">
-      {/* ── Back to website ─────────────────────────────────── */}
-      <div className="pt-6">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-1 font-sans text-sm text-foreground/40 hover:text-primary transition-colors"
-        >
-          <ChevronLeft className="w-4 h-4" />
-          Back to website
-        </Link>
-      </div>
-
       {/* ── Welcome Header ─────────────────────────────────── */}
-      <section className="relative pt-2" data-animate>
-        <div className="max-w-3xl">
+      <section className="relative rounded-3xl overflow-hidden pt-6 p-8 sm:p-12 bg-primary/10 min-h-[200px] flex flex-col justify-center" data-animate>
+        {/* Ambient blurred glow layer */}
+        <div className="absolute inset-0 z-0 opacity-30 overflow-hidden" aria-hidden="true">
+          <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-primary blur-3xl" />
+          <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-accent blur-3xl" />
+        </div>
+        <div className="relative z-10 max-w-3xl">
           <h1 className="font-drama text-4xl sm:text-5xl md:text-6xl text-foreground leading-tight tracking-tight mb-6">
             Welcome back to your Sanctuary,{' '}
             <span className="italic text-primary">{firstName}</span>
@@ -164,12 +158,10 @@ export default function PortalDashboard({
           <div className="flex items-start gap-4 text-foreground/60 italic font-drama text-lg sm:text-xl">
             <Quote className="w-6 h-6 text-accent flex-shrink-0 mt-1" />
             <p className="max-w-xl">
-              "The wound is the place where the Light enters you. Let us tend to the garden of your heart today."
+              &ldquo;The wound is the place where the Light enters you. Let us tend to the garden of your heart today.&rdquo;
             </p>
           </div>
         </div>
-        {/* Decorative blur */}
-        <div className="absolute -top-12 -right-12 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10" aria-hidden="true" />
       </section>
 
       {/* ── Quick Links ─────────────────────────────────────── */}

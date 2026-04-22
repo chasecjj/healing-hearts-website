@@ -193,7 +193,7 @@ export default function CrmDetailView() {
   if (error || !application) {
     return (
       <div className="w-full min-h-screen bg-background">
-        <div className="max-w-4xl mx-auto px-6 pt-24 md:pt-32 pb-24">
+        <div className="max-w-4xl mx-auto px-6 pt-8 pb-24">
           <Link to="/admin/crm" className="inline-flex items-center gap-2 text-sm text-primary/60 hover:text-primary mb-6">
             <ArrowLeft className="w-4 h-4" /> Back to CRM
           </Link>
@@ -209,7 +209,7 @@ export default function CrmDetailView() {
 
   return (
     <div className="w-full min-h-screen bg-background">
-      <div className="max-w-5xl mx-auto px-6 pt-24 md:pt-32 pb-24">
+      <div className="max-w-5xl mx-auto px-6 pt-8 pb-24">
         <Link to="/admin/crm" className="inline-flex items-center gap-2 text-sm text-primary/60 hover:text-primary mb-6 transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to CRM
         </Link>

@@ -43,6 +43,7 @@ import WebinarLive from './pages/WebinarLive';
 import WebinarReplay from './pages/WebinarReplay';
 import CheckoutSuccess from './pages/CheckoutSuccess';
 import Downloads from './portal/Downloads';
+import PortalLayout from './layouts/PortalLayout';
 import { Analytics } from '@vercel/analytics/react';
 
 function App() {
@@ -87,12 +88,26 @@ function App() {
               <Route path="/webinar/live" element={<WebinarLive />} />
               <Route path="/webinar/replay" element={<WebinarReplay />} />
               <Route path="/physician-track" element={<ComingSoon />} />
+            </Route>
+
+            {/* Portal + Admin routes — PortalLayout (sidebar) */}
+            <Route element={<PortalLayout />}>
+              {/* Admin routes */}
               <Route path="/admin" element={<RequireAdmin><AdminPanel /></RequireAdmin>} />
               <Route path="/admin/crm" element={<RequireAdmin><CrmListView /></RequireAdmin>} />
               <Route path="/admin/crm/:applicationId" element={<RequireAdmin><CrmDetailView /></RequireAdmin>} />
               <Route path="/admin/tasks" element={<RequireAdmin><TasksLayout /></RequireAdmin>} />
               <Route path="/admin/tasks/kanban" element={<RequireAdmin><TasksLayout /></RequireAdmin>} />
               <Route path="/admin/tasks/list" element={<RequireAdmin><TasksLayout /></RequireAdmin>} />
+
+              {/* Portal routes */}
+              <Route path="/portal/downloads" element={<ProtectedRoute><Downloads /></ProtectedRoute>} />
+              <Route path="/portal/course/:courseSlug" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
+              <Route path="/portal/course/:courseSlug/:moduleSlug" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
+              <Route path="/portal/course/:courseSlug/:moduleSlug/:lessonSlug" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
+              <Route path="/portal" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
+              <Route path="/portal/:moduleSlug" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
+              <Route path="/portal/:moduleSlug/:lessonSlug" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
             </Route>
 
             {/* Auth pages (standalone, no navbar/footer) */}
@@ -101,68 +116,6 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/apply/success" element={<ApplicationSuccess />} />
-
-            {/* Protected: Downloads (must come before parameterized portal routes) */}
-            <Route
-              path="/portal/downloads"
-              element={
-                <ProtectedRoute>
-                  <Downloads />
-                </ProtectedRoute>
-              }
-            />
-
-            {/* Protected: Course Portal — course-scoped routes */}
-            <Route
-              path="/portal/course/:courseSlug"
-              element={
-                <ProtectedRoute>
-                  <CoursePortal />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/portal/course/:courseSlug/:moduleSlug"
-              element={
-                <ProtectedRoute>
-                  <CoursePortal />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/portal/course/:courseSlug/:moduleSlug/:lessonSlug"
-              element={
-                <ProtectedRoute>
-                  <CoursePortal />
-                </ProtectedRoute>
-              }
-            />
-
-            {/* Protected: Course Portal — legacy routes (default to healing-hearts-journey) */}
-            <Route
-              path="/portal"
-              element={
-                <ProtectedRoute>
-                  <CoursePortal />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/portal/:moduleSlug"
-              element={
-                <ProtectedRoute>
-                  <CoursePortal />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/portal/:moduleSlug/:lessonSlug"
-              element={
-                <ProtectedRoute>
-                  <CoursePortal />
-                </ProtectedRoute>
-              }
-            />
 
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />

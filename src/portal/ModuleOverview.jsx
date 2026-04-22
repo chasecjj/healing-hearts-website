@@ -134,11 +134,11 @@ export default function ModuleOverview({
     <div ref={containerRef} className="flex-1 overflow-y-auto">
       {/* ── Hero Header ────────────────────────────────────── */}
       <section
-        className="relative rounded-3xl overflow-hidden mb-12 mx-4 sm:mx-8 mt-4 p-8 sm:p-12 bg-primary/5 min-h-[280px] flex flex-col justify-center"
+        className="relative rounded-3xl overflow-hidden mb-12 mx-4 sm:mx-8 mt-4 p-8 sm:p-12 bg-primary/10 min-h-[280px] flex flex-col justify-center"
         data-animate
       >
         {/* Decorative blurs */}
-        <div className="absolute inset-0 z-0 opacity-20 overflow-hidden" aria-hidden="true">
+        <div className="absolute inset-0 z-0 opacity-30 overflow-hidden" aria-hidden="true">
           <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-primary blur-3xl" />
           <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-accent blur-3xl" />
         </div>

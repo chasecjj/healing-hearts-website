@@ -106,7 +106,7 @@ export default function CrmListView() {
 
   return (
     <div className="w-full min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto px-6 pt-24 md:pt-32 pb-24">
+      <div className="max-w-7xl mx-auto px-6 pt-8 pb-24">
         {/* Back link */}
         <Link
           to="/admin"
@@ -116,21 +116,27 @@ export default function CrmListView() {
           Admin
         </Link>
 
-        {/* Header */}
-        <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
-          <div>
-            <h1 className="font-drama italic text-3xl md:text-4xl text-primary mb-1">
-              CRM — Leads
-            </h1>
-            <p className="font-sans text-foreground/60 text-sm">
-              {leads.length} total {leads.length === 1 ? 'application' : 'applications'}
-              {overdueCount > 0 && (
-                <span className="ml-3 inline-flex items-center gap-1 text-amber-700">
-                  <AlertCircle className="w-4 h-4" />
-                  {overdueCount} overdue
-                </span>
-              )}
-            </p>
+        {/* Hero header */}
+        <div className="relative rounded-3xl overflow-hidden mb-8 p-8 sm:p-10 bg-primary/10 min-h-[200px] flex flex-col justify-center">
+          <div className="absolute inset-0 z-0 opacity-30 overflow-hidden" aria-hidden="true">
+            <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-primary blur-3xl" />
+            <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-accent blur-3xl" />
+          </div>
+          <div className="relative z-10 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h1 className="font-drama italic text-3xl md:text-4xl text-primary mb-1">
+                CRM — Leads
+              </h1>
+              <p className="font-sans text-foreground/60 text-sm">
+                {leads.length} total {leads.length === 1 ? 'application' : 'applications'}
+                {overdueCount > 0 && (
+                  <span className="ml-3 inline-flex items-center gap-1 text-amber-700">
+                    <AlertCircle className="w-4 h-4" />
+                    {overdueCount} overdue
+                  </span>
+                )}
+              </p>
+            </div>
           </div>
         </div>
 

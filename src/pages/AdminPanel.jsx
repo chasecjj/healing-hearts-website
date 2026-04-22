@@ -9,7 +9,7 @@ export default function AdminPanel() {
 
   return (
     <div className="w-full min-h-screen bg-background">
-      <div className="max-w-4xl mx-auto px-6 pt-32 md:pt-40 pb-24">
+      <div className="max-w-4xl mx-auto px-6 pt-8 md:pt-12 pb-24">
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-6">
@@ -25,10 +25,19 @@ export default function AdminPanel() {
 
         {/* KPI Cards */}
         <section className="mb-16">
-          <h2 className="font-outfit font-bold text-xl text-primary mb-6">
-            Live Dashboard
-          </h2>
-          <KpiCards />
+          <div className="relative rounded-3xl overflow-hidden mb-8 p-8 sm:p-12 bg-primary/10 min-h-[200px] flex flex-col justify-center">
+            {/* Ambient blurred glow layer */}
+            <div className="absolute inset-0 z-0 opacity-30 overflow-hidden" aria-hidden="true">
+              <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-primary blur-3xl" />
+              <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-accent blur-3xl" />
+            </div>
+            <div className="relative z-10">
+              <h2 className="font-outfit font-bold text-xl text-primary mb-6">
+                Live Dashboard
+              </h2>
+              <KpiCards />
+            </div>
+          </div>
         </section>
 
         {/* Quick Links */}
