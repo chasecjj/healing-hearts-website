@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Users, Mail, Calendar, CreditCard, Flame, BarChart3 } from 'lucide-react';
+import { Users, Mail, Calendar, CreditCard, Flame, BarChart3, UserCheck } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../contexts/AuthContext';
 
 // ─── Skeleton shimmer ────────────────────────────────────────────────────────
 function SkeletonCard() {
@@ -41,6 +42,7 @@ const fmt = (val) => (val === null || val === undefined ? '—' : String(val));
 
 // ─── Main component ───────────────────────────────────────────────────────────
 export default function KpiCards() {
+  const { user } = useAuth();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -114,18 +116,35 @@ export default function KpiCards() {
         results.hotLeads = null;
       }
 
+      // 7. My Leads
+      try {
+        if (user?.id) {
+          const { count, error } = await supabase
+            .from('crm_lead_pipeline')
+            .select('id', { count: 'exact', head: true })
+            .eq('assigned_to_id', user.id)
+            .not('status', 'in', '("converted","archived")');
+          if (error) throw error;
+          results.myLeads = count;
+        } else {
+          results.myLeads = 0;
+        }
+      } catch {
+        results.myLeads = null;
+      }
+
       setData(results);
       setLoading(false);
     }
 
     fetchAll();
-  }, []);
+  }, [user]);
 
   // ── Loading state ────────────────────────────────────────────────────────
   if (loading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        {Array.from({ length: 6 }).map((_, i) => (
+        {Array.from({ length: 7 }).map((_, i) => (
           <SkeletonCard key={i} />
         ))}
       </div>
@@ -241,6 +260,13 @@ export default function KpiCards() {
         title="Hot Leads"
         primary={fmt(data.hotLeads)}
         subtitle="Webinar-registered applicants"
+      />
+
+      <StatCard
+        icon={UserCheck}
+        title="My Leads"
+        primary={fmt(data.myLeads)}
+        subtitle="Assigned to you, active"
       />
     </div>
   );

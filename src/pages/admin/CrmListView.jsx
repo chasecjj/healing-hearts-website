@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, AlertCircle, Users, Mail, Phone } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import usePageMeta from '../../hooks/usePageMeta';
+import { useAuth } from '../../contexts/AuthContext';
 
 const STATUS_FILTERS = [
   { value: 'all', label: 'All' },
@@ -31,12 +32,14 @@ function formatDate(iso) {
 
 export default function CrmListView() {
   usePageMeta('CRM — Leads', 'Healing Hearts application pipeline.');
+  const { user } = useAuth();
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [statusFilter, setStatusFilter] = useState('all');
   const [hotLeadIds, setHotLeadIds] = useState(new Set());
   const [hotLeadsOnly, setHotLeadsOnly] = useState(false);
+  const [assignedToMeOnly, setAssignedToMeOnly] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -76,12 +79,18 @@ export default function CrmListView() {
   const filtered = useMemo(() => {
     let result = statusFilter === 'all' ? leads : leads.filter((l) => l.status === statusFilter);
     if (hotLeadsOnly) result = result.filter((l) => hotLeadIds.has(l.id));
+    if (assignedToMeOnly) result = result.filter((l) => l.assigned_to_id === user?.id);
     return result;
-  }, [leads, statusFilter, hotLeadsOnly, hotLeadIds]);
+  }, [leads, statusFilter, hotLeadsOnly, hotLeadIds, assignedToMeOnly, user]);
 
   const hotLeadsCount = useMemo(
     () => leads.filter((l) => hotLeadIds.has(l.id)).length,
     [leads, hotLeadIds]
+  );
+
+  const assignedToMeCount = useMemo(
+    () => leads.filter((l) => l.assigned_to_id === user?.id).length,
+    [leads, user]
   );
 
   const counts = useMemo(() => {
@@ -154,6 +163,16 @@ export default function CrmListView() {
           >
             🔥 Hot Leads <span className="opacity-60">({hotLeadsCount})</span>
           </button>
+          <button
+            onClick={() => setAssignedToMeOnly(!assignedToMeOnly)}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+              assignedToMeOnly
+                ? 'bg-primary text-white'
+                : 'bg-white text-primary/70 border border-primary/10 hover:border-primary/30'
+            }`}
+          >
+            👤 Assigned to me <span className="opacity-60">({assignedToMeCount})</span>
+          </button>
         </div>
 
         {/* Body */}
@@ -187,6 +206,7 @@ export default function CrmListView() {
                     <th className="px-6 py-3">Next action</th>
                     <th className="px-6 py-3">Due</th>
                     <th className="px-6 py-3">Signals</th>
+                    <th className="px-6 py-3">Assignee</th>
                     <th className="px-6 py-3">Submitted</th>
                   </tr>
                 </thead>
@@ -271,6 +291,15 @@ export default function CrmListView() {
                             </span>
                           )}
                         </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        {lead.assigned_to_name ? (
+                          <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-medium bg-primary/10 text-primary">
+                            {lead.assigned_to_name}
+                          </span>
+                        ) : (
+                          <span className="text-foreground/40 text-xs">unassigned</span>
+                        )}
                       </td>
                       <td className="px-6 py-4 text-foreground/60 text-xs">
                         {formatDate(lead.created_at)}

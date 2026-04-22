@@ -45,6 +45,9 @@ export default function CrmDetailView() {
   const [status, setStatus] = useState('new');
   const [nextAction, setNextAction] = useState('');
   const [nextActionDue, setNextActionDue] = useState('');
+  const [assignedToId, setAssignedToId] = useState(null);
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [teamMembersLoading, setTeamMembersLoading] = useState(true);
   const [noteText, setNoteText] = useState('');
   const [saving, setSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState(null);
@@ -67,6 +70,7 @@ export default function CrmDetailView() {
         setStatus(data.status ?? 'new');
         setNextAction(data.next_action ?? '');
         setNextActionDue(data.next_action_due ?? '');
+        setAssignedToId(data.assigned_to_id ?? null);
         setError(null);
       }
       setLoading(false);
@@ -74,6 +78,22 @@ export default function CrmDetailView() {
     load();
     return () => { cancelled = true; };
   }, [applicationId]);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadTeamMembers() {
+      const { data } = await supabase
+        .from('user_profiles')
+        .select('id, display_name')
+        .eq('role', 'admin');
+      if (!cancelled) {
+        setTeamMembers(data ?? []);
+        setTeamMembersLoading(false);
+      }
+    }
+    loadTeamMembers();
+    return () => { cancelled = true; };
+  }, []);
 
   useEffect(() => {
     if (!application?.email) return;
@@ -108,10 +128,13 @@ export default function CrmDetailView() {
     setSaving(true);
     setSaveMessage(null);
 
+    const selectedMember = teamMembers.find((m) => m.id === assignedToId);
     const patch = {
       status,
       next_action: nextAction.trim() || null,
       next_action_due: nextActionDue || null,
+      assigned_to_id: assignedToId || null,
+      assigned_to: selectedMember?.display_name ?? null,
     };
 
     // When moving out of 'new' for the first time, mark who reviewed + when
@@ -313,6 +336,23 @@ export default function CrmDetailView() {
           <div className="space-y-6">
             <Section title="Triage">
               <form onSubmit={handleStatusAndAction} className="space-y-4">
+                <div>
+                  <label className="block text-xs uppercase tracking-wide text-primary/60 font-medium mb-1.5">
+                    Assigned to
+                  </label>
+                  <select
+                    value={assignedToId ?? ''}
+                    onChange={(e) => setAssignedToId(e.target.value || null)}
+                    disabled={teamMembersLoading}
+                    className="w-full rounded-lg border border-primary/10 px-3 py-2 text-sm focus:outline-none focus:border-primary/40 bg-white disabled:opacity-50"
+                  >
+                    <option value="">Unassigned</option>
+                    {teamMembers.map((m) => (
+                      <option key={m.id} value={m.id}>{m.display_name}</option>
+                    ))}
+                  </select>
+                </div>
+
                 <div>
                   <label className="block text-xs uppercase tracking-wide text-primary/60 font-medium mb-1.5">
                     Status
