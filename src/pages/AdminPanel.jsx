@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Shield, Users, FileText, BarChart3, CreditCard, Mail, Calendar, BookOpen } from 'lucide-react';
+import { Shield, Users, FileText, BarChart3, CreditCard, Mail, Calendar, BookOpen, CheckSquare } from 'lucide-react';
 import usePageMeta from '../hooks/usePageMeta';
 
 const PLANNED_FEATURES = [
@@ -40,6 +40,13 @@ export default function AdminPanel() {
           >
             <Users className="w-4 h-4" />
             CRM — Leads
+          </Link>
+          <Link
+            to="/admin/tasks"
+            className="px-6 py-3 rounded-full bg-accent text-white font-medium text-sm hover:bg-accent/90 transition-colors shadow-lg inline-flex items-center gap-2"
+          >
+            <CheckSquare className="w-4 h-4" />
+            Team Tasks
           </Link>
           <Link
             to="/portal"

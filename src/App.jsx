@@ -8,6 +8,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import RequireAdmin from './components/auth/RequireAdmin';
 import CrmListView from './pages/admin/CrmListView';
 import CrmDetailView from './pages/admin/CrmDetailView';
+import TasksLayout from './pages/admin/TasksLayout';
 import CoursePortal from './CoursePortal';
 import Home from './pages/Home';
 import ConferenceHome from './pages/ConferenceHome';
@@ -89,6 +90,9 @@ function App() {
               <Route path="/admin" element={<RequireAdmin><AdminPanel /></RequireAdmin>} />
               <Route path="/admin/crm" element={<RequireAdmin><CrmListView /></RequireAdmin>} />
               <Route path="/admin/crm/:applicationId" element={<RequireAdmin><CrmDetailView /></RequireAdmin>} />
+              <Route path="/admin/tasks" element={<RequireAdmin><TasksLayout /></RequireAdmin>} />
+              <Route path="/admin/tasks/kanban" element={<RequireAdmin><TasksLayout /></RequireAdmin>} />
+              <Route path="/admin/tasks/list" element={<RequireAdmin><TasksLayout /></RequireAdmin>} />
             </Route>
 
             {/* Auth pages (standalone, no navbar/footer) */}

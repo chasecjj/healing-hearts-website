@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Font Comparison — Healing Hearts Headlines</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Serif+Display:ital@0;1&family=Crimson+Pro:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: #FFFDF8; color: #2D2D2D; padding: 2rem; }
+  .grid { display: grid; grid-template-columns: 1fr; gap: 2rem; max-width: 800px; margin: 0 auto; }
+  .card { background: white; border-radius: 1.5rem; padding: 2rem; box-shadow: 0 2px 20px rgba(0,0,0,0.04); border: 1px solid #e5e5e5; }
+  .card.current { border: 2px solid #1191B1; }
+  .label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #1191B1; margin-bottom: 0.5rem; }
+  .sublabel { font-size: 0.7rem; color: #999; margin-bottom: 1rem; }
+  h1 { font-size: 0.9rem; font-weight: 700; color: #1191B1; margin-bottom: 2rem; text-align: center; text-transform: uppercase; letter-spacing: 0.15em; }
+  .headline { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; color: #1191B1; margin-bottom: 0.75rem; }
+  .subline { font-size: clamp(1.2rem, 3vw, 1.8rem); line-height: 1.3; color: #6B7280; }
+  .note { font-size: 0.75rem; color: #999; margin-top: 1rem; font-style: normal; }
+</style>
+</head>
+<body>
+<div class="grid">
+  <h1>Healing Hearts — Headline Font Comparison</h1>
+
+  <div class="card current">
+    <div class="label">Current — Cormorant Garamond</div>
+    <div class="sublabel">Thin, high-contrast, delicate italic. Beautiful but hard to read on mobile.</div>
+    <div class="headline" style="font-family: 'Cormorant Garamond', serif; font-style: italic;">
+      Your marriage is not broken. It's buried.
+    </div>
+    <div class="subline" style="font-family: 'Cormorant Garamond', serif; font-style: italic;">
+      We are only as strong as we are tender.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label">Option A — Playfair Display</div>
+    <div class="sublabel">Bold editorial serif. Strong presence, excellent italic readability. Most popular swap.</div>
+    <div class="headline" style="font-family: 'Playfair Display', serif; font-style: italic;">
+      Your marriage is not broken. It's buried.
+    </div>
+    <div class="subline" style="font-family: 'Playfair Display', serif; font-style: italic;">
+      We are only as strong as we are tender.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label">Option B — Lora</div>
+    <div class="sublabel">Warm, calligraphic serif. Softer than Playfair, excellent body + headline versatility.</div>
+    <div class="headline" style="font-family: 'Lora', serif; font-style: italic;">
+      Your marriage is not broken. It's buried.
+    </div>
+    <div class="subline" style="font-family: 'Lora', serif; font-style: italic;">
+      We are only as strong as we are tender.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label">Option C — Libre Baskerville</div>
+    <div class="sublabel">Classic, high-readability serif. Feels literary and trustworthy. Wider letterforms.</div>
+    <div class="headline" style="font-family: 'Libre Baskerville', serif; font-style: italic;">
+      Your marriage is not broken. It's buried.
+    </div>
+    <div class="subline" style="font-family: 'Libre Baskerville', serif; font-style: italic;">
+      We are only as strong as we are tender.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label">Option D — DM Serif Display</div>
+    <div class="sublabel">Modern display serif. Clean, confident, slightly condensed. Great at large sizes.</div>
+    <div class="headline" style="font-family: 'DM Serif Display', serif; font-style: italic;">
+      Your marriage is not broken. It's buried.
+    </div>
+    <div class="subline" style="font-family: 'DM Serif Display', serif; font-style: italic;">
+      We are only as strong as we are tender.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label">Option E — Crimson Pro</div>
+    <div class="sublabel">Closest feel to Cormorant but with better readability. Retains the delicate editorial warmth.</div>
+    <div class="headline" style="font-family: 'Crimson Pro', serif; font-style: italic;">
+      Your marriage is not broken. It's buried.
+    </div>
+    <div class="subline" style="font-family: 'Crimson Pro', serif; font-style: italic;">
+      We are only as strong as we are tender.
+    </div>
+  </div>
+
+  <p class="note" style="text-align: center; padding: 1rem;">
+    View this page at <strong>/font-compare.html</strong> on the live site or dev server.
+    <br>To swap: change 2 lines (tailwind.config.js + index.html). Every page updates automatically.
+  </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OG Image — Healing Hearts</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 1200px;
+      height: 630px;
+      overflow: hidden;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: #F8F4EE;
+    }
+
+    .container {
+      width: 1200px;
+      height: 630px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      background: linear-gradient(135deg, #F8F4EE 0%, #EEF7FA 55%, #D9EFF5 100%);
+    }
+
+    /* Decorative teal arc in bottom-right */
+    .arc {
+      position: absolute;
+      bottom: -120px;
+      right: -120px;
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #1191B1 0%, #0D7A96 100%);
+      opacity: 0.12;
+    }
+
+    /* Decorative cream circle top-left */
+    .circle-tl {
+      position: absolute;
+      top: -80px;
+      left: -80px;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: #1191B1;
+      opacity: 0.06;
+    }
+
+    .left-panel {
+      flex: 1;
+      padding: 70px 60px 70px 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 36px;
+    }
+
+    .logo-area img {
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+    }
+
+    .site-name {
+      font-family: Georgia, serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: #1191B1;
+      letter-spacing: 0.04em;
+    }
+
+    .tagline-small {
+      font-family: 'Arial', sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #1191B1;
+      margin-bottom: 20px;
+      opacity: 0.8;
+    }
+
+    h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 58px;
+      line-height: 1.15;
+      color: #1C2B32;
+      margin-bottom: 28px;
+      max-width: 11ch;
+    }
+
+    h1 span {
+      color: #1191B1;
+      font-style: italic;
+    }
+
+    .description {
+      font-family: 'Arial', sans-serif;
+      font-size: 18px;
+      line-height: 1.6;
+      color: #4A5568;
+      max-width: 38ch;
+      margin-bottom: 36px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #1191B1;
+      color: white;
+      font-family: 'Arial', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 10px 22px;
+      border-radius: 100px;
+    }
+
+    .right-panel {
+      width: 400px;
+      height: 630px;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .right-panel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+
+    /* Gradient fade on left edge of photo */
+    .right-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, #F8F4EE 0%, transparent 30%);
+      z-index: 1;
+    }
+
+    /* Teal overlay tint at top */
+    .right-panel::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(17,145,177,0.15) 0%, transparent 40%);
+      z-index: 1;
+    }
+
+    .domain {
+      position: absolute;
+      bottom: 28px;
+      left: 80px;
+      font-family: 'Arial', sans-serif;
+      font-size: 14px;
+      color: #1191B1;
+      opacity: 0.7;
+      letter-spacing: 0.05em;
+      z-index: 2;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="circle-tl"></div>
+    <div class="arc"></div>
+
+    <div class="left-panel">
+      <div class="logo-area">
+        <img src="/logo.png" alt="Healing Hearts logo" />
+        <span class="site-name">Healing Hearts</span>
+      </div>
+
+      <div class="tagline-small">Science-backed relationship coaching</div>
+
+      <h1>Your marriage isn't broken.<br /><span>It's buried.</span></h1>
+
+      <p class="description">
+        Neuroscience-backed tools to help couples move from survival to deep, lasting connection.
+      </p>
+
+      <div class="badge">
+        Start the free 7-Day Spark Challenge
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <img src="/images/team/jeff-and-trisha.jpg" alt="Jeff and Trisha Jamison" />
+    </div>
+
+    <div class="domain">healingheartscourse.com</div>
+  </div>
+</body>
+</html>
