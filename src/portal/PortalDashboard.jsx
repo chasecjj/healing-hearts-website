@@ -142,7 +142,7 @@ export default function PortalDashboard({
   };
 
   return (
-    <div ref={containerRef} className="pb-24 px-4 sm:px-8 max-w-7xl mx-auto flex flex-col gap-16">
+    <div ref={containerRef} className="pb-24 px-4 sm:px-8 max-w-7xl mx-auto flex flex-col gap-8">
       {/* ── Welcome Header ─────────────────────────────────── */}
       <section className="relative rounded-3xl overflow-hidden pt-6 p-8 sm:p-12 bg-primary/10 min-h-[200px] flex flex-col justify-center" data-animate>
         {/* Ambient blurred glow layer */}
@@ -176,10 +176,56 @@ export default function PortalDashboard({
       </section>
 
       {/* ── Educational disclaimer ─────────────────────────── */}
-      <p className="font-sans text-xs text-foreground/30 leading-relaxed max-w-2xl -mt-10" data-animate>
+      <p className="font-sans text-xs text-foreground/30 leading-relaxed max-w-2xl -mt-4" data-animate>
         This program is for educational purposes only and is not a substitute for professional therapy, medical advice, or clinical treatment.
         If you are in crisis, please call <strong className="text-foreground/40">988</strong> (Suicide &amp; Crisis Lifeline) or <strong className="text-foreground/40">1-800-799-7233</strong> (Domestic Violence Hotline).
       </p>
+
+      {/* ── Your Healing Journey Stats ─────────────────────── */}
+      <section className="relative rounded-3xl overflow-hidden p-8 sm:p-10 bg-primary/10" data-animate>
+        {/* Ambient blurred glow layer */}
+        <div className="absolute inset-0 z-0 opacity-30 overflow-hidden" aria-hidden="true">
+          <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-primary blur-3xl" />
+          <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-accent blur-3xl" />
+        </div>
+        <div className="relative z-10">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <h2 className="font-drama text-2xl text-foreground">Your Healing Journey</h2>
+            <div className="flex items-center gap-6 text-foreground/50">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-primary" />
+                <span className="text-sm font-outfit">Active Growth</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-accent" />
+                <span className="text-sm font-outfit">Integration</span>
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              { value: completedLessons, label: 'Lessons Completed', icon: BookOpen },
+              {
+                value: completedModules > 0 ? completedModules : completedLessons > 0 ? '...' : '0',
+                label: completedModules > 0 ? 'Modules Completed' : completedLessons > 0 ? 'Module In Progress' : 'Modules Completed',
+                icon: Flame,
+              },
+              { value: totalLessons, label: 'Total Lessons', icon: Clock },
+              { value: `${overallProgress}%`, label: 'Overall Progress', icon: ChevronRight },
+            ].map(({ value, label }) => (
+              <div
+                key={label}
+                className="p-6 bg-white rounded-2xl flex flex-col gap-2 shadow-[0_2px_8px_-2px_rgba(7,58,71,0.06)]"
+              >
+                <span className="text-3xl font-drama text-primary">{value}</span>
+                <span className="text-xs font-outfit uppercase tracking-widest text-foreground/50">
+                  {label}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ── My Courses (multi-course catalog) ─────────────── */}
       {availableCourses.length > 1 && (
@@ -300,14 +346,19 @@ export default function PortalDashboard({
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-8" data-animate>
         {/* Active module card */}
         {activeModule && (
-          <div className="lg:col-span-8 bg-white rounded-2xl p-8 shadow-[0_4px_20px_-4px_rgba(7,58,71,0.08)] relative overflow-hidden group">
+          <div className="lg:col-span-8 relative rounded-3xl overflow-hidden p-8 sm:p-10 bg-primary/15">
+            {/* Ambient blurred glow layer */}
+            <div className="absolute inset-0 z-0 opacity-30 overflow-hidden" aria-hidden="true">
+              <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-primary blur-3xl" />
+              <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-accent blur-3xl" />
+            </div>
             <div className="relative z-10 flex flex-col h-full">
               <div className="flex items-center gap-2 mb-4">
                 <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-outfit font-semibold tracking-wider uppercase">
                   Active Module
                 </span>
               </div>
-              <h2 className="font-drama text-2xl sm:text-3xl text-foreground mb-4">
+              <h2 className="font-drama text-3xl sm:text-4xl text-foreground mb-4">
                 Module {activeModule.module_number}: {activeModule.title}
               </h2>
               <p className="text-foreground/60 mb-12 max-w-md text-sm leading-relaxed">
@@ -351,44 +402,7 @@ export default function PortalDashboard({
         </div>
       </section>
 
-      {/* ── Healing Journey Stats ──────────────────────────── */}
-      <section className="bg-neutral-50 rounded-2xl p-8" data-animate>
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-          <h2 className="font-drama text-2xl text-foreground">Your Healing Journey</h2>
-          <div className="flex items-center gap-6 text-foreground/50">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-primary" />
-              <span className="text-sm font-outfit">Active Growth</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-accent" />
-              <span className="text-sm font-outfit">Integration</span>
-            </div>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[
-            { value: completedLessons, label: 'Lessons Completed', icon: BookOpen },
-            {
-              value: completedModules > 0 ? completedModules : completedLessons > 0 ? '...' : '0',
-              label: completedModules > 0 ? 'Modules Completed' : completedLessons > 0 ? 'Module In Progress' : 'Modules Completed',
-              icon: Flame,
-            },
-            { value: totalLessons, label: 'Total Lessons', icon: Clock },
-            { value: `${overallProgress}%`, label: 'Overall Progress', icon: ChevronRight },
-          ].map(({ value, label }) => (
-            <div
-              key={label}
-              className="p-6 bg-white rounded-2xl flex flex-col gap-2 shadow-[0_2px_8px_-2px_rgba(7,58,71,0.06)]"
-            >
-              <span className="text-3xl font-drama text-primary">{value}</span>
-              <span className="text-xs font-outfit uppercase tracking-widest text-foreground/50">
-                {label}
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
+
 
       {/* ── Module Library ─────────────────────────────────── */}
       <section data-animate>
@@ -423,7 +437,7 @@ export default function PortalDashboard({
                 aria-label={`Module ${mod.module_number}: ${mod.title}${isLocked ? ' - Locked' : ''}`}
               >
                 {/* Gradient header */}
-                <div className="h-32 bg-gradient-to-br from-primary/10 to-primary/5 relative flex items-end p-6">
+                <div className="h-40 bg-gradient-to-br from-primary/20 to-accent/10 relative flex items-end p-6">
                   <span className="bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-outfit font-bold uppercase tracking-wider">
                     Module {mod.module_number}
                   </span>
