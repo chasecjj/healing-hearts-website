@@ -15,14 +15,26 @@ import {
 import DailyIntentionWidget from './DailyIntentionWidget';
 import { getActiveCourses } from '../lib/courses';
 import { useAuth } from '../contexts/AuthContext';
+import { useMockupMode } from './mockup/useMockupMode';
+import DashboardHero from './mockup/DashboardHero';
 
 /**
  * Portal Dashboard — personalized welcome, journey progress, module library.
  * Rendered at /portal when no moduleSlug is in the URL.
  *
  * Props come from the CoursePortal shell which owns useCourseData.
+ *
+ * Wave 5 mockup-mode: `?mockup=1` query param short-circuits to DashboardHero
+ * (static hero-state mockup) for webinar-demo screenshots without hitting
+ * Supabase. Wrapper component dispatches; original implementation untouched.
  */
-export default function PortalDashboard({
+export default function PortalDashboardWithMockup(props) {
+  const mockupMode = useMockupMode();
+  if (mockupMode) return <DashboardHero />;
+  return <PortalDashboard {...props} />;
+}
+
+function PortalDashboard({
   profile,
   course,
   overallProgress,
