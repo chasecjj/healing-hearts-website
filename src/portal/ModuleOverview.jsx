@@ -14,14 +14,25 @@ import {
 } from 'lucide-react';
 import AudioPlayer from './AudioPlayer';
 import { supabase } from '../lib/supabase';
+import { useMockupMode } from './mockup/useMockupMode';
+import ModuleHero from './mockup/ModuleHero';
 
 /**
  * Module Overview — teal gradient header, horizontal journey timeline,
  * progress circle, module resources.
  *
  * Rendered at /portal/:moduleSlug (no lessonSlug).
+ *
+ * Wave 5 mockup-mode: `?mockup=1` short-circuits to ModuleHero (static hero-state
+ * mockup) for webinar-demo screenshots.
  */
-export default function ModuleOverview({
+export default function ModuleOverviewWithMockup(props) {
+  const mockupMode = useMockupMode();
+  if (mockupMode) return <ModuleHero />;
+  return <ModuleOverview {...props} />;
+}
+
+function ModuleOverview({
   currentModule,
   getModuleProgress,
   isLessonCompleted,
