@@ -5,6 +5,11 @@ import LessonContent from '../components/LessonContent';
 import LessonNotesPanel from './LessonNotesPanel';
 import JournalPromptSection from './JournalPromptSection';
 import { useVideoProgress } from '../hooks/useVideoProgress';
+import { useAuth } from '../contexts/AuthContext';
+import { HighlightToolbar, useTextSelection } from './components/HighlightToolbar';
+import { NoteDrawer } from './components/NoteDrawer';
+import { useHighlights } from './hooks/useHighlights';
+import { useNotes } from './hooks/useNotes';
 import {
   CheckCircle2,
   PlayCircle,
@@ -155,7 +160,92 @@ export default function LessonView({
     }
   }, [currentLesson, isLessonCompleted, toggleLessonComplete]);
 
+  // ── Highlights + Notes wiring (scout-05) ─────────────────
+  const { user } = useAuth();
+  const lessonId = currentLesson?.id || null;
+  const { createHighlight } = useHighlights({ userId: user?.id, lessonId });
+  const { createNote, updateNote, deleteNote } = useNotes({ userId: user?.id, lessonId });
+  const [selection, setSelection] = useState(null);
+  const [activeNote, setActiveNote] = useState(null);
+
+  useTextSelection({
+    enabled: !!user && !!lessonId,
+    onSelect: setSelection,
+    onDismiss: () => setSelection(null),
+  });
+
+  const handleColor = useCallback(
+    async (color) => {
+      if (!selection || !lessonId) return;
+      try {
+        await createHighlight({
+          lesson_id: lessonId,
+          block_index: selection.blockIndex,
+          anchor_text: selection.text,
+          anchor_start: 0,
+          anchor_end: selection.text?.length || 0,
+          color,
+        });
+      } catch (e) {
+        console.warn('[highlights] create failed (migration 014 may be pending):', e?.message);
+      }
+      setSelection(null);
+      window.getSelection()?.removeAllRanges();
+    },
+    [selection, lessonId, createHighlight]
+  );
+
+  const handleNoteFromSelection = useCallback(async () => {
+    if (!selection || !lessonId) return;
+    try {
+      const hl = await createHighlight({
+        lesson_id: lessonId,
+        block_index: selection.blockIndex,
+        anchor_text: selection.text,
+        anchor_start: 0,
+        anchor_end: selection.text?.length || 0,
+        color: 'yellow',
+      });
+      const note = await createNote({
+        lesson_id: lessonId,
+        body_text: '',
+        note_type: 'highlight_note',
+        highlight_id: hl?.id,
+        block_index: selection.blockIndex,
+      });
+      setActiveNote(note);
+    } catch (e) {
+      console.warn('[notes] create failed (migration 014 may be pending):', e?.message);
+    }
+    setSelection(null);
+    window.getSelection()?.removeAllRanges();
+  }, [selection, lessonId, createHighlight, createNote]);
+
+  const handleNoteSave = useCallback(
+    async (text) => {
+      if (!activeNote) return;
+      try {
+        const updated = await updateNote(activeNote.id, { body_text: text });
+        setActiveNote(updated);
+      } catch (e) {
+        console.warn('[notes] update failed:', e?.message);
+      }
+    },
+    [activeNote, updateNote]
+  );
+
+  const handleNoteDelete = useCallback(async () => {
+    if (!activeNote) return;
+    try {
+      await deleteNote(activeNote.id);
+    } catch (e) {
+      console.warn('[notes] delete failed:', e?.message);
+    }
+    setActiveNote(null);
+  }, [activeNote, deleteNote]);
+
   return (
+    <>
     <div className="flex h-full bg-background font-sans">
       {/* ── Mobile sidebar backdrop ────────────────────────── */}
       {sidebarOpen && (
@@ -466,6 +556,7 @@ export default function LessonView({
             <div
               className="max-w-[65ch] space-y-10 text-foreground/80 leading-[1.8] text-lg"
               data-lesson-animate
+              data-lesson-content
             >
               <LessonContent
                 contentJson={currentLesson?.content_json}
@@ -551,5 +642,21 @@ export default function LessonView({
         </div>
       </main>
     </div>
+
+    {/* ── Highlight toolbar + Note drawer (scout-05) ──────── */}
+    <HighlightToolbar
+      position={selection ? { top: selection.rect.top, left: selection.rect.left, width: selection.rect.width } : null}
+      onColor={handleColor}
+      onNote={handleNoteFromSelection}
+      onDismiss={() => setSelection(null)}
+    />
+    <NoteDrawer
+      open={!!activeNote}
+      initialText={activeNote?.body_text || ''}
+      onSave={handleNoteSave}
+      onClose={() => setActiveNote(null)}
+      onDelete={activeNote ? handleNoteDelete : undefined}
+    />
+    </>
   );
 }
