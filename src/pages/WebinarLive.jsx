@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
-import { Radio, Clock, ArrowRight } from 'lucide-react';
+import { Radio, Clock, ArrowRight, Video } from 'lucide-react';
 import usePageMeta from '../hooks/usePageMeta';
 import { supabase } from '../lib/supabase';
 
@@ -19,6 +19,19 @@ const formatDate = (iso) =>
     timeZone: 'America/Denver',
     timeZoneName: 'short',
   });
+
+// A webinar row is effectively live when its status is 'live' OR it is
+// marked 'scheduled' but the start time has already passed (manual status
+// flips are forgettable; this keeps the join path working regardless).
+function isEffectivelyLive(webinar) {
+  if (!webinar) return false;
+  if (webinar.status === 'live') return true;
+  if (webinar.status !== 'scheduled') return false;
+  const startsAt = new Date(webinar.starts_at).getTime();
+  const duration = (webinar.duration_minutes || 90) * 60 * 1000;
+  const now = Date.now();
+  return now >= startsAt && now <= startsAt + duration + 30 * 60 * 1000;
+}
 
 export default function WebinarLive() {
   usePageMeta(
@@ -75,11 +88,18 @@ export default function WebinarLive() {
 
   if (!webinar) return null;
 
-  // State 1: Webinar is LIVE
-  if (webinar.status === 'live') {
+  // Prefer Google Meet / generic meeting URL over Riverside. Riverside supports
+  // iframe embedding; Google Meet does not (X-Frame-Options blocks it), so for
+  // Meet we render a big click-to-join button that opens in a new tab.
+  const joinUrl =
+    webinar.meeting_url || webinar.riverside_audience_url || null;
+  const isMeetLink = joinUrl && /meet\.google\.com/i.test(joinUrl);
+
+  // State 1: Webinar is LIVE (or effectively live — past start time, still running)
+  if (isEffectivelyLive(webinar)) {
     return (
       <div ref={containerRef} className="w-full bg-background pt-28 md:pt-40 pb-24">
-        <div className="max-w-5xl mx-auto px-6">
+        <div className="max-w-3xl mx-auto px-6">
           <div className="reveal-el flex items-center justify-center gap-2 mb-6">
             <span className="relative flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
@@ -90,36 +110,73 @@ export default function WebinarLive() {
             </span>
           </div>
 
-          <h1 className="reveal-el font-drama italic text-3xl md:text-5xl text-primary text-center mb-8">
-            Healing Hearts Live Workshop
+          <h1 className="reveal-el font-drama italic text-3xl md:text-5xl text-primary text-center mb-4">
+            {webinar.title || 'Healing Hearts Live Workshop'}
           </h1>
+          <p className="reveal-el font-sans text-center text-foreground/60 mb-10">
+            Click below to join the session.
+          </p>
 
-          <div className="reveal-el">
-            <iframe
-              src={webinar.riverside_audience_url}
-              className="w-full rounded-2xl shadow-lg"
-              style={{ height: '70vh', minHeight: '500px' }}
-              allow="camera; microphone; fullscreen; display-capture"
-              allowFullScreen
-              title="Healing Hearts Live Workshop"
-            />
-          </div>
-
-          <div className="reveal-el text-center mt-6">
-            <p className="font-sans text-sm text-foreground/50">
-              Having trouble?{' '}
+          {joinUrl && (isMeetLink || !webinar.riverside_audience_url) ? (
+            // Click-to-join (Google Meet or any non-Riverside URL)
+            <div className="reveal-el">
               <a
-                href={webinar.riverside_audience_url}
+                href={joinUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary underline"
+                className="flex items-center justify-center gap-3 w-full max-w-lg mx-auto bg-accent text-white text-lg font-sans font-medium px-8 py-5 rounded-full shadow-xl hover:shadow-2xl transition-all hover:-translate-y-0.5"
               >
-                Open in a new tab
+                <Video className="w-6 h-6" />
+                Join on Google Meet
               </a>
-            </p>
-          </div>
+              <p className="font-sans text-sm text-foreground/50 text-center mt-6">
+                Opens in a new tab. If you have trouble, copy this link:{' '}
+                <a href={joinUrl} className="text-primary underline break-all">
+                  {joinUrl}
+                </a>
+              </p>
+            </div>
+          ) : webinar.riverside_audience_url ? (
+            // Legacy Riverside embed
+            <>
+              <div className="reveal-el">
+                <iframe
+                  src={webinar.riverside_audience_url}
+                  className="w-full rounded-2xl shadow-lg"
+                  style={{ height: '70vh', minHeight: '500px' }}
+                  allow="camera; microphone; fullscreen; display-capture"
+                  allowFullScreen
+                  title="Healing Hearts Live Workshop"
+                />
+              </div>
+              <div className="reveal-el text-center mt-6">
+                <p className="font-sans text-sm text-foreground/50">
+                  Having trouble?{' '}
+                  <a
+                    href={webinar.riverside_audience_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary underline"
+                  >
+                    Open in a new tab
+                  </a>
+                </p>
+              </div>
+            </>
+          ) : (
+            <div className="reveal-el text-center bg-red-50 border border-red-200 rounded-2xl p-8 max-w-xl mx-auto">
+              <p className="font-sans text-red-700">
+                We're having a technical issue setting up the video. Please
+                email us at{' '}
+                <a href="mailto:hello@healingheartscourse.com" className="underline font-medium">
+                  hello@healingheartscourse.com
+                </a>{' '}
+                for the join link.
+              </p>
+            </div>
+          )}
 
-          <div className="reveal-el text-center mt-10">
+          <div className="reveal-el text-center mt-12">
             <p className="font-sans text-foreground/60 mb-4">
               After the workshop:
             </p>
@@ -157,9 +214,25 @@ export default function WebinarLive() {
           {formatDate(webinar.starts_at)}
         </p>
 
-        <p className="reveal-el font-sans text-foreground/60 mb-10">
-          Come back at that time, or we'll send you an email reminder.
+        <p className="reveal-el font-sans text-foreground/60 mb-6">
+          Come back at that time — the join button will appear right here.
         </p>
+
+        {joinUrl && (
+          <div className="reveal-el mb-10 p-5 rounded-2xl bg-primary/5 border border-primary/10 max-w-md mx-auto">
+            <p className="font-sans text-sm text-foreground/70 mb-2">
+              Want to save the join link for later?
+            </p>
+            <a
+              href={joinUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-sans text-sm text-primary underline break-all"
+            >
+              {joinUrl}
+            </a>
+          </div>
+        )}
 
         <div className="reveal-el">
           <a
