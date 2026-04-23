@@ -1,5 +1,6 @@
 import React from 'react';
 import { Calendar } from 'lucide-react';
+import { getTypeStyle } from './design/typography';
 
 /**
  * CalendarPortal — placeholder for /portal/calendar
@@ -8,8 +9,15 @@ import { Calendar } from 'lucide-react';
 export default function CalendarPortal() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 px-6 py-16">
-      <div className="w-16 h-16 rounded-2xl bg-elevation-1 flex items-center justify-center">
-        <Calendar className="w-8 h-8 text-primary/60" />
+      <h1 className="sr-only" style={getTypeStyle('heading-1')}>Calendar</h1>
+      <div
+        className="w-16 h-16 rounded-2xl flex items-center justify-center"
+        style={{ backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)' }}
+      >
+        <Calendar
+          className="w-8 h-8"
+          style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)', opacity: 0.6 }}
+        />
       </div>
       <div className="text-center max-w-sm">
         <h2 className="font-outfit font-semibold text-foreground text-xl mb-2">
@@ -19,7 +27,13 @@ export default function CalendarPortal() {
           Session scheduling and milestone tracking are coming. We're working on it.
         </p>
       </div>
-      <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-outfit font-semibold uppercase tracking-wider">
+      <span
+        className="inline-block px-4 py-1.5 rounded-full text-xs font-outfit font-semibold uppercase tracking-wider"
+        style={{
+          backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)',
+          color: 'var(--pt-primary-accent-hex, #B96A5F)',
+        }}
+      >
         Coming Soon
       </span>
     </div>

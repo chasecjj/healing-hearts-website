@@ -143,20 +143,27 @@ export default function PortalDashboard({
 
   return (
     <div ref={containerRef} className="pb-24 px-4 sm:px-8 max-w-7xl mx-auto flex flex-col gap-8">
-      {/* ── Welcome Header ─────────────────────────────────── */}
-      <section className="relative rounded-3xl overflow-hidden pt-6 p-8 sm:p-12 bg-primary/10 min-h-[200px] flex flex-col justify-center" data-animate>
-        {/* Ambient blurred glow layer */}
-        <div className="absolute inset-0 z-0 opacity-30 overflow-hidden" aria-hidden="true">
-          <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-primary blur-3xl" />
-          <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-accent blur-3xl" />
-        </div>
+      {/* ── Welcome Header (D10: neutral surface, single accent moment) ─ */}
+      <section
+        className="relative rounded-3xl overflow-hidden pt-6 p-8 sm:p-12 min-h-[200px] flex flex-col justify-center"
+        style={{ backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)' }}
+        data-animate
+      >
         <div className="relative z-10 max-w-3xl">
           <h1 className="font-drama text-4xl sm:text-5xl md:text-6xl text-foreground leading-tight tracking-tight mb-6">
             Welcome back to your Sanctuary,{' '}
-            <span className="italic text-primary">{firstName}</span>
+            <span
+              className="italic"
+              style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+            >
+              {firstName}
+            </span>
           </h1>
           <div className="flex items-start gap-4 text-foreground/60 italic font-drama text-lg sm:text-xl">
-            <Quote className="w-6 h-6 text-accent flex-shrink-0 mt-1" />
+            <Quote
+              className="w-6 h-6 flex-shrink-0 mt-1"
+              style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+            />
             <p className="max-w-xl">
               &ldquo;The wound is the place where the Light enters you. Let us tend to the garden of your heart today.&rdquo;
             </p>
@@ -168,7 +175,12 @@ export default function PortalDashboard({
       <section className="flex flex-wrap gap-3" data-animate>
         <Link
           to="/portal/downloads"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-primary border border-primary/20 hover:bg-primary/5 transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors hover:opacity-80"
+          style={{
+            color: 'var(--pt-primary-accent-hex, #B96A5F)',
+            border: '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
+            backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
+          }}
         >
           <Download className="w-4 h-4" />
           My Downloads
@@ -228,7 +240,10 @@ export default function PortalDashboard({
       {availableCourses.length > 1 && (
         <section data-animate>
           <div className="flex items-center gap-3 mb-6">
-            <Library className="w-5 h-5 text-primary" />
+            <Library
+              className="w-5 h-5"
+              style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+            />
             <h2 className="font-drama text-2xl text-foreground">My Courses</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -256,9 +271,12 @@ export default function PortalDashboard({
               return (
                 <div
                   key={c.id}
-                  className={`group bg-white rounded-2xl overflow-hidden shadow-[0_4px_20px_-4px_rgba(7,58,71,0.08)] transition-all duration-200 cursor-pointer hover:shadow-[0_8px_30px_-4px_rgba(7,58,71,0.12)] hover:scale-[1.02] ${
-                    isEnrolled ? 'ring-2 ring-primary' : ''
-                  }`}
+                  className="group bg-white rounded-2xl overflow-hidden shadow-[0_4px_20px_-4px_rgba(28,25,23,0.08)] transition-all duration-200 cursor-pointer hover:shadow-[0_8px_30px_-4px_rgba(28,25,23,0.12)] hover:scale-[1.02]"
+                  style={
+                    isEnrolled
+                      ? { boxShadow: '0 0 0 2px var(--pt-primary-accent-hex, #B96A5F)' }
+                      : undefined
+                  }
                   onClick={() => navigate(destination)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
@@ -270,28 +288,55 @@ export default function PortalDashboard({
                   role="button"
                   aria-label={`${c.title}${isEnrolled ? ' (enrolled)' : ' (not enrolled)'}`}
                 >
-                  <div className="h-24 bg-gradient-to-br from-primary/10 to-accent/5 relative flex items-end p-5">
-                    <span className="bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-outfit font-bold uppercase tracking-wider">
+                  {/* D10: neutral banner, no teal gradient. Accent stripe marks enrolled state. */}
+                  <div
+                    className="h-24 relative flex items-end p-5"
+                    style={{
+                      backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)',
+                      borderBottom: isEnrolled
+                        ? '2px solid var(--pt-primary-accent-hex, #B96A5F)'
+                        : '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
+                    }}
+                  >
+                    <span
+                      className="px-3 py-1 rounded-full text-[10px] font-outfit font-bold uppercase tracking-wider"
+                      style={{
+                        backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
+                        color: 'var(--pt-text-primary-hex, #1c1917)',
+                      }}
+                    >
                       {c.course_type === 'flagship' ? 'Full Program' : 'Toolkit'}
                     </span>
                     {isEnrolled ? (
-                      <span className="absolute top-3 right-3 bg-primary text-white text-[10px] font-outfit font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
+                      <span
+                        className="absolute top-3 right-3 text-white text-[10px] font-outfit font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"
+                        style={{ backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+                      >
                         Unlocked
                       </span>
                     ) : (
-                      <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-md text-foreground/60 text-[10px] font-outfit font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
+                      <span
+                        className="absolute top-3 right-3 text-[10px] font-outfit font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"
+                        style={{
+                          backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
+                          color: 'var(--pt-text-muted-hex, #57534e)',
+                        }}
+                      >
                         Not enrolled
                       </span>
                     )}
                   </div>
                   <div className="p-5">
-                    <h3 className="font-outfit text-base font-semibold mb-1 group-hover:text-primary transition-colors">
+                    <h3 className="font-outfit text-base font-semibold mb-1 transition-colors">
                       {c.title}
                     </h3>
                     <p className="text-sm text-foreground/50 line-clamp-2 leading-relaxed mb-3">
                       {c.description}
                     </p>
-                    <p className="text-xs font-outfit font-medium text-primary group-hover:text-primary/80">
+                    <p
+                      className="text-xs font-outfit font-medium group-hover:opacity-80"
+                      style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+                    >
                       {isEnrolled ? 'Start Course →' : 'Learn more →'}
                     </p>
                   </div>
@@ -302,14 +347,13 @@ export default function PortalDashboard({
         </section>
       )}
 
-      {/* ── Start Your Journey (unenrolled users) ──────────── */}
+      {/* ── Start Your Journey (unenrolled users) — D10: warm-dark rail, no teal ─ */}
       {showStartJourney && (
         <section className="relative" data-animate>
-          <div className="rounded-3xl bg-primary text-white p-10 md:p-14 relative overflow-hidden">
-            <div
-              className="absolute top-0 right-0 w-96 h-96 bg-accent/20 rounded-full blur-[120px] pointer-events-none"
-              aria-hidden="true"
-            />
+          <div
+            className="rounded-3xl text-white p-10 md:p-14 relative overflow-hidden"
+            style={{ backgroundColor: 'var(--pt-rail-hex, #24201D)' }}
+          >
             <div className="relative z-10 max-w-2xl">
               <p className="font-outfit text-xs uppercase tracking-widest text-white/80 mb-3">
                 Start Your Journey
@@ -323,7 +367,8 @@ export default function PortalDashboard({
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link
                   to="/spark-challenge"
-                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-accent text-white font-outfit text-sm font-medium shadow-lg hover:scale-105 transition-transform"
+                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full text-white font-outfit text-sm font-medium shadow-lg hover:scale-105 transition-transform"
+                  style={{ backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)' }}
                 >
                   Start the Spark Challenge <ChevronRight className="w-4 h-4" />
                 </Link>
@@ -343,15 +388,19 @@ export default function PortalDashboard({
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-8" data-animate>
         {/* Active module card */}
         {activeModule && (
-          <div className="lg:col-span-8 relative rounded-3xl overflow-hidden p-8 sm:p-10 bg-primary/15">
-            {/* Ambient blurred glow layer */}
-            <div className="absolute inset-0 z-0 opacity-30 overflow-hidden" aria-hidden="true">
-              <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-primary blur-3xl" />
-              <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-accent blur-3xl" />
-            </div>
+          <div
+            className="lg:col-span-8 relative rounded-3xl overflow-hidden p-8 sm:p-10"
+            style={{ backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)' }}
+          >
             <div className="relative z-10 flex flex-col h-full">
               <div className="flex items-center gap-2 mb-4">
-                <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-outfit font-semibold tracking-wider uppercase">
+                <span
+                  className="px-3 py-1 rounded-full text-xs font-outfit font-semibold tracking-wider uppercase"
+                  style={{
+                    backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
+                    color: 'var(--pt-primary-accent-hex, #B96A5F)',
+                  }}
+                >
                   Active Module
                 </span>
               </div>
@@ -375,17 +424,24 @@ export default function PortalDashboard({
                         ? goToLesson(activeModule, nextLesson)
                         : goToModule(activeModule)
                     }
-                    className="bg-primary text-white px-8 py-3 rounded-full font-outfit text-sm font-medium hover:bg-primary/90 transition-all duration-200 flex items-center gap-2 active:scale-[0.98]"
+                    className="text-white px-8 py-3 rounded-full font-outfit text-sm font-medium transition-all duration-200 flex items-center gap-2 active:scale-[0.98] hover:opacity-90"
+                    style={{ backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)' }}
                   >
                     {activeModuleProgress > 0 ? 'Continue Lesson' : 'Start Module'}
                     <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
-                {/* Progress bar */}
-                <div className="h-1.5 w-full bg-neutral-100 rounded-full overflow-hidden">
+                {/* Progress bar (D10: accent fill, neutral track, no teal gradient) */}
+                <div
+                  className="h-1.5 w-full rounded-full overflow-hidden"
+                  style={{ backgroundColor: 'var(--pt-border-subtle-hex, #d6d3d1)' }}
+                >
                   <div
-                    className="h-full bg-gradient-to-r from-primary to-primary/70 rounded-full transition-all duration-500"
-                    style={{ width: `${activeModuleProgress}%` }}
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{
+                      width: `${activeModuleProgress}%`,
+                      backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)',
+                    }}
                   />
                 </div>
               </div>
@@ -433,19 +489,34 @@ export default function PortalDashboard({
                 role="button"
                 aria-label={`Module ${mod.module_number}: ${mod.title}${isLocked ? ' - Locked' : ''}`}
               >
-                {/* Gradient header */}
-                <div className="h-40 bg-gradient-to-br from-primary/20 to-accent/10 relative flex items-end p-6">
-                  <span className="bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-outfit font-bold uppercase tracking-wider">
+                {/* D10: neutral banner, no teal gradient. Single accent stripe marks module. */}
+                <div
+                  className="h-40 relative flex items-end p-6"
+                  style={{
+                    backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)',
+                    borderBottom: '2px solid var(--pt-primary-accent-hex, #B96A5F)',
+                  }}
+                >
+                  <span
+                    className="px-3 py-1 rounded-full text-[10px] font-outfit font-bold uppercase tracking-wider"
+                    style={{
+                      backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
+                      color: 'var(--pt-text-primary-hex, #1c1917)',
+                    }}
+                  >
                     Module {mod.module_number}
                   </span>
                   {isLocked && (
                     <div className="absolute top-4 right-4">
-                      <Lock className="w-5 h-5 text-primary/40" />
+                      <Lock
+                        className="w-5 h-5"
+                        style={{ color: 'var(--pt-text-muted-hex, #57534e)' }}
+                      />
                     </div>
                   )}
                 </div>
                 <div className="p-6">
-                  <h3 className="font-outfit text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
+                  <h3 className="font-outfit text-lg font-semibold mb-2 transition-colors">
                     {mod.title}
                   </h3>
                   <p className="text-sm text-foreground/50 mb-4 line-clamp-2 leading-relaxed">
@@ -459,10 +530,16 @@ export default function PortalDashboard({
                         <span>Progress</span>
                         <span>{modProgress}%</span>
                       </div>
-                      <div className="h-1 w-full bg-neutral-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-1 w-full rounded-full overflow-hidden"
+                        style={{ backgroundColor: 'var(--pt-border-subtle-hex, #d6d3d1)' }}
+                      >
                         <div
-                          className="h-full bg-primary rounded-full transition-all duration-500"
-                          style={{ width: `${modProgress}%` }}
+                          className="h-full rounded-full transition-all duration-500"
+                          style={{
+                            width: `${modProgress}%`,
+                            backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)',
+                          }}
                         />
                       </div>
                     </div>
@@ -471,7 +548,10 @@ export default function PortalDashboard({
                   <div className="flex items-center justify-between text-xs text-foreground/40">
                     <span>{mod.lessons?.length || 0} Lessons</span>
                     {!isLocked && (
-                      <ChevronRight className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <ChevronRight
+                        className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                        style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+                      />
                     )}
                   </div>
                 </div>
