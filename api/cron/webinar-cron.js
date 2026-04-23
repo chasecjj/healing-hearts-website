@@ -81,7 +81,7 @@ async function runReminderJob(job, resend, now) {
 
   const { data: webinars, error: webinarErr } = await supabaseAdmin
     .from('webinars')
-    .select('id, title, starts_at, duration_minutes, status, meeting_url, riverside_audience_url')
+    .select('id, title, starts_at, duration_minutes, status, riverside_audience_url')
     .in('status', ['scheduled', 'live'])
     .gte('starts_at', windowStart)
     .lte('starts_at', windowEnd);
