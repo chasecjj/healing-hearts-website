@@ -181,49 +181,46 @@ export default function PortalDashboard({
         If you are in crisis, please call <strong className="text-foreground/40">988</strong> (Suicide &amp; Crisis Lifeline) or <strong className="text-foreground/40">1-800-799-7233</strong> (Domestic Violence Hotline).
       </p>
 
-      {/* ── Your Healing Journey Stats ─────────────────────── */}
-      <section className="relative rounded-3xl overflow-hidden p-8 sm:p-10 bg-primary/10" data-animate>
-        {/* Ambient blurred glow layer */}
-        <div className="absolute inset-0 z-0 opacity-30 overflow-hidden" aria-hidden="true">
-          <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-primary blur-3xl" />
-          <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-accent blur-3xl" />
-        </div>
-        <div className="relative z-10">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-            <h2 className="font-drama text-2xl text-foreground">Your Healing Journey</h2>
-            <div className="flex items-center gap-6 text-foreground/50">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-primary" />
-                <span className="text-sm font-outfit">Active Growth</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-accent" />
-                <span className="text-sm font-outfit">Integration</span>
-              </div>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { value: completedLessons, label: 'Lessons Completed', icon: BookOpen },
-              {
-                value: completedModules > 0 ? completedModules : completedLessons > 0 ? '...' : '0',
-                label: completedModules > 0 ? 'Modules Completed' : completedLessons > 0 ? 'Module In Progress' : 'Modules Completed',
-                icon: Flame,
-              },
-              { value: totalLessons, label: 'Total Lessons', icon: Clock },
-              { value: `${overallProgress}%`, label: 'Overall Progress', icon: ChevronRight },
-            ].map(({ value, label }) => (
-              <div
-                key={label}
-                className="p-6 bg-white rounded-2xl flex flex-col gap-2 shadow-[0_2px_8px_-2px_rgba(7,58,71,0.06)]"
+      {/* ── Your Healing Journey Stats (flat typography per D4) ─────── */}
+      <section className="py-6" data-animate>
+        <h2 className="text-2xl font-semibold text-foreground mb-6">Your Healing Journey</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {[
+            { value: completedLessons, label: 'Lessons Completed' },
+            {
+              value: completedModules > 0 ? completedModules : completedLessons > 0 ? '…' : '0',
+              label: completedModules > 0 ? 'Modules Completed' : completedLessons > 0 ? 'Module In Progress' : 'Modules Completed',
+            },
+            { value: totalLessons, label: 'Total Lessons' },
+            { value: `${overallProgress}%`, label: 'Overall Progress' },
+          ].map(({ value, label }) => (
+            <div key={label} className="flex flex-col gap-1">
+              <span
+                style={{
+                  fontSize: '28px',
+                  lineHeight: 1,
+                  fontWeight: 600,
+                  fontFamily: '"Outfit", "Plus Jakarta Sans", sans-serif',
+                  letterSpacing: '-0.02em',
+                  color: 'var(--pt-text-primary-hex, #1c1917)',
+                }}
               >
-                <span className="text-3xl font-drama text-primary">{value}</span>
-                <span className="text-xs font-outfit uppercase tracking-widest text-foreground/50">
-                  {label}
-                </span>
-              </div>
-            ))}
-          </div>
+                {value}
+              </span>
+              <span
+                style={{
+                  fontSize: '13px',
+                  lineHeight: 1.45,
+                  fontWeight: 400,
+                  fontFamily: '"Plus Jakarta Sans", system-ui, sans-serif',
+                  letterSpacing: '0.02em',
+                  color: 'var(--pt-text-muted-hex, #57534e)',
+                }}
+              >
+                {label}
+              </span>
+            </div>
+          ))}
         </div>
       </section>
 

@@ -1,57 +1,54 @@
 /**
- * PortalLayout.jsx — Round 1 chassis rebuild
+ * PortalLayout.jsx — Round 2 refactor
  *
- * Desktop:  72px dark rail + 240px beige drawer (always-open) + content area
- * Mobile:   content fills viewport, 80px bottom-nav (5 items, admin hidden)
- *           + bottom-sheet stub for secondary actions (Round 2 populates)
+ * Consumes portal tokens via portalTokensAsCssVars() (scoped to .portal-root).
+ * Rail-aware contextual drawer routing: each rail icon mounts its own drawer.
+ * Username moves from drawer top → rail bottom below avatar (D3 + Top-5 #5).
+ * PortalLogo integrated at top of rail.
+ * Breathing gradient keyframes injected via motion.js export (D9 4s animation).
  *
- * Tokens from tailwind.config.js:
- *   rail (#24201D), drawer (#DDD3C4), elevation-1, elevation-2,
- *   primary-dark (#0D6E87, 3.4:1 on rail), accent-dark (#8C4A40, 3.1:1 on rail)
- *
- * Animation hooks: see § 7 of dispatch-brief.
- * The 4s breathing gradient on the selected rail icon IS implemented (CEO-specified).
+ * Round 1 chassis preserved:
+ *   - 72px rail + 320px drawer + content area
+ *   - Mobile bottom-nav (5 items, admin desktop-only)
+ *   - Admin email-domain gate + profile.role === 'admin' path
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { LogOut, ChevronUp } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { studentNavItems, adminNavItems } from './portalNav.config';
+import {
+  portalTokens,
+  portalTokensAsCssVars,
+  breathingGradientKeyframes,
+  railIconHoverStyle,
+  useReducedMotion,
+  getTypeStyle,
+} from '../portal/design';
+import { PortalLogo } from '../portal/components/PortalLogo';
+import HomeDrawer from '../portal/drawers/HomeDrawer';
+import CoursesDrawer from '../portal/drawers/CoursesDrawer';
+import RescueKitDrawer from '../portal/drawers/RescueKitDrawer';
+import BookmarksDrawer from '../portal/drawers/BookmarksDrawer';
+import CalendarDrawer from '../portal/drawers/CalendarDrawer';
+import AdminDrawer from '../portal/drawers/AdminDrawer';
 
-// ── CSS keyframes injected once ────────────────────────────────────────────
-// The 4s breathing gradient on the selected rail icon.
-// Respects prefers-reduced-motion: the @media block disables animation
-// and falls back to a static primary-teal fill.
-const BREATHING_GRADIENT_STYLE = `
-@keyframes rail-breathing {
-  0%   { background-position: 0%   50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0%   50%; }
+// ── Inject portal keyframes once per app ──────────────────────────────────
+function PortalKeyframeStyles() {
+  return <style>{breathingGradientKeyframes}</style>;
 }
 
-.rail-active-pill {
-  background: linear-gradient(135deg, #1191B1 0%, #B96A5F 100%);
-  background-size: 200% 200%;
-  animation: rail-breathing 4s ease infinite;
-}
+// ── Rail-id → drawer component map ────────────────────────────────────────
+const DRAWERS = {
+  home: HomeDrawer,
+  courses: CoursesDrawer,
+  rescue: RescueKitDrawer,
+  bookmarks: BookmarksDrawer,
+  calendar: CalendarDrawer,
+  admin: AdminDrawer,
+};
 
-@media (prefers-reduced-motion: reduce) {
-  .rail-active-pill {
-    background: #1191B1;
-    background-size: unset;
-    animation: none;
-  }
-}
-`;
-
-function BreathingGradientStyles() {
-  return <style>{BREATHING_GRADIENT_STYLE}</style>;
-}
-
-// ── Derived isAdmin predicate ───────────────────────────────────────────────
-// Per dispatch-brief § 4: email-domain check is an ADDITIONAL affirmative path,
-// not a replacement for the existing profile.role === 'admin' check.
+// ── Derived isAdmin predicate ─────────────────────────────────────────────
 function useIsAdmin() {
   const { user, isAdmin: profileRoleIsAdmin } = useAuth();
   const emailDomainIsAdmin =
@@ -60,103 +57,101 @@ function useIsAdmin() {
   return profileRoleIsAdmin === true || emailDomainIsAdmin === true;
 }
 
-// ── Rail icon (desktop + helpers) ──────────────────────────────────────────
-
-/**
- * RailIcon — renders a single icon in the 72px dark rail.
- * Selected state: 4s breathing gradient pill.
- * Hover state: bg-rail-hover transition.
- */
+// ── Rail icon ─────────────────────────────────────────────────────────────
 function RailIcon({ item, isActive }) {
   const Icon = item.icon;
+  const [hovered, setHovered] = useState(false);
+  const prefersReduced = useReducedMotion();
+  const hoverStyle = railIconHoverStyle(hovered, prefersReduced);
+
   return (
     <NavLink
       to={item.path}
       end={item.path === '/portal' || item.path === '/admin'}
       aria-label={item.label}
       title={item.label}
-      className="relative flex items-center justify-center w-10 h-10 rounded-xl transition-colors duration-150 ease-in-out group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-dark"
-      // [animation-target: rail-hover-opacity]
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="relative flex items-center justify-center w-10 h-10 group focus-visible:outline-none focus-visible:ring-2"
+      style={{
+        ...hoverStyle,
+        outlineColor: 'var(--pt-focus-ring-hex, #B96A5F)',
+      }}
     >
-      {/* Breathing gradient pill (selected) or hover bg */}
+      {/* Selected breathing gradient (D9) */}
       {isActive ? (
-        // [animation-target: rail-breathing-gradient]
         <span
-          className="rail-active-pill absolute inset-0 rounded-xl"
+          className="rail-icon--selected absolute inset-0"
           aria-hidden="true"
+          style={{
+            borderRadius: 'inherit',
+            background: portalTokens['rail-selected-chip'].gradientCss,
+            backgroundSize: '200% 200%',
+            animation: prefersReduced
+              ? 'none'
+              : 'rail-chip-breathe 4s cubic-bezier(0.4,0,0.2,1) infinite alternate',
+          }}
         />
       ) : (
         <span
-          className="absolute inset-0 rounded-xl bg-transparent group-hover:bg-rail-hover transition-colors duration-150 ease-in-out"
+          className="absolute inset-0 transition-colors duration-150"
           aria-hidden="true"
+          style={{
+            borderRadius: 'inherit',
+            backgroundColor: hovered
+              ? 'var(--pt-rail-hover-hex, #2C2823)'
+              : 'transparent',
+          }}
         />
       )}
-      {/* Icon — layered above pill */}
-      {/* [animation-target: rail-scale-pulse] */}
+      {/* Icon layered above */}
       <span className="relative z-10">
         <Icon
-          className={`w-5 h-5 transition-colors duration-150 ${
-            isActive ? 'text-white' : 'text-primary-dark group-hover:text-white/80'
-          }`}
+          className="w-5 h-5"
           strokeWidth={1.75}
           aria-hidden="true"
+          style={{
+            color: isActive
+              ? 'var(--pt-text-inverse-hex, #fafaf9)'
+              : 'rgba(250,250,249,0.65)',
+          }}
         />
       </span>
     </NavLink>
   );
 }
 
-// ── Drawer item (desktop) ───────────────────────────────────────────────────
-
-function DrawerItem({ item, onClick }) {
-  const Icon = item.icon;
-  return (
-    <NavLink
-      to={item.path}
-      end={item.path === '/portal' || item.path === '/admin'}
-      onClick={onClick}
-      className={({ isActive }) =>
-        `relative flex items-center gap-3 h-10 px-3 rounded-lg text-[13px] font-medium transition-colors duration-150 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40
-        ${
-          isActive
-            ? 'text-foreground'
-            : 'text-foreground/70 hover:text-foreground hover:bg-drawer-hover'
-        }`
-        // [animation-target: drawer-item-hover]
+// ── Determine active rail id from pathname ────────────────────────────────
+function useActiveRailId(isAdmin) {
+  const location = useLocation();
+  return useMemo(() => {
+    const pathname = location.pathname;
+    if (isAdmin) {
+      for (const item of adminNavItems) {
+        if (pathname === item.path || pathname.startsWith(item.path + '/')) {
+          return item.id;
+        }
       }
-    >
-      {({ isActive }) => (
-        <>
-          {/* Active pill background */}
-          {isActive && (
-            // [animation-target: drawer-pill-slide]
-            <span
-              className="absolute inset-0 rounded-lg bg-drawer-active-bg shadow-sm"
-              aria-hidden="true"
-            />
-          )}
-          <span className="relative z-10 flex items-center gap-3">
-            <Icon
-              className={`w-4 h-4 flex-shrink-0 ${
-                isActive ? 'text-primary' : 'text-foreground/50'
-              }`}
-              strokeWidth={1.75}
-              aria-hidden="true"
-            />
-            <span>{item.label}</span>
-          </span>
-        </>
-      )}
-    </NavLink>
-  );
+    }
+    for (const item of [...studentNavItems].reverse()) {
+      if (item.path === '/portal') continue;
+      if (pathname.startsWith(item.path)) return item.id;
+    }
+    if (
+      pathname === '/portal' ||
+      pathname.startsWith('/portal/course') ||
+      pathname.startsWith('/portal/')
+    ) {
+      return 'home';
+    }
+    return null;
+  }, [location.pathname, isAdmin]);
 }
 
-// ── Desktop two-rail (Rail + Drawer) ───────────────────────────────────────
-
-function DesktopTwoRail({ isAdmin }) {
+// ── Desktop two-rail + contextual drawer ──────────────────────────────────
+function DesktopTwoRail({ isAdmin, activeRailId }) {
   const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleSignOut = async () => {
     await signOut();
@@ -172,51 +167,29 @@ function DesktopTwoRail({ isAdmin }) {
     .join('')
     .toUpperCase();
 
-  // Determine active rail item
-  const activeRailId = (() => {
-    const pathname = location.pathname;
-    // Admin items checked first
-    if (isAdmin) {
-      for (const item of adminNavItems) {
-        if (pathname === item.path || pathname.startsWith(item.path + '/')) {
-          return item.id;
-        }
-      }
-    }
-    // Student items — reverse order so longer paths match first
-    for (const item of [...studentNavItems].reverse()) {
-      if (item.path === '/portal') {
-        // exact only — handled by 'end' on NavLink
-        continue;
-      }
-      if (pathname.startsWith(item.path)) return item.id;
-    }
-    if (pathname === '/portal' || pathname.startsWith('/portal/course') || pathname.startsWith('/portal/')) {
-      return 'home';
-    }
-    return null;
-  })();
+  const DrawerComponent = DRAWERS[activeRailId] || HomeDrawer;
 
   return (
     <>
-      {/* ── RAIL (72px) ─────────────────────────────────────────────────── */}
+      {/* ── RAIL (72px) ───────────────────────────────────────────────── */}
       <aside
-        className="hidden md:flex flex-col fixed left-0 top-0 h-screen w-[72px] bg-rail z-40"
+        className="hidden md:flex flex-col fixed left-0 top-0 h-screen w-[72px] z-40"
         aria-label="Main navigation rail"
+        style={{ backgroundColor: 'var(--pt-rail-hex, #24201D)' }}
       >
-        {/* Logo / brand mark */}
+        {/* Logo — top of rail */}
         <div className="flex items-center justify-center h-14 flex-shrink-0">
-          <span className="w-8 h-8 rounded-full bg-primary-dark flex items-center justify-center">
-            <span className="font-outfit font-bold text-white text-xs">HH</span>
-          </span>
+          <PortalLogo size={32} alt="Healing Hearts" />
         </div>
 
-        {/* Divider */}
-        <div className="mx-4 h-px bg-white/10 flex-shrink-0" />
+        <div
+          className="mx-4 h-px flex-shrink-0"
+          style={{ backgroundColor: 'rgba(255,255,255,0.10)' }}
+        />
 
         {/* Student nav icons */}
         <nav
-          className="flex flex-col items-center gap-6 flex-1 pt-6 px-4"
+          className="flex flex-col items-center gap-5 flex-1 pt-6 px-4"
           aria-label="Student navigation"
         >
           {studentNavItems.map((item) => (
@@ -227,10 +200,12 @@ function DesktopTwoRail({ isAdmin }) {
             />
           ))}
 
-          {/* Admin icon — desktop only, shown only when isAdmin */}
           {isAdmin && (
             <>
-              <div className="w-6 h-px bg-white/10 mt-2" />
+              <div
+                className="w-6 h-px mt-2"
+                style={{ backgroundColor: 'rgba(255,255,255,0.10)' }}
+              />
               {adminNavItems.map((item) => (
                 <RailIcon
                   key={item.id}
@@ -242,100 +217,69 @@ function DesktopTwoRail({ isAdmin }) {
           )}
         </nav>
 
-        {/* Avatar — below icon list, above bottom edge */}
-        <div className="flex items-center justify-center pb-6 flex-shrink-0">
+        {/* Rail bottom: avatar + username (D3 locked) */}
+        <div className="flex flex-col items-center gap-1 pb-4 flex-shrink-0">
           <button
-            className="w-10 h-10 rounded-full bg-accent-dark/80 flex items-center justify-center text-white font-outfit font-semibold text-sm hover:bg-accent-dark transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-dark"
-            aria-label={`Account: ${displayName}`}
-            title={`${displayName} — Sign out`}
+            type="button"
+            className="w-8 h-8 rounded-full flex items-center justify-center font-semibold text-xs focus-visible:outline-none focus-visible:ring-2"
+            aria-label={`Account: ${displayName} — sign out`}
+            title={`${displayName} — sign out`}
             onClick={handleSignOut}
+            style={{
+              backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)',
+              color: 'var(--pt-text-inverse-hex, #fafaf9)',
+              outlineColor: 'var(--pt-focus-ring-hex, #B96A5F)',
+            }}
           >
             {initials || '?'}
           </button>
+          <span
+            className="truncate text-center"
+            style={{
+              ...getTypeStyle('meta'),
+              maxWidth: 56,
+              color: 'rgba(250,250,249,0.60)',
+              lineHeight: 1,
+            }}
+            title={displayName}
+          >
+            {displayName}
+          </span>
         </div>
       </aside>
 
-      {/* ── DRAWER (240px, always-open) ────────────────────────────────── */}
+      {/* ── DRAWER (320px, always-open, contextual per active rail) ────── */}
       <aside
-        className="hidden md:flex flex-col fixed left-[72px] top-0 h-screen w-[240px] bg-drawer z-30 border-r border-black/5"
-        aria-label="Navigation drawer"
+        className="hidden md:flex fixed left-[72px] top-0 h-screen w-[320px] z-30"
+        aria-label="Contextual drawer"
+        style={{
+          backgroundColor: 'var(--pt-drawer-hex, #d6d3d1)',
+          borderRight: '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
+        }}
       >
-        {/* Header area */}
-        <div className="flex flex-col justify-end h-14 px-4 pb-3 flex-shrink-0">
-          <p className="font-outfit font-semibold text-foreground text-sm leading-tight truncate">
-            {displayName}
-          </p>
-          <p className="text-[11px] text-foreground/50 truncate">{user?.email}</p>
-        </div>
-
-        <div className="mx-4 h-px bg-foreground/10 flex-shrink-0" />
-
-        {/* Student nav items */}
-        <nav
-          className="flex flex-col gap-0.5 flex-1 pt-4 px-3 overflow-y-auto"
-          aria-label="Portal navigation"
-        >
-          <p className="px-3 mb-1 text-[10px] font-outfit font-bold uppercase tracking-widest text-foreground/40">
-            My Portal
-          </p>
-          {studentNavItems.map((item) => (
-            <DrawerItem key={item.id} item={item} />
-          ))}
-
-          {isAdmin && (
-            <>
-              <div className="my-3 h-px bg-foreground/10" />
-              <p className="px-3 mb-1 text-[10px] font-outfit font-bold uppercase tracking-widest text-foreground/40">
-                Admin
-              </p>
-              {adminNavItems.map((item) => (
-                <DrawerItem key={item.id} item={item} />
-              ))}
-            </>
-          )}
-        </nav>
-
-        {/* Footer */}
-        <div className="px-4 pb-4 pt-3 border-t border-black/10 flex-shrink-0">
-          <button
-            onClick={handleSignOut}
-            className="flex items-center gap-2 text-xs text-foreground/50 hover:text-foreground transition-colors duration-150"
-          >
-            <LogOut className="w-3.5 h-3.5" aria-hidden="true" />
-            Sign out
-          </button>
-          <p className="mt-2 text-[10px] text-foreground/35 leading-relaxed">
-            Healing Hearts v2026 ·{' '}
-            <a href="/contact" className="hover:text-foreground/60 transition-colors">
-              Contact
-            </a>
-          </p>
-        </div>
+        <DrawerComponent />
       </aside>
     </>
   );
 }
 
-// ── Mobile bottom-nav ───────────────────────────────────────────────────────
-
-/**
- * MobileBottomNav — 5 equal-width student items only.
- * Admin is NEVER shown here (per brief locked Q1).
- * Total height 80px (56px content + 24px iOS home-indicator buffer).
- */
-function MobileBottomNav({ onSheetToggle }) {
+// ── Mobile bottom-nav (unchanged from R1) ─────────────────────────────────
+function MobileBottomNav() {
   const location = useLocation();
-
   return (
     <nav
-      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200"
-      style={{ height: '80px', paddingBottom: '24px' }}
+      className="md:hidden fixed bottom-0 left-0 right-0 z-40"
+      style={{
+        height: '80px',
+        paddingBottom: '24px',
+        backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
+        borderTop: '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
+      }}
       aria-label="Mobile navigation"
     >
       <div className="flex h-[56px]">
         {studentNavItems.map((item) => {
           const Icon = item.icon;
-          // Determine active state
           const isActive =
             item.path === '/portal'
               ? location.pathname === '/portal' ||
@@ -350,30 +294,33 @@ function MobileBottomNav({ onSheetToggle }) {
               key={item.id}
               to={item.path}
               end={item.path === '/portal'}
-              className="flex-1 flex flex-col items-center justify-center gap-0.5 relative focus-visible:outline-none"
-              // [animation-target: bottom-nav-ripple]
+              className="flex-1 flex flex-col items-center justify-center gap-0.5 focus-visible:outline-none"
               aria-label={item.label}
             >
-              {/* Active indicator pill */}
-              {/* [animation-target: bottom-nav-scale] */}
               <span
-                className={`flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl transition-colors duration-150 ${
-                  isActive
-                    ? 'bg-rail/10'
-                    : 'bg-transparent'
-                }`}
+                className="flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl transition-colors duration-150"
+                style={{
+                  backgroundColor: isActive ? 'rgba(36,32,29,0.08)' : 'transparent',
+                }}
               >
                 <Icon
-                  className={`w-5 h-5 ${
-                    isActive ? 'text-foreground' : 'text-foreground/40'
-                  }`}
+                  className="w-5 h-5"
                   strokeWidth={isActive ? 2 : 1.75}
                   aria-hidden="true"
+                  style={{
+                    color: isActive
+                      ? 'var(--pt-text-primary-hex, #1c1917)'
+                      : 'rgba(28,25,23,0.45)',
+                  }}
                 />
                 <span
-                  className={`text-[10px] font-outfit font-semibold leading-none ${
-                    isActive ? 'text-foreground' : 'text-foreground/40'
-                  }`}
+                  style={{
+                    ...getTypeStyle('meta', 'semibold'),
+                    lineHeight: 1,
+                    color: isActive
+                      ? 'var(--pt-text-primary-hex, #1c1917)'
+                      : 'rgba(28,25,23,0.45)',
+                  }}
                 >
                   {item.label}
                 </span>
@@ -386,96 +333,47 @@ function MobileBottomNav({ onSheetToggle }) {
   );
 }
 
-// ── Mobile bottom-sheet stub (Round 2 populates) ───────────────────────────
-
-function MobileBottomSheet({ open, onClose }) {
-  return (
-    <>
-      {/* Backdrop */}
-      {open && (
-        // [animation-target: bottom-sheet-backdrop]
-        <div
-          className="md:hidden fixed inset-0 bg-foreground/20 z-40"
-          aria-hidden="true"
-          onClick={onClose}
-        />
-      )}
-
-      {/* Sheet */}
-      {/* [animation-target: bottom-sheet-spring] */}
-      <aside
-        className={`md:hidden fixed left-0 right-0 bottom-0 z-50 bg-white rounded-t-2xl shadow-lg transition-transform duration-300 ease-in-out ${
-          open ? 'translate-y-0' : 'translate-y-full'
-        }`}
-        style={{ maxHeight: '60vh' }}
-        aria-label="Secondary actions sheet"
-        aria-hidden={!open}
-      >
-        {/* Handle bar */}
-        <div className="flex justify-center pt-2 pb-4">
-          <span className="w-9 h-1 rounded-full bg-foreground/20" />
-        </div>
-
-        {/* Coming soon placeholder (Round 2 replaces) */}
-        <div className="flex flex-col items-center justify-center gap-3 py-12 px-6">
-          <p className="font-outfit font-semibold text-foreground text-base">
-            More actions
-          </p>
-          <p className="text-foreground/50 text-sm text-center">
-            Additional portal tools are coming in Round 2.
-          </p>
-        </div>
-      </aside>
-    </>
-  );
-}
-
-// ── PortalLayout (root export) ─────────────────────────────────────────────
-
+// ── PortalLayout (root export) ────────────────────────────────────────────
 export default function PortalLayout() {
-  const [sheetOpen, setSheetOpen] = useState(false);
   const location = useLocation();
   const isAdmin = useIsAdmin();
+  const activeRailId = useActiveRailId(isAdmin);
+  const cssVars = portalTokensAsCssVars();
 
-  // Close sheet on route change
+  // Close any residual body lock on route change
+  const firstRender = useRef(true);
   useEffect(() => {
-    setSheetOpen(false);
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    document.body.style.overflow = '';
   }, [location.pathname]);
-
-  // Lock body scroll when sheet is open
-  useEffect(() => {
-    document.body.style.overflow = sheetOpen ? 'hidden' : '';
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [sheetOpen]);
 
   return (
     <>
-      <BreathingGradientStyles />
+      <PortalKeyframeStyles />
 
-      <div className="flex min-h-screen bg-background text-foreground">
-        {/* ── Desktop two-rail ───────────────────────────────────────────── */}
-        <DesktopTwoRail isAdmin={isAdmin} />
+      <div
+        className="portal-root flex min-h-screen"
+        style={{
+          ...cssVars,
+          backgroundColor: 'var(--pt-content-bg-hex, #f5f5f4)',
+          color: 'var(--pt-text-primary-hex, #1c1917)',
+        }}
+      >
+        {/* Desktop two-rail */}
+        <DesktopTwoRail isAdmin={isAdmin} activeRailId={activeRailId} />
 
-        {/* ── Main content ───────────────────────────────────────────────── */}
-        {/* On desktop: ml-[312px] = 72px rail + 240px drawer */}
-        {/* On mobile:  full width, pb-[80px] for bottom-nav clearance */}
+        {/* Main content — ml = 72 rail + 320 drawer = 392px on desktop */}
         <main
-          className="flex-1 md:ml-[312px] flex flex-col min-h-screen overflow-y-auto pb-[80px] md:pb-0"
+          className="flex-1 md:ml-[392px] flex flex-col min-h-screen overflow-y-auto pb-[80px] md:pb-0"
         >
-          {/* [animation-target: page-fade-through] */}
           <Outlet />
         </main>
 
-        {/* ── Mobile bottom-nav ──────────────────────────────────────────── */}
-        <MobileBottomNav onSheetToggle={() => setSheetOpen((prev) => !prev)} />
-
-        {/* ── Mobile bottom-sheet stub ───────────────────────────────────── */}
-        <MobileBottomSheet
-          open={sheetOpen}
-          onClose={() => setSheetOpen(false)}
-        />
+        {/* Mobile bottom-nav */}
+        <MobileBottomNav />
       </div>
     </>
   );
