@@ -57,16 +57,28 @@ export default function DailyIntentionWidget() {
 
   if (loading) {
     return (
-      <div className="bg-primary/5 rounded-2xl p-8 border-l-4 border-primary h-full animate-pulse">
-        <div className="h-6 bg-primary/10 rounded w-1/3 mb-6" />
-        <div className="h-4 bg-primary/10 rounded w-2/3 mb-3" />
-        <div className="h-4 bg-primary/10 rounded w-1/2" />
+      <div
+        className="rounded-2xl p-8 h-full animate-pulse"
+        style={{
+          backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)',
+          borderLeft: '4px solid var(--pt-primary-accent-hex, #B96A5F)',
+        }}
+      >
+        <div className="h-6 bg-neutral-200 rounded w-1/3 mb-6" />
+        <div className="h-4 bg-neutral-200 rounded w-2/3 mb-3" />
+        <div className="h-4 bg-neutral-200 rounded w-1/2" />
       </div>
     );
   }
 
   return (
-    <div className="bg-primary/5 rounded-2xl p-8 border-l-4 border-primary h-full">
+    <div
+      className="rounded-2xl p-8 h-full"
+      style={{
+        backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)',
+        borderLeft: '4px solid var(--pt-primary-accent-hex, #B96A5F)',
+      }}
+    >
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-drama text-xl flex items-center gap-2 text-foreground">
@@ -77,7 +89,7 @@ export default function DailyIntentionWidget() {
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
-            className="text-primary"
+            style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
             aria-hidden="true"
           >
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
@@ -86,7 +98,10 @@ export default function DailyIntentionWidget() {
         </h3>
 
         {streak > 0 && (
-          <span className="flex items-center gap-1.5 text-xs font-outfit font-semibold text-accent">
+          <span
+            className="flex items-center gap-1.5 text-xs font-outfit font-semibold"
+            style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+          >
             <Flame className="w-3.5 h-3.5" />
             {streak} day{streak !== 1 ? 's' : ''}
           </span>
@@ -100,14 +115,14 @@ export default function DailyIntentionWidget() {
             &ldquo;{intention.intention_text}&rdquo;
           </p>
           {intention.mood && (
-            <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-outfit font-semibold text-primary">
+            <span className="inline-flex items-center rounded-full bg-neutral-200 px-3 py-1 text-xs font-outfit font-semibold text-foreground/80">
               {intention.mood}
             </span>
           )}
-          <div className="pt-4 border-t border-primary/10">
+          <div className="pt-4 border-t border-neutral-200">
             <button
               onClick={handleEdit}
-              className="flex items-center gap-2 text-sm text-primary/60 hover:text-primary transition-colors font-outfit"
+              className="flex items-center gap-2 text-sm text-foreground/60 hover:text-foreground transition-colors font-outfit"
             >
               <PenLine className="w-4 h-4" />
               Update intention
@@ -157,7 +172,8 @@ export default function DailyIntentionWidget() {
             <button
               onClick={handleSave}
               disabled={saving || !draftText.trim()}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-outfit font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-outfit font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+              style={{ backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)' }}
             >
               {saving ? (
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

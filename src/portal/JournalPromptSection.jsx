@@ -39,17 +39,24 @@ export default function JournalPromptSection({ lessonId, moduleId, prompt }) {
 
   return (
     <div
-      className="bg-accent/5 rounded-2xl border border-accent/20 overflow-hidden transition-all duration-300"
+      className="rounded-2xl overflow-hidden transition-all duration-300"
+      style={{
+        backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)',
+        border: '1px solid var(--pt-elevation-2-hex, #d6d3d1)',
+      }}
       data-lesson-animate
     >
       {/* Toggle header */}
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-accent/5 transition-colors"
+        className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-neutral-200/60 transition-colors"
         aria-expanded={shouldShow}
       >
         <div className="flex items-center gap-3">
-          <PenLine className="w-5 h-5 text-accent/60" />
+          <PenLine
+            className="w-5 h-5"
+            style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)', opacity: 0.7 }}
+          />
           <span className="font-outfit font-semibold text-sm text-foreground/80">
             Reflection Journal
           </span>
@@ -71,8 +78,11 @@ export default function JournalPromptSection({ lessonId, moduleId, prompt }) {
         <div className="px-6 pb-6 space-y-6">
           {/* Prompt display */}
           {prompt && (
-            <div className="flex gap-3 items-start bg-white rounded-xl p-4 border border-accent/10">
-              <PenLine className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
+            <div className="flex gap-3 items-start bg-white rounded-xl p-4 border border-neutral-200">
+              <PenLine
+                className="w-4 h-4 mt-0.5 flex-shrink-0"
+                style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+              />
               <p className="text-sm text-foreground/60 italic leading-relaxed">
                 {prompt}
               </p>
@@ -93,7 +103,8 @@ export default function JournalPromptSection({ lessonId, moduleId, prompt }) {
             <button
               onClick={handleSave}
               disabled={saving || !draftText.trim()}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-white text-sm font-outfit font-medium hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-outfit font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+              style={{ backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)' }}
             >
               {saving ? (
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -106,7 +117,7 @@ export default function JournalPromptSection({ lessonId, moduleId, prompt }) {
 
           {/* Previous entries */}
           {hasEntries && (
-            <div className="space-y-4 pt-4 border-t border-accent/10">
+            <div className="space-y-4 pt-4 border-t border-neutral-200">
               <h4 className="text-xs font-outfit uppercase tracking-widest text-foreground/40">
                 Previous Reflections
               </h4>
@@ -116,7 +127,13 @@ export default function JournalPromptSection({ lessonId, moduleId, prompt }) {
                   className="bg-white rounded-xl p-4 border border-neutral-100"
                 >
                   {entry.mood && (
-                    <span className="inline-flex items-center rounded-full bg-accent/10 px-3 py-1 text-xs font-outfit font-semibold text-accent mb-2">
+                    <span
+                      className="inline-flex items-center rounded-full px-3 py-1 text-xs font-outfit font-semibold mb-2"
+                      style={{
+                        backgroundColor: 'var(--pt-elevation-2-hex, #d6d3d1)',
+                        color: 'var(--pt-primary-accent-hex, #B96A5F)',
+                      }}
+                    >
                       {entry.mood}
                     </span>
                   )}

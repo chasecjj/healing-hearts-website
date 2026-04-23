@@ -266,7 +266,10 @@ export default function LessonView({
         {/* Logo + close */}
         <div className="px-6 py-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white shadow-lg">
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center text-white shadow-lg"
+              style={{ backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+            >
               <svg
                 width="20"
                 height="20"
@@ -277,13 +280,16 @@ export default function LessonView({
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
               </svg>
             </div>
-            <h1 className="font-drama text-xl font-bold text-primary">
+            <h1
+              className="font-drama text-xl font-bold"
+              style={{ color: 'var(--pt-text-primary-hex, #1c1917)' }}
+            >
               Healing Hearts
             </h1>
           </div>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="lg:hidden p-1 text-primary/50 hover:text-primary transition-colors"
+            className="lg:hidden p-1 text-foreground/50 hover:text-foreground transition-colors"
             aria-label="Close navigation"
           >
             <X className="w-5 h-5" />
@@ -292,14 +298,17 @@ export default function LessonView({
 
         {/* Overall progress bar */}
         <div className="px-6 mb-6">
-          <div className="flex justify-between items-center text-xs font-outfit font-semibold text-primary uppercase tracking-wider mb-1">
+          <div className="flex justify-between items-center text-xs font-outfit font-semibold text-foreground/70 uppercase tracking-wider mb-1">
             <span>Course Progress</span>
             <span>{overallProgress}%</span>
           </div>
           <div className="w-full bg-white/40 h-1.5 rounded-full overflow-hidden">
             <div
-              className="bg-accent h-full rounded-full transition-all duration-500"
-              style={{ width: `${overallProgress}%` }}
+              className="h-full rounded-full transition-all duration-500"
+              style={{
+                width: `${overallProgress}%`,
+                backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)',
+              }}
             />
           </div>
         </div>
@@ -320,18 +329,29 @@ export default function LessonView({
                   }}
                   className={`w-full text-left px-4 py-3 rounded-xl transition-all flex items-center gap-3 ${
                     isActiveMod
-                      ? 'bg-white/50 text-primary font-bold border-l-4 border-primary rounded-l-none'
+                      ? 'bg-white/50 text-foreground font-bold border-l-4 rounded-l-none'
                       : (mod.is_preview || canAccessContent)
-                      ? 'text-foreground/60 hover:text-primary hover:bg-white/30'
+                      ? 'text-foreground/60 hover:text-foreground hover:bg-white/30'
                       : 'text-foreground/40 opacity-60 cursor-not-allowed'
                   }`}
+                  style={
+                    isActiveMod
+                      ? { borderLeftColor: 'var(--pt-primary-accent-hex, #B96A5F)' }
+                      : undefined
+                  }
                   disabled={!mod.is_preview && !canAccessContent}
                 >
                   {(mod.is_preview || canAccessContent) ? (
                     modProgress === 100 ? (
-                      <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0" />
+                      <CheckCircle2
+                        className="w-5 h-5 flex-shrink-0"
+                        style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+                      />
                     ) : isActiveMod ? (
-                      <PlayCircle className="w-5 h-5 text-accent flex-shrink-0" />
+                      <PlayCircle
+                        className="w-5 h-5 flex-shrink-0"
+                        style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+                      />
                     ) : (
                       <PlayCircle className="w-5 h-5 opacity-40 flex-shrink-0" />
                     )
@@ -347,7 +367,8 @@ export default function LessonView({
                 {isActiveMod && (mod.is_preview || canAccessContent) && (() => {
                   const { topLevel, childrenByParent } = getLessonGroups(mod.lessons);
                   return (
-                    <div className="ml-7 mt-2 space-y-1 border-l-2 border-primary/10 pl-3">
+                    <div className="ml-7 mt-2 space-y-1 border-l-2 border-neutral-200 pl-3">
+                      {/* nested lesson list */}
                       {topLevel.map((lesson) => {
                         const isActiveLesson = currentLesson?.id === lesson.id;
                         const lessonCompleted = isLessonCompleted(lesson.id);
@@ -363,7 +384,7 @@ export default function LessonView({
                               {hasChildren && (
                                 <button
                                   onClick={() => toggleParentExpanded(lesson.id)}
-                                  className="p-1 text-primary/40 hover:text-primary/70 flex-shrink-0"
+                                  className="p-1 text-foreground/40 hover:text-foreground/70 flex-shrink-0"
                                   aria-label={isExpanded ? 'Collapse' : 'Expand'}
                                 >
                                   <ChevronRight
@@ -377,9 +398,17 @@ export default function LessonView({
                                 onClick={() => navigateToLesson(mod, lesson)}
                                 className={`w-full flex items-center gap-2 py-1.5 px-2 rounded-lg text-xs transition-colors text-left ${
                                   isActiveLesson
-                                    ? 'text-primary font-bold border-l-2 border-primary pl-3'
-                                    : 'text-foreground/50 hover:text-primary'
+                                    ? 'font-bold border-l-2 pl-3'
+                                    : 'text-foreground/50 hover:text-foreground'
                                 } ${!hasChildren ? 'ml-4' : ''}`}
+                                style={
+                                  isActiveLesson
+                                    ? {
+                                        color: 'var(--pt-primary-accent-hex, #B96A5F)',
+                                        borderLeftColor: 'var(--pt-primary-accent-hex, #B96A5F)',
+                                      }
+                                    : undefined
+                                }
                               >
                                 {lessonCompleted ? (
                                   <CheckCircle2 className="w-3.5 h-3.5 text-green-600 flex-shrink-0" />
@@ -391,7 +420,7 @@ export default function LessonView({
                             </div>
 
                             {hasChildren && isExpanded && (
-                              <div className="ml-6 pl-3 border-l border-primary/10 space-y-1 mt-1">
+                              <div className="ml-6 pl-3 border-l border-neutral-200 space-y-1 mt-1">
                                 {childrenByParent[lesson.id].map((child) => {
                                   const isChildActive = currentLesson?.id === child.id;
                                   const childCompleted = isLessonCompleted(child.id);
@@ -401,9 +430,14 @@ export default function LessonView({
                                       onClick={() => navigateToLesson(mod, child)}
                                       className={`w-full flex items-center gap-2 py-1.5 px-2 rounded-lg text-xs transition-colors text-left ${
                                         isChildActive
-                                          ? 'text-primary font-bold'
-                                          : 'text-foreground/50 hover:text-primary'
+                                          ? 'font-bold'
+                                          : 'text-foreground/50 hover:text-foreground'
                                       }`}
+                                      style={
+                                        isChildActive
+                                          ? { color: 'var(--pt-primary-accent-hex, #B96A5F)' }
+                                          : undefined
+                                      }
                                     >
                                       {childCompleted ? (
                                         <CheckCircle2 className="w-3.5 h-3.5 text-green-600 flex-shrink-0" />
@@ -457,19 +491,23 @@ export default function LessonView({
         </div>
 
         {/* Bottom links */}
-        <div className="px-4 pt-2 pb-4 border-t border-primary/5">
+        <div className="px-4 pt-2 pb-4 border-t border-neutral-200">
           <button
             onClick={() => navigate(basePath)}
-            className="flex items-center gap-3 px-4 py-3 text-foreground/60 hover:text-primary transition-colors cursor-pointer text-sm font-medium w-full"
+            className="flex items-center gap-3 px-4 py-3 text-foreground/60 hover:text-foreground transition-colors cursor-pointer text-sm font-medium w-full"
           >
             <ChevronLeft className="w-4 h-4" />
             <span>Back to Dashboard</span>
           </button>
           <button
             onClick={() => navigate('/')}
-            className="mt-2 bg-primary/10 rounded-xl p-4 text-center w-full hover:bg-primary/20 transition-all"
+            className="mt-2 rounded-xl p-4 text-center w-full transition-all hover:opacity-90"
+            style={{ backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)' }}
           >
-            <span className="text-primary font-bold text-xs uppercase tracking-widest">
+            <span
+              className="font-bold text-xs uppercase tracking-widest"
+              style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+            >
               Return to Site
             </span>
           </button>
@@ -483,13 +521,13 @@ export default function LessonView({
           <div className="flex items-center gap-2 text-foreground/40 min-w-0">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-2 text-foreground/50 hover:text-primary mr-2"
+              className="lg:hidden p-2 text-foreground/50 hover:text-foreground mr-2"
               aria-label="Open navigation"
             >
               <Menu className="w-5 h-5" />
             </button>
             <span
-              className="hover:text-primary cursor-pointer transition-colors truncate"
+              className="hover:text-foreground cursor-pointer transition-colors truncate"
               onClick={() =>
                 navigate(`${basePath}/module-${currentModule?.module_number}`)
               }
@@ -497,7 +535,10 @@ export default function LessonView({
               Module {currentModule?.module_number}
             </span>
             <ChevronRight className="w-3 h-3 flex-shrink-0" />
-            <span className="text-primary font-semibold truncate">
+            <span
+              className="font-semibold truncate"
+              style={{ color: 'var(--pt-text-primary-hex, #1c1917)' }}
+            >
               {currentLesson?.title}
             </span>
           </div>
@@ -536,13 +577,19 @@ export default function LessonView({
 
             {/* Lesson header */}
             <header className="mb-12 sm:mb-16 space-y-4" data-lesson-animate>
-              <span className="text-accent font-bold text-sm uppercase tracking-[0.3em]">
+              <span
+                className="font-bold text-sm uppercase tracking-[0.3em]"
+                style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+              >
                 Module {currentModule?.module_number}
                 {currentLesson?.parent_lesson_id && getParentLesson(currentLesson)
                   ? ` / ${getParentLesson(currentLesson).title}`
                   : ''}
               </span>
-              <h2 className="font-drama text-4xl sm:text-5xl lg:text-6xl font-bold text-primary leading-tight">
+              <h2
+                className="font-drama text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight"
+                style={{ color: 'var(--pt-text-primary-hex, #1c1917)' }}
+              >
                 {currentLesson?.title}
               </h2>
               {currentLesson?.content_json?.subtitle && (
@@ -595,7 +642,7 @@ export default function LessonView({
                 navigateToLesson(prevLesson.module, prevLesson.lesson)
               }
               disabled={!prevLesson}
-              className="flex items-center gap-2 text-foreground/60 font-outfit font-medium uppercase tracking-widest text-sm hover:text-primary transition-colors group disabled:opacity-30 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 text-foreground/60 font-outfit font-medium uppercase tracking-widest text-sm hover:text-foreground transition-colors group disabled:opacity-30 disabled:cursor-not-allowed"
             >
               <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
               Previous Lesson
@@ -607,7 +654,8 @@ export default function LessonView({
                   onClick={() =>
                     navigateToLesson(nextLesson.module, nextLesson.lesson)
                   }
-                  className="bg-primary text-white rounded-full px-8 sm:px-10 py-4 font-outfit font-bold uppercase tracking-[0.15em] text-sm shadow-[0_4px_20px_-4px_rgba(17,145,177,0.3)] hover:scale-105 hover:shadow-[0_8px_30px_-4px_rgba(17,145,177,0.4)] transition-all duration-200 active:scale-[0.98] flex items-center gap-2"
+                  className="text-white rounded-full px-8 sm:px-10 py-4 font-outfit font-bold uppercase tracking-[0.15em] text-sm shadow-[0_4px_20px_-4px_rgba(185,106,95,0.3)] hover:scale-105 hover:shadow-[0_8px_30px_-4px_rgba(185,106,95,0.4)] transition-all duration-200 active:scale-[0.98] flex items-center gap-2"
+                  style={{ backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)' }}
                 >
                   Next Lesson
                   <ChevronRight className="w-4 h-4" />
@@ -621,7 +669,8 @@ export default function LessonView({
             ) : (
               <button
                 onClick={handleMarkCompleteAndNext}
-                className="bg-accent text-white rounded-full px-8 sm:px-10 py-4 font-outfit font-bold uppercase tracking-[0.15em] text-sm shadow-[0_4px_20px_-4px_rgba(185,106,95,0.3)] hover:scale-105 hover:shadow-[0_8px_30px_-4px_rgba(185,106,95,0.4)] transition-all duration-200 active:scale-[0.98]"
+                className="text-white rounded-full px-8 sm:px-10 py-4 font-outfit font-bold uppercase tracking-[0.15em] text-sm shadow-[0_4px_20px_-4px_rgba(185,106,95,0.3)] hover:scale-105 hover:shadow-[0_8px_30px_-4px_rgba(185,106,95,0.4)] transition-all duration-200 active:scale-[0.98]"
+                style={{ backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)' }}
               >
                 Mark as Complete{nextLesson ? ' & Next' : ''}
               </button>
@@ -633,7 +682,7 @@ export default function LessonView({
                 navigateToLesson(nextLesson.module, nextLesson.lesson)
               }
               disabled={!nextLesson}
-              className="flex items-center gap-2 text-foreground/60 font-outfit font-medium uppercase tracking-widest text-sm hover:text-primary transition-colors group disabled:opacity-30 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 text-foreground/60 font-outfit font-medium uppercase tracking-widest text-sm hover:text-foreground transition-colors group disabled:opacity-30 disabled:cursor-not-allowed"
             >
               Next Lesson
               <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

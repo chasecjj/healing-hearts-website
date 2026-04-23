@@ -21,13 +21,18 @@ export default function MoodSelector({ value, onChange }) {
             className={`
               px-4 py-2 rounded-full text-sm font-outfit font-medium
               transition-all duration-200 border
-              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-2
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
               ${
                 isSelected
-                  ? 'bg-primary/10 border-primary text-primary shadow-sm'
-                  : 'bg-neutral-50 border-neutral-200 text-foreground/60 hover:border-primary/30 hover:text-foreground/80'
+                  ? 'bg-neutral-100 border-neutral-400 text-foreground shadow-sm'
+                  : 'bg-neutral-50 border-neutral-200 text-foreground/60 hover:border-neutral-300 hover:text-foreground/80'
               }
             `}
+            style={
+              isSelected
+                ? { boxShadow: 'inset 0 0 0 1px var(--pt-primary-accent-hex, #B96A5F)' }
+                : undefined
+            }
           >
             {mood.label}
           </button>
