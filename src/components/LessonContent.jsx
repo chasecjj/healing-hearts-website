@@ -246,7 +246,7 @@ export default function LessonContent({ contentJson, lessonId }) {
   }
 
   return (
-    <div className="lesson-content">
+    <div className="lesson-content" data-lesson-content>
       {contentJson.blocks.map((block, index) => {
         const Component = BLOCK_COMPONENTS[block.type];
         if (!Component && import.meta.env.DEV) {
@@ -255,17 +255,24 @@ export default function LessonContent({ contentJson, lessonId }) {
         const Renderer = Component || FallbackBlock;
         // Interactive blocks need lessonId + userId for Supabase persistence.
         // Presentational blocks ignore the extras — spread-props is harmless.
+        // Wrapper div carries data-block-index so highlight re-hydration walker
+        // can locate the block in DOM (scout-05 + wave3-drawer-content-specs §8.4a).
         if (INTERACTIVE_BLOCK_TYPES.has(block.type)) {
           return (
-            <Renderer
-              key={index}
-              {...block}
-              lessonId={lessonId}
-              userId={user?.id}
-            />
+            <div key={index} data-block-index={index}>
+              <Renderer
+                {...block}
+                lessonId={lessonId}
+                userId={user?.id}
+              />
+            </div>
           );
         }
-        return <Renderer key={index} {...block} />;
+        return (
+          <div key={index} data-block-index={index}>
+            <Renderer {...block} />
+          </div>
+        );
       })}
     </div>
   );
