@@ -192,7 +192,7 @@ export default function KpiCards() {
 
   const pipelineSubtitleEl =
     pipelineRows === null ? (
-      'Query failed'
+      <span title="Stripe data unavailable — check service status">—</span>
     ) : overdueCount > 0 ? (
       <span>
         <span className="text-red-500 font-medium">{overdueCount} overdue</span>
@@ -250,7 +250,7 @@ export default function KpiCards() {
         primary={data.orders === null ? '—' : revenueDisplay}
         subtitle={
           data.orders === null
-            ? 'Query failed'
+            ? <span title="Stripe data unavailable — check service status">—</span>
             : `${orderCount} order${orderCount !== 1 ? 's' : ''}`
         }
       />

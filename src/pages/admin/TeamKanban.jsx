@@ -26,8 +26,8 @@ const COLUMNS = [
 const PRIORITY_COLOR = {
   urgent: '#ef4444',
   high:   '#f59e0b',
-  normal: '#484f58',
-  low:    '#484f58',
+  normal: '#9ca3af',
+  low:    '#9ca3af',
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -75,11 +75,11 @@ function KanbanCard({ task, onClick, isDragging = false, isOverlay = false }) {
       {...(isOverlay ? {} : { ...listeners, ...attributes })}
       style={{
         position: 'relative',
-        backgroundColor: isDragging || isOverlay || hovered ? '#30363d' : '#21262d',
+        backgroundColor: isDragging || isOverlay || hovered ? '#f4f1ec' : '#ffffff',
         borderRadius: '8px',
         padding: '14px',
-        borderLeft: `3px solid ${task.project.color}`,
-        boxShadow: isDragging || isOverlay ? '0 8px 24px rgba(0,0,0,0.4)' : '0 2px 8px rgba(0,0,0,0.2)',
+        border: '1px solid rgba(0,0,0,0.07)',
+        boxShadow: isDragging || isOverlay ? '0 8px 24px rgba(0,0,0,0.12)' : '0 1px 4px rgba(0,0,0,0.06)',
         cursor: isDragging || isOverlay ? 'grabbing' : 'grab',
         transition: isDragging ? 'none' : 'background-color 0.15s ease',
         display: 'flex',
@@ -116,7 +116,7 @@ function KanbanCard({ task, onClick, isDragging = false, isOverlay = false }) {
       </div>
 
       {/* Title */}
-      <div style={{ fontSize: '0.85rem', color: '#e6edf3', lineHeight: '1.45', paddingRight: '18px' }}>
+      <div style={{ fontSize: '0.85rem', color: '#374151', lineHeight: '1.45', paddingRight: '18px' }}>
         {task.title}
       </div>
 
@@ -140,8 +140,8 @@ function KanbanCard({ task, onClick, isDragging = false, isOverlay = false }) {
         {formattedDate ? (
           <span style={{
             fontSize: '0.68rem', fontFamily: 'ui-monospace, monospace',
-            color: isOverdue ? '#da3633' : '#8b949e',
-            opacity: isOverdue ? 1 : 0.75, fontWeight: isOverdue ? 600 : 400,
+            color: isOverdue ? '#ef4444' : '#6b7280',
+            opacity: isOverdue ? 1 : 0.85, fontWeight: isOverdue ? 600 : 400,
           }}>
             {formattedDate}
           </span>
@@ -150,7 +150,7 @@ function KanbanCard({ task, onClick, isDragging = false, isOverlay = false }) {
         {task.assignee && (
           <span title={task.assignee.name} style={{
             width: '22px', height: '22px', borderRadius: '50%',
-            backgroundColor: `hsl(${hue} 45% 28%)`, color: `hsl(${hue} 70% 75%)`,
+            backgroundColor: `hsl(${hue} 45% 82%)`, color: `hsl(${hue} 50% 30%)`,
             display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
             fontSize: '0.575rem', fontFamily: 'ui-monospace, monospace',
             fontWeight: 700, letterSpacing: '0.02em', flexShrink: 0,
@@ -167,7 +167,7 @@ function KanbanCard({ task, onClick, isDragging = false, isOverlay = false }) {
 
 function KanbanColumn({ status, label, labelColor, tasks, onTaskClick, onAddTask, activeTaskId, isDropTarget }) {
   const { setNodeRef, isOver } = useDroppable({ id: status })
-  const columnBg = isOver || isDropTarget ? '#30363d' : '#21262d'
+  const columnBg = isOver || isDropTarget ? '#ede8e0' : '#f4f1ec'
 
   return (
     <div style={{
@@ -222,9 +222,9 @@ function KanbanColumn({ status, label, labelColor, tasks, onTaskClick, onAddTask
         {tasks.length === 0 ? (
           <div style={{
             margin: 'auto 0', padding: '18px 12px', borderRadius: '8px',
-            border: '1px dashed #484f58', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            border: '1px dashed #d1c9bc', display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <span style={{ fontSize: '0.72rem', color: '#484f58', fontStyle: 'italic' }}>
+            <span style={{ fontSize: '0.72rem', color: '#9ca3af', fontStyle: 'italic' }}>
               Nothing here yet
             </span>
           </div>
@@ -299,7 +299,7 @@ export default function TeamKanban() {
 
   if (loading) {
     return (
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#484f58', fontFamily: 'ui-monospace, monospace', fontSize: '0.8rem' }}>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9ca3af', fontFamily: 'ui-monospace, monospace', fontSize: '0.8rem' }}>
         Loading…
       </div>
     )
@@ -352,10 +352,10 @@ export default function TeamKanban() {
       <style>{`
         .kanban-board, .kanban-cards {
           scrollbar-width: thin;
-          scrollbar-color: #31353c transparent;
+          scrollbar-color: #d1c9bc transparent;
         }
         .kanban-board::-webkit-scrollbar, .kanban-cards::-webkit-scrollbar { width: 6px; height: 6px; }
-        .kanban-board::-webkit-scrollbar-thumb, .kanban-cards::-webkit-scrollbar-thumb { background-color: #31353c; border-radius: 3px; }
+        .kanban-board::-webkit-scrollbar-thumb, .kanban-cards::-webkit-scrollbar-thumb { background-color: #d1c9bc; border-radius: 3px; }
         .kanban-board::-webkit-scrollbar-track, .kanban-cards::-webkit-scrollbar-track { background: transparent; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
       `}</style>

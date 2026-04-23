@@ -1,5 +1,5 @@
 import React from 'react';
-import { LifeBuoy } from 'lucide-react';
+import { LifeBuoy, Lock } from 'lucide-react';
 
 /**
  * RescueKitPortal — placeholder for /portal/rescue-kit
@@ -23,6 +23,25 @@ export default function RescueKitPortal() {
       <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-outfit font-semibold uppercase tracking-wider">
         Coming Soon
       </span>
+
+      {/* Preview tiles — signals intent, Round 2 will populate with real content */}
+      <div className="w-full max-w-2xl grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+        {[
+          { title: 'Regulation First' },
+          { title: 'Nervous System Reset' },
+          { title: 'Rupture → Repair' },
+        ].map(({ title }) => (
+          <div
+            key={title}
+            className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col items-center gap-3 opacity-60"
+          >
+            <Lock className="w-5 h-5 text-foreground/40" />
+            <span className="font-outfit font-semibold text-sm text-foreground/70 text-center leading-snug">
+              {title}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
