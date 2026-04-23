@@ -43,6 +43,9 @@ import WebinarLive from './pages/WebinarLive';
 import WebinarReplay from './pages/WebinarReplay';
 import CheckoutSuccess from './pages/CheckoutSuccess';
 import Downloads from './portal/Downloads';
+import RescueKitPortal from './portal/RescueKitPortal';
+import BookmarksPortal from './portal/BookmarksPortal';
+import CalendarPortal from './portal/CalendarPortal';
 import PortalLayout from './layouts/PortalLayout';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -108,6 +111,12 @@ function App() {
               <Route path="/portal" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
               <Route path="/portal/:moduleSlug" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
               <Route path="/portal/:moduleSlug/:lessonSlug" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
+
+              {/* Placeholder portal sections — Round 2 will populate */}
+              <Route path="/portal/courses" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
+              <Route path="/portal/rescue-kit" element={<ProtectedRoute><RescueKitPortal /></ProtectedRoute>} />
+              <Route path="/portal/bookmarks" element={<ProtectedRoute><BookmarksPortal /></ProtectedRoute>} />
+              <Route path="/portal/calendar" element={<ProtectedRoute><CalendarPortal /></ProtectedRoute>} />
             </Route>
 
             {/* Auth pages (standalone, no navbar/footer) */}

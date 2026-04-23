@@ -36,21 +36,16 @@ export default function TasksLayout() {
             <h1 className="font-drama italic text-2xl text-primary m-0">Team Tasks</h1>
 
             {/* View toggle tabs */}
-            <div style={{
-              display: 'flex', alignItems: 'center',
-              backgroundColor: '#21262d', borderRadius: '8px', padding: '3px', gap: '2px',
-            }}>
+            <div className="flex items-center gap-0.5 rounded-lg p-0.5 bg-elevation-1">
               {VIEWS.map((view) => (
                 <button
                   key={view.id}
                   onClick={() => setActiveView(view.id)}
-                  style={{
-                    padding: '5px 14px', borderRadius: '6px', border: 'none', cursor: 'pointer',
-                    fontFamily: 'ui-monospace, monospace', fontSize: '0.75rem', fontWeight: 600,
-                    letterSpacing: '0.03em', transition: 'all 0.15s ease',
-                    backgroundColor: activeView === view.id ? '#30363d' : 'transparent',
-                    color: activeView === view.id ? '#e6edf3' : '#8b949e',
-                  }}
+                  className={`px-4 py-1 rounded-md border-none cursor-pointer font-mono text-xs font-semibold tracking-wide transition-all duration-150 ${
+                    activeView === view.id
+                      ? 'bg-white text-foreground shadow-sm'
+                      : 'bg-transparent text-foreground/40 hover:text-foreground/70'
+                  }`}
                 >
                   {view.label}
                 </button>
@@ -76,12 +71,12 @@ export default function TasksLayout() {
       {/* Toast notifications */}
       <Toaster
         position="bottom-right"
-        theme="dark"
+        theme="light"
         toastOptions={{
           style: {
-            backgroundColor: '#21262d',
-            border: '1px solid #30363d',
-            color: '#e6edf3',
+            backgroundColor: '#FFFFFF',
+            border: '1px solid #E5E7EB',
+            color: '#2D2D2D',
             fontFamily: 'ui-monospace, monospace',
             fontSize: '0.8rem',
           },
