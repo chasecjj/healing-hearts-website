@@ -177,6 +177,51 @@ export const portalTokens = {
     hex: '#B96A5F',
     why: 'Same as primary-accent. Warm terracotta focus ring replaces cold-blue default.',
   },
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // SECTION FLAVORS (Wave 5 — directive #5 option b: subtle accent line only)
+  //
+  // Per D10 chroma<0.12 constraint. Each is an accent-line / icon-tint color,
+  // NOT a background color. Drawer-body stays warm-sand always; the 2-3px top
+  // accent line or the selected rail-icon glyph tint is what shifts per section.
+  // See design-briefs/wave-5-mockup-brief.md §"Section-flavor theming".
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  'flavor-home': {
+    oklch: 'oklch(62.0% 0.075 60)',
+    hex: '#B89177',
+    why: 'Warm tan — Home section flavor. Chroma 0.075 (D10). Paired with sanctuary imagery.',
+  },
+
+  'flavor-courses': {
+    oklch: 'oklch(52.4% 0.098 28)',
+    hex: '#B96A5F',
+    why: 'Brand terracotta (same as primary-accent). Courses = brand signature color.',
+  },
+
+  'flavor-rescue': {
+    oklch: 'oklch(58.0% 0.110 50)',
+    hex: '#C68A4E',
+    why: 'Warm amber — Rescue Kit flavor. Chroma 0.110 (D10). Urgency without alarm.',
+  },
+
+  'flavor-bookmarks': {
+    oklch: 'oklch(54.0% 0.090 15)',
+    hex: '#B3746F',
+    why: 'Muted rose — Bookmarks flavor. Chroma 0.090 (D10). Personal / saved.',
+  },
+
+  'flavor-calendar': {
+    oklch: 'oklch(52.0% 0.060 120)',
+    hex: '#6F8266',
+    why: 'Sage — Calendar flavor. Chroma 0.060 (D10). Time / natural rhythm.',
+  },
+
+  'flavor-admin': {
+    oklch: 'oklch(55.3% 0.013 58)',
+    hex: '#78716c',
+    why: 'Neutral stone — Admin flavor. No chroma; distinguishes utility from content sections.',
+  },
 };
 
 /**
