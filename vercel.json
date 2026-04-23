@@ -18,6 +18,10 @@
     {
       "path": "/api/cron/webinar-cron",
       "schedule": "0 23 * * *"
+    },
+    {
+      "path": "/api/cron/spark-broadcast-morning",
+      "schedule": "30 14 23 4 *"
     }
   ],
   "buildCommand": "npm run build",
