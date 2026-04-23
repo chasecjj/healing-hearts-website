@@ -1,4 +1,3 @@
-// [CHASE_REVIEW_PENDING: hardcoded date Thursday April 23 2026 at 7:00 PM MT — update before reuse]
 // One-time broadcast: Live Q&A invite for Spark Challenge participants
 // Sent April 23, 2026 to all active Spark Challenge subscribers
 // AVNII: Acknowledge → Validate → Normalize → Illuminate → Invite
@@ -21,6 +20,8 @@ export function broadcastEmail(email) {
     callout("Other couples in the challenge are feeling exactly what you\u2019re feeling right now. This is your chance to ask the questions you\u2019ve been sitting with \u2014 and hear that you\u2019re not the only one asking them."),
     paragraph("No prep required. No pressure. Just show up as you are."),
     ctaButton('Save Your Spot', 'https://healingheartscourse.com/webinar'),
+    paragraph("And if tonight doesn’t work — that’s okay. Save your spot anyway, and I’ll send the recording the next morning so you can sit with it when the timing is actually yours."),
+    paragraph("<em>Or if the registration page gives you any trouble, you can slip in directly at <a href=\"https://meet.google.com/cam-fqwt-jdn\" style=\"color:#1191B1; text-decoration:underline;\">meet.google.com/cam-fqwt-jdn</a>.</em>"),
     signOff(
       "Some of the most meaningful next steps I\u2019ve seen couples take started with one honest question in a room like this. I\u2019d love to see you there tonight.",
     ),
