@@ -28,6 +28,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import AccountPassword from './pages/AccountPassword';
 import CourseOverview from './pages/CourseOverview';
 import SparkChallenge from './pages/SparkChallenge';
 import Team from './pages/Team';
@@ -117,6 +118,7 @@ function App() {
               <Route path="/portal/rescue-kit" element={<ProtectedRoute><RescueKitPortal /></ProtectedRoute>} />
               <Route path="/portal/bookmarks" element={<ProtectedRoute><BookmarksPortal /></ProtectedRoute>} />
               <Route path="/portal/calendar" element={<ProtectedRoute><CalendarPortal /></ProtectedRoute>} />
+              <Route path="/account/password" element={<ProtectedRoute><AccountPassword /></ProtectedRoute>} />
             </Route>
 
             {/* Auth pages (standalone, no navbar/footer) */}

@@ -261,7 +261,10 @@ function PortalDashboard({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {availableCourses.map((c) => {
               // Enrollment-aware routing: owned → first module, unowned → purchase page.
-              const isEnrolled = enrolledCourseIds.has(c.id);
+              // Admins are treated as enrolled in everything (migration 033 backfills
+              // enrollment rows; this is the UI-side belt-and-suspenders guard for
+              // any admin whose row is briefly missing between role flip and trigger).
+              const isEnrolled = isAdmin || enrolledCourseIds.has(c.id);
 
               let destination;
               if (isEnrolled) {

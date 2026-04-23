@@ -152,11 +152,31 @@ function useActiveRailId(isAdmin) {
 function DesktopTwoRail({ isAdmin, activeRailId }) {
   const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const accountMenuRef = useRef(null);
 
   const handleSignOut = async () => {
+    setAccountMenuOpen(false);
     await signOut();
     navigate('/');
   };
+
+  // Close the account popover on outside-click / Escape.
+  useEffect(() => {
+    if (!accountMenuOpen) return;
+    const onClick = (e) => {
+      if (accountMenuRef.current && !accountMenuRef.current.contains(e.target)) {
+        setAccountMenuOpen(false);
+      }
+    };
+    const onKey = (e) => { if (e.key === 'Escape') setAccountMenuOpen(false); };
+    document.addEventListener('mousedown', onClick);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onClick);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [accountMenuOpen]);
 
   const displayName =
     profile?.display_name || user?.email?.split('@')[0] || 'Student';
@@ -217,14 +237,16 @@ function DesktopTwoRail({ isAdmin, activeRailId }) {
           )}
         </nav>
 
-        {/* Rail bottom: avatar + username (D3 locked) */}
-        <div className="flex flex-col items-center gap-1 pb-4 flex-shrink-0">
+        {/* Rail bottom: avatar + username (D3 locked) — click opens account menu */}
+        <div ref={accountMenuRef} className="relative flex flex-col items-center gap-1 pb-4 flex-shrink-0">
           <button
             type="button"
             className="w-8 h-8 rounded-full flex items-center justify-center font-semibold text-xs focus-visible:outline-none focus-visible:ring-2"
-            aria-label={`Account: ${displayName} — sign out`}
-            title={`${displayName} — sign out`}
-            onClick={handleSignOut}
+            aria-label={`Account: ${displayName}`}
+            aria-expanded={accountMenuOpen}
+            aria-haspopup="menu"
+            title={displayName}
+            onClick={() => setAccountMenuOpen((o) => !o)}
             style={{
               backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)',
               color: 'var(--pt-text-inverse-hex, #fafaf9)',
@@ -245,6 +267,39 @@ function DesktopTwoRail({ isAdmin, activeRailId }) {
           >
             {displayName}
           </span>
+
+          {accountMenuOpen && (
+            <div
+              role="menu"
+              className="absolute left-[60px] bottom-4 w-52 rounded-xl shadow-lg py-2 z-50"
+              style={{
+                backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
+                border: '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
+              }}
+            >
+              <div className="px-4 py-2 border-b" style={{ borderColor: 'var(--pt-border-subtle-hex, #e7e5e4)' }}>
+                <p className="text-xs text-foreground/50 truncate" title={user?.email}>
+                  {user?.email}
+                </p>
+              </div>
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => { setAccountMenuOpen(false); navigate('/account/password'); }}
+                className="w-full text-left px-4 py-2 text-sm hover:bg-black/5 transition-colors"
+              >
+                Change password
+              </button>
+              <button
+                type="button"
+                role="menuitem"
+                onClick={handleSignOut}
+                className="w-full text-left px-4 py-2 text-sm hover:bg-black/5 transition-colors text-red-600"
+              >
+                Sign out
+              </button>
+            </div>
+          )}
         </div>
       </aside>
 

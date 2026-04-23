@@ -41,9 +41,14 @@ export default function ForgotPassword() {
               <Mail className="w-8 h-8 text-primary" />
             </div>
             <h1 className="font-outfit font-bold text-3xl text-primary mb-4">Check your email</h1>
-            <p className="font-sans text-foreground/70 mb-8">
+            <p className="font-sans text-foreground/70 mb-4">
               If an account exists for <strong className="text-primary">{email}</strong>,
               you'll receive a password reset link shortly.
+            </p>
+            <p className="font-sans text-sm text-foreground/50 mb-8">
+              The email usually arrives within 30 seconds. If you don't see it,
+              check your spam or junk folder — and mark it as "not spam" so
+              future messages land in your inbox.
             </p>
             <Link
               to="/login"
