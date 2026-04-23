@@ -22,6 +22,8 @@ import {
   Clock,
   HeartHandshake,
 } from 'lucide-react';
+import { useMockupMode } from './mockup/useMockupMode';
+import LessonHero from './mockup/LessonHero';
 
 const MuxVideoPlayer = React.lazy(() => import('./MuxVideoPlayer'));
 
@@ -30,8 +32,18 @@ const MuxVideoPlayer = React.lazy(() => import('./MuxVideoPlayer'));
  * and rich lesson content reader.
  *
  * Rendered at /portal/:moduleSlug/:lessonSlug.
+ *
+ * Wave 5 mockup-mode: `?mockup=1` short-circuits to LessonHero (single-drawer
+ * hero-state mockup) for webinar-demo screenshots. The LessonHero renders its
+ * own rail+drawer overlay, folding away the "two drawers" problem (directive #7).
  */
-export default function LessonView({
+export default function LessonViewWithMockup(props) {
+  const mockupMode = useMockupMode();
+  if (mockupMode) return <LessonHero />;
+  return <LessonView {...props} />;
+}
+
+function LessonView({
   course,
   currentModule,
   currentLesson,
