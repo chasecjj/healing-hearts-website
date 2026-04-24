@@ -13,14 +13,9 @@ import { useNotes } from './hooks/useNotes';
 import {
   CheckCircle2,
   PlayCircle,
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
-  Lock,
-  Menu,
-  X,
   Clock,
-  HeartHandshake,
 } from 'lucide-react';
 import { useMockupMode } from './mockup/useMockupMode';
 import LessonHero from './mockup/LessonHero';
@@ -28,14 +23,20 @@ import LessonHero from './mockup/LessonHero';
 const MuxVideoPlayer = React.lazy(() => import('./MuxVideoPlayer'));
 
 /**
- * Lesson View — two-panel layout with collapsible sidebar navigation
- * and rich lesson content reader.
+ * Lesson View — single-column reading surface.
+ * PortalLayout (W-01 DrawerShell) owns the single drawer slot.
  *
  * Rendered at /portal/:moduleSlug/:lessonSlug.
  *
  * Wave 5 mockup-mode: `?mockup=1` short-circuits to LessonHero (single-drawer
  * hero-state mockup) for webinar-demo screenshots. The LessonHero renders its
  * own rail+drawer overlay, folding away the "two drawers" problem (directive #7).
+ *
+ * Directive #4: internal <aside> removed — PortalLayout owns the single drawer.
+ * 3.7-rev: no card chrome on learner content zones.
+ * 3.13 + A-09: hero-image slot (photography-over-illustration mandate).
+ * 3.14: caption/transcript <details> progressive disclosure.
+ * 3.18: inline-start/inline-end logical properties throughout.
  */
 export default function LessonViewWithMockup(props) {
   const mockupMode = useMockupMode();
@@ -49,8 +50,8 @@ function LessonView({
   currentLesson,
   isLessonCompleted,
   toggleLessonComplete,
-  getModuleProgress,
-  overallProgress,
+  getModuleProgress: _getModuleProgress, // retained in prop API; sidebar removed (directive #4)
+  overallProgress: _overallProgress,     // retained in prop API; sidebar removed (directive #4)
   isAdmin = false,
   hasActiveEnrollment = false,
   basePath = '/portal',
@@ -63,8 +64,6 @@ function LessonView({
   // set and the sidebar modules were all disabled.
   const canAccessContent = isAdmin || hasActiveEnrollment;
   const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [expandedParents, setExpandedParents] = useState({});
   const contentRef = useRef(null);
 
   // ── GSAP entrance animation on lesson change ──────────────
@@ -89,7 +88,6 @@ function LessonView({
   const navigateToLesson = useCallback(
     (mod, lesson) => {
       navigate(`${basePath}/module-${mod.module_number}/lesson-${lesson.sort_order}`);
-      setSidebarOpen(false);
     },
     [navigate, basePath]
   );
@@ -123,34 +121,6 @@ function LessonView({
       navigateToLesson(nextLesson.module, nextLesson.lesson);
     }
   };
-
-  // ── Sub-lesson (parent/child) helpers ─────────────────────
-  const getLessonGroups = useCallback((lessons) => {
-    if (!lessons) return { topLevel: [], childrenByParent: {} };
-    const topLevel = lessons.filter((l) => !l.parent_lesson_id);
-    const childrenByParent = {};
-    lessons.forEach((l) => {
-      if (l.parent_lesson_id) {
-        if (!childrenByParent[l.parent_lesson_id]) {
-          childrenByParent[l.parent_lesson_id] = [];
-        }
-        childrenByParent[l.parent_lesson_id].push(l);
-      }
-    });
-    return { topLevel, childrenByParent };
-  }, []);
-
-  const isParentOfActive = useCallback(
-    (lessonId, childrenByParent) => {
-      if (!currentLesson || !childrenByParent[lessonId]) return false;
-      return childrenByParent[lessonId].some((c) => c.id === currentLesson.id);
-    },
-    [currentLesson]
-  );
-
-  const toggleParentExpanded = useCallback((lessonId) => {
-    setExpandedParents((prev) => ({ ...prev, [lessonId]: !prev[lessonId] }));
-  }, []);
 
   const getParentLesson = useCallback(
     (lesson) => {
@@ -259,285 +229,11 @@ function LessonView({
   return (
     <>
     <div className="flex h-full bg-background font-sans">
-      {/* ── Mobile sidebar backdrop ────────────────────────── */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-neutral-900/40 z-30 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-          aria-hidden="true"
-        />
-      )}
-
-      {/* ── Sidebar ────────────────────────────────────────── */}
-      <aside
-        className={`fixed lg:static z-40 w-72 sm:w-80 bg-[#EFF9FB] flex flex-col h-full overflow-y-auto transition-transform duration-300 shadow-[24px_0_40px_-15px_rgba(17,145,177,0.06)] ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-        }`}
-        aria-label="Course navigation"
-      >
-        {/* Logo + close */}
-        <div className="px-6 py-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white shadow-lg"
-              style={{ backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)' }}
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-              </svg>
-            </div>
-            <h1
-              className="font-drama text-xl font-bold"
-              style={{ color: 'var(--pt-text-primary-hex, #1c1917)' }}
-            >
-              Healing Hearts
-            </h1>
-          </div>
-          <button
-            onClick={() => setSidebarOpen(false)}
-            className="lg:hidden p-1 text-foreground/50 hover:text-foreground transition-colors"
-            aria-label="Close navigation"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Overall progress bar */}
-        <div className="px-6 mb-6">
-          <div className="flex justify-between items-center text-xs font-outfit font-semibold text-foreground/70 uppercase tracking-wider mb-1">
-            <span>Course Progress</span>
-            <span>{overallProgress}%</span>
-          </div>
-          <div className="w-full bg-white/40 h-1.5 rounded-full overflow-hidden">
-            <div
-              className="h-full rounded-full transition-all duration-500"
-              style={{
-                width: `${overallProgress}%`,
-                backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)',
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Module list */}
-        <nav className="flex-1 px-2 pb-6 space-y-1">
-          {course?.modules?.map((mod) => {
-            const isActiveMod = currentModule?.id === mod.id;
-            const modProgress = (mod.is_preview || canAccessContent) ? getModuleProgress(mod) : 0;
-
-            return (
-              <div key={mod.id}>
-                <button
-                  onClick={() => {
-                    if ((mod.is_preview || canAccessContent) && mod.lessons?.length) {
-                      navigateToLesson(mod, mod.lessons[0]);
-                    }
-                  }}
-                  className={`w-full text-left px-4 py-3 rounded-xl transition-all flex items-center gap-3 ${
-                    isActiveMod
-                      ? 'bg-white/50 text-foreground font-bold border-l-4 rounded-l-none'
-                      : (mod.is_preview || canAccessContent)
-                      ? 'text-foreground/60 hover:text-foreground hover:bg-white/30'
-                      : 'text-foreground/40 opacity-60 cursor-not-allowed'
-                  }`}
-                  style={
-                    isActiveMod
-                      ? { borderLeftColor: 'var(--pt-primary-accent-hex, #B96A5F)' }
-                      : undefined
-                  }
-                  disabled={!mod.is_preview && !canAccessContent}
-                >
-                  {(mod.is_preview || canAccessContent) ? (
-                    modProgress === 100 ? (
-                      <CheckCircle2
-                        className="w-5 h-5 flex-shrink-0"
-                        style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
-                      />
-                    ) : isActiveMod ? (
-                      <PlayCircle
-                        className="w-5 h-5 flex-shrink-0"
-                        style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
-                      />
-                    ) : (
-                      <PlayCircle className="w-5 h-5 opacity-40 flex-shrink-0" />
-                    )
-                  ) : (
-                    <Lock className="w-4 h-4 flex-shrink-0" />
-                  )}
-                  <span className="text-sm truncate">
-                    Module {mod.module_number}: {mod.title}
-                  </span>
-                </button>
-
-                {/* Expanded lesson list for active module */}
-                {isActiveMod && (mod.is_preview || canAccessContent) && (() => {
-                  const { topLevel, childrenByParent } = getLessonGroups(mod.lessons);
-                  return (
-                    <div className="ml-7 mt-2 space-y-1 border-l-2 border-neutral-200 pl-3">
-                      {/* nested lesson list */}
-                      {topLevel.map((lesson) => {
-                        const isActiveLesson = currentLesson?.id === lesson.id;
-                        const lessonCompleted = isLessonCompleted(lesson.id);
-                        const hasChildren = !!childrenByParent[lesson.id];
-                        const isExpanded =
-                          expandedParents[lesson.id] ||
-                          isActiveLesson ||
-                          isParentOfActive(lesson.id, childrenByParent);
-
-                        return (
-                          <div key={lesson.id}>
-                            <div className="flex items-center">
-                              {hasChildren && (
-                                <button
-                                  onClick={() => toggleParentExpanded(lesson.id)}
-                                  className="p-1 text-foreground/40 hover:text-foreground/70 flex-shrink-0"
-                                  aria-label={isExpanded ? 'Collapse' : 'Expand'}
-                                >
-                                  <ChevronRight
-                                    className={`w-3 h-3 transition-transform ${
-                                      isExpanded ? 'rotate-90' : ''
-                                    }`}
-                                  />
-                                </button>
-                              )}
-                              <button
-                                onClick={() => navigateToLesson(mod, lesson)}
-                                className={`w-full flex items-center gap-2 py-1.5 px-2 rounded-lg text-xs transition-colors text-left ${
-                                  isActiveLesson
-                                    ? 'font-bold border-l-2 pl-3'
-                                    : 'text-foreground/50 hover:text-foreground'
-                                } ${!hasChildren ? 'ml-4' : ''}`}
-                                style={
-                                  isActiveLesson
-                                    ? {
-                                        color: 'var(--pt-primary-accent-hex, #B96A5F)',
-                                        borderLeftColor: 'var(--pt-primary-accent-hex, #B96A5F)',
-                                      }
-                                    : undefined
-                                }
-                              >
-                                {lessonCompleted ? (
-                                  <CheckCircle2 className="w-3.5 h-3.5 text-green-600 flex-shrink-0" />
-                                ) : (
-                                  <PlayCircle className="w-3.5 h-3.5 opacity-40 flex-shrink-0" />
-                                )}
-                                <span className="truncate">{lesson.title}</span>
-                              </button>
-                            </div>
-
-                            {hasChildren && isExpanded && (
-                              <div className="ml-6 pl-3 border-l border-neutral-200 space-y-1 mt-1">
-                                {childrenByParent[lesson.id].map((child) => {
-                                  const isChildActive = currentLesson?.id === child.id;
-                                  const childCompleted = isLessonCompleted(child.id);
-                                  return (
-                                    <button
-                                      key={child.id}
-                                      onClick={() => navigateToLesson(mod, child)}
-                                      className={`w-full flex items-center gap-2 py-1.5 px-2 rounded-lg text-xs transition-colors text-left ${
-                                        isChildActive
-                                          ? 'font-bold'
-                                          : 'text-foreground/50 hover:text-foreground'
-                                      }`}
-                                      style={
-                                        isChildActive
-                                          ? { color: 'var(--pt-primary-accent-hex, #B96A5F)' }
-                                          : undefined
-                                      }
-                                    >
-                                      {childCompleted ? (
-                                        <CheckCircle2 className="w-3.5 h-3.5 text-green-600 flex-shrink-0" />
-                                      ) : (
-                                        <PlayCircle className="w-3.5 h-3.5 opacity-40 flex-shrink-0" />
-                                      )}
-                                      <span className="truncate">{child.title}</span>
-                                    </button>
-                                  );
-                                })}
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  );
-                })()}
-              </div>
-            );
-          })}
-        </nav>
-
-        {/* Safety resources */}
-        <div className="px-4 pt-4 mt-auto">
-          <details className="group">
-            <summary className="flex items-center gap-2 px-4 py-2 text-foreground/40 hover:text-foreground/60 transition-colors cursor-pointer text-xs font-outfit uppercase tracking-widest list-none">
-              <HeartHandshake className="w-3.5 h-3.5" />
-              <span>Safety &amp; Support</span>
-            </summary>
-            <div className="px-4 pt-2 pb-3 space-y-2 text-xs text-foreground/50 font-sans leading-relaxed">
-              <p>
-                This program is educational, not clinical. It is not a substitute for professional therapy.
-              </p>
-              <p className="font-medium text-foreground/60">
-                If you or someone you know is in crisis:
-              </p>
-              <ul className="space-y-1.5">
-                <li>
-                  <strong>988</strong> Suicide &amp; Crisis Lifeline
-                </li>
-                <li>
-                  <strong>1-800-799-7233</strong> Domestic Violence Hotline
-                </li>
-                <li>
-                  Text <strong>HOME</strong> to <strong>741741</strong> Crisis Text Line
-                </li>
-              </ul>
-            </div>
-          </details>
-        </div>
-
-        {/* Bottom links */}
-        <div className="px-4 pt-2 pb-4 border-t border-neutral-200">
-          <button
-            onClick={() => navigate(basePath)}
-            className="flex items-center gap-3 px-4 py-3 text-foreground/60 hover:text-foreground transition-colors cursor-pointer text-sm font-medium w-full"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            <span>Back to Dashboard</span>
-          </button>
-          <button
-            onClick={() => navigate('/')}
-            className="mt-2 rounded-xl p-4 text-center w-full transition-all hover:opacity-90"
-            style={{ backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)' }}
-          >
-            <span
-              className="font-bold text-xs uppercase tracking-widest"
-              style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
-            >
-              Return to Site
-            </span>
-          </button>
-        </div>
-      </aside>
-
       {/* ── Main Content Area ──────────────────────────────── */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden" ref={contentRef}>
         {/* Top breadcrumb bar */}
         <header className="sticky top-0 z-30 flex justify-between items-center w-full px-4 sm:px-8 lg:px-12 py-4 sm:py-6 bg-background/80 backdrop-blur-md font-outfit text-sm tracking-wide border-b border-neutral-100">
           <div className="flex items-center gap-2 text-foreground/40 min-w-0">
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-2 text-foreground/50 hover:text-foreground mr-2"
-              aria-label="Open navigation"
-            >
-              <Menu className="w-5 h-5" />
-            </button>
             <span
               className="hover:text-foreground cursor-pointer transition-colors truncate"
               onClick={() =>
@@ -587,6 +283,31 @@ function LessonView({
               </div>
             )}
 
+            {/* ── Lesson hero image (3.13 + A-09: photography-over-illustration) ── */}
+            {currentLesson?.hero_image_url ? (
+              <figure className="mb-10 -mx-4 sm:-mx-8 lg:-mx-12" data-lesson-animate>
+                <img
+                  src={currentLesson.hero_image_url}
+                  alt={currentLesson.hero_image_alt || currentLesson.title}
+                  className="w-full object-cover max-h-[480px]"
+                  loading="eager"
+                />
+                {currentLesson.hero_image_caption && (
+                  <figcaption
+                    className="mt-2 ps-4 sm:ps-8 lg:ps-12 text-sm font-outfit"
+                    style={{ color: 'var(--pt-text-muted-hex, #57534e)' }}
+                  >
+                    {currentLesson.hero_image_caption}
+                  </figcaption>
+                )}
+              </figure>
+            ) : (
+              // TODO A-09: slot awaits photographic asset
+              // (Trisha portraiture / course-thematic still at magazine scale
+              //  per §12.1 A-09 photography-over-illustration mandate).
+              null
+            )}
+
             {/* Lesson header */}
             <header className="mb-12 sm:mb-16 space-y-4" data-lesson-animate>
               <span
@@ -621,6 +342,27 @@ function LessonView({
                 contentJson={currentLesson?.content_json}
                 lessonId={currentLesson?.id}
               />
+
+              {/* ── Caption/transcript slot (3.14: progressive <details>, i18n-safe) ── */}
+              {currentLesson?.content_json?.transcript && (
+                <details
+                  className="border-t pt-4"
+                  style={{ borderColor: 'var(--pt-border-subtle-hex, #d6d3d1)' }}
+                >
+                  <summary
+                    className="font-outfit text-sm font-semibold cursor-pointer"
+                    style={{ color: 'var(--pt-text-muted-hex, #57534e)' }}
+                  >
+                    Transcript
+                  </summary>
+                  <div
+                    className="mt-3 text-base leading-relaxed font-sans"
+                    style={{ color: 'var(--pt-text-primary-hex, #1c1917)' }}
+                  >
+                    <p>{currentLesson.content_json.transcript}</p>
+                  </div>
+                </details>
+              )}
             </div>
           </article>
 

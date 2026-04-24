@@ -87,6 +87,7 @@ function FilterChipBar({ chips, active, onChange }) {
 
 export default function BookmarksDrawer() {
   const [activeFilter, setActiveFilter] = useState('All');
+  const [search, setSearch] = useState('');
 
   // Stub data — migration 014 not yet applied. When applied +
   // useHighlights/useNotes wired, this drawer pulls live.
@@ -95,6 +96,27 @@ export default function BookmarksDrawer() {
 
   return (
     <DrawerShell title="Bookmarks & Notes" ariaContext="Bookmarks">
+      {/* Search affordance (2.5) */}
+      <div className="px-3 pt-3 pb-1">
+        <input
+          type="search"
+          placeholder="Search saved items…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          aria-label="Search bookmarks"
+          style={{
+            ...getTypeStyle('body'),
+            width: '100%',
+            padding: '6px 10px',
+            borderRadius: 8,
+            border: '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
+            backgroundColor: 'var(--pt-content-bg-hex, #f5f5f4)',
+            color: 'var(--pt-text-primary-hex, #1c1917)',
+            outline: 'none',
+          }}
+        />
+      </div>
+
       <div className="px-3 py-2">
         <button
           type="button"
