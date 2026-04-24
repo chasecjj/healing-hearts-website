@@ -158,11 +158,10 @@ function ModuleOverview({
         />
 
         {/* Magazine-stack 2-col: text (left) + hero-image slot (right) */}
-        {/* On small screens collapses to single column via CSS */}
+        {/* Mobile: single-col stack. sm+(≥640px): 2-col original layout */}
         <div
+          className="grid grid-cols-1 sm:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]"
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'minmax(0, 1.15fr) minmax(0, 1fr)',
             gap: 40,
             alignItems: 'stretch',
             background: 'var(--pt-elevation-1-hex, #e7e5e4)',
