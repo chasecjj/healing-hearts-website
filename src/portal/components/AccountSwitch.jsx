@@ -29,6 +29,7 @@ export default function AccountSwitch() {
     user?.email?.split('@')[0] ||
     '?';
   const initials = displayName.slice(0, 2).toUpperCase();
+  const avatarUrl = user?.user_metadata?.avatar_url || profile?.avatar_url || null;
 
   async function handleSwitch() {
     if (busy) return;
@@ -49,29 +50,45 @@ export default function AccountSwitch() {
   return (
     <div
       className="flex items-center gap-2 flex-shrink-0"
+      style={{ minHeight: 28 }}
       aria-label={`Signed in as ${displayName}. Switch account available.`}
     >
       {/* Avatar — ≤32px per spec canvas-cohesion note */}
-      <div
-        aria-hidden="true"
-        style={{
-          width: 28,
-          height: 28,
-          borderRadius: '50%',
-          backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)',
-          color: 'var(--pt-text-inverse-hex, #fafaf9)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-          ...getTypeStyle('meta', 'semibold'),
-          fontSize: 11,
-          letterSpacing: '0.02em',
-          userSelect: 'none',
-        }}
-      >
-        {initials}
-      </div>
+      {avatarUrl ? (
+        <img
+          src={avatarUrl}
+          alt=""
+          aria-hidden="true"
+          style={{
+            width: 28,
+            height: 28,
+            borderRadius: '50%',
+            objectFit: 'cover',
+            flexShrink: 0,
+          }}
+        />
+      ) : (
+        <div
+          aria-hidden="true"
+          style={{
+            width: 28,
+            height: 28,
+            borderRadius: '50%',
+            backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)',
+            color: 'var(--pt-text-muted-hex, #57534e)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+            ...getTypeStyle('meta', 'semibold'),
+            fontSize: 11,
+            letterSpacing: '0.02em',
+            userSelect: 'none',
+          }}
+        >
+          {initials}
+        </div>
+      )}
 
       {/* Switch link */}
       <button
