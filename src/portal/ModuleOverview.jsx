@@ -143,37 +143,138 @@ function ModuleOverview({
 
   return (
     <div ref={containerRef} className="flex-1 overflow-y-auto">
-      {/* ── Hero Header ────────────────────────────────────── */}
+      {/* ── Hero Header (3.13 hero-image slot, 3.15 action register, 3.16 rotation) */}
+      {/* 3.15: action register — heavier serif weight vs Dashboard restorative      */}
+      {/* 3.16: rotation lifecycle — GSAP entrance re-fires on currentModule?.id     */}
       <section
-        className="relative rounded-3xl overflow-hidden mb-12 mx-4 sm:mx-8 mt-4 p-8 sm:p-12 min-h-[280px] flex flex-col justify-center"
-        style={{ backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)' }}
+        className="relative mb-12 mx-4 sm:mx-8 mt-4"
         data-animate
+        aria-label={`Module ${currentModule.module_number}: ${currentModule.title}`}
       >
-        {/* Signature-moment terracotta stripe */}
+        {/* 2px terracotta top accent (section-identity channel per 3.8-rev) */}
         <div
-          className="absolute top-0 left-0 right-0 h-1"
-          style={{ backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+          style={{ height: 2, background: 'var(--pt-primary-accent-hex, #B96A5F)' }}
           aria-hidden="true"
         />
-        <div className="relative z-10">
-          <button
-            onClick={goBackToDashboard}
-            className="inline-flex items-center gap-2 font-outfit text-xs font-bold tracking-widest uppercase mb-6 hover:gap-3 transition-all"
-            style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+
+        {/* Magazine-stack 2-col: text (left) + hero-image slot (right) */}
+        {/* On small screens collapses to single column via CSS */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'minmax(0, 1.15fr) minmax(0, 1fr)',
+            gap: 40,
+            alignItems: 'stretch',
+            background: 'var(--pt-elevation-1-hex, #e7e5e4)',
+            padding: '40px 44px',
+          }}
+        >
+          {/* ── Text column ─────────────────────────────── */}
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <button
+              onClick={goBackToDashboard}
+              className="inline-flex items-center gap-2 font-outfit text-xs font-bold tracking-widest uppercase mb-6 hover:gap-3 transition-all"
+              style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)', alignSelf: 'flex-start' }}
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Return to Dashboard
+            </button>
+
+            {/* 3.15 action register: fontWeight 500 (heavier than Dashboard 300) */}
+            <p
+              style={{
+                fontFamily: '"Outfit", sans-serif',
+                fontSize: 12,
+                fontWeight: 700,
+                letterSpacing: '0.3em',
+                textTransform: 'uppercase',
+                color: 'var(--pt-primary-accent-hex, #B96A5F)',
+                margin: '0 0 16px',
+              }}
+            >
+              Module {currentModule.module_number}
+            </p>
+            <h1
+              style={{
+                fontFamily: '"Playfair Display", Georgia, serif',
+                fontWeight: 500,
+                fontStyle: 'italic',
+                fontSize: 'clamp(36px, 4.5vw, 54px)',
+                lineHeight: 1.07,
+                letterSpacing: '-0.02em',
+                color: 'var(--pt-text-primary-hex, #1c1917)',
+                margin: '0 0 20px',
+              }}
+            >
+              {currentModule.title}
+            </h1>
+            <p
+              style={{
+                fontFamily: '"Plus Jakarta Sans", system-ui, sans-serif',
+                fontSize: 16,
+                lineHeight: 1.6,
+                color: 'var(--pt-text-muted-hex, #57534e)',
+                margin: '0 0 24px',
+                maxWidth: 440,
+              }}
+            >
+              {currentModule.description ||
+                'Explore the lessons within this module to continue your healing journey.'}
+            </p>
+
+            {/* Quiet progress line (no ring — ring creates anxiety, per ModuleHero mockup) */}
+            <p
+              style={{
+                fontFamily: '"Outfit", sans-serif',
+                fontSize: 12,
+                fontWeight: 500,
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                color: 'var(--pt-text-muted-hex, #57534e)',
+                margin: 0,
+              }}
+            >
+              {completedLessons} of {totalLessons} lessons complete
+            </p>
+          </div>
+
+          {/* ── Hero-image slot (3.13, A-09) ─────────────────── */}
+          {/* A-09: Photography-over-illustration mandate.        */}
+          {/* TODO A-09: Replace this gradient placeholder with a  */}
+          {/* photographic <img> or CSS background-image asset —  */}
+          {/* Trisha portraiture or module course-stills. Gradient */}
+          {/* is NOT spec-compliant default (§12.1 A-09).          */}
+          <div
+            style={{
+              position: 'relative',
+              minHeight: 260,
+              borderRadius: 16,
+              overflow: 'hidden',
+              background:
+                'linear-gradient(135deg, var(--pt-primary-accent-hex, #B96A5F) 0%, #3A2E27 100%)',
+            }}
+            aria-hidden="true"
           >
-            <ChevronLeft className="w-4 h-4" />
-            Return to Dashboard
-          </button>
-          <h1
-            className="font-drama text-4xl sm:text-5xl md:text-6xl mb-4 max-w-2xl leading-tight"
-            style={{ color: 'var(--pt-text-primary-hex, #1c1917)' }}
-          >
-            Module {currentModule.module_number}: {currentModule.title}
-          </h1>
-          <p className="font-sans text-base sm:text-lg text-foreground/60 max-w-xl leading-relaxed">
-            {currentModule.description ||
-              'Explore the lessons within this module to continue your healing journey.'}
-          </p>
+            {/* Module number watermark — decorative only */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: 20,
+                right: 24,
+                fontFamily: '"Playfair Display", Georgia, serif',
+                fontSize: 140,
+                fontWeight: 500,
+                fontStyle: 'italic',
+                lineHeight: 0.85,
+                color: 'rgba(250, 232, 212, 0.18)',
+                letterSpacing: '-0.04em',
+                pointerEvents: 'none',
+                userSelect: 'none',
+              }}
+            >
+              {String(currentModule.module_number).padStart(2, '0')}
+            </div>
+          </div>
         </div>
       </section>
 

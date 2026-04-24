@@ -17,6 +17,8 @@ import { getActiveCourses } from '../lib/courses';
 import { useAuth } from '../contexts/AuthContext';
 import { useMockupMode } from './mockup/useMockupMode';
 import DashboardHero from './mockup/DashboardHero';
+import ConsentCluster from './components/ConsentCluster';
+import JournalPrompt from './components/JournalPrompt';
 
 /**
  * Portal Dashboard — personalized welcome, journey progress, module library.
@@ -155,36 +157,97 @@ function PortalDashboard({
 
   return (
     <div ref={containerRef} className="pb-24 px-4 sm:px-8 max-w-7xl mx-auto flex flex-col gap-8">
-      {/* ── Welcome Header (D10: neutral surface, single accent moment) ─ */}
+      {/* ── Editorial Hero (3.2 magazine-stack, 3.1 no card chrome) ────── */}
+      {/* 3.15: Restorative register — lighter serif weight on Dashboard     */}
       <section
-        className="relative rounded-3xl overflow-hidden pt-6 p-8 sm:p-12 min-h-[200px] flex flex-col justify-center"
-        style={{ backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)' }}
+        className="relative pt-8 pb-6"
+        style={{ backgroundColor: 'var(--pt-content-bg-hex, #f5f5f4)' }}
         data-animate
+        aria-label="Welcome"
       >
-        <div className="relative z-10 max-w-3xl">
-          <h1 className="font-drama text-4xl sm:text-5xl md:text-6xl text-foreground leading-tight tracking-tight mb-6">
-            Welcome back to your Sanctuary,{' '}
+        {/* ── A-09: Hero-image slot. TODO: replace gradient placeholder with   */}
+        {/*    photographic asset — Trisha portraiture or course-stills per A-09 */}
+        {/*    (photography-over-illustration mandate; gradient is NOT spec-compliant */}
+        {/*    default but unblocks build until Trisha assets are available).         */}
+        <div className="max-w-3xl">
+          <p
+            style={{
+              fontFamily: '"Outfit", sans-serif',
+              fontSize: 12,
+              fontWeight: 600,
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              color: 'var(--pt-text-muted-hex, #57534e)',
+              margin: '0 0 18px',
+            }}
+          >
+            Your sanctuary
+          </p>
+          {/* 3.15 restorative: fontWeight 300 (lighter than Module action register) */}
+          <h1
+            style={{
+              fontFamily: '"Playfair Display", Georgia, serif',
+              fontWeight: 300,
+              fontSize: 'clamp(40px, 5vw, 60px)',
+              lineHeight: 1.07,
+              letterSpacing: '-0.02em',
+              color: 'var(--pt-text-primary-hex, #1c1917)',
+              margin: '0 0 14px',
+            }}
+          >
+            Welcome back,{' '}
             <span
-              className="italic"
-              style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+              style={{
+                fontStyle: 'italic',
+                color: 'var(--pt-primary-accent-hex, #B96A5F)',
+              }}
             >
               {firstName}
             </span>
+            .
           </h1>
-          <div className="flex items-start gap-4 text-foreground/60 italic font-drama text-lg sm:text-xl">
-            <Quote
-              className="w-6 h-6 flex-shrink-0 mt-1"
-              style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
-            />
-            <p className="max-w-xl">
-              &ldquo;The wound is the place where the Light enters you. Let us tend to the garden of your heart today.&rdquo;
-            </p>
-          </div>
+          <p
+            style={{
+              fontFamily: '"Playfair Display", Georgia, serif',
+              fontStyle: 'italic',
+              fontWeight: 300,
+              fontSize: 18,
+              lineHeight: 1.55,
+              color: 'var(--pt-text-muted-hex, #57534e)',
+              margin: '0 0 32px',
+              maxWidth: 520,
+            }}
+          >
+            Take a breath. You&rsquo;ve picked this up again, and that&rsquo;s the whole practice.
+          </p>
+
+          {/* ── ConsentCluster (3.1, A-11) — enrolled + admin only ─────── */}
+          {canAccessContent && (
+            <>
+              <ConsentCluster
+                onPickUp={() =>
+                  nextLesson
+                    ? goToLesson(activeModule, nextLesson)
+                    : activeModule
+                    ? goToModule(activeModule)
+                    : null
+                }
+                onStartNew={() => {
+                  const el = document.getElementById('module-library');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+              />
+              {/* ── JournalPrompt (3.23, A-12) ──────────────────────── */}
+              <div style={{ marginTop: 28 }}>
+                <JournalPrompt />
+              </div>
+            </>
+          )}
         </div>
       </section>
 
       {/* ── Quick Links ─────────────────────────────────────── */}
-      <section className="flex flex-wrap gap-3" data-animate>
+      <section className="flex flex-wrap gap-3 -mt-2" data-animate>
         <Link
           to="/portal/downloads"
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors hover:opacity-80"
@@ -205,48 +268,6 @@ function PortalDashboard({
         If you are in crisis, please call <strong className="text-foreground/40">988</strong> (Suicide &amp; Crisis Lifeline) or <strong className="text-foreground/40">1-800-799-7233</strong> (Domestic Violence Hotline).
       </p>
 
-      {/* ── Your Healing Journey Stats (flat typography per D4) ─────── */}
-      <section className="py-6" data-animate>
-        <h2 className="text-2xl font-semibold text-foreground mb-6">Your Healing Journey</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {[
-            { value: completedLessons, label: 'Lessons Completed' },
-            {
-              value: completedModules > 0 ? completedModules : completedLessons > 0 ? '…' : '0',
-              label: completedModules > 0 ? 'Modules Completed' : completedLessons > 0 ? 'Module In Progress' : 'Modules Completed',
-            },
-            { value: totalLessons, label: 'Total Lessons' },
-            { value: `${overallProgress}%`, label: 'Overall Progress' },
-          ].map(({ value, label }) => (
-            <div key={label} className="flex flex-col gap-1">
-              <span
-                style={{
-                  fontSize: '28px',
-                  lineHeight: 1,
-                  fontWeight: 600,
-                  fontFamily: '"Outfit", "Plus Jakarta Sans", sans-serif',
-                  letterSpacing: '-0.02em',
-                  color: 'var(--pt-text-primary-hex, #1c1917)',
-                }}
-              >
-                {value}
-              </span>
-              <span
-                style={{
-                  fontSize: '13px',
-                  lineHeight: 1.45,
-                  fontWeight: 400,
-                  fontFamily: '"Plus Jakarta Sans", system-ui, sans-serif',
-                  letterSpacing: '0.02em',
-                  color: 'var(--pt-text-muted-hex, #57534e)',
-                }}
-              >
-                {label}
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
 
       {/* ── My Courses (multi-course catalog) ─────────────── */}
       {availableCourses.length > 1 && (
@@ -473,7 +494,7 @@ function PortalDashboard({
 
 
       {/* ── Module Library ─────────────────────────────────── */}
-      <section data-animate>
+      <section id="module-library" data-animate>
         <div className="flex justify-between items-end mb-10">
           <div>
             <h2 className="font-drama text-3xl mb-2 text-foreground">Explore the Library</h2>
@@ -573,6 +594,90 @@ function PortalDashboard({
               </div>
             );
           })}
+        </div>
+      </section>
+
+      {/* ── Journey Stats strip (3.9 — below-fold, demoted, small footprint) */}
+      {/* Not in hero; renders after module library so it appears below-fold.  */}
+      <section
+        data-animate
+        style={{
+          padding: '24px 28px',
+          borderRadius: 14,
+          background: 'var(--pt-elevation-1-hex, #e7e5e4)',
+          border: `1px solid var(--pt-border-subtle-hex, #d6d3d1)`,
+          display: 'flex',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 32,
+        }}
+        aria-label="Journey progress (quiet stats)"
+      >
+        <div>
+          <p
+            style={{
+              fontFamily: '"Outfit", sans-serif',
+              fontSize: 10,
+              fontWeight: 600,
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              color: 'var(--pt-text-muted-hex, #57534e)',
+              margin: 0,
+              marginBottom: 3,
+            }}
+          >
+            Your quiet progress
+          </p>
+          <p
+            style={{
+              fontFamily: '"Playfair Display", Georgia, serif',
+              fontStyle: 'italic',
+              fontWeight: 300,
+              fontSize: 14,
+              color: 'var(--pt-text-muted-hex, #57534e)',
+              margin: 0,
+            }}
+          >
+            No leaderboards. No streaks. Just steps.
+          </p>
+        </div>
+        <div style={{ display: 'flex', gap: 36, flexWrap: 'wrap' }}>
+          {[
+            { value: completedLessons, label: 'Lessons' },
+            {
+              value: completedModules > 0 ? completedModules : completedLessons > 0 ? '…' : '0',
+              label: 'Modules',
+            },
+            { value: totalLessons, label: 'Total' },
+            { value: `${overallProgress}%`, label: 'Overall' },
+          ].map(({ value, label }) => (
+            <div key={label} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <span
+                style={{
+                  fontFamily: '"Outfit", sans-serif',
+                  fontWeight: 600,
+                  fontSize: 20,
+                  letterSpacing: '-0.01em',
+                  lineHeight: 1.1,
+                  color: 'var(--pt-text-primary-hex, #1c1917)',
+                }}
+              >
+                {value}
+              </span>
+              <span
+                style={{
+                  fontFamily: '"Outfit", sans-serif',
+                  fontSize: 10,
+                  fontWeight: 500,
+                  letterSpacing: '0.14em',
+                  textTransform: 'uppercase',
+                  color: 'var(--pt-text-muted-hex, #57534e)',
+                }}
+              >
+                {label}
+              </span>
+            </div>
+          ))}
         </div>
       </section>
     </div>
