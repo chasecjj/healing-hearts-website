@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Mail, Lock, User, ArrowRight } from 'lucide-react';
 import usePageMeta from '../hooks/usePageMeta';
+import { errorCopyFor } from '../lib/authErrorCopy';
 
 export default function Signup() {
   usePageMeta('Create Account', 'Create your Healing Hearts account to access the course portal.');
@@ -19,6 +20,12 @@ export default function Signup() {
   const [success, setSuccess] = useState(false);
 
   const { signUp } = useAuth();
+  const successHeadingRef = useRef(null);
+  useEffect(() => {
+    if (success && successHeadingRef.current) {
+      successHeadingRef.current.focus();
+    }
+  }, [success]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -29,8 +36,8 @@ export default function Signup() {
       return;
     }
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters.');
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters.');
       return;
     }
 
@@ -59,9 +66,9 @@ export default function Signup() {
       <div className="min-h-screen bg-background flex items-center justify-center px-6">
         <div className="max-w-md w-full text-center">
           <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Mail className="w-8 h-8 text-green-600" />
+            <Mail aria-hidden="true" className="w-8 h-8 text-green-600" />
           </div>
-          <h1 className="font-outfit font-bold text-3xl text-primary mb-4">Check your email</h1>
+          <h1 ref={successHeadingRef} tabIndex={-1} className="font-outfit font-bold text-3xl text-primary mb-4">Check your email</h1>
           <p className="font-sans text-foreground/70 mb-3">
             We sent a confirmation link to <strong className="text-primary">{email}</strong>.
           </p>
@@ -81,7 +88,7 @@ export default function Signup() {
             to="/login"
             className="inline-flex items-center gap-2 font-outfit font-medium text-sm text-accent hover:text-accent/80 transition-colors"
           >
-            Go to sign in <ArrowRight className="w-4 h-4" />
+            Go to sign in <ArrowRight aria-hidden="true" className="w-4 h-4" />
           </Link>
         </div>
       </div>
@@ -130,24 +137,26 @@ export default function Signup() {
           )}
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl mb-6 text-sm font-sans">
-              {error}
+            <div role="alert" aria-live="polite" className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl mb-6 text-sm font-sans">
+              {errorCopyFor(error)}
             </div>
           )}
 
           <form onSubmit={handleSubmit}>
             {/* Display Name */}
             <div className="mb-4">
-              <label className="block font-outfit text-sm font-medium text-primary/80 mb-2">
+              <label htmlFor="signup-name" className="block font-outfit text-sm font-medium text-primary/80 mb-2">
                 Your name
               </label>
               <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
+                <User aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
                 <input
+                  id="signup-name"
                   type="text"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
                   required
+                  autoComplete="name"
                   placeholder="How should we address you?"
                   className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
                 />
@@ -156,16 +165,18 @@ export default function Signup() {
 
             {/* Email */}
             <div className="mb-4">
-              <label className="block font-outfit text-sm font-medium text-primary/80 mb-2">
+              <label htmlFor="signup-email" className="block font-outfit text-sm font-medium text-primary/80 mb-2">
                 Email address
               </label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
+                <Mail aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
                 <input
+                  id="signup-email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  autoComplete="email"
                   placeholder="you@example.com"
                   className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
                 />
@@ -174,18 +185,20 @@ export default function Signup() {
 
             {/* Password */}
             <div className="mb-4">
-              <label className="block font-outfit text-sm font-medium text-primary/80 mb-2">
+              <label htmlFor="signup-password" className="block font-outfit text-sm font-medium text-primary/80 mb-2">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
+                <Lock aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
                 <input
+                  id="signup-password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  minLength={6}
-                  placeholder="At least 6 characters"
+                  minLength={8}
+                  autoComplete="new-password"
+                  placeholder="At least 8 characters"
                   className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
                 />
               </div>
@@ -193,16 +206,18 @@ export default function Signup() {
 
             {/* Confirm Password */}
             <div className="mb-6">
-              <label className="block font-outfit text-sm font-medium text-primary/80 mb-2">
+              <label htmlFor="signup-confirm" className="block font-outfit text-sm font-medium text-primary/80 mb-2">
                 Confirm password
               </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
+                <Lock aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
                 <input
+                  id="signup-confirm"
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
+                  autoComplete="new-password"
                   placeholder="Confirm your password"
                   className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
                 />
@@ -220,7 +235,7 @@ export default function Signup() {
               ) : (
                 <>
                   Create account
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight aria-hidden="true" className="w-4 h-4" />
                 </>
               )}
             </button>

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Lock, ArrowRight, CheckCircle2 } from 'lucide-react';
 import usePageMeta from '../hooks/usePageMeta';
+import { errorCopyFor } from '../lib/authErrorCopy';
 
 export default function ResetPassword() {
   usePageMeta('Set New Password', 'Choose a new password for your Healing Hearts account.');
@@ -14,6 +15,12 @@ export default function ResetPassword() {
 
   const { updatePassword } = useAuth();
   const navigate = useNavigate();
+  const successHeadingRef = useRef(null);
+  useEffect(() => {
+    if (success && successHeadingRef.current) {
+      successHeadingRef.current.focus();
+    }
+  }, [success]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -24,8 +31,8 @@ export default function ResetPassword() {
       return;
     }
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters.');
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters.');
       return;
     }
 
@@ -52,9 +59,9 @@ export default function ResetPassword() {
         {success ? (
           <div className="text-center">
             <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle2 className="w-8 h-8 text-green-600" />
+              <CheckCircle2 aria-hidden="true" className="w-8 h-8 text-green-600" />
             </div>
-            <h1 className="font-outfit font-bold text-3xl text-primary mb-4">Password updated</h1>
+            <h1 ref={successHeadingRef} tabIndex={-1} className="font-outfit font-bold text-3xl text-primary mb-4">Password updated</h1>
             <p className="font-sans text-foreground/70">
               Redirecting you to your portal...
             </p>
@@ -67,41 +74,45 @@ export default function ResetPassword() {
             </p>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl mb-6 text-sm font-sans">
-                {error}
+              <div role="alert" aria-live="polite" className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl mb-6 text-sm font-sans">
+                {errorCopyFor(error)}
               </div>
             )}
 
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label className="block font-outfit text-sm font-medium text-primary/80 mb-2">
+                <label htmlFor="reset-password" className="block font-outfit text-sm font-medium text-primary/80 mb-2">
                   New password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
+                  <Lock aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
                   <input
+                    id="reset-password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    minLength={6}
-                    placeholder="At least 6 characters"
+                    minLength={8}
+                    autoComplete="new-password"
+                    placeholder="At least 8 characters"
                     className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
                   />
                 </div>
               </div>
 
               <div className="mb-6">
-                <label className="block font-outfit text-sm font-medium text-primary/80 mb-2">
+                <label htmlFor="reset-confirm" className="block font-outfit text-sm font-medium text-primary/80 mb-2">
                   Confirm new password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
+                  <Lock aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
                   <input
+                    id="reset-confirm"
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
+                    autoComplete="new-password"
                     placeholder="Confirm your password"
                     className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
                   />
@@ -118,7 +129,7 @@ export default function ResetPassword() {
                 ) : (
                   <>
                     Update password
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight aria-hidden="true" className="w-4 h-4" />
                   </>
                 )}
               </button>

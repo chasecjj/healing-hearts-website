@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Mail, Lock, ArrowRight, Sparkles, CheckCircle } from 'lucide-react';
 import usePageMeta from '../hooks/usePageMeta';
+import { errorCopyFor } from '../lib/authErrorCopy';
 
 export default function Login() {
   usePageMeta('Login', 'Sign in to your Healing Hearts account.');
@@ -20,7 +21,13 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const from = location.state?.from?.pathname || '/portal';
+  const from = searchParams.get('next') || location.state?.from?.pathname || '/portal';
+  const successHeadingRef = useRef(null);
+  useEffect(() => {
+    if (magicLinkSent && successHeadingRef.current) {
+      successHeadingRef.current.focus();
+    }
+  }, [magicLinkSent]);
   const justVerified = searchParams.get('verified') === 'true';
 
   async function handlePasswordLogin(e) {
@@ -65,7 +72,7 @@ export default function Login() {
     setError('');
     setLoading(true);
 
-    const { error: authError } = await signInWithMagicLink(email);
+    const { error: authError } = await signInWithMagicLink(email, from);
 
     if (authError) {
       setError(authError.message);
@@ -80,9 +87,9 @@ export default function Login() {
       <div className="min-h-screen bg-background flex items-center justify-center px-6">
         <div className="max-w-md w-full text-center">
           <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Mail className="w-8 h-8 text-primary" />
+            <Mail aria-hidden="true" className="w-8 h-8 text-primary" />
           </div>
-          <h1 className="font-outfit font-bold text-3xl text-primary mb-4">Check your email</h1>
+          <h1 ref={successHeadingRef} tabIndex={-1} className="font-outfit font-bold text-3xl text-primary mb-4">Check your email</h1>
           <p className="font-sans text-foreground/70 mb-8">
             We sent a magic link to <strong className="text-primary">{email}</strong>.
             Click the link in the email to sign in.
@@ -134,14 +141,14 @@ export default function Login() {
           </p>
 
           {justVerified && (
-            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-2xl mb-6 text-sm font-sans flex items-center gap-3">
-              <CheckCircle className="w-5 h-5 flex-shrink-0" />
+            <div role="alert" aria-live="polite" className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-2xl mb-6 text-sm font-sans flex items-center gap-3">
+              <CheckCircle aria-hidden="true" className="w-5 h-5 flex-shrink-0" />
               <span>Email verified! You can now sign in.</span>
             </div>
           )}
 
           {unconfirmedEmail && (
-            <div className="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-4 rounded-2xl mb-6 text-sm font-sans">
+            <div role="alert" aria-live="polite" className="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-4 rounded-2xl mb-6 text-sm font-sans">
               <p className="font-medium mb-2">Email not yet verified</p>
               <p className="text-amber-700 mb-3">
                 Please check your inbox for a confirmation link from <strong>noreply@mail.app.supabase.io</strong>.
@@ -162,8 +169,8 @@ export default function Login() {
           )}
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl mb-6 text-sm font-sans">
-              {error}
+            <div role="alert" aria-live="polite" className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl mb-6 text-sm font-sans">
+              {errorCopyFor(error)}
             </div>
           )}
 
@@ -187,23 +194,25 @@ export default function Login() {
                   : 'bg-primary/5 text-primary hover:bg-primary/10'
               }`}
             >
-              <Sparkles className="w-4 h-4" /> Magic Link
+              <Sparkles aria-hidden="true" className="w-4 h-4" /> Magic Link
             </button>
           </div>
 
           <form onSubmit={mode === 'password' ? handlePasswordLogin : handleMagicLink}>
             {/* Email */}
             <div className="mb-4">
-              <label className="block font-outfit text-sm font-medium text-primary/80 mb-2">
+              <label htmlFor="login-email" className="block font-outfit text-sm font-medium text-primary/80 mb-2">
                 Email address
               </label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
+                <Mail aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
                 <input
+                  id="login-email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  autoComplete="email"
                   placeholder="you@example.com"
                   className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
                 />
@@ -214,7 +223,7 @@ export default function Login() {
             {mode === 'password' && (
               <div className="mb-6">
                 <div className="flex justify-between items-center mb-2">
-                  <label className="font-outfit text-sm font-medium text-primary/80">
+                  <label htmlFor="login-password" className="font-outfit text-sm font-medium text-primary/80">
                     Password
                   </label>
                   <Link
@@ -225,12 +234,14 @@ export default function Login() {
                   </Link>
                 </div>
                 <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
+                  <Lock aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
                   <input
+                    id="login-password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    autoComplete="current-password"
                     placeholder="Enter your password"
                     className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
                   />
@@ -249,7 +260,7 @@ export default function Login() {
               ) : (
                 <>
                   {mode === 'password' ? 'Sign in' : 'Send magic link'}
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight aria-hidden="true" className="w-4 h-4" />
                 </>
               )}
             </button>

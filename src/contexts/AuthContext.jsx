@@ -182,11 +182,11 @@ export function AuthProvider({ children }) {
     return { data, error };
   }
 
-  async function signInWithMagicLink(email) {
+  async function signInWithMagicLink(email, redirectPath = '/portal') {
     const { data, error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/portal`,
+        emailRedirectTo: `${window.location.origin}${redirectPath}`,
       },
     });
     return { data, error };
