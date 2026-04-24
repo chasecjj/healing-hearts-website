@@ -6,6 +6,7 @@ import { Layout } from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 import RequireAdmin from './components/auth/RequireAdmin';
+import AuthoringRoute from './pages/admin/AuthoringRoute';
 import CrmListView from './pages/admin/CrmListView';
 import CrmDetailView from './pages/admin/CrmDetailView';
 import TasksLayout from './pages/admin/TasksLayout';
@@ -103,6 +104,7 @@ function App() {
               <Route path="/admin/tasks" element={<RequireAdmin><TasksLayout /></RequireAdmin>} />
               <Route path="/admin/tasks/kanban" element={<RequireAdmin><TasksLayout /></RequireAdmin>} />
               <Route path="/admin/tasks/list" element={<RequireAdmin><TasksLayout /></RequireAdmin>} />
+              <Route path="/admin/authoring" element={<RequireAdmin><AuthoringRoute /></RequireAdmin>} />
 
               {/* Portal routes */}
               <Route path="/portal/downloads" element={<ProtectedRoute><Downloads /></ProtectedRoute>} />
