@@ -13,6 +13,7 @@ const FROM_ADDRESS = 'Healing Hearts <hello@healingheartscourse.com>';
 
 const TEMPLATES = {
   'webinar-broadcast-april23': () => import('../_emails/webinar-broadcast-april23.js'),
+  'webinar-reschedule-may21':  () => import('../_emails/webinar-reschedule-may21.js'),
 };
 
 const AUDIENCES = {
