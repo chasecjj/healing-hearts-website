@@ -15,8 +15,8 @@
 -- ----------------------------------------------------------------------------
 -- Update the workshop row.
 --
--- meeting_url: defaults to the April 23 Meet link reused for May 21. CHANGE
--- this before applying if Trisha generates a new Meet event for May 21.
+-- meeting_url: fresh Google Meet event created for May 21
+-- (Calendar event id 954mpk83rmesbda5b9o6tp9qko, created 2026-04-29).
 -- ----------------------------------------------------------------------------
 
 UPDATE public.webinars
@@ -24,7 +24,7 @@ SET
   starts_at = '2026-05-22 01:00:00+00',  -- May 21 7:00 PM MDT
   duration_minutes = 90,
   status = 'scheduled',
-  meeting_url = 'https://meet.google.com/cam-fqwt-jdn',
+  meeting_url = 'https://meet.google.com/kvo-mujo-ngf',
   -- Clear the placeholder Riverside URL so the WebinarLive.jsx fallback chain
   -- correctly picks up meeting_url first (avoids the iframe-on-Meet-link bug).
   riverside_audience_url = NULL
@@ -65,7 +65,7 @@ AND status = 'scheduled';
 --
 -- Expected:
 --   starts_at = 2026-05-22 01:00:00+00
---   meeting_url = https://meet.google.com/cam-fqwt-jdn (or whatever Chase chose)
+--   meeting_url = https://meet.google.com/kvo-mujo-ngf
 --   riverside_audience_url = NULL
 --   status = scheduled
 --   registrant_count = 4 (preserved)
@@ -97,6 +97,6 @@ AND status = 'scheduled';
 --   'A 90-minute live workshop with Jeff & Trisha on the nervous-system patterns that hijack your conversations.',
 --   '2026-05-22 01:00:00+00',
 --   90,
---   'https://meet.google.com/cam-fqwt-jdn',
+--   'https://meet.google.com/kvo-mujo-ngf',
 --   'scheduled'
 -- );
