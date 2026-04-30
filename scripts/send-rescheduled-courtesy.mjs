@@ -79,9 +79,14 @@ const { data: already } = await supabase
   .eq('broadcast_id', THIS_BROADCAST);
 const alreadySet = new Set((already || []).map((r) => r.email.toLowerCase()));
 
+// Chase's personal address is on the registration list as a test signup;
+// always exclude (he's running this script).
+const ALWAYS_EXCLUDE = new Set(['chasecjj@gmail.com']);
+
 const filtered = (regs || []).filter((r) => {
   if (r.unsubscribed) return false;
   if (alreadySet.has(r.email.toLowerCase())) return false;
+  if (ALWAYS_EXCLUDE.has(r.email.toLowerCase())) return false;
   if (!INCLUDE_TEAM && r.email.toLowerCase().endsWith('@healingheartscourse.com')) return false;
   return true;
 });
