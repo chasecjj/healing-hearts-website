@@ -11,16 +11,7 @@
     { "source": "/go/webinar", "destination": "/webinar?utm_source=webinar_banner&utm_medium=qr&utm_campaign=expo_april2026", "permanent": false },
     { "source": "/go/apply", "destination": "/apply?utm_source=print&utm_medium=qr&utm_campaign=application_qr", "permanent": false }
   ],
-  "crons": [
-    {
-      "path": "/api/cron/spark-drip",
-      "schedule": "0 13 * * *"
-    },
-    {
-      "path": "/api/cron/webinar-cron",
-      "schedule": "0 23 * * *"
-    }
-  ],
+  "crons": [],
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
@@ -44,16 +35,6 @@
       "source": "/((?!api/|assets/).*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
-      ]
-    },
-    {
-      "source": "/webinar/live",
-      "headers": [
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
-        { "key": "Permissions-Policy", "value": "camera=(self \"https://riverside.fm\"), microphone=(self \"https://riverside.fm\"), geolocation=()" }
       ]
     },
     {
