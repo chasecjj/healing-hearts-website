@@ -11,7 +11,16 @@
     { "source": "/go/webinar", "destination": "/webinar?utm_source=webinar_banner&utm_medium=qr&utm_campaign=expo_april2026", "permanent": false },
     { "source": "/go/apply", "destination": "/apply?utm_source=print&utm_medium=qr&utm_campaign=application_qr", "permanent": false }
   ],
-  "crons": [],
+  "crons": [
+    {
+      "path": "/api/cron/spark-drip",
+      "schedule": "0 13 * * *"
+    },
+    {
+      "path": "/api/cron/webinar-cron",
+      "schedule": "0 23 * * *"
+    }
+  ],
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
