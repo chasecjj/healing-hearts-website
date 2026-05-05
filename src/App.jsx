@@ -42,6 +42,8 @@ import WebinarRegister from './pages/WebinarRegister';
 import WebinarLive from './pages/WebinarLive';
 import WebinarReplay from './pages/WebinarReplay';
 import CheckoutSuccess from './pages/CheckoutSuccess';
+import MeetTrisha from './pages/MeetTrisha';
+import MeetJeff from './pages/MeetJeff';
 import Downloads from './portal/Downloads';
 import PortalLayout from './layouts/PortalLayout';
 import { Analytics } from '@vercel/analytics/react';
@@ -79,6 +81,8 @@ function App() {
               <Route path="/spark-challenge" element={<SparkChallenge />} />
               <Route path="/team" element={<Team />} />
               <Route path="/journey" element={<YourJourney />} />
+              <Route path="/meet/trisha" element={<MeetTrisha />} />
+              <Route path="/meet/jeff" element={<MeetJeff />} />
               <Route path="/coming-soon" element={<ComingSoon />} />
               <Route path="/enroll" element={<ComingSoon />} />
               <Route path="/enroll/:program" element={<ComingSoon />} />
