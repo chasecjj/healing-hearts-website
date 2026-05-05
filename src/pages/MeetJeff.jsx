@@ -11,11 +11,10 @@ import { Mail, Phone } from 'lucide-react';
 /* ------------------------------------------------------------------ */
 
 export default function MeetJeff() {
-  usePageMeta({
-    title: 'Meet Dr. Jeff Jamison — Healing Hearts',
-    description:
-      'Dr. Jeff Jamison is a board-certified family physician with nearly 30 years in practice. Co-founder of Healing Hearts.',
-  });
+  usePageMeta(
+    'Meet Dr. Jeff Jamison',
+    'Dr. Jeff Jamison is a board-certified family physician with nearly 30 years in practice. Co-founder of Healing Hearts.'
+  );
 
   return (
     <div className="w-full min-h-screen bg-neutral-50 text-foreground">

@@ -11,11 +11,10 @@ import { Mail, Phone } from 'lucide-react';
 /* ------------------------------------------------------------------ */
 
 export default function MeetTrisha() {
-  usePageMeta({
-    title: 'Meet Trisha Jamison — Healing Hearts',
-    description:
-      'Trisha Jamison is a coach with over 20 years of experience in polyvagal theory and nervous system regulation. Co-founder of Healing Hearts.',
-  });
+  usePageMeta(
+    'Meet Trisha Jamison',
+    'Trisha Jamison is a coach with over 20 years of experience in polyvagal theory and nervous system regulation. Co-founder of Healing Hearts.'
+  );
 
   return (
     <div className="w-full min-h-screen bg-neutral-50 text-foreground">
