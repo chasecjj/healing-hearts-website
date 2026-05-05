@@ -158,17 +158,38 @@ const HonestVersion = () => {
             </div>
 
             <div className="space-y-6">
-              <p className="story-p font-sans text-foreground/80 text-lg leading-relaxed font-light">
-                Jeff is a family physician who ran his own practice for nearly 30 years. Trisha is a coach with over two decades of experience. They've been married for more than 38 years. And for a long stretch of those years, they looked like any other successful couple on the outside — his clinic running, her work growing, the calendar full. But behind closed doors, they were two strangers sharing a house. The kind of quiet disconnection that doesn't shout but slowly suffocates.
+              <p className="font-sans text-foreground/80 text-lg leading-relaxed font-light story-p">
+                Trisha is a coach with decades of experience and training. Jeff is a board-certified family physician who ran his own practice for nearly 30 years. They've been married for more than 38 years.
               </p>
-              <p className="story-p font-sans text-foreground/80 text-lg leading-relaxed font-light">
-                Trisha felt invisible. Jeff felt criticized. His patients and staff got the best of him — and his family got whatever was left. Jeff's medical training had taught him to compartmentalize emotion. Useful in an exam room. Devastating in a marriage. Trisha's instinct for connection kept hitting a wall she couldn't name.
+              <p className="font-sans text-foreground/80 text-lg leading-relaxed font-light story-p">
+                For many of those years, they looked like any other successful couple on the outside. His clinic was thriving, his schedule filled to the brim. Not many physicians maintain a five-star rating. The calendar was full with children's sports, recitals, and business events. But behind closed doors, they were two strangers sharing a house. The kind of quiet disconnection that doesn't shout, but slowly suffocates.
               </p>
-              <p className="story-p font-sans text-foreground/80 text-lg leading-relaxed font-light">
-                They didn't just survive it. They studied it. Jeff brought the clinical lens — polyvagal theory, nervous system regulation, the biology of why your body hijacks a conversation before your mind catches up. Trisha brought 20 years of coaching instinct and an ear for what people actually need to hear. Together, they built frameworks that worked — not in theory, but at 11pm on a Tuesday when the old patterns came roaring back.
+              <p className="font-sans text-foreground/80 text-lg leading-relaxed font-light story-p">
+                Trisha felt invisible. While raising six children, she quietly carried the weight of the family and often felt unseen. Jeff felt like his family loved him but really only needed him for the paycheck. His patients and staff often received the best of him, while his family got whatever was left. His medical training had taught him to compartmentalize emotion. Useful in an exam room. Devastating in a marriage. And Trisha's instinct for connection kept reaching, only to meet a wall she couldn't name.
               </p>
-              <p className="story-p font-sans text-foreground/80 text-lg leading-relaxed font-medium text-primary/80 pt-4">
-                Healing Hearts is what grew from the wreckage — and the rebuilding. The Seven Devils. The SPARK Method. The Zones of Resilience. Every framework in this program was tested in their own marriage first.
+              <p className="font-sans text-foreground/80 text-lg leading-relaxed font-light story-p">
+                They didn't just survive it. They chose to understand it.
+              </p>
+              <p className="font-sans text-foreground/80 text-lg leading-relaxed font-light story-p">
+                Trisha brings over 20 years of coaching, along with deep expertise in polyvagal theory, nervous system regulation, and the biology behind why your body can hijack a conversation before your mind even catches up. She has a rare ability to hear what's happening beneath the surface and translate complex emotional and physiological patterns into language that truly lands.
+              </p>
+              <p className="font-sans text-foreground/80 text-lg leading-relaxed font-light story-p">
+                Jeff brings the clinical lens as a physician. He understands the body, stress, and the impact they have on overall health and family life. He sees patterns through both a medical perspective and the lived experience of being a husband and father, grounding the work in what is practical, measurable, and real.
+              </p>
+              <p className="font-sans text-foreground/80 text-lg leading-relaxed font-light story-p">
+                Trisha is the architect of the frameworks. Jeff brings the clinical depth that grounds them. Together, they live the application, anchoring this work in reality and creating tools that don't just inspire, but hold, even at 11pm on a Wednesday, when the old patterns come roaring back.
+              </p>
+              <p className="font-sans text-foreground/80 text-lg leading-relaxed font-medium text-primary/80 pt-4 story-p">
+                Today, our life looks very different.
+              </p>
+              <p className="font-sans text-foreground/80 text-lg leading-relaxed font-light story-p">
+                We have built a relationship rooted in safety, honesty, and deep connection. We laugh more. We repair faster. We know how to find our way back to each other, again and again.
+              </p>
+              <p className="font-sans text-foreground/80 text-lg leading-relaxed font-light story-p">
+                We are each other's person and best friend.
+              </p>
+              <p className="font-sans text-foreground/80 text-lg leading-relaxed font-light story-p">
+                We don't just share a home anymore. We're living a life we deeply enjoy — together.
               </p>
             </div>
           </div>

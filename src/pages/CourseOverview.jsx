@@ -33,7 +33,7 @@ export default function CourseOverview() {
             Rebuild what matters most.
           </h1>
           <p className="font-sans font-light text-background/80 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10">
-            8 modules designed by marriage coaches Jeff & Trisha Jamison. Real tools, real science, real transformation — from understanding your patterns to building a lasting legacy.
+            8 modules designed by Trisha Jamison (coach) and Dr. Jeff Jamison (board-certified family physician). Real tools, real science, real transformation.
           </p>
           {user ? (
             <Link
