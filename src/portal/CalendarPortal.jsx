@@ -24,20 +24,56 @@ export default function CalendarPortal() {
   });
 
   return (
-    <div className="px-4 sm:px-8 lg:px-12 py-8 sm:py-16 max-w-[960px] mx-auto w-full">
-      <h1
-        className="font-drama font-bold mb-8"
-        style={{ color: 'var(--pt-text-primary-hex, #1c1917)', fontSize: '2rem', lineHeight: 1.2 }}
-      >
-        Calendar
-      </h1>
+    <div className="px-4 sm:px-8 lg:px-12 py-10 sm:py-16 max-w-[960px] mx-auto w-full">
+      {/* Wave 7: editorial header — eyebrow + Playfair italic title */}
+      <header className="mb-12 max-w-2xl">
+        <p
+          style={{
+            fontFamily: '"Outfit", sans-serif',
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: '0.24em',
+            textTransform: 'uppercase',
+            color: 'var(--pt-text-muted-hex, #57534e)',
+            margin: '0 0 14px',
+          }}
+        >
+          Your week
+        </p>
+        <h1
+          style={{
+            fontFamily: '"Playfair Display", Georgia, serif',
+            fontWeight: 300,
+            fontSize: 'clamp(34px, 4.5vw, 48px)',
+            lineHeight: 1.08,
+            letterSpacing: '-0.02em',
+            color: 'var(--pt-text-primary-hex, #1c1917)',
+            margin: '0 0 12px',
+          }}
+        >
+          Calendar
+        </h1>
+        <p
+          style={{
+            fontFamily: '"Playfair Display", Georgia, serif',
+            fontStyle: 'italic',
+            fontWeight: 300,
+            fontSize: 17,
+            lineHeight: 1.55,
+            color: 'var(--pt-text-muted-hex, #57534e)',
+            margin: 0,
+          }}
+        >
+          Seven days at a glance. Sessions appear here when scheduled.
+        </p>
+      </header>
 
-      {/* 7-day horizontal strip (2.6) */}
+      {/* 7-day horizontal strip (2.6) — Wave 7 refined day-button states */}
       <div
-        className="flex gap-1 pb-6 mb-8 overflow-x-auto border-b"
+        className="flex gap-2 pb-6 mb-10 overflow-x-auto"
         role="list"
         aria-label="Next 7 days"
-        style={{ borderColor: 'var(--pt-border-subtle-hex, #d6d3d1)' }}
+        style={{ borderBottom: '1px solid var(--pt-border-soft-hex, #e7e5e4)' }}
       >
         {days.map((d, i) => {
           const isToday = i === 0;
@@ -50,37 +86,70 @@ export default function CalendarPortal() {
               onClick={() => setSelectedDay(i)}
               aria-pressed={isSelected}
               aria-label={`${DAY_ABBREV[d.getDay()]} ${d.getDate()}${isToday ? ', today' : ''}`}
-              className="flex flex-col items-center gap-1 px-3 py-2 min-w-[52px] rounded-lg"
+              className="flex flex-col items-center gap-1.5 px-4 py-3 min-w-[60px] rounded-xl transition-all duration-150"
               style={{
                 backgroundColor: isSelected
-                  ? 'var(--pt-elevation-1-hex, #e7e5e4)'
+                  ? 'var(--pt-text-primary-hex, #1c1917)'
                   : 'transparent',
-                border: 'none',
+                border: '1px solid',
+                borderColor: isSelected
+                  ? 'var(--pt-text-primary-hex, #1c1917)'
+                  : 'transparent',
                 cursor: 'pointer',
+              }}
+              onMouseEnter={(e) => {
+                if (!isSelected) {
+                  e.currentTarget.style.backgroundColor =
+                    'var(--pt-elevation-warm-hex, #faf7f2)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isSelected) {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }
               }}
             >
               <span
-                className="text-xs font-outfit uppercase tracking-wide"
-                style={{ color: 'var(--pt-text-muted-hex, #57534e)' }}
+                style={{
+                  fontFamily: '"Outfit", sans-serif',
+                  fontSize: 10,
+                  fontWeight: 600,
+                  letterSpacing: '0.16em',
+                  textTransform: 'uppercase',
+                  color: isSelected
+                    ? 'rgba(255, 255, 255, 0.65)'
+                    : 'var(--pt-text-muted-hex, #57534e)',
+                }}
               >
                 {DAY_ABBREV[d.getDay()]}
               </span>
               <span
-                className="text-lg font-drama font-bold"
                 style={{
-                  color: isToday
+                  fontFamily: '"Playfair Display", Georgia, serif',
+                  fontWeight: 400,
+                  fontSize: 22,
+                  lineHeight: 1,
+                  letterSpacing: '-0.01em',
+                  color: isSelected
+                    ? '#ffffff'
+                    : isToday
                     ? 'var(--pt-primary-accent-hex, #B96A5F)'
                     : 'var(--pt-text-primary-hex, #1c1917)',
                 }}
               >
                 {d.getDate()}
               </span>
-              {/* event-dot placeholder */}
+              {/* event-dot placeholder — today gets soft pulse */}
               <span
-                className="w-1.5 h-1.5 rounded-full"
+                className={isToday && !isSelected ? 'pt-today-pulse' : ''}
                 style={{
+                  width: 5,
+                  height: 5,
+                  borderRadius: 9999,
                   backgroundColor: isToday
-                    ? 'var(--pt-primary-accent-hex, #B96A5F)'
+                    ? isSelected
+                      ? '#ffffff'
+                      : 'var(--pt-primary-accent-hex, #B96A5F)'
                     : 'transparent',
                 }}
                 aria-hidden="true"
@@ -91,23 +160,38 @@ export default function CalendarPortal() {
       </div>
 
       {/* Selected-day detail — no card chrome */}
-      <div className="mb-8">
-        <h2
-          className="font-outfit font-semibold text-sm uppercase tracking-widest mb-3"
-          style={{ color: 'var(--pt-text-muted-hex, #57534e)' }}
+      <div className="mb-10">
+        <p
+          style={{
+            fontFamily: '"Outfit", sans-serif',
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+            color: 'var(--pt-text-muted-hex, #57534e)',
+            margin: '0 0 10px',
+          }}
         >
           {days[selectedDay].toLocaleDateString(undefined, {
             weekday: 'long',
             month: 'long',
             day: 'numeric',
           })}
-        </h2>
+        </p>
         {/* A-11 rest-permission copy */}
         <p
-          className="text-base leading-relaxed"
-          style={{ color: 'var(--pt-text-muted-hex, #57534e)' }}
+          style={{
+            fontFamily: '"Playfair Display", Georgia, serif',
+            fontStyle: 'italic',
+            fontWeight: 300,
+            fontSize: 19,
+            lineHeight: 1.5,
+            color: 'var(--pt-text-muted-hex, #57534e)',
+            margin: 0,
+            maxWidth: 520,
+          }}
         >
-          No sessions scheduled — no pressure.
+          No sessions scheduled &mdash; no pressure.
         </p>
       </div>
 
@@ -115,15 +199,21 @@ export default function CalendarPortal() {
       <button
         type="button"
         onClick={() => window.alert('Session booking launches with Slice 6. Coming soon.')}
-        className="font-outfit font-semibold text-sm"
         style={{
-          padding: '10px 20px',
+          fontFamily: '"Outfit", sans-serif',
+          fontSize: 13,
+          fontWeight: 500,
+          letterSpacing: '0.01em',
+          padding: '12px 24px',
           borderRadius: 9999,
           border: 'none',
           backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)',
-          color: 'var(--pt-text-inverse-hex, #fafaf9)',
+          color: '#ffffff',
           cursor: 'pointer',
+          transition: 'opacity 150ms ease',
         }}
+        onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.92')}
+        onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
       >
         Book a Session
       </button>

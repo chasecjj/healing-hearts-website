@@ -308,56 +308,131 @@ function LessonView({
               null
             )}
 
-            {/* Lesson header */}
-            <header className="mb-12 sm:mb-16 space-y-4" data-lesson-animate>
-              <span
-                className="font-bold text-sm uppercase tracking-[0.3em]"
-                style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+            {/* Lesson header — Wave 7 editorial refinement: lighter Playfair weight,
+                tighter eyebrow, breath-room between title and subtitle */}
+            <header className="mb-10 sm:mb-12" data-lesson-animate>
+              <p
+                style={{
+                  fontFamily: '"Outfit", sans-serif',
+                  fontSize: 11,
+                  fontWeight: 600,
+                  letterSpacing: '0.24em',
+                  textTransform: 'uppercase',
+                  color: 'var(--pt-primary-accent-hex, #B96A5F)',
+                  margin: '0 0 18px',
+                }}
               >
                 Module {currentModule?.module_number}
                 {currentLesson?.parent_lesson_id && getParentLesson(currentLesson)
                   ? ` / ${getParentLesson(currentLesson).title}`
                   : ''}
-              </span>
+              </p>
               <h2
-                className="font-drama text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight"
-                style={{ color: 'var(--pt-text-primary-hex, #1c1917)' }}
+                style={{
+                  fontFamily: '"Playfair Display", Georgia, serif',
+                  fontWeight: 300,
+                  fontSize: 'clamp(38px, 5vw, 60px)',
+                  lineHeight: 1.06,
+                  letterSpacing: '-0.025em',
+                  color: 'var(--pt-text-primary-hex, #1c1917)',
+                  margin: 0,
+                }}
               >
                 {currentLesson?.title}
               </h2>
               {currentLesson?.content_json?.subtitle && (
-                <p className="text-foreground/40 font-outfit italic text-lg">
+                <p
+                  style={{
+                    fontFamily: '"Playfair Display", Georgia, serif',
+                    fontStyle: 'italic',
+                    fontWeight: 300,
+                    fontSize: 19,
+                    lineHeight: 1.55,
+                    color: 'var(--pt-text-muted-hex, #57534e)',
+                    margin: '18px 0 0',
+                    maxWidth: 640,
+                  }}
+                >
                   {currentLesson.content_json.subtitle}
                 </p>
               )}
+              {/* Decorative hairline rule — editorial separator, not a structural border */}
+              <div
+                aria-hidden="true"
+                style={{
+                  width: 64,
+                  height: 1,
+                  backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)',
+                  marginTop: 28,
+                  opacity: 0.4,
+                }}
+              />
             </header>
 
             {/* Lesson blocks */}
             <div
-              className="max-w-[65ch] space-y-10 text-foreground/80 leading-[1.8] text-lg"
+              className="max-w-[65ch] space-y-10 text-lg"
               data-lesson-animate
               data-lesson-content
+              style={{
+                color: 'var(--pt-text-primary-hex, #1c1917)',
+                lineHeight: 1.75,
+                fontFamily: '"Plus Jakarta Sans", sans-serif',
+              }}
             >
-              <LessonContent
-                contentJson={currentLesson?.content_json}
-                lessonId={currentLesson?.id}
-              />
+              {/* If content is missing entirely, show a quiet placeholder rather
+                  than a vast empty whitespace gap (Wave 7 fix for screenshot-09
+                  empty-content render). */}
+              {!currentLesson?.content_json ||
+              (Array.isArray(currentLesson.content_json.blocks) &&
+                currentLesson.content_json.blocks.length === 0) ? (
+                <p
+                  style={{
+                    fontFamily: '"Playfair Display", Georgia, serif',
+                    fontStyle: 'italic',
+                    fontWeight: 300,
+                    fontSize: 18,
+                    lineHeight: 1.6,
+                    color: 'var(--pt-text-quiet-hex, #a8a29e)',
+                    margin: 0,
+                  }}
+                >
+                  Lesson content is being prepared. Check back soon &mdash; or use the navigation below to continue.
+                </p>
+              ) : (
+                <LessonContent
+                  contentJson={currentLesson?.content_json}
+                  lessonId={currentLesson?.id}
+                />
+              )}
 
               {/* ── Caption/transcript slot (3.14: progressive <details>, i18n-safe) ── */}
               {currentLesson?.content_json?.transcript && (
                 <details
-                  className="border-t pt-4"
-                  style={{ borderColor: 'var(--pt-border-subtle-hex, #d6d3d1)' }}
+                  className="pt-4"
+                  style={{ borderTop: '1px solid var(--pt-border-soft-hex, #e7e5e4)' }}
                 >
                   <summary
-                    className="font-outfit text-sm font-semibold cursor-pointer"
-                    style={{ color: 'var(--pt-text-muted-hex, #57534e)' }}
+                    className="cursor-pointer"
+                    style={{
+                      fontFamily: '"Outfit", sans-serif',
+                      fontSize: 12,
+                      fontWeight: 600,
+                      letterSpacing: '0.18em',
+                      textTransform: 'uppercase',
+                      color: 'var(--pt-text-muted-hex, #57534e)',
+                    }}
                   >
                     Transcript
                   </summary>
                   <div
-                    className="mt-3 text-base leading-relaxed font-sans"
-                    style={{ color: 'var(--pt-text-primary-hex, #1c1917)' }}
+                    className="mt-4"
+                    style={{
+                      fontFamily: '"Plus Jakarta Sans", sans-serif',
+                      fontSize: 16,
+                      lineHeight: 1.65,
+                      color: 'var(--pt-text-primary-hex, #1c1917)',
+                    }}
                   >
                     <p>{currentLesson.content_json.transcript}</p>
                   </div>
