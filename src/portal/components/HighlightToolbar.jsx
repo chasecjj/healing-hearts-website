@@ -74,7 +74,7 @@ export function useTextSelection({ enabled = true, onSelect, onDismiss } = {}) {
   }, [enabled, onSelect, onDismiss]);
 }
 
-export function HighlightToolbar({ position, onColor, onNote, onDismiss }) {
+export function HighlightToolbar({ position, onColor, onNote, onJournal, onDismiss }) {
   const prefersReduced = useReducedMotion();
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
@@ -145,6 +145,28 @@ export function HighlightToolbar({ position, onColor, onNote, onDismiss }) {
       >
         ✏️ Note
       </button>
+      {/* Wave 9 E6: Add to Journal — quick-capture from any lesson selection.   */}
+      {/*  Saves selected text as journal_entries.prompt_text + opens an entry  */}
+      {/*  the user can extend on /portal (Sanctuary) — see LessonView wiring.  */}
+      {onJournal && (
+        <button
+          type="button"
+          aria-label="Add to journal"
+          title="Add to journal"
+          onClick={() => onJournal?.()}
+          style={{
+            marginLeft: 2,
+            padding: '2px 8px',
+            borderRadius: 6,
+            border: '1px solid #d6d3d1',
+            backgroundColor: 'transparent',
+            cursor: 'pointer',
+            fontSize: 13,
+          }}
+        >
+          📓 Journal
+        </button>
+      )}
       <button
         type="button"
         aria-label="Dismiss toolbar"

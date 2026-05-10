@@ -7,7 +7,7 @@ const prefersReducedMotion = () =>
   typeof window !== 'undefined' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const CALENDLY_URL = 'https://calendly.com/trishajamison/30min';
+const CALENDLY_URL = 'https://calendly.com/trishajamison-healingheartscourse/30min';
 
 export default function BookCall() {
   usePageMeta(

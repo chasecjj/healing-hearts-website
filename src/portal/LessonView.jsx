@@ -10,17 +10,13 @@ import { HighlightToolbar, useTextSelection } from './components/HighlightToolba
 import { NoteDrawer } from './components/NoteDrawer';
 import { useHighlights } from './hooks/useHighlights';
 import { useNotes } from './hooks/useNotes';
+import { saveJournalEntry } from '../lib/journal';
 import {
   CheckCircle2,
   PlayCircle,
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
-  Lock,
-  Menu,
-  X,
   Clock,
-  HeartHandshake,
 } from 'lucide-react';
 import { useMockupMode } from './mockup/useMockupMode';
 import LessonHero from './mockup/LessonHero';
@@ -28,14 +24,20 @@ import LessonHero from './mockup/LessonHero';
 const MuxVideoPlayer = React.lazy(() => import('./MuxVideoPlayer'));
 
 /**
- * Lesson View — two-panel layout with collapsible sidebar navigation
- * and rich lesson content reader.
+ * Lesson View — single-column reading surface.
+ * PortalLayout (W-01 DrawerShell) owns the single drawer slot.
  *
  * Rendered at /portal/:moduleSlug/:lessonSlug.
  *
  * Wave 5 mockup-mode: `?mockup=1` short-circuits to LessonHero (single-drawer
  * hero-state mockup) for webinar-demo screenshots. The LessonHero renders its
  * own rail+drawer overlay, folding away the "two drawers" problem (directive #7).
+ *
+ * Directive #4: internal <aside> removed — PortalLayout owns the single drawer.
+ * 3.7-rev: no card chrome on learner content zones.
+ * 3.13 + A-09: hero-image slot (photography-over-illustration mandate).
+ * 3.14: caption/transcript <details> progressive disclosure.
+ * 3.18: inline-start/inline-end logical properties throughout.
  */
 export default function LessonViewWithMockup(props) {
   const mockupMode = useMockupMode();
@@ -49,8 +51,8 @@ function LessonView({
   currentLesson,
   isLessonCompleted,
   toggleLessonComplete,
-  getModuleProgress,
-  overallProgress,
+  getModuleProgress: _getModuleProgress, // retained in prop API; sidebar removed (directive #4)
+  overallProgress: _overallProgress,     // retained in prop API; sidebar removed (directive #4)
   isAdmin = false,
   hasActiveEnrollment = false,
   basePath = '/portal',
@@ -63,8 +65,6 @@ function LessonView({
   // set and the sidebar modules were all disabled.
   const canAccessContent = isAdmin || hasActiveEnrollment;
   const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [expandedParents, setExpandedParents] = useState({});
   const contentRef = useRef(null);
 
   // ── GSAP entrance animation on lesson change ──────────────
@@ -89,7 +89,6 @@ function LessonView({
   const navigateToLesson = useCallback(
     (mod, lesson) => {
       navigate(`${basePath}/module-${mod.module_number}/lesson-${lesson.sort_order}`);
-      setSidebarOpen(false);
     },
     [navigate, basePath]
   );
@@ -124,34 +123,6 @@ function LessonView({
     }
   };
 
-  // ── Sub-lesson (parent/child) helpers ─────────────────────
-  const getLessonGroups = useCallback((lessons) => {
-    if (!lessons) return { topLevel: [], childrenByParent: {} };
-    const topLevel = lessons.filter((l) => !l.parent_lesson_id);
-    const childrenByParent = {};
-    lessons.forEach((l) => {
-      if (l.parent_lesson_id) {
-        if (!childrenByParent[l.parent_lesson_id]) {
-          childrenByParent[l.parent_lesson_id] = [];
-        }
-        childrenByParent[l.parent_lesson_id].push(l);
-      }
-    });
-    return { topLevel, childrenByParent };
-  }, []);
-
-  const isParentOfActive = useCallback(
-    (lessonId, childrenByParent) => {
-      if (!currentLesson || !childrenByParent[lessonId]) return false;
-      return childrenByParent[lessonId].some((c) => c.id === currentLesson.id);
-    },
-    [currentLesson]
-  );
-
-  const toggleParentExpanded = useCallback((lessonId) => {
-    setExpandedParents((prev) => ({ ...prev, [lessonId]: !prev[lessonId] }));
-  }, []);
-
   const getParentLesson = useCallback(
     (lesson) => {
       if (!lesson?.parent_lesson_id || !currentModule?.lessons) return null;
@@ -159,6 +130,22 @@ function LessonView({
     },
     [currentModule]
   );
+
+  // Axis F (2026-05-10): when the current lesson is a parent-as-index row
+  // (parent_lesson_id null AND has children pointing back to it), build a
+  // sorted list of its sub-lessons so the LessonView can render a "Lessons
+  // in this section" ToC below the curated intro blocks. Modules 1+2 use
+  // this pattern (migration 022). Other modules typically have zero children
+  // so this list is empty and the ToC block does not render.
+  const childLessons = useMemo(() => {
+    if (!currentLesson || currentLesson.parent_lesson_id || !currentModule?.lessons) {
+      return [];
+    }
+    return currentModule.lessons
+      .filter((l) => l.parent_lesson_id === currentLesson.id)
+      .slice()
+      .sort((a, b) => a.sort_order - b.sort_order);
+  }, [currentLesson, currentModule]);
 
   const completed = currentLesson ? isLessonCompleted(currentLesson.id) : false;
   const hasVideo = !!currentLesson?.mux_playback_id;
@@ -206,6 +193,45 @@ function LessonView({
     },
     [selection, lessonId, createHighlight]
   );
+
+  // ── Wave 9 E6: Add-to-Journal quick-capture from selection ─────────────
+  // Saves the selected anchor text as journal_entries.prompt_text and an
+  // empty entry_text the user can extend later on /portal. Confirmation
+  // surfaces as a 2.4s toast at the bottom-right (a11y: role=status).
+  const [journalToast, setJournalToast] = useState(null);
+
+  const handleJournalFromSelection = useCallback(async () => {
+    if (!selection || !lessonId || !user?.id) return;
+    const anchorText = selection.text;
+    try {
+      await saveJournalEntry(user.id, {
+        lessonId,
+        moduleId: currentModule?.id || null,
+        promptText: anchorText,
+        entryText: '',
+        mood: null,
+      });
+      setJournalToast({
+        message: 'Added to your journal',
+        kind: 'ok',
+      });
+    } catch (e) {
+      console.warn('[journal] save failed (migration 014 may be pending):', e?.message);
+      setJournalToast({
+        message: 'Could not save to journal',
+        kind: 'err',
+      });
+    }
+    setSelection(null);
+    window.getSelection()?.removeAllRanges();
+  }, [selection, lessonId, user?.id, currentModule?.id]);
+
+  // Auto-dismiss toast after 2.4s
+  useEffect(() => {
+    if (!journalToast) return undefined;
+    const t = setTimeout(() => setJournalToast(null), 2400);
+    return () => clearTimeout(t);
+  }, [journalToast]);
 
   const handleNoteFromSelection = useCallback(async () => {
     if (!selection || !lessonId) return;
@@ -259,285 +285,11 @@ function LessonView({
   return (
     <>
     <div className="flex h-full bg-background font-sans">
-      {/* ── Mobile sidebar backdrop ────────────────────────── */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-neutral-900/40 z-30 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-          aria-hidden="true"
-        />
-      )}
-
-      {/* ── Sidebar ────────────────────────────────────────── */}
-      <aside
-        className={`fixed lg:static z-40 w-72 sm:w-80 bg-[#EFF9FB] flex flex-col h-full overflow-y-auto transition-transform duration-300 shadow-[24px_0_40px_-15px_rgba(17,145,177,0.06)] ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-        }`}
-        aria-label="Course navigation"
-      >
-        {/* Logo + close */}
-        <div className="px-6 py-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white shadow-lg"
-              style={{ backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)' }}
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-              </svg>
-            </div>
-            <h1
-              className="font-drama text-xl font-bold"
-              style={{ color: 'var(--pt-text-primary-hex, #1c1917)' }}
-            >
-              Healing Hearts
-            </h1>
-          </div>
-          <button
-            onClick={() => setSidebarOpen(false)}
-            className="lg:hidden p-1 text-foreground/50 hover:text-foreground transition-colors"
-            aria-label="Close navigation"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Overall progress bar */}
-        <div className="px-6 mb-6">
-          <div className="flex justify-between items-center text-xs font-outfit font-semibold text-foreground/70 uppercase tracking-wider mb-1">
-            <span>Course Progress</span>
-            <span>{overallProgress}%</span>
-          </div>
-          <div className="w-full bg-white/40 h-1.5 rounded-full overflow-hidden">
-            <div
-              className="h-full rounded-full transition-all duration-500"
-              style={{
-                width: `${overallProgress}%`,
-                backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)',
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Module list */}
-        <nav className="flex-1 px-2 pb-6 space-y-1">
-          {course?.modules?.map((mod) => {
-            const isActiveMod = currentModule?.id === mod.id;
-            const modProgress = (mod.is_preview || canAccessContent) ? getModuleProgress(mod) : 0;
-
-            return (
-              <div key={mod.id}>
-                <button
-                  onClick={() => {
-                    if ((mod.is_preview || canAccessContent) && mod.lessons?.length) {
-                      navigateToLesson(mod, mod.lessons[0]);
-                    }
-                  }}
-                  className={`w-full text-left px-4 py-3 rounded-xl transition-all flex items-center gap-3 ${
-                    isActiveMod
-                      ? 'bg-white/50 text-foreground font-bold border-l-4 rounded-l-none'
-                      : (mod.is_preview || canAccessContent)
-                      ? 'text-foreground/60 hover:text-foreground hover:bg-white/30'
-                      : 'text-foreground/40 opacity-60 cursor-not-allowed'
-                  }`}
-                  style={
-                    isActiveMod
-                      ? { borderLeftColor: 'var(--pt-primary-accent-hex, #B96A5F)' }
-                      : undefined
-                  }
-                  disabled={!mod.is_preview && !canAccessContent}
-                >
-                  {(mod.is_preview || canAccessContent) ? (
-                    modProgress === 100 ? (
-                      <CheckCircle2
-                        className="w-5 h-5 flex-shrink-0"
-                        style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
-                      />
-                    ) : isActiveMod ? (
-                      <PlayCircle
-                        className="w-5 h-5 flex-shrink-0"
-                        style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
-                      />
-                    ) : (
-                      <PlayCircle className="w-5 h-5 opacity-40 flex-shrink-0" />
-                    )
-                  ) : (
-                    <Lock className="w-4 h-4 flex-shrink-0" />
-                  )}
-                  <span className="text-sm truncate">
-                    Module {mod.module_number}: {mod.title}
-                  </span>
-                </button>
-
-                {/* Expanded lesson list for active module */}
-                {isActiveMod && (mod.is_preview || canAccessContent) && (() => {
-                  const { topLevel, childrenByParent } = getLessonGroups(mod.lessons);
-                  return (
-                    <div className="ml-7 mt-2 space-y-1 border-l-2 border-neutral-200 pl-3">
-                      {/* nested lesson list */}
-                      {topLevel.map((lesson) => {
-                        const isActiveLesson = currentLesson?.id === lesson.id;
-                        const lessonCompleted = isLessonCompleted(lesson.id);
-                        const hasChildren = !!childrenByParent[lesson.id];
-                        const isExpanded =
-                          expandedParents[lesson.id] ||
-                          isActiveLesson ||
-                          isParentOfActive(lesson.id, childrenByParent);
-
-                        return (
-                          <div key={lesson.id}>
-                            <div className="flex items-center">
-                              {hasChildren && (
-                                <button
-                                  onClick={() => toggleParentExpanded(lesson.id)}
-                                  className="p-1 text-foreground/40 hover:text-foreground/70 flex-shrink-0"
-                                  aria-label={isExpanded ? 'Collapse' : 'Expand'}
-                                >
-                                  <ChevronRight
-                                    className={`w-3 h-3 transition-transform ${
-                                      isExpanded ? 'rotate-90' : ''
-                                    }`}
-                                  />
-                                </button>
-                              )}
-                              <button
-                                onClick={() => navigateToLesson(mod, lesson)}
-                                className={`w-full flex items-center gap-2 py-1.5 px-2 rounded-lg text-xs transition-colors text-left ${
-                                  isActiveLesson
-                                    ? 'font-bold border-l-2 pl-3'
-                                    : 'text-foreground/50 hover:text-foreground'
-                                } ${!hasChildren ? 'ml-4' : ''}`}
-                                style={
-                                  isActiveLesson
-                                    ? {
-                                        color: 'var(--pt-primary-accent-hex, #B96A5F)',
-                                        borderLeftColor: 'var(--pt-primary-accent-hex, #B96A5F)',
-                                      }
-                                    : undefined
-                                }
-                              >
-                                {lessonCompleted ? (
-                                  <CheckCircle2 className="w-3.5 h-3.5 text-green-600 flex-shrink-0" />
-                                ) : (
-                                  <PlayCircle className="w-3.5 h-3.5 opacity-40 flex-shrink-0" />
-                                )}
-                                <span className="truncate">{lesson.title}</span>
-                              </button>
-                            </div>
-
-                            {hasChildren && isExpanded && (
-                              <div className="ml-6 pl-3 border-l border-neutral-200 space-y-1 mt-1">
-                                {childrenByParent[lesson.id].map((child) => {
-                                  const isChildActive = currentLesson?.id === child.id;
-                                  const childCompleted = isLessonCompleted(child.id);
-                                  return (
-                                    <button
-                                      key={child.id}
-                                      onClick={() => navigateToLesson(mod, child)}
-                                      className={`w-full flex items-center gap-2 py-1.5 px-2 rounded-lg text-xs transition-colors text-left ${
-                                        isChildActive
-                                          ? 'font-bold'
-                                          : 'text-foreground/50 hover:text-foreground'
-                                      }`}
-                                      style={
-                                        isChildActive
-                                          ? { color: 'var(--pt-primary-accent-hex, #B96A5F)' }
-                                          : undefined
-                                      }
-                                    >
-                                      {childCompleted ? (
-                                        <CheckCircle2 className="w-3.5 h-3.5 text-green-600 flex-shrink-0" />
-                                      ) : (
-                                        <PlayCircle className="w-3.5 h-3.5 opacity-40 flex-shrink-0" />
-                                      )}
-                                      <span className="truncate">{child.title}</span>
-                                    </button>
-                                  );
-                                })}
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  );
-                })()}
-              </div>
-            );
-          })}
-        </nav>
-
-        {/* Safety resources */}
-        <div className="px-4 pt-4 mt-auto">
-          <details className="group">
-            <summary className="flex items-center gap-2 px-4 py-2 text-foreground/40 hover:text-foreground/60 transition-colors cursor-pointer text-xs font-outfit uppercase tracking-widest list-none">
-              <HeartHandshake className="w-3.5 h-3.5" />
-              <span>Safety &amp; Support</span>
-            </summary>
-            <div className="px-4 pt-2 pb-3 space-y-2 text-xs text-foreground/50 font-sans leading-relaxed">
-              <p>
-                This program is educational, not clinical. It is not a substitute for professional therapy.
-              </p>
-              <p className="font-medium text-foreground/60">
-                If you or someone you know is in crisis:
-              </p>
-              <ul className="space-y-1.5">
-                <li>
-                  <strong>988</strong> Suicide &amp; Crisis Lifeline
-                </li>
-                <li>
-                  <strong>1-800-799-7233</strong> Domestic Violence Hotline
-                </li>
-                <li>
-                  Text <strong>HOME</strong> to <strong>741741</strong> Crisis Text Line
-                </li>
-              </ul>
-            </div>
-          </details>
-        </div>
-
-        {/* Bottom links */}
-        <div className="px-4 pt-2 pb-4 border-t border-neutral-200">
-          <button
-            onClick={() => navigate(basePath)}
-            className="flex items-center gap-3 px-4 py-3 text-foreground/60 hover:text-foreground transition-colors cursor-pointer text-sm font-medium w-full"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            <span>Back to Dashboard</span>
-          </button>
-          <button
-            onClick={() => navigate('/')}
-            className="mt-2 rounded-xl p-4 text-center w-full transition-all hover:opacity-90"
-            style={{ backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)' }}
-          >
-            <span
-              className="font-bold text-xs uppercase tracking-widest"
-              style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
-            >
-              Return to Site
-            </span>
-          </button>
-        </div>
-      </aside>
-
       {/* ── Main Content Area ──────────────────────────────── */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden" ref={contentRef}>
         {/* Top breadcrumb bar */}
         <header className="sticky top-0 z-30 flex justify-between items-center w-full px-4 sm:px-8 lg:px-12 py-4 sm:py-6 bg-background/80 backdrop-blur-md font-outfit text-sm tracking-wide border-b border-neutral-100">
           <div className="flex items-center gap-2 text-foreground/40 min-w-0">
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-2 text-foreground/50 hover:text-foreground mr-2"
-              aria-label="Open navigation"
-            >
-              <Menu className="w-5 h-5" />
-            </button>
             <span
               className="hover:text-foreground cursor-pointer transition-colors truncate"
               onClick={() =>
@@ -587,40 +339,306 @@ function LessonView({
               </div>
             )}
 
-            {/* Lesson header */}
-            <header className="mb-12 sm:mb-16 space-y-4" data-lesson-animate>
-              <span
-                className="font-bold text-sm uppercase tracking-[0.3em]"
-                style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+            {/* ── Lesson hero image (3.13 + A-09: photography-over-illustration) ── */}
+            {currentLesson?.hero_image_url ? (
+              <figure className="mb-10 -mx-4 sm:-mx-8 lg:-mx-12" data-lesson-animate>
+                <img
+                  src={currentLesson.hero_image_url}
+                  alt={currentLesson.hero_image_alt || currentLesson.title}
+                  className="w-full object-cover max-h-[480px]"
+                  loading="eager"
+                />
+                {currentLesson.hero_image_caption && (
+                  <figcaption
+                    className="mt-2 ps-4 sm:ps-8 lg:ps-12 text-sm font-outfit"
+                    style={{ color: 'var(--pt-text-muted-hex, #57534e)' }}
+                  >
+                    {currentLesson.hero_image_caption}
+                  </figcaption>
+                )}
+              </figure>
+            ) : (
+              // TODO A-09: slot awaits photographic asset
+              // (Trisha portraiture / course-thematic still at magazine scale
+              //  per §12.1 A-09 photography-over-illustration mandate).
+              null
+            )}
+
+            {/* Lesson header — Wave 7 editorial refinement: lighter Playfair weight,
+                tighter eyebrow, breath-room between title and subtitle */}
+            <header className="mb-10 sm:mb-12" data-lesson-animate>
+              <p
+                style={{
+                  fontFamily: '"Outfit", sans-serif',
+                  fontSize: 11,
+                  fontWeight: 600,
+                  letterSpacing: '0.24em',
+                  textTransform: 'uppercase',
+                  color: 'var(--pt-primary-accent-hex, #B96A5F)',
+                  margin: '0 0 18px',
+                }}
               >
                 Module {currentModule?.module_number}
                 {currentLesson?.parent_lesson_id && getParentLesson(currentLesson)
                   ? ` / ${getParentLesson(currentLesson).title}`
                   : ''}
-              </span>
+              </p>
               <h2
-                className="font-drama text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight"
-                style={{ color: 'var(--pt-text-primary-hex, #1c1917)' }}
+                style={{
+                  fontFamily: '"Playfair Display", Georgia, serif',
+                  fontWeight: 300,
+                  fontSize: 'clamp(38px, 5vw, 60px)',
+                  lineHeight: 1.06,
+                  letterSpacing: '-0.025em',
+                  color: 'var(--pt-text-primary-hex, #1c1917)',
+                  margin: 0,
+                }}
               >
                 {currentLesson?.title}
               </h2>
               {currentLesson?.content_json?.subtitle && (
-                <p className="text-foreground/40 font-outfit italic text-lg">
+                <p
+                  style={{
+                    fontFamily: '"Playfair Display", Georgia, serif',
+                    fontStyle: 'italic',
+                    fontWeight: 300,
+                    fontSize: 19,
+                    lineHeight: 1.55,
+                    color: 'var(--pt-text-muted-hex, #57534e)',
+                    margin: '18px 0 0',
+                    maxWidth: 640,
+                  }}
+                >
                   {currentLesson.content_json.subtitle}
                 </p>
               )}
+              {/* Decorative hairline rule — editorial separator, not a structural border */}
+              <div
+                aria-hidden="true"
+                style={{
+                  width: 64,
+                  height: 1,
+                  backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)',
+                  marginTop: 28,
+                  opacity: 0.4,
+                }}
+              />
             </header>
 
             {/* Lesson blocks */}
             <div
-              className="max-w-[65ch] space-y-10 text-foreground/80 leading-[1.8] text-lg"
+              className="max-w-[65ch] space-y-10 text-lg"
               data-lesson-animate
               data-lesson-content
+              style={{
+                color: 'var(--pt-text-primary-hex, #1c1917)',
+                lineHeight: 1.75,
+                fontFamily: '"Plus Jakarta Sans", sans-serif',
+              }}
             >
-              <LessonContent
-                contentJson={currentLesson?.content_json}
-                lessonId={currentLesson?.id}
-              />
+              {/* If content is missing entirely, show a quiet placeholder rather
+                  than a vast empty whitespace gap (Wave 7 fix for screenshot-09
+                  empty-content render). CRIT-03 fix: also catches content_json
+                  shapes where `blocks` is null/undefined (truthy outer object
+                  with subtitle/estimated_minutes but missing blocks array). */}
+              {(() => {
+                const blocks = currentLesson?.content_json?.blocks;
+                return (
+                  !currentLesson?.content_json ||
+                  !Array.isArray(blocks) ||
+                  blocks.length === 0
+                );
+              })() ? (
+                <p
+                  style={{
+                    fontFamily: '"Playfair Display", Georgia, serif',
+                    fontStyle: 'italic',
+                    fontWeight: 300,
+                    fontSize: 18,
+                    lineHeight: 1.6,
+                    color: 'var(--pt-text-quiet-hex, #a8a29e)',
+                    margin: 0,
+                  }}
+                >
+                  Lesson content is being prepared. Check back soon &mdash; or use the navigation below to continue.
+                </p>
+              ) : (
+                <LessonContent
+                  contentJson={(() => {
+                    // MED-07 fix: filter the leading `heading` block when its
+                    // content equals the lesson title. The hero already renders
+                    // the title as <h2>; LessonContent's HeadingBlock would
+                    // emit a second <h2> with the same text, which screen
+                    // readers + visual layout perceive as title/title
+                    // duplication. We strip ONLY the first block and only when
+                    // it matches — preserves intentional intra-content headings.
+                    const cj = currentLesson?.content_json;
+                    if (!cj || !Array.isArray(cj.blocks) || cj.blocks.length === 0) return cj;
+                    const first = cj.blocks[0];
+                    const titleNorm = (currentLesson?.title || '').trim().toLowerCase();
+                    const firstText = (first?.content || first?.text || '').trim().toLowerCase();
+                    if (first?.type === 'heading' && firstText && firstText === titleNorm) {
+                      return { ...cj, blocks: cj.blocks.slice(1) };
+                    }
+                    return cj;
+                  })()}
+                  lessonId={currentLesson?.id}
+                />
+              )}
+
+              {/* ── Axis F: Lessons-in-this-section ToC (parent-as-index pattern) ──
+                   When a parent-index lesson is the active route, list its
+                   sub-lessons below the curated intro blocks so users can
+                   navigate into the actual content. Empty list = no render. */}
+              {childLessons.length > 0 && (
+                <nav
+                  aria-label="Lessons in this section"
+                  style={{
+                    marginTop: 12,
+                    paddingTop: 28,
+                    borderTop: '1px solid var(--pt-border-soft-hex, #e7e5e4)',
+                  }}
+                >
+                  <p
+                    style={{
+                      fontFamily: '"Outfit", sans-serif',
+                      fontSize: 11,
+                      fontWeight: 600,
+                      letterSpacing: '0.24em',
+                      textTransform: 'uppercase',
+                      color: 'var(--pt-text-muted-hex, #57534e)',
+                      margin: '0 0 18px',
+                    }}
+                  >
+                    Lessons in this section
+                  </p>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 10 }}>
+                    {childLessons.map((child, i) => {
+                      const childCompleted = isLessonCompleted(child.id);
+                      const minutes = child.content_json?.estimated_minutes;
+                      return (
+                        <li key={child.id}>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              navigateToLesson(currentModule, child)
+                            }
+                            style={{
+                              width: '100%',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              gap: 16,
+                              padding: '14px 18px',
+                              borderRadius: 12,
+                              border: '1px solid var(--pt-border-soft-hex, #e7e5e4)',
+                              backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
+                              cursor: 'pointer',
+                              textAlign: 'start',
+                              transition: 'all 150ms ease',
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.borderColor =
+                                'var(--pt-primary-accent-hex, #B96A5F)';
+                              e.currentTarget.style.boxShadow =
+                                '0 1px 0 rgba(28,25,23,0.02), 0 14px 30px -22px rgba(28,25,23,0.16)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.borderColor =
+                                'var(--pt-border-soft-hex, #e7e5e4)';
+                              e.currentTarget.style.boxShadow = 'none';
+                            }}
+                          >
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 14, minWidth: 0 }}>
+                              <span
+                                aria-hidden="true"
+                                style={{
+                                  flexShrink: 0,
+                                  fontFamily: '"Outfit", sans-serif',
+                                  fontSize: 11,
+                                  fontWeight: 700,
+                                  letterSpacing: '0.18em',
+                                  color: childCompleted
+                                    ? 'var(--pt-text-quiet-hex, #a8a29e)'
+                                    : 'var(--pt-primary-accent-hex, #B96A5F)',
+                                  minWidth: 28,
+                                }}
+                              >
+                                {String(i + 1).padStart(2, '0')}
+                              </span>
+                              <span
+                                style={{
+                                  fontFamily: '"Plus Jakarta Sans", sans-serif',
+                                  fontSize: 15,
+                                  fontWeight: 500,
+                                  color: 'var(--pt-text-primary-hex, #1c1917)',
+                                  textDecoration: childCompleted ? 'line-through' : 'none',
+                                  textDecorationColor: 'var(--pt-text-quiet-hex, #a8a29e)',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap',
+                                }}
+                              >
+                                {child.title}
+                              </span>
+                            </span>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+                              {minutes && (
+                                <span
+                                  style={{
+                                    fontFamily: '"Outfit", sans-serif',
+                                    fontSize: 11,
+                                    color: 'var(--pt-text-quiet-hex, #a8a29e)',
+                                  }}
+                                >
+                                  {minutes} min
+                                </span>
+                              )}
+                              <ChevronRight
+                                className="w-4 h-4"
+                                style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+                              />
+                            </span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </nav>
+              )}
+
+              {/* ── Caption/transcript slot (3.14: progressive <details>, i18n-safe) ── */}
+              {currentLesson?.content_json?.transcript && (
+                <details
+                  className="pt-4"
+                  style={{ borderTop: '1px solid var(--pt-border-soft-hex, #e7e5e4)' }}
+                >
+                  <summary
+                    className="cursor-pointer"
+                    style={{
+                      fontFamily: '"Outfit", sans-serif',
+                      fontSize: 12,
+                      fontWeight: 600,
+                      letterSpacing: '0.18em',
+                      textTransform: 'uppercase',
+                      color: 'var(--pt-text-muted-hex, #57534e)',
+                    }}
+                  >
+                    Transcript
+                  </summary>
+                  <div
+                    className="mt-4"
+                    style={{
+                      fontFamily: '"Plus Jakarta Sans", sans-serif',
+                      fontSize: 16,
+                      lineHeight: 1.65,
+                      color: 'var(--pt-text-primary-hex, #1c1917)',
+                    }}
+                  >
+                    <p>{currentLesson.content_json.transcript}</p>
+                  </div>
+                </details>
+              )}
             </div>
           </article>
 
@@ -709,6 +727,7 @@ function LessonView({
       position={selection ? { top: selection.rect.top, left: selection.rect.left, width: selection.rect.width } : null}
       onColor={handleColor}
       onNote={handleNoteFromSelection}
+      onJournal={handleJournalFromSelection}
       onDismiss={() => setSelection(null)}
     />
     <NoteDrawer
@@ -718,6 +737,33 @@ function LessonView({
       onClose={() => setActiveNote(null)}
       onDelete={activeNote ? handleNoteDelete : undefined}
     />
+
+    {/* Wave 9 E6: journal-quick-capture confirmation toast */}
+    {journalToast && (
+      <div
+        role="status"
+        aria-live="polite"
+        style={{
+          position: 'fixed',
+          bottom: 24,
+          insetInlineEnd: 24,
+          zIndex: 60,
+          padding: '10px 16px',
+          borderRadius: 10,
+          backgroundColor:
+            journalToast.kind === 'err'
+              ? 'var(--pt-text-primary-hex, #1c1917)'
+              : 'var(--pt-text-primary-hex, #1c1917)',
+          color: 'var(--pt-text-inverse-hex, #fafaf9)',
+          boxShadow: '0 6px 20px rgba(28,25,23,0.20)',
+          fontFamily: '"Outfit", sans-serif',
+          fontSize: 13,
+          fontWeight: 500,
+        }}
+      >
+        {journalToast.message}
+      </div>
+    )}
     </>
   );
 }

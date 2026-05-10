@@ -1,71 +1,120 @@
 /**
- * CalendarDrawer — Book a Session + Upcoming + Timeline Challenges stub
+ * CalendarDrawer — pure sub-tab navigation (Wave 9 architectural pivot).
  *
- * Spec: wave3-drawer-content-specs §6
- * - Cal.com POPUP (not iframe); v1 uses a STUB button per brief (Slice 6 wires live)
- * - No live Cal.com embed in this slice (hard constraint from dispatch brief)
+ * Wave 9 E4: 7-day strip with expandable per-day detail + booking button stub
+ * REMOVED. Drawer is now an Upcoming-events list with Link-routed items.
+ * Booking + day-detail UI lives on the main /portal/calendar page.
+ *
+ * Spec amendment: see ./reports/wave-9-spec-amendment.md
+ *
+ * 3.18: inline-start/inline-end logical properties.
  */
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { DrawerShell, DrawerSection, EmptyState } from './DrawerShell';
 import { getTypeStyle } from '../design/typography';
 
+const DAY_ABBREV = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+function UpcomingDayRow({ date, isToday }) {
+  const iso = date.toISOString().slice(0, 10);
+  const dayLabel = `${DAY_ABBREV[date.getDay()]} ${date.toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+  })}`;
+  return (
+    <Link
+      to={{
+        pathname: '/portal/calendar',
+        search: `?date=${encodeURIComponent(iso)}`,
+      }}
+      className="flex items-center gap-3 w-full px-3 py-1.5 rounded-lg"
+      style={{
+        ...getTypeStyle('body'),
+        color: 'var(--pt-text-primary-hex, #1c1917)',
+        backgroundColor: 'transparent',
+        textDecoration: 'none',
+      }}
+      onMouseEnter={(e) =>
+        (e.currentTarget.style.backgroundColor = 'var(--pt-drawer-hover-hex, #a8a29e)')
+      }
+      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+    >
+      <span
+        aria-hidden="true"
+        style={{
+          ...getTypeStyle('caption'),
+          color: isToday
+            ? 'var(--pt-primary-accent-hex, #B96A5F)'
+            : 'var(--pt-text-muted-hex, #57534e)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em',
+          minWidth: 56,
+        }}
+      >
+        {isToday ? 'Today' : dayLabel}
+      </span>
+      <span
+        className="flex-1"
+        style={{
+          ...getTypeStyle('caption'),
+          color: 'var(--pt-text-muted-hex, #57534e)',
+        }}
+      >
+        No events
+      </span>
+    </Link>
+  );
+}
+
 export default function CalendarDrawer() {
-  // Coming-soon stub CTA per brief: "CalendarDrawer uses a stub 'Coming soon'
-  // for the CTA until Slice 6 is explicitly dispatched."
-  const handleBook = () => {
-    // eslint-disable-next-line no-alert
-    window.alert('Session booking launches with Slice 6. Coming soon.');
-  };
+  // 7-day strip — stub data; live wiring deferred. Click navigates to
+  // /portal/calendar?date=<iso> for detail + booking on the main page.
+  const today = new Date();
+  const days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
+    return d;
+  });
+
+  const hasEvents = false; // stub: future hook supplies real events
 
   return (
-    <DrawerShell title="Calendar" ariaContext="Calendar">
-      <div className="px-3 py-3">
-        <button
-          type="button"
-          onClick={handleBook}
-          style={{
-            ...getTypeStyle('body', 'semibold'),
-            width: '100%',
-            padding: '10px 14px',
-            borderRadius: 12,
-            border: 'none',
-            backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)',
-            color: 'var(--pt-text-inverse-hex, #fafaf9)',
-            cursor: 'pointer',
-          }}
-        >
-          Book a Session
-        </button>
-        <p
-          style={{
-            ...getTypeStyle('meta'),
-            color: 'var(--pt-text-muted-hex, #57534e)',
-            marginTop: 6,
-          }}
-        >
-          Cal.com popup launches Slice 6 — stub active.
-        </p>
-      </div>
-
+    <DrawerShell title="Calendar" ariaContext="Calendar" drawerId="calendar">
       <DrawerSection label="Upcoming">
-        <EmptyState
-          icon="📅"
-          message="No upcoming sessions"
-          sub="[Trisha-voice placeholder: Extra time with your guide can change the whole trajectory.]"
-        />
-      </DrawerSection>
-
-      <DrawerSection label="Coming Soon" defaultOpen={false}>
-        <div
-          className="px-3 py-2"
-          style={{
-            ...getTypeStyle('caption'),
-            color: 'var(--pt-text-muted-hex, #57534e)',
-          }}
-        >
-          🏆 Timeline Challenges — 90-day rebuild, 14-day spark, and more.
-        </div>
+        {hasEvents ? (
+          <div>
+            {days.map((d, i) => (
+              <UpcomingDayRow
+                key={d.toISOString()}
+                date={d}
+                isToday={i === 0}
+              />
+            ))}
+          </div>
+        ) : (
+          <EmptyState
+            icon="📅"
+            message="No upcoming sessions"
+            sub="Open the calendar to book time with your guide."
+            cta={
+              <Link
+                to="/portal/calendar"
+                style={{
+                  ...getTypeStyle('caption', 'medium'),
+                  padding: '6px 14px',
+                  borderRadius: 999,
+                  backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)',
+                  color: 'var(--pt-text-inverse-hex, #fafaf9)',
+                  textDecoration: 'none',
+                }}
+              >
+                Open Calendar
+              </Link>
+            }
+          />
+        )}
       </DrawerSection>
     </DrawerShell>
   );

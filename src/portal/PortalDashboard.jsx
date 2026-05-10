@@ -17,6 +17,8 @@ import { getActiveCourses } from '../lib/courses';
 import { useAuth } from '../contexts/AuthContext';
 import { useMockupMode } from './mockup/useMockupMode';
 import DashboardHero from './mockup/DashboardHero';
+import ConsentCluster from './components/ConsentCluster';
+import JournalPrompt from './components/JournalPrompt';
 
 /**
  * Portal Dashboard — personalized welcome, journey progress, module library.
@@ -155,36 +157,97 @@ function PortalDashboard({
 
   return (
     <div ref={containerRef} className="pb-24 px-4 sm:px-8 max-w-7xl mx-auto flex flex-col gap-8">
-      {/* ── Welcome Header (D10: neutral surface, single accent moment) ─ */}
+      {/* ── Editorial Hero (3.2 magazine-stack, 3.1 no card chrome) ────── */}
+      {/* 3.15: Restorative register — lighter serif weight on Dashboard     */}
       <section
-        className="relative rounded-3xl overflow-hidden pt-6 p-8 sm:p-12 min-h-[200px] flex flex-col justify-center"
-        style={{ backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)' }}
+        className="relative pt-8 pb-6"
+        style={{ backgroundColor: 'var(--pt-content-bg-hex, #f5f5f4)' }}
         data-animate
+        aria-label="Welcome"
       >
-        <div className="relative z-10 max-w-3xl">
-          <h1 className="font-drama text-4xl sm:text-5xl md:text-6xl text-foreground leading-tight tracking-tight mb-6">
-            Welcome back to your Sanctuary,{' '}
+        {/* ── A-09: Hero-image slot. TODO: replace gradient placeholder with   */}
+        {/*    photographic asset — Trisha portraiture or course-stills per A-09 */}
+        {/*    (photography-over-illustration mandate; gradient is NOT spec-compliant */}
+        {/*    default but unblocks build until Trisha assets are available).         */}
+        <div className="max-w-3xl">
+          <p
+            style={{
+              fontFamily: '"Outfit", sans-serif',
+              fontSize: 12,
+              fontWeight: 600,
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              color: 'var(--pt-text-muted-hex, #57534e)',
+              margin: '0 0 18px',
+            }}
+          >
+            Your sanctuary
+          </p>
+          {/* 3.15 restorative: fontWeight 300 (lighter than Module action register) */}
+          <h1
+            style={{
+              fontFamily: '"Playfair Display", Georgia, serif',
+              fontWeight: 300,
+              fontSize: 'clamp(40px, 5vw, 60px)',
+              lineHeight: 1.07,
+              letterSpacing: '-0.02em',
+              color: 'var(--pt-text-primary-hex, #1c1917)',
+              margin: '0 0 14px',
+            }}
+          >
+            Welcome back,{' '}
             <span
-              className="italic"
-              style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+              style={{
+                fontStyle: 'italic',
+                color: 'var(--pt-primary-accent-hex, #B96A5F)',
+              }}
             >
               {firstName}
             </span>
+            .
           </h1>
-          <div className="flex items-start gap-4 text-foreground/60 italic font-drama text-lg sm:text-xl">
-            <Quote
-              className="w-6 h-6 flex-shrink-0 mt-1"
-              style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
-            />
-            <p className="max-w-xl">
-              &ldquo;The wound is the place where the Light enters you. Let us tend to the garden of your heart today.&rdquo;
-            </p>
-          </div>
+          <p
+            style={{
+              fontFamily: '"Playfair Display", Georgia, serif',
+              fontStyle: 'italic',
+              fontWeight: 300,
+              fontSize: 18,
+              lineHeight: 1.55,
+              color: 'var(--pt-text-muted-hex, #57534e)',
+              margin: '0 0 32px',
+              maxWidth: 520,
+            }}
+          >
+            Take a breath. You&rsquo;ve picked this up again, and that&rsquo;s the whole practice.
+          </p>
+
+          {/* ── ConsentCluster (3.1, A-11) — enrolled + admin only ─────── */}
+          {canAccessContent && (
+            <>
+              <ConsentCluster
+                onPickUp={() =>
+                  nextLesson
+                    ? goToLesson(activeModule, nextLesson)
+                    : activeModule
+                    ? goToModule(activeModule)
+                    : null
+                }
+                onStartNew={() => {
+                  const el = document.getElementById('module-library');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+              />
+              {/* ── JournalPrompt (3.23, A-12) ──────────────────────── */}
+              <div style={{ marginTop: 28 }}>
+                <JournalPrompt />
+              </div>
+            </>
+          )}
         </div>
       </section>
 
       {/* ── Quick Links ─────────────────────────────────────── */}
-      <section className="flex flex-wrap gap-3" data-animate>
+      <section className="flex flex-wrap gap-3 -mt-2" data-animate>
         <Link
           to="/portal/downloads"
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors hover:opacity-80"
@@ -205,48 +268,6 @@ function PortalDashboard({
         If you are in crisis, please call <strong className="text-foreground/40">988</strong> (Suicide &amp; Crisis Lifeline) or <strong className="text-foreground/40">1-800-799-7233</strong> (Domestic Violence Hotline).
       </p>
 
-      {/* ── Your Healing Journey Stats (flat typography per D4) ─────── */}
-      <section className="py-6" data-animate>
-        <h2 className="text-2xl font-semibold text-foreground mb-6">Your Healing Journey</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {[
-            { value: completedLessons, label: 'Lessons Completed' },
-            {
-              value: completedModules > 0 ? completedModules : completedLessons > 0 ? '…' : '0',
-              label: completedModules > 0 ? 'Modules Completed' : completedLessons > 0 ? 'Module In Progress' : 'Modules Completed',
-            },
-            { value: totalLessons, label: 'Total Lessons' },
-            { value: `${overallProgress}%`, label: 'Overall Progress' },
-          ].map(({ value, label }) => (
-            <div key={label} className="flex flex-col gap-1">
-              <span
-                style={{
-                  fontSize: '28px',
-                  lineHeight: 1,
-                  fontWeight: 600,
-                  fontFamily: '"Outfit", "Plus Jakarta Sans", sans-serif',
-                  letterSpacing: '-0.02em',
-                  color: 'var(--pt-text-primary-hex, #1c1917)',
-                }}
-              >
-                {value}
-              </span>
-              <span
-                style={{
-                  fontSize: '13px',
-                  lineHeight: 1.45,
-                  fontWeight: 400,
-                  fontFamily: '"Plus Jakarta Sans", system-ui, sans-serif',
-                  letterSpacing: '0.02em',
-                  color: 'var(--pt-text-muted-hex, #57534e)',
-                }}
-              >
-                {label}
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
 
       {/* ── My Courses (multi-course catalog) ─────────────── */}
       {availableCourses.length > 1 && (
@@ -261,7 +282,10 @@ function PortalDashboard({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {availableCourses.map((c) => {
               // Enrollment-aware routing: owned → first module, unowned → purchase page.
-              const isEnrolled = enrolledCourseIds.has(c.id);
+              // Admins are treated as enrolled in everything (migration 033 backfills
+              // enrollment rows; this is the UI-side belt-and-suspenders guard for
+              // any admin whose row is briefly missing between role flip and trigger).
+              const isEnrolled = isAdmin || enrolledCourseIds.has(c.id);
 
               let destination;
               if (isEnrolled) {
@@ -467,10 +491,70 @@ function PortalDashboard({
         </div>
       </section>
 
+      {/* ── How are you feeling? — Trisha framework router (Wave 9 E2 migration) ──
+          Per Wave 9 architectural pivot (drawer = pure nav), the mood pills
+          previously rendered in HomeDrawer now live on the Sanctuary main page.
+          They route to /portal/rescue-kit which is built. */}
+      {canAccessContent && (
+        <section data-animate aria-label="How are you feeling?">
+          <p
+            style={{
+              fontFamily: '"Outfit", sans-serif',
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              color: 'var(--pt-text-muted-hex, #57534e)',
+              margin: '0 0 12px',
+            }}
+          >
+            How are you feeling?
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {[
+              { id: 'flooded', label: 'Flooded' },
+              { id: 'disconnected', label: 'Disconnected' },
+              { id: 'hurt', label: 'Hurt' },
+              { id: 'shutdown', label: 'Shut Down' },
+              { id: 'reactive', label: 'Reactive' },
+            ].map((f) => (
+              <Link
+                key={f.id}
+                to="/portal/rescue-kit"
+                style={{
+                  fontFamily: '"Outfit", sans-serif',
+                  fontSize: 13,
+                  fontWeight: 500,
+                  padding: '8px 16px',
+                  borderRadius: 9999,
+                  backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)',
+                  color: 'var(--pt-text-primary-hex, #1c1917)',
+                  textDecoration: 'none',
+                  border: '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
+                  transition: 'all 150ms cubic-bezier(0.19,1,0.22,1)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    'var(--pt-primary-accent-hex, #B96A5F)';
+                  e.currentTarget.style.color = '#fafaf9';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    'var(--pt-elevation-1-hex, #e7e5e4)';
+                  e.currentTarget.style.color =
+                    'var(--pt-text-primary-hex, #1c1917)';
+                }}
+              >
+                {f.label}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
 
       {/* ── Module Library ─────────────────────────────────── */}
-      <section data-animate>
+      <section id="module-library" data-animate>
         <div className="flex justify-between items-end mb-10">
           <div>
             <h2 className="font-drama text-3xl mb-2 text-foreground">Explore the Library</h2>
@@ -478,18 +562,42 @@ function PortalDashboard({
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {course?.modules?.map((mod) => {
+          {course?.modules?.map((mod, idx) => {
             const modProgress = (mod.is_preview || canAccessContent) ? getModuleProgress(mod) : 0;
             const isLocked = !mod.is_preview && !canAccessContent;
 
+            // Wave 7 design pass — module-cipher treatment.
+            // Large display numeral as visual anchor, subtle warm-cream surface,
+            // accent-coral progress dot replacing the prior flat banner block.
+            // LOW-08 fix: derive cipher from sort-order index, not module_number.
+            // Module rows like "module-f" (legacy data garbage; recommend DELETE
+            // via reports/module-f-cleanup.sql) used to render "0F" because the
+            // module_number string contained a hex letter. Index is robust.
+            const numeral = String(idx + 1).padStart(2, '0');
             return (
-              <div
+              <article
                 key={mod.id}
-                className={`group bg-white rounded-2xl overflow-hidden shadow-[0_4px_20px_-4px_rgba(7,58,71,0.08)] transition-all duration-200 ${
+                className={`group relative rounded-2xl overflow-hidden transition-all duration-200 ${
                   !isLocked
-                    ? 'cursor-pointer hover:shadow-[0_8px_30px_-4px_rgba(7,58,71,0.12)] hover:scale-[1.02]'
-                    : 'opacity-60'
+                    ? 'cursor-pointer hover:-translate-y-0.5'
+                    : 'opacity-55'
                 }`}
+                style={{
+                  backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
+                  border: '1px solid var(--pt-border-soft-hex, #e7e5e4)',
+                  boxShadow: '0 1px 0 rgba(28, 25, 23, 0.02)',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isLocked) {
+                    e.currentTarget.style.boxShadow =
+                      '0 1px 0 rgba(28, 25, 23, 0.02), 0 18px 40px -22px rgba(28, 25, 23, 0.14)';
+                    e.currentTarget.style.borderColor = 'var(--pt-primary-accent-hex, #B96A5F)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = '0 1px 0 rgba(28, 25, 23, 0.02)';
+                  e.currentTarget.style.borderColor = 'var(--pt-border-soft-hex, #e7e5e4)';
+                }}
                 onClick={() => !isLocked && goToModule(mod)}
                 onKeyDown={(e) => {
                   if (!isLocked && (e.key === 'Enter' || e.key === ' ')) {
@@ -501,19 +609,45 @@ function PortalDashboard({
                 role="button"
                 aria-label={`Module ${mod.module_number}: ${mod.title}${isLocked ? ' - Locked' : ''}`}
               >
-                {/* D10: neutral banner, no teal gradient. Single accent stripe marks module. */}
+                {/* Editorial cipher zone — large numeral, subtle horizon stripe */}
                 <div
-                  className="h-40 relative flex items-end p-6"
+                  className="relative h-32 overflow-hidden"
                   style={{
-                    backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)',
-                    borderBottom: '2px solid var(--pt-primary-accent-hex, #B96A5F)',
+                    backgroundColor: 'var(--pt-elevation-warm-hex, #faf7f2)',
+                    borderBottom: '1px solid var(--pt-border-soft-hex, #e7e5e4)',
                   }}
                 >
+                  {/* Display numeral — Playfair italic, wedged into top-right */}
                   <span
-                    className="px-3 py-1 rounded-full text-[10px] font-outfit font-bold uppercase tracking-wider"
+                    aria-hidden="true"
                     style={{
-                      backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
-                      color: 'var(--pt-text-primary-hex, #1c1917)',
+                      position: 'absolute',
+                      right: 18,
+                      top: -8,
+                      fontFamily: '"Playfair Display", Georgia, serif',
+                      fontStyle: 'italic',
+                      fontWeight: 300,
+                      fontSize: 120,
+                      lineHeight: 1,
+                      letterSpacing: '-0.04em',
+                      color: 'var(--pt-elevation-1-hex, #e7e5e4)',
+                      userSelect: 'none',
+                      transition: 'color 200ms ease',
+                    }}
+                    className="group-hover:text-[var(--pt-primary-accent-soft-hex,rgba(185,106,95,0.12))]"
+                  >
+                    {numeral}
+                  </span>
+                  {/* Eyebrow chip — bottom-left of cipher zone */}
+                  <span
+                    className="absolute bottom-4 left-5"
+                    style={{
+                      fontFamily: '"Outfit", sans-serif',
+                      fontSize: 10,
+                      fontWeight: 600,
+                      letterSpacing: '0.22em',
+                      textTransform: 'uppercase',
+                      color: 'var(--pt-text-muted-hex, #57534e)',
                     }}
                   >
                     Module {mod.module_number}
@@ -521,33 +655,62 @@ function PortalDashboard({
                   {isLocked && (
                     <div className="absolute top-4 right-4">
                       <Lock
-                        className="w-5 h-5"
-                        style={{ color: 'var(--pt-text-muted-hex, #57534e)' }}
+                        className="w-4 h-4"
+                        style={{ color: 'var(--pt-text-quiet-hex, #a8a29e)' }}
                       />
                     </div>
                   )}
                 </div>
                 <div className="p-6">
-                  <h3 className="font-outfit text-lg font-semibold mb-2 transition-colors">
+                  <h3
+                    style={{
+                      fontFamily: '"Playfair Display", Georgia, serif',
+                      fontWeight: 400,
+                      fontSize: 22,
+                      lineHeight: 1.18,
+                      letterSpacing: '-0.01em',
+                      color: 'var(--pt-text-primary-hex, #1c1917)',
+                      margin: '0 0 10px',
+                    }}
+                  >
                     {mod.title}
                   </h3>
-                  <p className="text-sm text-foreground/50 mb-4 line-clamp-2 leading-relaxed">
+                  <p
+                    className="line-clamp-2"
+                    style={{
+                      fontFamily: '"Plus Jakarta Sans", sans-serif',
+                      fontSize: 13.5,
+                      lineHeight: 1.55,
+                      color: 'var(--pt-text-muted-hex, #57534e)',
+                      margin: '0 0 18px',
+                    }}
+                  >
                     {mod.description || 'Explore this module to begin your journey.'}
                   </p>
 
                   {/* Progress bar for accessible modules */}
                   {!isLocked && modProgress > 0 && (
                     <div className="mb-3">
-                      <div className="flex justify-between text-xs text-foreground/40 mb-1">
+                      <div
+                        className="flex justify-between mb-1.5"
+                        style={{
+                          fontFamily: '"Outfit", sans-serif',
+                          fontSize: 10,
+                          fontWeight: 600,
+                          letterSpacing: '0.16em',
+                          textTransform: 'uppercase',
+                          color: 'var(--pt-text-muted-hex, #57534e)',
+                        }}
+                      >
                         <span>Progress</span>
                         <span>{modProgress}%</span>
                       </div>
                       <div
-                        className="h-1 w-full rounded-full overflow-hidden"
-                        style={{ backgroundColor: 'var(--pt-border-subtle-hex, #d6d3d1)' }}
+                        className="h-[2px] w-full overflow-hidden"
+                        style={{ backgroundColor: 'var(--pt-border-soft-hex, #e7e5e4)' }}
                       >
                         <div
-                          className="h-full rounded-full transition-all duration-500"
+                          className="h-full transition-all duration-500"
                           style={{
                             width: `${modProgress}%`,
                             backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)',
@@ -557,7 +720,15 @@ function PortalDashboard({
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between text-xs text-foreground/40">
+                  <div
+                    className="flex items-center justify-between"
+                    style={{
+                      fontFamily: '"Outfit", sans-serif',
+                      fontSize: 11,
+                      letterSpacing: '0.06em',
+                      color: 'var(--pt-text-quiet-hex, #a8a29e)',
+                    }}
+                  >
                     <span>{mod.lessons?.length || 0} Lessons</span>
                     {!isLocked && (
                       <ChevronRight
@@ -567,9 +738,93 @@ function PortalDashboard({
                     )}
                   </div>
                 </div>
-              </div>
+              </article>
             );
           })}
+        </div>
+      </section>
+
+      {/* ── Journey Stats strip (3.9 — below-fold, demoted, small footprint) */}
+      {/* Not in hero; renders after module library so it appears below-fold.  */}
+      <section
+        data-animate
+        style={{
+          padding: '24px 28px',
+          borderRadius: 14,
+          background: 'var(--pt-elevation-1-hex, #e7e5e4)',
+          border: `1px solid var(--pt-border-subtle-hex, #d6d3d1)`,
+          display: 'flex',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 32,
+        }}
+        aria-label="Journey progress (quiet stats)"
+      >
+        <div>
+          <p
+            style={{
+              fontFamily: '"Outfit", sans-serif',
+              fontSize: 10,
+              fontWeight: 600,
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              color: 'var(--pt-text-muted-hex, #57534e)',
+              margin: 0,
+              marginBottom: 3,
+            }}
+          >
+            Your quiet progress
+          </p>
+          <p
+            style={{
+              fontFamily: '"Playfair Display", Georgia, serif',
+              fontStyle: 'italic',
+              fontWeight: 300,
+              fontSize: 14,
+              color: 'var(--pt-text-muted-hex, #57534e)',
+              margin: 0,
+            }}
+          >
+            No leaderboards. No streaks. Just steps.
+          </p>
+        </div>
+        <div style={{ display: 'flex', gap: 36, flexWrap: 'wrap' }}>
+          {[
+            { value: completedLessons, label: 'Lessons' },
+            {
+              value: completedModules > 0 ? completedModules : completedLessons > 0 ? '…' : '0',
+              label: 'Modules',
+            },
+            { value: totalLessons, label: 'Total' },
+            { value: `${overallProgress}%`, label: 'Overall' },
+          ].map(({ value, label }) => (
+            <div key={label} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <span
+                style={{
+                  fontFamily: '"Outfit", sans-serif',
+                  fontWeight: 600,
+                  fontSize: 20,
+                  letterSpacing: '-0.01em',
+                  lineHeight: 1.1,
+                  color: 'var(--pt-text-primary-hex, #1c1917)',
+                }}
+              >
+                {value}
+              </span>
+              <span
+                style={{
+                  fontFamily: '"Outfit", sans-serif',
+                  fontSize: 10,
+                  fontWeight: 500,
+                  letterSpacing: '0.14em',
+                  textTransform: 'uppercase',
+                  color: 'var(--pt-text-muted-hex, #57534e)',
+                }}
+              >
+                {label}
+              </span>
+            </div>
+          ))}
         </div>
       </section>
     </div>

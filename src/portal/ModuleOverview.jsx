@@ -66,29 +66,64 @@ function ModuleOverview({
     isLessonCompleted(l.id)
   ).length || 0;
 
-  // Build timeline lesson list
+  // Build timeline lesson list — Axis F (2026-05-10):
+  // Modules 1+2 use parent-as-index pattern (migration 022). Parent rows have
+  // intentionally minimal 2-block content_json acting as INDEX PAGES; real
+  // content lives in 24+20 = 44 sub-lessons (sort_order 101+, 201+, …).
+  // Previously this filter was `!l.parent_lesson_id` only, so users only ever
+  // saw parent indexes and never the sub-lessons. We now render a flat
+  // chronological list using the lesson order from useCourseData (which
+  // already orders by sort_order), letting parents appear as section headers
+  // and sub-lessons underneath as indented entries.
   const timelineLessons = useMemo(() => {
     if (!currentModule?.lessons) return [];
-    // Only top-level lessons (no children) for the timeline
-    const topLevel = currentModule.lessons.filter((l) => !l.parent_lesson_id);
     let foundIncomplete = false;
 
-    return topLevel.map((lesson) => {
+    // Group by parent → render parents in document order, then immediately
+    // their children (indent flag carries through to render).
+    const parents = currentModule.lessons.filter((l) => !l.parent_lesson_id);
+    const childrenByParent = new Map();
+    currentModule.lessons.forEach((l) => {
+      if (l.parent_lesson_id) {
+        const arr = childrenByParent.get(l.parent_lesson_id) || [];
+        arr.push(l);
+        childrenByParent.set(l.parent_lesson_id, arr);
+      }
+    });
+
+    const flat = [];
+    parents.forEach((parent, parentIdx) => {
+      const kids = (childrenByParent.get(parent.id) || []).slice().sort(
+        (a, b) => a.sort_order - b.sort_order
+      );
+      // Parent label: "1.1" style (module.parentIdx+1)
+      flat.push({
+        ...parent,
+        isParent: true,
+        hasChildren: kids.length > 0,
+        label: `${currentModule.module_number}.${parentIdx + 1}`,
+      });
+      kids.forEach((kid, kidIdx) => {
+        flat.push({
+          ...kid,
+          isParent: false,
+          isChild: true,
+          // Child label: "1.1.1" — preserves hierarchy in UI
+          label: `${currentModule.module_number}.${parentIdx + 1}.${kidIdx + 1}`,
+        });
+      });
+    });
+
+    return flat.map((lesson) => {
       const completed = isLessonCompleted(lesson.id);
       let status = 'locked';
-
       if (completed) {
         status = 'completed';
       } else if (!foundIncomplete) {
         status = 'in-progress';
         foundIncomplete = true;
       }
-
-      return {
-        ...lesson,
-        status,
-        label: `${currentModule.module_number}.${lesson.sort_order}`,
-      };
+      return { ...lesson, status };
     });
   }, [currentModule, isLessonCompleted]);
 
@@ -143,41 +178,145 @@ function ModuleOverview({
 
   return (
     <div ref={containerRef} className="flex-1 overflow-y-auto">
-      {/* ── Hero Header ────────────────────────────────────── */}
+      {/* ── Hero Header (3.13 hero-image slot, 3.15 action register, 3.16 rotation) */}
+      {/* 3.15: action register — heavier serif weight vs Dashboard restorative      */}
+      {/* 3.16: rotation lifecycle — GSAP entrance re-fires on currentModule?.id     */}
       <section
-        className="relative rounded-3xl overflow-hidden mb-12 mx-4 sm:mx-8 mt-4 p-8 sm:p-12 min-h-[280px] flex flex-col justify-center"
-        style={{ backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)' }}
+        className="relative mb-12 mx-4 sm:mx-8 mt-4"
         data-animate
+        aria-label={`Module ${currentModule.module_number}: ${currentModule.title}`}
       >
-        {/* Signature-moment terracotta stripe */}
+        {/* 2px terracotta top accent (section-identity channel per 3.8-rev) */}
         <div
-          className="absolute top-0 left-0 right-0 h-1"
-          style={{ backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+          style={{ height: 2, background: 'var(--pt-primary-accent-hex, #B96A5F)' }}
           aria-hidden="true"
         />
-        <div className="relative z-10">
-          <button
-            onClick={goBackToDashboard}
-            className="inline-flex items-center gap-2 font-outfit text-xs font-bold tracking-widest uppercase mb-6 hover:gap-3 transition-all"
-            style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+
+        {/* Magazine-stack 2-col: text (left) + hero-image slot (right) */}
+        {/* Mobile: single-col stack. sm+(≥640px): 2-col original layout */}
+        <div
+          className="grid grid-cols-1 sm:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]"
+          style={{
+            gap: 40,
+            alignItems: 'stretch',
+            background: 'var(--pt-elevation-1-hex, #e7e5e4)',
+            padding: '40px 44px',
+          }}
+        >
+          {/* ── Text column ─────────────────────────────── */}
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <button
+              onClick={goBackToDashboard}
+              className="inline-flex items-center gap-2 font-outfit text-xs font-bold tracking-widest uppercase mb-6 hover:gap-3 transition-all"
+              style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)', alignSelf: 'flex-start' }}
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Return to Dashboard
+            </button>
+
+            {/* 3.15 action register: fontWeight 500 (heavier than Dashboard 300) */}
+            <p
+              style={{
+                fontFamily: '"Outfit", sans-serif',
+                fontSize: 12,
+                fontWeight: 700,
+                letterSpacing: '0.3em',
+                textTransform: 'uppercase',
+                color: 'var(--pt-primary-accent-hex, #B96A5F)',
+                margin: '0 0 16px',
+              }}
+            >
+              Module {currentModule.module_number}
+            </p>
+            <h1
+              style={{
+                fontFamily: '"Playfair Display", Georgia, serif',
+                fontWeight: 500,
+                fontStyle: 'italic',
+                fontSize: 'clamp(36px, 4.5vw, 54px)',
+                lineHeight: 1.07,
+                letterSpacing: '-0.02em',
+                color: 'var(--pt-text-primary-hex, #1c1917)',
+                margin: '0 0 20px',
+              }}
+            >
+              {currentModule.title}
+            </h1>
+            <p
+              style={{
+                fontFamily: '"Plus Jakarta Sans", system-ui, sans-serif',
+                fontSize: 16,
+                lineHeight: 1.6,
+                color: 'var(--pt-text-muted-hex, #57534e)',
+                margin: '0 0 24px',
+                maxWidth: 440,
+              }}
+            >
+              {currentModule.description ||
+                'Explore the lessons within this module to continue your healing journey.'}
+            </p>
+
+            {/* Quiet progress line (no ring — ring creates anxiety, per ModuleHero mockup) */}
+            <p
+              style={{
+                fontFamily: '"Outfit", sans-serif',
+                fontSize: 12,
+                fontWeight: 500,
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                color: 'var(--pt-text-muted-hex, #57534e)',
+                margin: 0,
+              }}
+            >
+              {completedLessons} of {totalLessons} lessons complete
+            </p>
+          </div>
+
+          {/* ── Hero-image slot (3.13, A-09) ─────────────────── */}
+          {/* A-09: Photography-over-illustration mandate.        */}
+          {/* TODO A-09: Replace this gradient placeholder with a  */}
+          {/* photographic <img> or CSS background-image asset —  */}
+          {/* Trisha portraiture or module course-stills. Gradient */}
+          {/* is NOT spec-compliant default (§12.1 A-09).          */}
+          <div
+            style={{
+              position: 'relative',
+              minHeight: 260,
+              borderRadius: 16,
+              overflow: 'hidden',
+              background:
+                'linear-gradient(135deg, var(--pt-primary-accent-hex, #B96A5F) 0%, #3A2E27 100%)',
+            }}
+            aria-hidden="true"
           >
-            <ChevronLeft className="w-4 h-4" />
-            Return to Dashboard
-          </button>
-          <h1
-            className="font-drama text-4xl sm:text-5xl md:text-6xl mb-4 max-w-2xl leading-tight"
-            style={{ color: 'var(--pt-text-primary-hex, #1c1917)' }}
-          >
-            Module {currentModule.module_number}: {currentModule.title}
-          </h1>
-          <p className="font-sans text-base sm:text-lg text-foreground/60 max-w-xl leading-relaxed">
-            {currentModule.description ||
-              'Explore the lessons within this module to continue your healing journey.'}
-          </p>
+            {/* Module number watermark — decorative only */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: 20,
+                right: 24,
+                fontFamily: '"Playfair Display", Georgia, serif',
+                fontSize: 140,
+                fontWeight: 500,
+                fontStyle: 'italic',
+                lineHeight: 0.85,
+                color: 'rgba(250, 232, 212, 0.18)',
+                letterSpacing: '-0.04em',
+                pointerEvents: 'none',
+                userSelect: 'none',
+              }}
+            >
+              {String(currentModule.module_number).padStart(2, '0')}
+            </div>
+          </div>
         </div>
       </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 px-4 sm:px-8 pb-24 max-w-7xl mx-auto">
+      {/* LOW-09 fix: pb-[180px] at <md to clear PortalLayout mobile bottom-nav
+          (80px) + ModuleOverview's own floating "Dashboard / Start Lesson" pill
+          (~64px sitting at bottom-8) + safe spacing. md+ collapses back to
+          pb-24 since the desktop layout has neither overlay. */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 px-4 sm:px-8 pb-[180px] md:pb-24 max-w-7xl mx-auto">
         {/* ── Left Column: Journey Timeline ────────────────── */}
         <div className="lg:col-span-8 space-y-12">
           {/* Learning Journey */}
@@ -196,11 +335,15 @@ function ModuleOverview({
                 const isCompleted = lesson.status === 'completed';
                 const isActive = lesson.status === 'in-progress';
                 const isLocked = lesson.status === 'locked';
+                // Axis F: child rows indent under their parent for hierarchy.
+                // sm+ gets a deeper indent; mobile keeps a smaller one so the
+                // row content still has breathing room.
+                const indentClass = lesson.isChild ? 'ms-6 sm:ms-12' : '';
 
                 return (
                   <div
                     key={lesson.id}
-                    className={`relative flex items-center gap-5 p-5 rounded-2xl transition-all ${
+                    className={`relative flex items-center gap-5 p-5 rounded-2xl transition-all ${indentClass} ${
                       isCompleted
                         ? 'bg-white hover:bg-neutral-50 hover:shadow-sm cursor-pointer'
                         : isActive
@@ -491,7 +634,10 @@ function ModuleOverview({
       </div>
 
       {/* ── Bottom Navigation Bar ────────────────────────── */}
-      <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex justify-between gap-8 sm:gap-12 items-center bg-white/80 backdrop-blur-xl rounded-full px-6 sm:px-8 py-3 w-auto min-w-[280px] sm:min-w-[320px] shadow-[0_8px_30px_-4px_rgba(7,58,71,0.15)]">
+      {/* LOW-09: at <md the PortalLayout mobile bottom-nav is 80px tall and
+          fixed at bottom-0; lift this floating pill to bottom-[96px] so it
+          clears the bottom-nav. md+ keeps original bottom-8 placement. */}
+      <nav className="fixed bottom-[96px] md:bottom-8 left-1/2 -translate-x-1/2 z-50 flex justify-between gap-8 sm:gap-12 items-center bg-white/80 backdrop-blur-xl rounded-full px-6 sm:px-8 py-3 w-auto min-w-[280px] sm:min-w-[320px] shadow-[0_8px_30px_-4px_rgba(7,58,71,0.15)]">
         <button
           onClick={goBackToDashboard}
           className="flex items-center gap-2 text-foreground/50 hover:text-foreground transition-colors group"

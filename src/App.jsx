@@ -6,6 +6,8 @@ import { Layout } from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 import RequireAdmin from './components/auth/RequireAdmin';
+import AuthoringRoute from './pages/admin/AuthoringRoute';
+import AdminComingSoon from './pages/admin/AdminComingSoon';
 import CrmListView from './pages/admin/CrmListView';
 import CrmDetailView from './pages/admin/CrmDetailView';
 import TasksLayout from './pages/admin/TasksLayout';
@@ -28,6 +30,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import AccountPassword from './pages/AccountPassword';
 import CourseOverview from './pages/CourseOverview';
 import SparkChallenge from './pages/SparkChallenge';
 import Team from './pages/Team';
@@ -46,6 +49,8 @@ import Downloads from './portal/Downloads';
 import RescueKitPortal from './portal/RescueKitPortal';
 import BookmarksPortal from './portal/BookmarksPortal';
 import CalendarPortal from './portal/CalendarPortal';
+import JourneyView from './portal/JourneyView';
+import ResourcesView from './portal/ResourcesView';
 import PortalLayout from './layouts/PortalLayout';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -102,6 +107,15 @@ function App() {
               <Route path="/admin/tasks" element={<RequireAdmin><TasksLayout /></RequireAdmin>} />
               <Route path="/admin/tasks/kanban" element={<RequireAdmin><TasksLayout /></RequireAdmin>} />
               <Route path="/admin/tasks/list" element={<RequireAdmin><TasksLayout /></RequireAdmin>} />
+              <Route path="/admin/authoring" element={<RequireAdmin><AuthoringRoute /></RequireAdmin>} />
+
+              {/* Admin scaffolds — IA declared in Wave 4B drawer; impl deferred to future wave */}
+              <Route path="/admin/users" element={<RequireAdmin><AdminComingSoon title="User list" breadcrumb="Users" /></RequireAdmin>} />
+              <Route path="/admin/enrollments" element={<RequireAdmin><AdminComingSoon title="Enrollments" breadcrumb="Enrollments" /></RequireAdmin>} />
+              <Route path="/admin/webinars" element={<RequireAdmin><AdminComingSoon title="Webinars" breadcrumb="Webinars" /></RequireAdmin>} />
+              <Route path="/admin/broadcasts" element={<RequireAdmin><AdminComingSoon title="Broadcasts" breadcrumb="Broadcasts" /></RequireAdmin>} />
+              <Route path="/admin/content" element={<RequireAdmin><AdminComingSoon title="Modules" breadcrumb="Modules" /></RequireAdmin>} />
+              <Route path="/admin/settings" element={<RequireAdmin><AdminComingSoon title="Settings" breadcrumb="Settings" /></RequireAdmin>} />
 
               {/* Portal routes */}
               <Route path="/portal/downloads" element={<ProtectedRoute><Downloads /></ProtectedRoute>} />
@@ -117,6 +131,10 @@ function App() {
               <Route path="/portal/rescue-kit" element={<ProtectedRoute><RescueKitPortal /></ProtectedRoute>} />
               <Route path="/portal/bookmarks" element={<ProtectedRoute><BookmarksPortal /></ProtectedRoute>} />
               <Route path="/portal/calendar" element={<ProtectedRoute><CalendarPortal /></ProtectedRoute>} />
+              {/* Wave 9 E1: Home-drawer nav targets — placeholder views per A-11 register */}
+              <Route path="/portal/journey" element={<ProtectedRoute><JourneyView /></ProtectedRoute>} />
+              <Route path="/portal/resources" element={<ProtectedRoute><ResourcesView /></ProtectedRoute>} />
+              <Route path="/account/password" element={<ProtectedRoute><AccountPassword /></ProtectedRoute>} />
             </Route>
 
             {/* Auth pages (standalone, no navbar/footer) */}

@@ -6,32 +6,107 @@ import { useAuth } from '../../contexts/AuthContext';
 // ─── Skeleton shimmer ────────────────────────────────────────────────────────
 function SkeletonCard() {
   return (
-    <div className="bg-white rounded-2xl p-5 shadow-md border border-primary/15 animate-pulse">
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-10 h-10 bg-gray-200 rounded-xl" />
-        <div className="h-3 bg-gray-200 rounded w-28" />
+    <div
+      className="rounded-2xl p-6 animate-pulse"
+      style={{
+        backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
+        border: '1px solid var(--pt-border-soft-hex, #e7e5e4)',
+      }}
+    >
+      <div className="flex items-center gap-3 mb-5">
+        <div
+          className="w-9 h-9 rounded-lg"
+          style={{ backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)' }}
+        />
+        <div
+          className="h-2.5 rounded w-28"
+          style={{ backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)' }}
+        />
       </div>
-      <div className="h-9 bg-gray-200 rounded w-20 mb-2" />
-      <div className="h-3 bg-gray-100 rounded w-36" />
+      <div
+        className="h-9 rounded w-20 mb-2"
+        style={{ backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)' }}
+      />
+      <div
+        className="h-3 rounded w-36"
+        style={{ backgroundColor: 'var(--pt-border-soft-hex, #e7e5e4)' }}
+      />
     </div>
   );
 }
 
 // ─── Stat card ───────────────────────────────────────────────────────────────
+/**
+ * Editorial stat tile (Wave 7 design pass).
+ * Replaces the prior `bg-primary/10` tinted card (which resolved to teal in
+ * Tailwind theme) with a warm-stone surface, single accent eyebrow, and
+ * Playfair display number — matching the rest of the portal aesthetic.
+ */
 function StatCard({ icon: Icon, title, primary, subtitle }) {
   return (
-    <div className="bg-white rounded-2xl p-5 shadow-md border border-primary/15">
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-          <Icon className="w-5 h-5 text-primary" />
+    <div
+      className="rounded-2xl p-6 transition-shadow duration-200"
+      style={{
+        backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
+        border: '1px solid var(--pt-border-soft-hex, #e7e5e4)',
+        boxShadow: '0 1px 0 rgba(28, 25, 23, 0.02)',
+      }}
+      onMouseEnter={(e) =>
+        (e.currentTarget.style.boxShadow =
+          '0 1px 0 rgba(28, 25, 23, 0.02), 0 12px 32px -16px rgba(28, 25, 23, 0.10)')
+      }
+      onMouseLeave={(e) =>
+        (e.currentTarget.style.boxShadow = '0 1px 0 rgba(28, 25, 23, 0.02)')
+      }
+    >
+      <div className="flex items-center gap-3 mb-5">
+        <div
+          className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
+          style={{ backgroundColor: 'var(--pt-primary-accent-soft-hex, rgba(185,106,95,0.12))' }}
+        >
+          <Icon
+            className="w-4.5 h-4.5"
+            style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)', width: 18, height: 18 }}
+          />
         </div>
-        <h3 className="font-outfit font-semibold text-xs text-foreground/50 uppercase tracking-widest">
+        <h3
+          style={{
+            fontFamily: '"Outfit", sans-serif',
+            fontSize: 10.5,
+            fontWeight: 600,
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+            color: 'var(--pt-text-muted-hex, #57534e)',
+            margin: 0,
+          }}
+        >
           {title}
         </h3>
       </div>
-      <p className="font-outfit font-bold text-3xl text-primary mb-1">{primary}</p>
+      <p
+        style={{
+          fontFamily: '"Playfair Display", Georgia, serif',
+          fontWeight: 400,
+          fontSize: 36,
+          lineHeight: 1.05,
+          letterSpacing: '-0.02em',
+          color: 'var(--pt-text-primary-hex, #1c1917)',
+          margin: '0 0 8px',
+        }}
+      >
+        {primary}
+      </p>
       {subtitle && (
-        <div className="font-sans text-sm text-foreground/50">{subtitle}</div>
+        <div
+          style={{
+            fontFamily: '"Plus Jakarta Sans", sans-serif',
+            fontSize: 13,
+            lineHeight: 1.45,
+            color: 'var(--pt-text-muted-hex, #57534e)',
+          }}
+        >
+          {subtitle}
+        </div>
       )}
     </div>
   );
@@ -98,7 +173,7 @@ export default function KpiCards() {
       try {
         const { data: orders, error } = await supabase
           .from('orders')
-          .select('id, amount_total');
+          .select('id, amount_cents');
         if (error) throw error;
         results.orders = orders;
       } catch {
@@ -195,7 +270,9 @@ export default function KpiCards() {
       <span title="Stripe data unavailable — check service status">—</span>
     ) : overdueCount > 0 ? (
       <span>
-        <span className="text-red-500 font-medium">{overdueCount} overdue</span>
+        <span style={{ color: 'var(--pt-status-overdue-hex, #b45309)', fontWeight: 600 }}>
+          {overdueCount} overdue
+        </span>
         {' · '}
         {pipelineSubtitle}
       </span>
@@ -206,7 +283,7 @@ export default function KpiCards() {
   // Orders
   const ordersRows = Array.isArray(data.orders) ? data.orders : [];
   const orderCount = ordersRows.length;
-  const revenueCents = ordersRows.reduce((sum, o) => sum + (Number(o.amount_total) || 0), 0);
+  const revenueCents = ordersRows.reduce((sum, o) => sum + (Number(o.amount_cents) || 0), 0);
   const revenueDisplay = (revenueCents / 100).toLocaleString('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -232,14 +309,14 @@ export default function KpiCards() {
 
       <StatCard
         icon={Mail}
-        title="Spark Subscribers"
+        title="Spark Signups"
         primary={fmt(data.sparkSubscribers)}
         subtitle="Active email subscribers"
       />
 
       <StatCard
         icon={Calendar}
-        title="Webinar Registrations"
+        title="Webinar Regs"
         primary={fmt(data.webinarRegistrations)}
         subtitle="Total registrants"
       />
