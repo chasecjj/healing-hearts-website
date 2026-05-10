@@ -582,6 +582,10 @@ function DesktopTwoRail({ isAdmin, activeRailId: pathActiveRailId, drawerCollaps
 function RightJournalPanel({ isOpen, onToggle, onClose, currentLessonId, currentModuleId }) {
   const railIconRef = useRef(null);
   const drawerRef = useRef(null);
+  // Mobile bottom-sheet has its own DOM node (separate <aside>); without its
+  // own ref, pointerdown click-outside misfires when user taps inside the
+  // sheet's popovers (e.g., FilterChips mood popover) and closes the panel.
+  const mobileSheetRef = useRef(null);
   const prefersReduced = useReducedMotion();
   const [hovered, setHovered] = useState(false);
   const hoverStyle = railIconHoverStyle(hovered, prefersReduced);
@@ -612,6 +616,7 @@ function RightJournalPanel({ isOpen, onToggle, onClose, currentLessonId, current
     if (!mq.matches) return undefined;
     const handler = (/** @type {PointerEvent} */ e) => {
       if (drawerRef.current && drawerRef.current.contains(/** @type {Node} */ (e.target))) return;
+      if (mobileSheetRef.current && mobileSheetRef.current.contains(/** @type {Node} */ (e.target))) return;
       if (railIconRef.current && railIconRef.current.contains(/** @type {Node} */ (e.target))) return;
       onClose();
     };
@@ -833,6 +838,7 @@ function RightJournalPanel({ isOpen, onToggle, onClose, currentLessonId, current
         />
       )}
       <aside
+        ref={mobileSheetRef}
         className="md:hidden flex flex-col fixed start-0 end-0 z-50"
         role="complementary"
         aria-label="Journal panel"
@@ -1179,8 +1185,9 @@ export default function PortalLayout() {
             currentModuleId={currentModuleId}
           />
 
-          {/* Mobile bottom-nav */}
-          <MobileBottomNav />
+          {/* Mobile bottom-nav — hidden on /admin/* routes (admin tables
+              were overlapped by the learner navigation rail at 360px). */}
+          {!location.pathname.startsWith('/admin') && <MobileBottomNav />}
         </div>
       </JournalPanelContext.Provider>
     </>

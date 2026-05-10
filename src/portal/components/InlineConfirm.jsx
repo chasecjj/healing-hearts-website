@@ -20,16 +20,28 @@ import { getTypeStyle } from '../design/typography';
 
 /**
  * @param {object}   props
- * @param {string}   [props.message]   — Confirmation sentence, e.g. "Confirm delete?"
- * @param {Function} [props.onConfirm] — Called after dismiss animation completes
- * @param {Function} [props.onCancel]  — Called after dismiss animation completes
+ * @param {string}   [props.message]        — Confirmation sentence, e.g. "Confirm delete?"
+ * @param {Function} [props.onConfirm]      — Called after dismiss animation completes
+ * @param {Function} [props.onCancel]       — Called after dismiss animation completes
+ * @param {string}   [props.requiredPhrase] — Optional. When provided, renders a typed-
+ *                                            confirmation input below {message}. The
+ *                                            "Yes, proceed" button is disabled until
+ *                                            input matches requiredPhrase exactly
+ *                                            (case-sensitive). Used for bulk destructive
+ *                                            operations per wave-3.1 spec §4.
  */
 export default function InlineConfirm({
   message = 'Are you sure you want to proceed?',
   onConfirm,
   onCancel,
+  requiredPhrase,
 }) {
   const prefersReduced = useReducedMotion();
+
+  // Typed-confirmation state (only used when requiredPhrase is provided)
+  const [phraseInput, setPhraseInput] = useState('');
+  const phraseRequired = typeof requiredPhrase === 'string' && requiredPhrase.length > 0;
+  const phraseMatches = phraseRequired ? phraseInput === requiredPhrase : true;
 
   // 'entering' | 'visible' | 'leaving'
   // Lazy initializer: skip the entering→visible transition when reduced-motion is
@@ -71,7 +83,8 @@ export default function InlineConfirm({
     };
   }
 
-  const dismiss = (callback) => {
+  const dismiss = (callback, { resetPhrase = false } = {}) => {
+    if (resetPhrase) setPhraseInput('');
     if (prefersReduced) {
       callback?.();
       return;
@@ -105,9 +118,32 @@ export default function InlineConfirm({
         {message}
       </p>
 
+      {phraseRequired && (
+        <input
+          type="text"
+          value={phraseInput}
+          onChange={(e) => setPhraseInput(e.target.value)}
+          aria-label="Type phrase to confirm action"
+          placeholder={`Type "${requiredPhrase}" to confirm`}
+          style={{
+            ...getTypeStyle('body'),
+            display: 'block',
+            width: '100%',
+            padding: '4px 8px',
+            marginBottom: 8,
+            borderRadius: 6,
+            border: '1px solid var(--pt-border-strong)',
+            backgroundColor: 'transparent',
+            color: 'var(--pt-text-primary)',
+            lineHeight: 'inherit',
+          }}
+        />
+      )}
+
       <div style={{ display: 'flex', gap: 8 }}>
         <button
-          onClick={() => dismiss(onConfirm)}
+          onClick={() => dismiss(onConfirm, { resetPhrase: true })}
+          disabled={!phraseMatches}
           style={{
             ...getTypeStyle('body', 'medium'),
             padding: '4px 12px',
@@ -115,7 +151,8 @@ export default function InlineConfirm({
             border: '1px solid rgba(28, 25, 23, 0.30)',
             backgroundColor: 'transparent',
             color: 'var(--pt-text-primary-hex, #1c1917)',
-            cursor: 'pointer',
+            cursor: phraseMatches ? 'pointer' : 'not-allowed',
+            opacity: phraseMatches ? 1 : 0.4,
             lineHeight: 'inherit',
           }}
         >
@@ -123,7 +160,7 @@ export default function InlineConfirm({
         </button>
 
         <button
-          onClick={() => dismiss(onCancel)}
+          onClick={() => dismiss(onCancel, { resetPhrase: true })}
           style={{
             ...getTypeStyle('body'),
             padding: '4px 12px',
