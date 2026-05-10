@@ -14,6 +14,7 @@ export function errorCopyFor(err) {
     { match: /rate limit|too many/i, copy: "Let's pause for a moment — you've tried a few times. Give it a minute, then try again." },
     { match: /invalid email|valid email/i, copy: "That email doesn't look quite right — can you double-check it?" },
     { match: /network|fetch failed/i, copy: "Connection hiccup. Your internet might be slow — try again in a moment." },
+    { match: /auth session missing|session missing/i, copy: "This reset link has expired. Please request a new password reset link." },
   ];
 
   for (const entry of map) {
