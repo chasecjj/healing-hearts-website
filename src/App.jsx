@@ -55,6 +55,7 @@ import CheckoutSuccess from './pages/CheckoutSuccess';
 import MeetTrisha from './pages/MeetTrisha';
 import MeetJeff from './pages/MeetJeff';
 import Downloads from './portal/Downloads';
+import PhedrisComingSoon from './portal/PhedrisComingSoon';
 import RescueKitPortal from './portal/RescueKitPortal';
 import BookmarksPortal from './portal/BookmarksPortal';
 import CalendarPortal from './portal/CalendarPortal';
@@ -145,6 +146,7 @@ function App() {
               <Route path="/portal/rescue-kit" element={<ProtectedRoute><RescueKitPortal /></ProtectedRoute>} />
               <Route path="/portal/bookmarks" element={<ProtectedRoute><BookmarksPortal /></ProtectedRoute>} />
               <Route path="/portal/calendar" element={<ProtectedRoute><CalendarPortal /></ProtectedRoute>} />
+              <Route path="/phedris-coming-soon" element={<ProtectedRoute><PhedrisComingSoon /></ProtectedRoute>} />
               {/* Wave 9 E1: Home-drawer nav targets — placeholder views per A-11 register */}
               <Route path="/portal/journey" element={<ProtectedRoute><JourneyView /></ProtectedRoute>} />
               <Route path="/portal/resources" element={<ProtectedRoute><ResourcesView /></ProtectedRoute>} />
