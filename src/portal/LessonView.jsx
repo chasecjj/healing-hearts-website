@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { useMockupMode } from './mockup/useMockupMode';
 import LessonHero from './mockup/LessonHero';
+import { useJournalPanel } from './context/JournalPanelContext';
 
 const MuxVideoPlayer = React.lazy(() => import('./MuxVideoPlayer'));
 
@@ -194,10 +195,14 @@ function LessonView({
     [selection, lessonId, createHighlight]
   );
 
-  // ── Wave 9 E6: Add-to-Journal quick-capture from selection ─────────────
+  // ── Wave 9 E6 + Wave 10 J4: Add-to-Journal quick-capture from selection ─
   // Saves the selected anchor text as journal_entries.prompt_text and an
   // empty entry_text the user can extend later on /portal. Confirmation
-  // surfaces as a 2.4s toast at the bottom-right (a11y: role=status).
+  // surfaces as a toast at the bottom-right (a11y: role=status).
+  // Wave 10 J4: success toast bumped 2.4s → 5s and gains a "View journal"
+  // action button that opens the right-rail journal panel via the shared
+  // JournalPanelContext (no route navigation). Error toast remains 2.4s.
+  const journalPanel = useJournalPanel();
   const [journalToast, setJournalToast] = useState(null);
 
   const handleJournalFromSelection = useCallback(async () => {
@@ -226,12 +231,19 @@ function LessonView({
     window.getSelection()?.removeAllRanges();
   }, [selection, lessonId, user?.id, currentModule?.id]);
 
-  // Auto-dismiss toast after 2.4s
+  // Auto-dismiss toast — success: 5s, error: 2.4s (Wave 10 J4)
   useEffect(() => {
     if (!journalToast) return undefined;
-    const t = setTimeout(() => setJournalToast(null), 2400);
+    const ms = journalToast.kind === 'ok' ? 5000 : 2400;
+    const t = setTimeout(() => setJournalToast(null), ms);
     return () => clearTimeout(t);
   }, [journalToast]);
+
+  // J4 — open the journal panel from the toast action button
+  const handleViewJournal = useCallback(() => {
+    journalPanel.open();
+    setJournalToast(null);
+  }, [journalPanel]);
 
   const handleNoteFromSelection = useCallback(async () => {
     if (!selection || !lessonId) return;
@@ -738,11 +750,14 @@ function LessonView({
       onDelete={activeNote ? handleNoteDelete : undefined}
     />
 
-    {/* Wave 9 E6: journal-quick-capture confirmation toast */}
+    {/* Wave 9 E6 + Wave 10 J4: journal-quick-capture confirmation toast.
+        Success variant gains a "View journal →" action button that opens the
+        right-rail journal panel via shared JournalPanelContext (no route nav).
+        The action <button> is rendered as a sibling of the role="status" text
+        so screen readers announce only the message — the button is reachable
+        via Tab. Duration: 5s for success, 2.4s for error.                     */}
     {journalToast && (
       <div
-        role="status"
-        aria-live="polite"
         style={{
           position: 'fixed',
           bottom: 24,
@@ -750,18 +765,42 @@ function LessonView({
           zIndex: 60,
           padding: '10px 16px',
           borderRadius: 10,
-          backgroundColor:
-            journalToast.kind === 'err'
-              ? 'var(--pt-text-primary-hex, #1c1917)'
-              : 'var(--pt-text-primary-hex, #1c1917)',
+          backgroundColor: 'var(--pt-text-primary-hex, #1c1917)',
           color: 'var(--pt-text-inverse-hex, #fafaf9)',
           boxShadow: '0 6px 20px rgba(28,25,23,0.20)',
           fontFamily: '"Outfit", sans-serif',
           fontSize: 13,
           fontWeight: 500,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 14,
+          maxWidth: 'calc(100vw - 48px)',
         }}
       >
-        {journalToast.message}
+        <span role="status" aria-live="polite">
+          {journalToast.message}
+        </span>
+        {journalToast.kind === 'ok' && (
+          <button
+            type="button"
+            onClick={handleViewJournal}
+            aria-label="Open journal panel to view entry"
+            style={{
+              background: 'transparent',
+              border: '1px solid rgba(250,250,249,0.40)',
+              borderRadius: 6,
+              color: 'var(--pt-text-inverse-hex, #fafaf9)',
+              padding: '4px 10px',
+              fontFamily: '"Outfit", sans-serif',
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: 'pointer',
+              flexShrink: 0,
+            }}
+          >
+            View journal →
+          </button>
+        )}
       </div>
     )}
     </>
