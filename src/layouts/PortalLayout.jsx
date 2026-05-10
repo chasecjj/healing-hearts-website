@@ -444,7 +444,7 @@ function DesktopTwoRail({ isAdmin, activeRailId: pathActiveRailId, drawerCollaps
               }}
             >
               <div className="px-4 py-2 border-b" style={{ borderColor: 'var(--pt-border-subtle-hex, #e7e5e4)' }}>
-                <p className="text-xs text-foreground/50 truncate" title={user?.email}>
+                <p className="text-xs text-pt-quiet truncate" title={user?.email}>
                   {user?.email}
                 </p>
               </div>

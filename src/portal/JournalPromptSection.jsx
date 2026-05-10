@@ -61,13 +61,13 @@ export default function JournalPromptSection({ lessonId, moduleId, prompt }) {
             Reflection Journal
           </span>
           {hasEntries && (
-            <span className="text-xs text-foreground/40 font-sans">
+            <span className="text-xs text-pt-quiet font-sans">
               {entries.length} {entries.length === 1 ? 'entry' : 'entries'}
             </span>
           )}
         </div>
         <ChevronDown
-          className={`w-4 h-4 text-foreground/40 transition-transform duration-200 ${
+          className={`w-4 h-4 text-pt-quiet transition-transform duration-200 ${
             shouldShow ? 'rotate-180' : ''
           }`}
         />
@@ -83,7 +83,7 @@ export default function JournalPromptSection({ lessonId, moduleId, prompt }) {
                 className="w-4 h-4 mt-0.5 flex-shrink-0"
                 style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
               />
-              <p className="text-sm text-foreground/60 italic leading-relaxed">
+              <p className="text-sm text-pt-quiet italic leading-relaxed">
                 {prompt}
               </p>
             </div>
@@ -118,7 +118,7 @@ export default function JournalPromptSection({ lessonId, moduleId, prompt }) {
           {/* Previous entries */}
           {hasEntries && (
             <div className="space-y-4 pt-4 border-t border-neutral-200">
-              <h4 className="text-xs font-outfit uppercase tracking-widest text-foreground/40">
+              <h4 className="text-xs font-outfit uppercase tracking-widest text-pt-quiet">
                 Previous Reflections
               </h4>
               {entries.map((entry) => (
@@ -140,7 +140,7 @@ export default function JournalPromptSection({ lessonId, moduleId, prompt }) {
                   <p className="text-sm text-foreground/70 leading-relaxed whitespace-pre-wrap">
                     {entry.entry_text}
                   </p>
-                  <span className="block mt-2 text-xs text-foreground/30 font-sans">
+                  <span className="block mt-2 text-xs text-pt-quiet font-sans">
                     {new Date(entry.created_at).toLocaleDateString('en-US', {
                       month: 'short',
                       day: 'numeric',

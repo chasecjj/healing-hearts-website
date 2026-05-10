@@ -90,7 +90,7 @@ export default function AudioPlayer({ src, title }) {
       {/* Progress bar + time */}
       <div className="flex-1 min-w-0">
         {title && (
-          <p className="text-xs font-outfit font-medium text-foreground/60 mb-1.5 truncate">
+          <p className="text-xs font-outfit font-medium text-pt-quiet mb-1.5 truncate">
             {title}
           </p>
         )}
@@ -109,10 +109,10 @@ export default function AudioPlayer({ src, title }) {
           />
         </button>
         <div className="flex justify-between mt-1">
-          <span className="text-[10px] font-sans text-foreground/40">
+          <span className="text-[10px] font-sans text-pt-quiet">
             {formatTime(currentTime)}
           </span>
-          <span className="text-[10px] font-sans text-foreground/40">
+          <span className="text-[10px] font-sans text-pt-quiet">
             {formatTime(duration)}
           </span>
         </div>

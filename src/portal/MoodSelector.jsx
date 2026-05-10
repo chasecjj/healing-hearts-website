@@ -25,7 +25,7 @@ export default function MoodSelector({ value, onChange }) {
               ${
                 isSelected
                   ? 'bg-neutral-100 border-neutral-400 text-foreground shadow-sm'
-                  : 'bg-neutral-50 border-neutral-200 text-foreground/60 hover:border-neutral-300 hover:text-foreground/80'
+                  : 'bg-neutral-50 border-neutral-200 text-pt-quiet hover:border-neutral-300 hover:text-foreground/80'
               }
             `}
             style={

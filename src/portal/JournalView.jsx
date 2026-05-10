@@ -222,7 +222,7 @@ function EntryCard({ entry, onClick }) {
         <p
           style={{
             ...getTypeStyle('meta'),
-            color: 'var(--pt-text-quiet-hex, #a8a29e)',
+            color: 'var(--pt-text-muted-hex, #57534e)',
             margin: '6px 0 0',
           }}
         >

@@ -301,7 +301,7 @@ function LessonView({
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden" ref={contentRef}>
         {/* Top breadcrumb bar */}
         <header className="sticky top-0 z-30 flex justify-between items-center w-full px-4 sm:px-8 lg:px-12 py-4 sm:py-6 bg-background/80 backdrop-blur-md font-outfit text-sm tracking-wide border-b border-neutral-100">
-          <div className="flex items-center gap-2 text-foreground/40 min-w-0">
+          <div className="flex items-center gap-2 text-pt-quiet min-w-0">
             <span
               className="hover:text-foreground cursor-pointer transition-colors truncate"
               onClick={() =>
@@ -320,7 +320,7 @@ function LessonView({
           </div>
           <div className="flex items-center gap-4 sm:gap-6 flex-shrink-0">
             {currentLesson?.content_json?.estimated_minutes && (
-              <div className="hidden sm:flex items-center gap-1.5 text-foreground/40 text-xs">
+              <div className="hidden sm:flex items-center gap-1.5 text-pt-quiet text-xs">
                 <Clock className="w-3.5 h-3.5" />
                 <span>{currentLesson.content_json.estimated_minutes} min</span>
               </div>
@@ -468,7 +468,7 @@ function LessonView({
                     fontWeight: 300,
                     fontSize: 18,
                     lineHeight: 1.6,
-                    color: 'var(--pt-text-quiet-hex, #a8a29e)',
+                    color: 'var(--pt-text-quiet-hex, #6b6462)',
                     margin: 0,
                   }}
                 >
@@ -571,7 +571,7 @@ function LessonView({
                                   fontWeight: 700,
                                   letterSpacing: '0.18em',
                                   color: childCompleted
-                                    ? 'var(--pt-text-quiet-hex, #a8a29e)'
+                                    ? 'var(--pt-text-quiet-hex, #6b6462)'
                                     : 'var(--pt-primary-accent-hex, #B96A5F)',
                                   minWidth: 28,
                                 }}
@@ -585,7 +585,7 @@ function LessonView({
                                   fontWeight: 500,
                                   color: 'var(--pt-text-primary-hex, #1c1917)',
                                   textDecoration: childCompleted ? 'line-through' : 'none',
-                                  textDecorationColor: 'var(--pt-text-quiet-hex, #a8a29e)',
+                                  textDecorationColor: 'var(--pt-text-quiet-hex, #6b6462)',
                                   overflow: 'hidden',
                                   textOverflow: 'ellipsis',
                                   whiteSpace: 'nowrap',
@@ -600,7 +600,7 @@ function LessonView({
                                   style={{
                                     fontFamily: '"Outfit", sans-serif',
                                     fontSize: 11,
-                                    color: 'var(--pt-text-quiet-hex, #a8a29e)',
+                                    color: 'var(--pt-text-quiet-hex, #6b6462)',
                                   }}
                                 >
                                   {minutes} min
@@ -684,7 +684,7 @@ function LessonView({
                 navigateToLesson(prevLesson.module, prevLesson.lesson)
               }
               disabled={!prevLesson}
-              className="flex items-center gap-2 text-foreground/60 font-outfit font-medium uppercase tracking-widest text-sm hover:text-foreground transition-colors group disabled:opacity-30 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 text-pt-quiet font-outfit font-medium uppercase tracking-widest text-sm hover:text-foreground transition-colors group disabled:opacity-30 disabled:cursor-not-allowed"
             >
               <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
               Previous Lesson
@@ -724,7 +724,7 @@ function LessonView({
                 navigateToLesson(nextLesson.module, nextLesson.lesson)
               }
               disabled={!nextLesson}
-              className="flex items-center gap-2 text-foreground/60 font-outfit font-medium uppercase tracking-widest text-sm hover:text-foreground transition-colors group disabled:opacity-30 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 text-pt-quiet font-outfit font-medium uppercase tracking-widest text-sm hover:text-foreground transition-colors group disabled:opacity-30 disabled:cursor-not-allowed"
             >
               Next Lesson
               <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

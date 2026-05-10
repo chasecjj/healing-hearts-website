@@ -165,7 +165,7 @@ function BookmarkList({ items }) {
               fontFamily: '"Outfit", sans-serif',
               fontSize: 11,
               letterSpacing: '0.04em',
-              color: 'var(--pt-text-quiet-hex, #a8a29e)',
+              color: 'var(--pt-text-quiet-hex, #6b6462)',
             }}
           >
             {item.timestamp}

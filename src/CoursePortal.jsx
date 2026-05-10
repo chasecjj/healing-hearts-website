@@ -113,7 +113,7 @@ const CoursePortal = () => {
             <h2 className="font-outfit font-bold text-xl text-primary mb-2">
               Something went wrong
             </h2>
-            <p className="font-sans text-foreground/60 text-sm">{error}</p>
+            <p className="font-sans text-pt-quiet text-sm">{error}</p>
           </div>
           <button
             onClick={refetch}
@@ -138,7 +138,7 @@ const CoursePortal = () => {
             <h2 className="font-drama italic text-3xl text-primary mb-3">
               This Content Is Locked
             </h2>
-            <p className="font-sans text-foreground/60 leading-relaxed">
+            <p className="font-sans text-pt-quiet leading-relaxed">
               Enroll to access the full Healing Hearts Program, or start with
               the free 7-Day Spark Challenge — a daily practice delivered to
               your inbox.

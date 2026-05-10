@@ -28,7 +28,7 @@
   /* Type */
   --pt-text-primary-hex: #1c1917;     /* stone-900 (NOT #000) */
   --pt-text-muted-hex: #57534e;       /* stone-600 */
-  --pt-text-quiet-hex: #a8a29e;       /* stone-400 — captions/meta */
+  --pt-text-quiet-hex: #6b6462;       /* wave-10 F-003: AA-passing quiet text (5.31:1 on content-bg). Was stone-400 #a8a29e (2.31:1 — WCAG fail). */
 
   /* Accent — coral, the only chromatic color in portal scope */
   --pt-primary-accent-hex: #B96A5F;
@@ -62,6 +62,17 @@
 @layer utilities {
   .clip-text {
     @apply text-transparent bg-clip-text;
+  }
+
+  /* Wave-10 F-003 a11y fix — AA-compliant quiet/muted text helpers.
+     Replaces opacity-stacked text-foreground/30..60 which fail WCAG AA (< 4.5:1)
+     on warm-stone content backgrounds. Use these instead of text-foreground/N
+     for secondary/caption/meta text in the portal. */
+  .text-pt-quiet {
+    color: var(--pt-text-quiet-hex, #6b6462); /* 5.31:1 on content-bg — WCAG AA */
+  }
+  .text-pt-muted {
+    color: var(--pt-text-muted-hex, #57534e); /* 6.99:1 on content-bg — WCAG AA */
   }
 
   /* Portal "today pulse" — soft accent breath for live elements

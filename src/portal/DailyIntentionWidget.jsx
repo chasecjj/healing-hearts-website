@@ -111,7 +111,7 @@ export default function DailyIntentionWidget() {
       {/* Display mode: show saved intention */}
       {!showInput && (
         <div className="space-y-4">
-          <p className="text-foreground/60 leading-relaxed italic font-drama text-base">
+          <p className="text-pt-quiet leading-relaxed italic font-drama text-base">
             &ldquo;{intention.intention_text}&rdquo;
           </p>
           {intention.mood && (
@@ -122,7 +122,7 @@ export default function DailyIntentionWidget() {
           <div className="pt-4 border-t border-neutral-200">
             <button
               onClick={handleEdit}
-              className="flex items-center gap-2 text-sm text-foreground/60 hover:text-foreground transition-colors font-outfit"
+              className="flex items-center gap-2 text-sm text-pt-quiet hover:text-foreground transition-colors font-outfit"
             >
               <PenLine className="w-4 h-4" />
               Update intention
@@ -135,13 +135,13 @@ export default function DailyIntentionWidget() {
       {showInput && (
         <div className="space-y-5">
           {!hasIntention && !editing && (
-            <p className="text-foreground/40 leading-relaxed italic font-drama text-sm">
+            <p className="text-pt-quiet leading-relaxed italic font-drama text-sm">
               &ldquo;{getFallbackQuote()}&rdquo;
             </p>
           )}
 
           <div>
-            <label className="block text-xs font-outfit uppercase tracking-widest text-foreground/50 mb-3">
+            <label className="block text-xs font-outfit uppercase tracking-widest text-pt-quiet mb-3">
               How are you feeling?
             </label>
             <MoodSelector value={draftMood} onChange={setDraftMood} />
@@ -150,7 +150,7 @@ export default function DailyIntentionWidget() {
           <div>
             <label
               htmlFor="intention-text"
-              className="block text-xs font-outfit uppercase tracking-widest text-foreground/50 mb-3"
+              className="block text-xs font-outfit uppercase tracking-widest text-pt-quiet mb-3"
             >
               Set your intention
             </label>
@@ -191,7 +191,7 @@ export default function DailyIntentionWidget() {
             {editing && (
               <button
                 onClick={() => setEditing(false)}
-                className="text-sm text-foreground/50 hover:text-foreground/70 font-outfit transition-colors"
+                className="text-sm text-pt-quiet hover:text-foreground/70 font-outfit transition-colors"
               >
                 Cancel
               </button>
