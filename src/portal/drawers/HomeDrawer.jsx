@@ -1,169 +1,63 @@
 /**
- * HomeDrawer — Sanctuary / Journey / Resources 3-tab IA.
+ * HomeDrawer — pure sub-tab navigation (Wave 9 architectural pivot, 2026-05-10).
  *
- * Spec: consolidated-spec-v1.1.md
- *   §2.3  — Home drawer tabs: Sanctuary / Your Journey / Your Resources
- *   §2.23 — Account-switch affordance in Sanctuary tab (v1.1 new)
- *   §12.1 A-03 — P0 safety: shared-device privacy for trauma population
- *   §12.1 A-11 — Rest-permission empty-state copy register (Admin exempt)
- *   §12.1 A-12 — DailyIntentionWidget migrated here from Dashboard (per 2.3 literal)
+ * Wave 9 E1: spec §2.3 literal "DailyIntentionWidget in Sanctuary tab" + 3-tab
+ * IA (Sanctuary / Journey / Resources) is REPLACED with a Slack-pattern vertical
+ * nav. Daily Intention canonical home is now PortalDashboard Sanctuary register
+ * (see PortalDashboard.jsx). Mood pills also live on the dashboard (or moved to
+ * future dedicated surface). Drawer = pure nav, no interactive widgets.
  *
- * DrawerShell consumption per W-01 §2 prop contract.
- * Tab selection persisted to `portal-drawer-state-v1` LS JSON (sub-key `tab-home`),
- * consistent with useDrawerState sub-state pattern.
+ * Spec amendment: see ./reports/wave-9-spec-amendment.md
+ *
+ * Source-of-truth (Chase 2026-05-10):
+ *   "drawer should be sub tab navigation only, not interactable fields or
+ *    things like the daily intention. The drawer needs to be able to be hidden
+ *    as well."
+ *
+ * Routes:
+ *   /portal           — Sanctuary (PortalDashboard)
+ *   /portal/journey   — Journey view (stub placeholder)
+ *   /portal/resources — Resources view (stub placeholder)
+ *
+ * DrawerShell consumption per W-01 §2 prop contract; useDrawerState consumed
+ * for scroll-position sub-state per W-01 §4.
  */
 
-import React, { useState } from 'react';
-import { DrawerShell, DrawerSection, EmptyState } from './DrawerShell';
+import React from 'react';
+import { useLocation } from 'react-router-dom';
+import { Home, Compass, BookOpen } from 'lucide-react';
+import { DrawerShell, DrawerSection, DrawerItem } from './DrawerShell';
 import { useDrawerState } from '../hooks/useDrawerState';
 import { getTypeStyle } from '../design/typography';
 import { useAuth } from '../../contexts/AuthContext';
 import AccountSwitch from '../components/AccountSwitch';
-import DailyIntentionWidget from '../DailyIntentionWidget';
 
-// ── Tab persistence (sub-state in portal-drawer-state-v1) ─────────────────
+// ── HomeDrawer ────────────────────────────────────────────────────────────
 
-const LS_KEY = 'portal-drawer-state-v1';
-const TAB_SUB_KEY = 'tab-home';
+export default function HomeDrawer() {
+  const { user, profile } = useAuth();
+  const { pathname } = useLocation();
 
-function readTabFromLs() {
-  if (typeof window === 'undefined') return 0;
-  try {
-    const raw = window.localStorage.getItem(LS_KEY);
-    const state = raw ? JSON.parse(raw) : {};
-    const v = state[TAB_SUB_KEY];
-    return typeof v === 'number' && v >= 0 && v <= 2 ? v : 0;
-  } catch {
-    return 0;
-  }
-}
+  // useDrawerState consumed per W-01 §4 contract (scroll-position sub-state)
+  // eslint-disable-next-line no-unused-vars
+  const { persistedScrollTop, setScrollTop } = useDrawerState('home');
 
-function writeTabToLs(index) {
-  if (typeof window === 'undefined') return;
-  try {
-    const raw = window.localStorage.getItem(LS_KEY);
-    const current = raw ? JSON.parse(raw) : {};
-    window.localStorage.setItem(
-      LS_KEY,
-      JSON.stringify({ ...current, [TAB_SUB_KEY]: index })
-    );
-  } catch {
-    // fail silently
-  }
-}
+  const firstName =
+    profile?.display_name?.split(' ')[0] ||
+    user?.email?.split('@')[0] ||
+    'friend';
 
-// ── Tab definitions ───────────────────────────────────────────────────────
+  // Active-state predicate per Slack-pattern reference. /portal exact match for
+  // Sanctuary; prefix-match for /portal/journey + /portal/resources sub-routes.
+  const isSanctuary = pathname === '/portal';
+  const isJourney = pathname.startsWith('/portal/journey');
+  const isResources = pathname.startsWith('/portal/resources');
 
-const TABS = [
-  { id: 'sanctuary', label: 'Sanctuary' },
-  { id: 'journey', label: 'Journey' },
-  { id: 'resources', label: 'Resources' },
-];
-
-// ── Sub-components ────────────────────────────────────────────────────────
-
-/**
- * TabBar — pill-style tab switcher.
- * Three tabs. Active tab uses drawer-active-bg token; inactive uses subtle hover.
- */
-function TabBar({ activeIndex, onChange }) {
   return (
-    <div
-      role="tablist"
-      aria-label="Home drawer sections"
-      className="flex gap-1 px-3 pt-2 pb-1"
-    >
-      {TABS.map((tab, i) => {
-        const isActive = i === activeIndex;
-        return (
-          <button
-            key={tab.id}
-            role="tab"
-            id={`home-tab-${tab.id}`}
-            aria-selected={isActive}
-            aria-controls={`home-tabpanel-${tab.id}`}
-            onClick={() => onChange(i)}
-            style={{
-              ...getTypeStyle('caption', isActive ? 'medium' : 'regular'),
-              padding: '5px 10px',
-              borderRadius: 8,
-              border: 'none',
-              cursor: 'pointer',
-              backgroundColor: isActive
-                ? 'var(--pt-drawer-active-bg-hex, #fafaf9)'
-                : 'transparent',
-              color: isActive
-                ? 'var(--pt-text-primary-hex, #1c1917)'
-                : 'var(--pt-text-muted-hex, #57534e)',
-              transition: 'background-color 150ms ease, color 150ms ease',
-              whiteSpace: 'nowrap',
-              flexShrink: 0,
-            }}
-            onMouseEnter={(e) => {
-              if (!isActive)
-                e.currentTarget.style.backgroundColor =
-                  'var(--pt-drawer-hover-hex, #a8a29e)';
-            }}
-            onMouseLeave={(e) => {
-              if (!isActive)
-                e.currentTarget.style.backgroundColor = 'transparent';
-            }}
-          >
-            {tab.label}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-// ── Sanctuary Tab ─────────────────────────────────────────────────────────
-
-const FEELING_PILLS = [
-  { id: 'flooded', label: 'Flooded' },
-  { id: 'disconnected', label: 'Disconnected' },
-  { id: 'hurt', label: 'Hurt' },
-  { id: 'shutdown', label: 'Shut Down' },
-  { id: 'reactive', label: 'Reactive' },
-];
-
-function TrishaFrameworkRouter() {
-  return (
-    <div className="flex flex-wrap gap-2 px-3 py-1">
-      {FEELING_PILLS.map((f) => (
-        <a
-          key={f.id}
-          href="/portal/rescue-kit"
-          style={{
-            ...getTypeStyle('caption', 'medium'),
-            padding: '6px 12px',
-            borderRadius: 8,
-            backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)',
-            color: 'var(--pt-text-primary-hex, #1c1917)',
-            textDecoration: 'none',
-            transition: 'border-radius 150ms cubic-bezier(0.19,1,0.22,1)',
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.borderRadius = '12px')}
-          onMouseLeave={(e) => (e.currentTarget.style.borderRadius = '8px')}
-        >
-          {f.label}
-        </a>
-      ))}
-    </div>
-  );
-}
-
-function SanctuaryTab({ firstName }) {
-  return (
-    <div
-      role="tabpanel"
-      id="home-tabpanel-sanctuary"
-      aria-labelledby="home-tab-sanctuary"
-    >
-      {/* Header — stacked vertically so welcome heading-2 doesn't compete
-          with AccountSwitch for width at 280px drawer. AccountSwitch sits
-          as an eyebrow row above the welcome (A-03 P0 affordance stays
-          prominent and tappable, but full drawer width goes to the heading). */}
+    <DrawerShell title="Home" ariaContext="Home" drawerId="home">
+      {/* Header — eyebrow row (AccountSwitch P0 affordance) + welcome heading.
+          Stacked vertical so heading-2 doesn't compete with AccountSwitch at
+          280px column width (Wave 8 vertical-stack fix). */}
       <div className="px-3 pb-3 pt-1">
         {/* A-03 P0 safety: account-switch affordance — eyebrow row */}
         <div className="flex justify-end pb-2">
@@ -189,104 +83,42 @@ function SanctuaryTab({ firstName }) {
         </div>
       </div>
 
-      {/* Daily Intention — migrated from Dashboard per §12.1 A-12 / 2.3 literal */}
-      <DrawerSection label="Today's Intention">
-        <div className="px-3 pb-2">
-          <DailyIntentionWidget />
-        </div>
+      {/* ── Primary nav (Slack-pattern vertical nav) ─────────────────────── */}
+      <DrawerSection label="">
+        <DrawerItem
+          icon={Home}
+          label="Sanctuary"
+          to="/portal"
+          isActive={isSanctuary}
+        />
+        <DrawerItem
+          icon={Compass}
+          label="Your Journey"
+          to="/portal/journey"
+          isActive={isJourney}
+        />
+        <DrawerItem
+          icon={BookOpen}
+          label="Your Resources"
+          to="/portal/resources"
+          isActive={isResources}
+        />
       </DrawerSection>
 
-      {/* Today's Focus */}
-      <DrawerSection label="Today's Focus">
-        <div
+      {/* ── Recent (placeholder until useRecentLessons() lands) ──────────── */}
+      {/* TODO Wave 10: derive from progress / lesson_progress for real recents. */}
+      <DrawerSection label="Recent">
+        <p
           className="px-3 py-2"
           style={{
             ...getTypeStyle('caption'),
             color: 'var(--pt-text-muted-hex, #57534e)',
           }}
         >
-          [Trisha-voice placeholder: A small repair today is worth more than a
-          grand gesture tomorrow.]
-        </div>
+          {/* A-11 rest-permission register */}
+          Your recent visits will surface here.
+        </p>
       </DrawerSection>
-
-      {/* How are you feeling? */}
-      <DrawerSection label="How are you feeling?">
-        <TrishaFrameworkRouter />
-      </DrawerSection>
-    </div>
-  );
-}
-
-// ── Journey Tab ───────────────────────────────────────────────────────────
-
-function JourneyTab() {
-  return (
-    <div
-      role="tabpanel"
-      id="home-tabpanel-journey"
-      aria-labelledby="home-tab-journey"
-    >
-      {/* A-11 rest-permission empty-state register */}
-      <EmptyState
-        icon="🌱"
-        message="You haven't started a module yet."
-        sub="No pressure — your path will unfold here when you're ready."
-      />
-    </div>
-  );
-}
-
-// ── Resources Tab ─────────────────────────────────────────────────────────
-
-function ResourcesTab() {
-  return (
-    <div
-      role="tabpanel"
-      id="home-tabpanel-resources"
-      aria-labelledby="home-tab-resources"
-    >
-      {/* A-11 rest-permission empty-state register */}
-      <EmptyState
-        icon="📖"
-        message="Your resources will appear as you unlock them."
-        sub="Nothing to do yet. Come back after exploring a module."
-      />
-    </div>
-  );
-}
-
-// ── HomeDrawer ────────────────────────────────────────────────────────────
-
-export default function HomeDrawer() {
-  const { user, profile } = useAuth();
-
-  // useDrawerState consumed per W-01 §4 contract
-  // eslint-disable-next-line no-unused-vars
-  const { persistedScrollTop, setScrollTop } = useDrawerState('home');
-
-  const firstName =
-    profile?.display_name?.split(' ')[0] ||
-    user?.email?.split('@')[0] ||
-    'friend';
-
-  // Tab state — sync restore from portal-drawer-state-v1 sub-key `tab-home`
-  const [activeTab, setActiveTab] = useState(() => readTabFromLs());
-
-  function handleTabChange(index) {
-    setActiveTab(index);
-    writeTabToLs(index);
-  }
-
-  return (
-    <DrawerShell title="Home" ariaContext="Home">
-      {/* 3-tab IA per §2.3 */}
-      <TabBar activeIndex={activeTab} onChange={handleTabChange} />
-
-      {/* Tab panels */}
-      {activeTab === 0 && <SanctuaryTab firstName={firstName} />}
-      {activeTab === 1 && <JourneyTab />}
-      {activeTab === 2 && <ResourcesTab />}
     </DrawerShell>
   );
 }

@@ -49,6 +49,8 @@ import Downloads from './portal/Downloads';
 import RescueKitPortal from './portal/RescueKitPortal';
 import BookmarksPortal from './portal/BookmarksPortal';
 import CalendarPortal from './portal/CalendarPortal';
+import JourneyView from './portal/JourneyView';
+import ResourcesView from './portal/ResourcesView';
 import PortalLayout from './layouts/PortalLayout';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -129,6 +131,9 @@ function App() {
               <Route path="/portal/rescue-kit" element={<ProtectedRoute><RescueKitPortal /></ProtectedRoute>} />
               <Route path="/portal/bookmarks" element={<ProtectedRoute><BookmarksPortal /></ProtectedRoute>} />
               <Route path="/portal/calendar" element={<ProtectedRoute><CalendarPortal /></ProtectedRoute>} />
+              {/* Wave 9 E1: Home-drawer nav targets — placeholder views per A-11 register */}
+              <Route path="/portal/journey" element={<ProtectedRoute><JourneyView /></ProtectedRoute>} />
+              <Route path="/portal/resources" element={<ProtectedRoute><ResourcesView /></ProtectedRoute>} />
               <Route path="/account/password" element={<ProtectedRoute><AccountPassword /></ProtectedRoute>} />
             </Route>
 

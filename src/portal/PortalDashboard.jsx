@@ -491,6 +491,66 @@ function PortalDashboard({
         </div>
       </section>
 
+      {/* ── How are you feeling? — Trisha framework router (Wave 9 E2 migration) ──
+          Per Wave 9 architectural pivot (drawer = pure nav), the mood pills
+          previously rendered in HomeDrawer now live on the Sanctuary main page.
+          They route to /portal/rescue-kit which is built. */}
+      {canAccessContent && (
+        <section data-animate aria-label="How are you feeling?">
+          <p
+            style={{
+              fontFamily: '"Outfit", sans-serif',
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              color: 'var(--pt-text-muted-hex, #57534e)',
+              margin: '0 0 12px',
+            }}
+          >
+            How are you feeling?
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {[
+              { id: 'flooded', label: 'Flooded' },
+              { id: 'disconnected', label: 'Disconnected' },
+              { id: 'hurt', label: 'Hurt' },
+              { id: 'shutdown', label: 'Shut Down' },
+              { id: 'reactive', label: 'Reactive' },
+            ].map((f) => (
+              <Link
+                key={f.id}
+                to="/portal/rescue-kit"
+                style={{
+                  fontFamily: '"Outfit", sans-serif',
+                  fontSize: 13,
+                  fontWeight: 500,
+                  padding: '8px 16px',
+                  borderRadius: 9999,
+                  backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)',
+                  color: 'var(--pt-text-primary-hex, #1c1917)',
+                  textDecoration: 'none',
+                  border: '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
+                  transition: 'all 150ms cubic-bezier(0.19,1,0.22,1)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    'var(--pt-primary-accent-hex, #B96A5F)';
+                  e.currentTarget.style.color = '#fafaf9';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    'var(--pt-elevation-1-hex, #e7e5e4)';
+                  e.currentTarget.style.color =
+                    'var(--pt-text-primary-hex, #1c1917)';
+                }}
+              >
+                {f.label}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
 
       {/* ── Module Library ─────────────────────────────────── */}

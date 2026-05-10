@@ -18,7 +18,8 @@
  */
 
 import React, { useContext, useEffect, useState } from 'react';
-import { Home } from 'lucide-react';
+import { Home, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { getTypeStyle } from '../design/typography';
 import { drawerContentVariants, useReducedMotion } from '../design/motion';
 import { DrawerMetaContext } from '../context/DrawerMetaContext';
@@ -77,6 +78,8 @@ function useDrawerEntrance(prefersReduced) {
  *   sectionIcon?: React.ComponentType<{className?: string, strokeWidth?: number, 'aria-hidden'?: boolean}>,
  *   flavorToken?: string,
  *   breadcrumb?: string,
+ *   onCollapseToggle?: () => void,
+ *   collapsed?: boolean,
  * }} props
  */
 export function DrawerShell({
@@ -90,6 +93,9 @@ export function DrawerShell({
   sectionIcon: SectionIconProp,
   flavorToken: flavorTokenProp,
   breadcrumb: breadcrumbProp,
+  // Wave 9 E5: drawer hide/show toggle wiring
+  onCollapseToggle,
+  collapsed = false,
 }) {
   // Context fallback: PortalLayout injects these when drawer files aren't yet updated
   const ctx = useContext(DrawerMetaContext);
@@ -111,6 +117,7 @@ export function DrawerShell({
     <aside
       role="complementary"
       aria-label={label}
+      id={drawerId ? `portal-drawer-${drawerId}` : undefined}
       data-portal-drawer
       data-drawer-id={drawerId}
       data-collapsible={collapsible ? 'true' : undefined}
@@ -192,6 +199,42 @@ export function DrawerShell({
               </span>
             </>
           )}
+
+          {/* Wave 9 E5: drawer hide/show chevron — pushed to inline-end edge */}
+          {onCollapseToggle && (
+            <button
+              type="button"
+              onClick={onCollapseToggle}
+              aria-label={collapsed ? 'Show drawer' : 'Hide drawer'}
+              aria-expanded={!collapsed}
+              aria-controls={drawerId ? `portal-drawer-${drawerId}` : undefined}
+              title={collapsed ? 'Show drawer' : 'Hide drawer'}
+              className="ms-auto flex items-center justify-center rounded-md focus-visible:outline-none focus-visible:ring-2"
+              style={{
+                width: 24,
+                height: 24,
+                border: 'none',
+                background: 'transparent',
+                color: 'var(--pt-text-muted-hex, #57534e)',
+                cursor: 'pointer',
+                outlineColor: 'var(--pt-focus-ring-hex, #B96A5F)',
+                flexShrink: 0,
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor =
+                  'var(--pt-elevation-1-hex, #e7e5e4)')
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = 'transparent')
+              }
+            >
+              {collapsed ? (
+                <ChevronRight className="w-3.5 h-3.5" strokeWidth={2} aria-hidden="true" />
+              ) : (
+                <ChevronLeft className="w-3.5 h-3.5" strokeWidth={2} aria-hidden="true" />
+              )}
+            </button>
+          )}
         </div>
       </div>
 
@@ -268,15 +311,19 @@ export function DrawerSection({ label, defaultOpen = true, badge, children }) {
  *
  * All 3 states distinguishable at WCAG AA contrast against text-primary.
  *
+ * Wave 9 E1 extension: pass a `to` prop to render as a `<Link>` for nav cases.
+ * Without `to`, behaves as a plain `<button>` with `onClick` (legacy callers).
+ *
  * @param {{
  *   icon?: React.ComponentType<{className?: string, strokeWidth?: number, 'aria-hidden'?: boolean}>,
  *   label: string,
  *   isActive?: boolean,
  *   onClick?: () => void,
+ *   to?: string,
  *   badge?: number,
  * }} props
  */
-export function DrawerItem({ icon: Icon, label, isActive = false, onClick, badge }) {
+export function DrawerItem({ icon: Icon, label, isActive = false, onClick, to, badge }) {
   const [hovered, setHovered] = useState(false);
 
   let bgColor;
@@ -288,23 +335,20 @@ export function DrawerItem({ icon: Icon, label, isActive = false, onClick, badge
     bgColor = 'transparent';
   }
 
-  return (
-    <button
-      type="button"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onClick={onClick}
-      aria-current={isActive ? 'page' : undefined}
-      className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-start"
-      style={{
-        backgroundColor: bgColor,
-        transition: 'background-color 150ms cubic-bezier(0,0,0.2,1)',
-        color: 'var(--pt-text-primary-hex, #1c1917)',
-        border: 'none',
-        cursor: 'pointer',
-        outline: 'none',
-      }}
-    >
+  const sharedStyle = {
+    backgroundColor: bgColor,
+    transition: 'background-color 150ms cubic-bezier(0,0,0.2,1)',
+    color: 'var(--pt-text-primary-hex, #1c1917)',
+    border: 'none',
+    cursor: 'pointer',
+    outline: 'none',
+    textDecoration: 'none',
+  };
+
+  const sharedClass = 'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-start';
+
+  const inner = (
+    <>
       {Icon && (
         <Icon
           className="w-4 h-4 flex-shrink-0"
@@ -340,6 +384,36 @@ export function DrawerItem({ icon: Icon, label, isActive = false, onClick, badge
           {badge}
         </span>
       )}
+    </>
+  );
+
+  if (to) {
+    return (
+      <Link
+        to={to}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        onClick={onClick}
+        aria-current={isActive ? 'page' : undefined}
+        className={sharedClass}
+        style={sharedStyle}
+      >
+        {inner}
+      </Link>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onClick={onClick}
+      aria-current={isActive ? 'page' : undefined}
+      className={sharedClass}
+      style={sharedStyle}
+    >
+      {inner}
     </button>
   );
 }
