@@ -173,7 +173,7 @@ export default function KpiCards() {
       try {
         const { data: orders, error } = await supabase
           .from('orders')
-          .select('id, amount_total');
+          .select('id, amount_cents');
         if (error) throw error;
         results.orders = orders;
       } catch {
@@ -283,7 +283,7 @@ export default function KpiCards() {
   // Orders
   const ordersRows = Array.isArray(data.orders) ? data.orders : [];
   const orderCount = ordersRows.length;
-  const revenueCents = ordersRows.reduce((sum, o) => sum + (Number(o.amount_total) || 0), 0);
+  const revenueCents = ordersRows.reduce((sum, o) => sum + (Number(o.amount_cents) || 0), 0);
   const revenueDisplay = (revenueCents / 100).toLocaleString('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -309,14 +309,14 @@ export default function KpiCards() {
 
       <StatCard
         icon={Mail}
-        title="Spark Subscribers"
+        title="Spark Signups"
         primary={fmt(data.sparkSubscribers)}
         subtitle="Active email subscribers"
       />
 
       <StatCard
         icon={Calendar}
-        title="Webinar Registrations"
+        title="Webinar Regs"
         primary={fmt(data.webinarRegistrations)}
         subtitle="Total registrants"
       />
