@@ -10,6 +10,7 @@ import { HighlightToolbar, useTextSelection } from './components/HighlightToolba
 import { NoteDrawer } from './components/NoteDrawer';
 import { useHighlights } from './hooks/useHighlights';
 import { useNotes } from './hooks/useNotes';
+import { saveJournalEntry } from '../lib/journal';
 import {
   CheckCircle2,
   PlayCircle,
@@ -176,6 +177,45 @@ function LessonView({
     },
     [selection, lessonId, createHighlight]
   );
+
+  // ── Wave 9 E6: Add-to-Journal quick-capture from selection ─────────────
+  // Saves the selected anchor text as journal_entries.prompt_text and an
+  // empty entry_text the user can extend later on /portal. Confirmation
+  // surfaces as a 2.4s toast at the bottom-right (a11y: role=status).
+  const [journalToast, setJournalToast] = useState(null);
+
+  const handleJournalFromSelection = useCallback(async () => {
+    if (!selection || !lessonId || !user?.id) return;
+    const anchorText = selection.text;
+    try {
+      await saveJournalEntry(user.id, {
+        lessonId,
+        moduleId: currentModule?.id || null,
+        promptText: anchorText,
+        entryText: '',
+        mood: null,
+      });
+      setJournalToast({
+        message: 'Added to your journal',
+        kind: 'ok',
+      });
+    } catch (e) {
+      console.warn('[journal] save failed (migration 014 may be pending):', e?.message);
+      setJournalToast({
+        message: 'Could not save to journal',
+        kind: 'err',
+      });
+    }
+    setSelection(null);
+    window.getSelection()?.removeAllRanges();
+  }, [selection, lessonId, user?.id, currentModule?.id]);
+
+  // Auto-dismiss toast after 2.4s
+  useEffect(() => {
+    if (!journalToast) return undefined;
+    const t = setTimeout(() => setJournalToast(null), 2400);
+    return () => clearTimeout(t);
+  }, [journalToast]);
 
   const handleNoteFromSelection = useCallback(async () => {
     if (!selection || !lessonId) return;
@@ -533,6 +573,7 @@ function LessonView({
       position={selection ? { top: selection.rect.top, left: selection.rect.left, width: selection.rect.width } : null}
       onColor={handleColor}
       onNote={handleNoteFromSelection}
+      onJournal={handleJournalFromSelection}
       onDismiss={() => setSelection(null)}
     />
     <NoteDrawer
@@ -542,6 +583,33 @@ function LessonView({
       onClose={() => setActiveNote(null)}
       onDelete={activeNote ? handleNoteDelete : undefined}
     />
+
+    {/* Wave 9 E6: journal-quick-capture confirmation toast */}
+    {journalToast && (
+      <div
+        role="status"
+        aria-live="polite"
+        style={{
+          position: 'fixed',
+          bottom: 24,
+          insetInlineEnd: 24,
+          zIndex: 60,
+          padding: '10px 16px',
+          borderRadius: 10,
+          backgroundColor:
+            journalToast.kind === 'err'
+              ? 'var(--pt-text-primary-hex, #1c1917)'
+              : 'var(--pt-text-primary-hex, #1c1917)',
+          color: 'var(--pt-text-inverse-hex, #fafaf9)',
+          boxShadow: '0 6px 20px rgba(28,25,23,0.20)',
+          fontFamily: '"Outfit", sans-serif',
+          fontSize: 13,
+          fontWeight: 500,
+        }}
+      >
+        {journalToast.message}
+      </div>
+    )}
     </>
   );
 }
