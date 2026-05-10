@@ -5,6 +5,8 @@ const WebinarsListView = React.lazy(() => import('./pages/admin/WebinarsListView
 const WebinarDetailView = React.lazy(() => import('./pages/admin/WebinarDetailView'));
 const EnrollmentsListView = React.lazy(() => import('./pages/admin/EnrollmentsListView'));
 const EnrollmentDetailView = React.lazy(() => import('./pages/admin/EnrollmentDetailView'));
+const BroadcastsListView = React.lazy(() => import('./pages/admin/BroadcastsListView'));
+const BroadcastDetailView = React.lazy(() => import('./pages/admin/BroadcastDetailView'));
 import ScrollToTop from './components/ScrollToTop';
 import { AuthProvider } from './contexts/AuthContext';
 import { Layout } from './components/Layout';
@@ -124,7 +126,8 @@ function App() {
               <Route path="/admin/enrollments/:id" element={<RequireAdmin><Suspense fallback={<div className="p-8" /> }><EnrollmentDetailView /></Suspense></RequireAdmin>} />
               <Route path="/admin/webinars" element={<RequireAdmin><Suspense fallback={<div className="p-8" /> }><WebinarsListView /></Suspense></RequireAdmin>} />
               <Route path="/admin/webinars/:id" element={<RequireAdmin><Suspense fallback={<div className="p-8" /> }><WebinarDetailView /></Suspense></RequireAdmin>} />
-              <Route path="/admin/broadcasts" element={<RequireAdmin><AdminComingSoon title="Broadcasts" breadcrumb="Broadcasts" /></RequireAdmin>} />
+              <Route path="/admin/broadcasts" element={<RequireAdmin><Suspense fallback={<div className="p-8" /> }><BroadcastsListView /></Suspense></RequireAdmin>} />
+              <Route path="/admin/broadcasts/:broadcast_id" element={<RequireAdmin><Suspense fallback={<div className="p-8" /> }><BroadcastDetailView /></Suspense></RequireAdmin>} />
               <Route path="/admin/content" element={<RequireAdmin><AdminComingSoon title="Modules" breadcrumb="Modules" /></RequireAdmin>} />
               <Route path="/admin/settings" element={<RequireAdmin><AdminComingSoon title="Settings" breadcrumb="Settings" /></RequireAdmin>} />
 
