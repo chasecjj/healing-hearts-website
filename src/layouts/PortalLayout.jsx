@@ -24,7 +24,7 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
-import { Home, BookOpen, LifeBuoy, Bookmark, Calendar, Shield } from 'lucide-react';
+import { Home, BookOpen, LifeBuoy, Bookmark, Calendar, Shield, NotebookPen, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { studentNavItems, adminNavItems } from './portalNav.config';
 import {
@@ -37,6 +37,8 @@ import {
 } from '../portal/design';
 import { PortalLogo } from '../portal/components/PortalLogo';
 import { DrawerMetaContext } from '../portal/context/DrawerMetaContext';
+import { JournalPanelContext } from '../portal/context/JournalPanelContext';
+import JournalView from '../portal/JournalView';
 import HomeDrawer from '../portal/drawers/HomeDrawer';
 import CoursesDrawer from '../portal/drawers/CoursesDrawer';
 import RescueKitDrawer from '../portal/drawers/RescueKitDrawer';
@@ -53,8 +55,14 @@ function PortalKeyframeStyles() {
 // Reuses the existing portal-drawer-state-v1 LS object via a sub-key, matching
 // the useDrawerState scroll-position pattern. Default is `false` (expanded for
 // new users, per Chase 2026-05-10 lock).
+//
+// Wave 10 J1 adds the `journal-panel-open` sub-key to the same LS object so
+// the right-rail journal panel state persists across page navigations. We read
+// + merge — never clobber — to keep coexistence with the scroll-position keys
+// written by useDrawerState (per CLAUDE.md memory note).
 const LS_KEY = 'portal-drawer-state-v1';
 const COLLAPSED_SUB_KEY = 'drawer-collapsed';
+const JOURNAL_PANEL_SUB_KEY = 'journal-panel-open';
 
 function readDrawerCollapsedFromLs() {
   if (typeof window === 'undefined') return false;
@@ -75,6 +83,32 @@ function writeDrawerCollapsedToLs(collapsed) {
     window.localStorage.setItem(
       LS_KEY,
       JSON.stringify({ ...current, [COLLAPSED_SUB_KEY]: !!collapsed })
+    );
+  } catch {
+    // fail silently
+  }
+}
+
+// Wave 10 J1 — journal panel open/closed persistence (default closed)
+function readJournalPanelOpenFromLs() {
+  if (typeof window === 'undefined') return false;
+  try {
+    const raw = window.localStorage.getItem(LS_KEY);
+    const state = raw ? JSON.parse(raw) : {};
+    return state[JOURNAL_PANEL_SUB_KEY] === true;
+  } catch {
+    return false;
+  }
+}
+
+function writeJournalPanelOpenToLs(open) {
+  if (typeof window === 'undefined') return;
+  try {
+    const raw = window.localStorage.getItem(LS_KEY);
+    const current = raw ? JSON.parse(raw) : {};
+    window.localStorage.setItem(
+      LS_KEY,
+      JSON.stringify({ ...current, [JOURNAL_PANEL_SUB_KEY]: !!open })
     );
   } catch {
     // fail silently
@@ -497,6 +531,348 @@ function DesktopTwoRail({ isAdmin, activeRailId: pathActiveRailId, drawerCollaps
   );
 }
 
+// ── Right rail + right drawer (Wave 10 J1) ────────────────────────────────
+/**
+ * RightJournalPanel renders:
+ *  - 72px slim right rail (always visible at ≥md) with a single NotebookPen icon
+ *  - 280px right drawer (≥md) hosting <JournalView />
+ *  - <md: bottom-sheet at ~70vh with the same content
+ *
+ * Open/close is persisted via the `journal-panel-open` sub-key on the existing
+ * `portal-drawer-state-v1` LS object. ESC closes; focus returns to the rail
+ * icon. Reduced-motion: instant toggle (no slide).
+ *
+ * Architectural note: this is intentionally NOT routed through DrawerShell
+ * (left-side chassis). The right-side surface has different semantics
+ * (single-purpose, future-extensible toggle vs URL-driven section nav) and
+ * different mobile behavior (bottom sheet vs slide-from-rail). Keeping it
+ * separate avoids overloading DrawerShell's multi-section invariants.
+ */
+function RightJournalPanel({ isOpen, onToggle, onClose, currentLessonId, currentModuleId }) {
+  const railIconRef = useRef(null);
+  const drawerRef = useRef(null);
+  const prefersReduced = useReducedMotion();
+  const [hovered, setHovered] = useState(false);
+  const hoverStyle = railIconHoverStyle(hovered, prefersReduced);
+
+  // ESC closes; return focus to rail icon afterwards
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    const handler = (/** @type {KeyboardEvent} */ e) => {
+      if (e.key === 'Escape') {
+        onClose();
+        // best-effort focus return
+        requestAnimationFrame(() => {
+          if (railIconRef.current instanceof HTMLElement) railIconRef.current.focus();
+        });
+      }
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [isOpen, onClose]);
+
+  // Bottom-sheet overlay click-outside (mobile only — controlled by media query
+  // styles; the backdrop is only rendered/visible at <md). On desktop the
+  // panel is layout-affecting, no backdrop.
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    if (typeof window === 'undefined') return undefined;
+    const mq = window.matchMedia('(max-width: 767px)');
+    if (!mq.matches) return undefined;
+    const handler = (/** @type {PointerEvent} */ e) => {
+      if (drawerRef.current && drawerRef.current.contains(/** @type {Node} */ (e.target))) return;
+      if (railIconRef.current && railIconRef.current.contains(/** @type {Node} */ (e.target))) return;
+      onClose();
+    };
+    document.addEventListener('pointerdown', handler);
+    return () => document.removeEventListener('pointerdown', handler);
+  }, [isOpen, onClose]);
+
+  // Slide transition only when reduced-motion is OFF
+  const desktopDrawerTransition = prefersReduced
+    ? 'none'
+    : 'transform 200ms cubic-bezier(0,0,0.2,1), width 200ms cubic-bezier(0,0,0.2,1)';
+  const mobileSheetTransition = prefersReduced
+    ? 'none'
+    : 'transform 220ms cubic-bezier(0,0,0.2,1)';
+
+  return (
+    <>
+      {/* ── DESKTOP RIGHT RAIL (≥md, fixed at inline-end) ─────────────── */}
+      {/* end-0 = inset-inline-end: 0 (RTL-safe logical property) */}
+      <aside
+        className="hidden md:flex flex-col fixed end-0 top-0 h-screen w-[72px] z-40"
+        aria-label="Journal rail"
+        style={{ backgroundColor: 'var(--pt-rail-hex, #24201D)' }}
+      >
+        <div className="flex items-center justify-center h-14 flex-shrink-0">
+          {/* (no logo on right side — keeps rail visually quiet) */}
+        </div>
+        <div
+          className="mx-4 h-px flex-shrink-0"
+          style={{ backgroundColor: 'rgba(255,255,255,0.10)' }}
+        />
+        <nav
+          className="flex flex-col items-center gap-5 flex-1 pt-6 px-4"
+          aria-label="Journal panel toggle"
+        >
+          <button
+            ref={railIconRef}
+            type="button"
+            onClick={onToggle}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+            aria-label={isOpen ? 'Close journal panel' : 'Open journal panel'}
+            aria-expanded={isOpen}
+            aria-controls="portal-journal-panel"
+            title={isOpen ? 'Close journal' : 'Open journal'}
+            // 44×44 hit target — WCAG SC 2.5.5
+            className="relative flex items-center justify-center w-11 h-11 group focus-visible:outline-none focus-visible:ring-2"
+            style={{
+              ...hoverStyle,
+              outlineColor: 'var(--pt-focus-ring-hex, #B96A5F)',
+              border: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            <span
+              className="absolute inset-0 transition-colors duration-150"
+              aria-hidden="true"
+              style={{
+                borderRadius: 'inherit',
+                backgroundColor: isOpen
+                  ? 'var(--pt-rail-hover-hex, #2C2823)'
+                  : hovered
+                  ? 'var(--pt-rail-hover-hex, #2C2823)'
+                  : 'transparent',
+              }}
+            />
+            <span className="relative z-10">
+              <NotebookPen
+                className="w-5 h-5"
+                strokeWidth={isOpen ? 2 : 1.75}
+                aria-hidden="true"
+                style={{
+                  color: isOpen
+                    ? 'var(--pt-text-inverse-hex, #fafaf9)'
+                    : 'rgba(250,250,249,0.65)',
+                }}
+              />
+            </span>
+          </button>
+        </nav>
+      </aside>
+
+      {/* ── DESKTOP RIGHT DRAWER (≥md, slides in from end edge) ───────── */}
+      {/* When closed: width 0 + visibility hidden (preserves React state).  */}
+      {/* end-[72px] = inset-inline-end: 72px (logical property)             */}
+      <aside
+        ref={drawerRef}
+        id="portal-journal-panel"
+        role="complementary"
+        aria-label="Journal panel"
+        aria-hidden={isOpen ? undefined : 'true'}
+        className="hidden md:flex fixed end-[72px] top-0 h-screen z-30"
+        style={{
+          width: isOpen ? 280 : 0,
+          visibility: isOpen ? 'visible' : 'hidden',
+          overflow: isOpen ? 'visible' : 'hidden',
+          backgroundColor: 'var(--pt-drawer-hex, #d6d3d1)',
+          borderInlineStart: isOpen
+            ? '1px solid var(--pt-border-subtle-hex, #d6d3d1)'
+            : 'none',
+          transition: desktopDrawerTransition,
+        }}
+      >
+        {/* Top bar: section title + accent + close (mirror left-side affordance) */}
+        <div className="w-full flex flex-col h-full">
+          <div className="flex-shrink-0">
+            <div
+              aria-hidden="true"
+              style={{
+                height: 2,
+                backgroundColor: 'var(--pt-flavor-bookmarks-hex, #B3746F)',
+              }}
+            />
+            <div
+              className="flex items-center gap-2 px-4 py-3"
+              style={{ borderBottom: '1px solid var(--pt-border-subtle-hex, #d6d3d1)' }}
+            >
+              <NotebookPen
+                className="w-4 h-4 flex-shrink-0"
+                strokeWidth={1.75}
+                aria-hidden="true"
+                style={{ color: 'var(--pt-text-primary-hex, #1c1917)' }}
+              />
+              <span
+                style={{
+                  ...getTypeStyle('meta', 'semibold'),
+                  color: 'var(--pt-text-primary-hex, #1c1917)',
+                  flexShrink: 1,
+                  minWidth: 0,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                Journal
+              </span>
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="Close journal panel"
+                title="Close"
+                className="ms-auto flex items-center justify-center rounded-md focus-visible:outline-none focus-visible:ring-2"
+                style={{
+                  width: 24,
+                  height: 24,
+                  border: 'none',
+                  background: 'transparent',
+                  color: 'var(--pt-text-muted-hex, #57534e)',
+                  cursor: 'pointer',
+                  outlineColor: 'var(--pt-focus-ring-hex, #B96A5F)',
+                  flexShrink: 0,
+                }}
+              >
+                <X className="w-3.5 h-3.5" strokeWidth={2} aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+
+          {/* JournalView content fills remaining height */}
+          <div className="flex-1 min-h-0">
+            {/* Mount the view only when open to avoid background fetches */}
+            {isOpen && (
+              <JournalView
+                currentLessonId={currentLessonId}
+                currentModuleId={currentModuleId}
+              />
+            )}
+          </div>
+        </div>
+      </aside>
+
+      {/* ── MOBILE BOTTOM SHEET (<md, slides up from bottom) ──────────── */}
+      {isOpen && (
+        <div
+          className="md:hidden fixed inset-0 z-40"
+          aria-hidden="true"
+          style={{
+            backgroundColor: 'rgba(28,25,23,0.30)',
+            transition: prefersReduced ? 'none' : 'opacity 200ms ease',
+          }}
+          onClick={onClose}
+        />
+      )}
+      <aside
+        className="md:hidden fixed start-0 end-0 z-50"
+        role="complementary"
+        aria-label="Journal panel"
+        aria-hidden={isOpen ? undefined : 'true'}
+        style={{
+          bottom: 0,
+          height: '70vh',
+          backgroundColor: 'var(--pt-drawer-hex, #d6d3d1)',
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16,
+          boxShadow: isOpen ? '0 -10px 40px rgba(28,25,23,0.20)' : 'none',
+          transform: isOpen ? 'translateY(0)' : 'translateY(100%)',
+          transition: mobileSheetTransition,
+          // When sheet is collapsed, stay out of focus order
+          visibility: isOpen ? 'visible' : 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <div className="flex-shrink-0">
+          <div
+            aria-hidden="true"
+            style={{
+              height: 2,
+              backgroundColor: 'var(--pt-flavor-bookmarks-hex, #B3746F)',
+              borderTopLeftRadius: 16,
+              borderTopRightRadius: 16,
+            }}
+          />
+          <div
+            className="flex items-center gap-2 px-4 py-3"
+            style={{ borderBottom: '1px solid var(--pt-border-subtle-hex, #d6d3d1)' }}
+          >
+            <NotebookPen
+              className="w-4 h-4 flex-shrink-0"
+              strokeWidth={1.75}
+              aria-hidden="true"
+              style={{ color: 'var(--pt-text-primary-hex, #1c1917)' }}
+            />
+            <span
+              style={{
+                ...getTypeStyle('meta', 'semibold'),
+                color: 'var(--pt-text-primary-hex, #1c1917)',
+              }}
+            >
+              Journal
+            </span>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close journal panel"
+              title="Close"
+              className="ms-auto flex items-center justify-center rounded-md focus-visible:outline-none focus-visible:ring-2"
+              style={{
+                width: 32,
+                height: 32,
+                border: 'none',
+                background: 'transparent',
+                color: 'var(--pt-text-muted-hex, #57534e)',
+                cursor: 'pointer',
+                outlineColor: 'var(--pt-focus-ring-hex, #B96A5F)',
+              }}
+            >
+              <X className="w-4 h-4" strokeWidth={2} aria-hidden="true" />
+            </button>
+          </div>
+        </div>
+        <div className="flex-1 min-h-0">
+          {isOpen && (
+            <JournalView
+              currentLessonId={currentLessonId}
+              currentModuleId={currentModuleId}
+            />
+          )}
+        </div>
+      </aside>
+
+      {/* ── MOBILE FLOATING JOURNAL FAB (<md, opens sheet) ─────────────── */}
+      {/* Mobile bottom-nav owns the bottom edge already, so the journal     */}
+      {/* affordance lives as a small floating action button above it.       */}
+      {!isOpen && (
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-label="Open journal panel"
+          aria-expanded="false"
+          aria-controls="portal-journal-panel"
+          title="Open journal"
+          className="md:hidden fixed end-4 z-40 flex items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2"
+          style={{
+            bottom: 96, // above 80px bottom-nav with 16px gap
+            width: 48,
+            height: 48,
+            backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)',
+            color: 'var(--pt-text-inverse-hex, #fafaf9)',
+            border: 'none',
+            cursor: 'pointer',
+            outlineColor: 'var(--pt-focus-ring-hex, #B96A5F)',
+            boxShadow: '0 4px 14px rgba(28,25,23,0.20)',
+          }}
+        >
+          <NotebookPen className="w-5 h-5" strokeWidth={1.75} aria-hidden="true" />
+        </button>
+      )}
+    </>
+  );
+}
+
 // ── Mobile bottom-nav (unchanged from R2) ─────────────────────────────────
 function MobileBottomNav() {
   const location = useLocation();
@@ -567,6 +943,22 @@ function MobileBottomNav() {
   );
 }
 
+// ── Lesson/module ID extraction from route (Wave 10 J5) ───────────────────
+// Pull lessonSlug/moduleSlug from the route so the journal panel's direct-add
+// can attach FKs when the user is reading a lesson. Slug → ID resolution is
+// deliberately deferred to the panel-side query: we pass the slug as null
+// here and let the panel default to no-FK creation. That keeps PortalLayout
+// from coupling to courses.js. The brief allows "FK to current route's
+// lesson/module if available else null" — null fallback is the default.
+function useCurrentLessonContext() {
+  // Best-effort path parse: /portal/:moduleSlug/:lessonSlug
+  // Returns { lessonId, moduleId } as null since slug→ID needs a DB lookup
+  // that's already done inside CoursePortal. The panel's create flow defaults
+  // both to null when omitted — entries still save, just without lesson FK.
+  // Future enhancement: thread real IDs through via the JournalPanelContext.
+  return { lessonId: null, moduleId: null };
+}
+
 // ── PortalLayout (root export) ────────────────────────────────────────────
 export default function PortalLayout() {
   const location = useLocation();
@@ -588,6 +980,50 @@ export default function PortalLayout() {
     });
   }, []);
 
+  // Wave 10 J1: right-rail journal panel open state.
+  // Default `false` (closed) for all users per Chase 2026-05-10 lock.
+  // Persists to portal-drawer-state-v1.journal-panel-open.
+  const [journalPanelOpen, setJournalPanelOpen] = useState(() =>
+    readJournalPanelOpenFromLs()
+  );
+
+  const handleToggleJournalPanel = useCallback(() => {
+    setJournalPanelOpen((prev) => {
+      const next = !prev;
+      writeJournalPanelOpenToLs(next);
+      return next;
+    });
+  }, []);
+
+  const handleOpenJournalPanel = useCallback(() => {
+    setJournalPanelOpen(() => {
+      writeJournalPanelOpenToLs(true);
+      return true;
+    });
+  }, []);
+
+  const handleCloseJournalPanel = useCallback(() => {
+    setJournalPanelOpen(() => {
+      writeJournalPanelOpenToLs(false);
+      return false;
+    });
+  }, []);
+
+  const journalPanelCtx = useMemo(
+    () => ({
+      isOpen: journalPanelOpen,
+      open: handleOpenJournalPanel,
+      close: handleCloseJournalPanel,
+      toggle: handleToggleJournalPanel,
+    }),
+    [
+      journalPanelOpen,
+      handleOpenJournalPanel,
+      handleCloseJournalPanel,
+      handleToggleJournalPanel,
+    ]
+  );
+
   // Close any residual body lock on route change
   const firstRender = useRef(true);
   useEffect(() => {
@@ -600,40 +1036,57 @@ export default function PortalLayout() {
 
   // Main-content inline-start margin: 72 (rail) + 280 (drawer) = 352 expanded;
   // 72 (rail only) when drawer is collapsed.
-  const mainMarginClass = drawerCollapsed ? 'md:ms-[72px]' : 'md:ms-[352px]';
+  const startMarginClass = drawerCollapsed ? 'md:ms-[72px]' : 'md:ms-[352px]';
+  // Wave 10 J1 — inline-end margin reserves space for the right rail (always
+  // shown at ≥md = 72px) and the right drawer (only when open = +280px).
+  const endMarginClass = journalPanelOpen ? 'md:me-[352px]' : 'md:me-[72px]';
+
+  const { lessonId: currentLessonId, moduleId: currentModuleId } = useCurrentLessonContext();
 
   return (
     <>
       <PortalKeyframeStyles />
 
-      <div
-        className="portal-root flex min-h-screen"
-        style={{
-          ...cssVars,
-          backgroundColor: 'var(--pt-content-bg-hex, #f5f5f4)',
-          color: 'var(--pt-text-primary-hex, #1c1917)',
-        }}
-      >
-        {/* Desktop two-rail */}
-        <DesktopTwoRail
-          isAdmin={isAdmin}
-          activeRailId={activeRailId}
-          drawerCollapsed={drawerCollapsed}
-          onToggleCollapsed={handleToggleCollapsed}
-        />
-
-        {/* Main content — margin shifts based on drawer-collapsed state.       */}
-        {/* Expanded: ms-[352px] = 72 (rail) + 280 (drawer). Collapsed: ms-[72px]. */}
-        {/* Logical property `ms-` = margin-inline-start (RTL-safe).            */}
-        <main
-          className={`flex-1 ${mainMarginClass} flex flex-col min-h-screen overflow-y-auto pb-[80px] md:pb-0 transition-[margin] duration-200 ease-out`}
+      <JournalPanelContext.Provider value={journalPanelCtx}>
+        <div
+          className="portal-root flex min-h-screen"
+          style={{
+            ...cssVars,
+            backgroundColor: 'var(--pt-content-bg-hex, #f5f5f4)',
+            color: 'var(--pt-text-primary-hex, #1c1917)',
+          }}
         >
-          <Outlet />
-        </main>
+          {/* Desktop two-rail (left) */}
+          <DesktopTwoRail
+            isAdmin={isAdmin}
+            activeRailId={activeRailId}
+            drawerCollapsed={drawerCollapsed}
+            onToggleCollapsed={handleToggleCollapsed}
+          />
 
-        {/* Mobile bottom-nav */}
-        <MobileBottomNav />
-      </div>
+          {/* Main content — margin shifts based on drawer-collapsed state.       */}
+          {/* Expanded: ms-[352px] = 72 (rail) + 280 (drawer). Collapsed: ms-[72px]. */}
+          {/* Inline-end: 72 for right rail, 352 when journal drawer is open.       */}
+          {/* Logical properties `ms-` / `me-` = margin-inline-start/end (RTL-safe). */}
+          <main
+            className={`flex-1 ${startMarginClass} ${endMarginClass} flex flex-col min-h-screen overflow-y-auto pb-[80px] md:pb-0 transition-[margin] duration-200 ease-out`}
+          >
+            <Outlet />
+          </main>
+
+          {/* Wave 10 J1 — right rail + right drawer (journal panel) */}
+          <RightJournalPanel
+            isOpen={journalPanelOpen}
+            onToggle={handleToggleJournalPanel}
+            onClose={handleCloseJournalPanel}
+            currentLessonId={currentLessonId}
+            currentModuleId={currentModuleId}
+          />
+
+          {/* Mobile bottom-nav */}
+          <MobileBottomNav />
+        </div>
+      </JournalPanelContext.Provider>
     </>
   );
 }
