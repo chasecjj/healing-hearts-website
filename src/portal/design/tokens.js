@@ -125,7 +125,13 @@ export const portalTokens = {
   'text-muted': {
     oklch: 'oklch(44.4% 0.011 74)',
     hex: '#57534e',
-    why: 'TW4 Stone-600. AA on content-bg (6.4:1) and drawer (4.9:1).',
+    why: 'TW4 Stone-600. AA on content-bg (6.99:1) and drawer (5.15:1).',
+  },
+
+  'text-quiet': {
+    oklch: 'oklch(42.8% 0.010 40)',
+    hex: '#6b6462',
+    why: 'Wave-10 F-003 fix. AA-passing quiet/caption text (5.31:1 on content-bg). Replaces Stone-400 #a8a29e (2.31:1 — WCAG AA FAIL). Reads visibly lighter than text-muted while clearing 4.5:1.',
   },
 
   'text-inverse': {

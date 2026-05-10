@@ -23,7 +23,7 @@ export default function RescueKitPortal() {
         <h2 className="font-outfit font-semibold text-foreground text-xl mb-2">
           Rescue Kit
         </h2>
-        <p className="text-foreground/55 text-sm leading-relaxed">
+        <p className="text-pt-quiet text-sm leading-relaxed">
           Your framework library is being prepared. Check back soon — we're building
           something beautiful for you.
         </p>
@@ -49,7 +49,7 @@ export default function RescueKitPortal() {
             key={title}
             className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col items-center gap-3 opacity-60"
           >
-            <Lock className="w-5 h-5 text-foreground/40" />
+            <Lock className="w-5 h-5 text-pt-quiet" />
             <span className="font-outfit font-semibold text-sm text-foreground/70 text-center leading-snug">
               {title}
             </span>

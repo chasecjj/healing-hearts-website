@@ -325,7 +325,7 @@ function ModuleOverview({
               <h2 className="font-drama text-2xl sm:text-3xl text-foreground">
                 Learning Journey
               </h2>
-              <span className="font-outfit text-xs font-medium text-foreground/50 uppercase tracking-widest">
+              <span className="font-outfit text-xs font-medium text-pt-quiet uppercase tracking-widest">
                 {totalLessons} Lessons
               </span>
             </div>
@@ -375,7 +375,7 @@ function ModuleOverview({
                           ? 'bg-neutral-200 text-foreground/70'
                           : isActive
                           ? 'text-white'
-                          : 'bg-neutral-200 text-foreground/40'
+                          : 'bg-neutral-200 text-pt-quiet'
                       }`}
                       style={
                         isActive
@@ -396,7 +396,7 @@ function ModuleOverview({
                     <div className="flex-grow min-w-0">
                       <span
                         className={`text-[10px] font-outfit font-bold uppercase tracking-widest block ${
-                          isCompleted ? 'text-foreground/50' : 'text-foreground/40'
+                          isCompleted ? 'text-pt-quiet' : 'text-pt-quiet'
                         }`}
                         style={
                           isActive
@@ -413,7 +413,7 @@ function ModuleOverview({
 
                     {/* Status badge */}
                     {isCompleted && (
-                      <span className="text-xs font-outfit font-bold text-foreground/60 flex-shrink-0">
+                      <span className="text-xs font-outfit font-bold text-pt-quiet flex-shrink-0">
                         Completed
                       </span>
                     )}
@@ -450,7 +450,7 @@ function ModuleOverview({
                 <h4 className="font-outfit text-lg font-bold text-foreground mb-2">
                   Reflection Journal
                 </h4>
-                <p className="text-sm text-foreground/50 mb-6 leading-relaxed">
+                <p className="text-sm text-pt-quiet mb-6 leading-relaxed">
                   A guided worksheet to document your reflections and emotional triggers from this module.
                 </p>
                 {currentModule?.workbook_storage_path ? (
@@ -464,7 +464,7 @@ function ModuleOverview({
                     <Download className="w-4 h-4 group-hover/btn:translate-y-0.5 transition-transform" />
                   </button>
                 ) : (
-                  <span className="text-foreground/30 font-outfit text-xs font-bold uppercase tracking-widest">
+                  <span className="text-pt-quiet font-outfit text-xs font-bold uppercase tracking-widest">
                     Coming Soon
                   </span>
                 )}
@@ -483,7 +483,7 @@ function ModuleOverview({
                 <h4 className="font-outfit text-lg font-bold text-foreground mb-2">
                   Grounding Meditation
                 </h4>
-                <p className="text-sm text-foreground/50 mb-6 leading-relaxed">
+                <p className="text-sm text-pt-quiet mb-6 leading-relaxed">
                   A guided audio experience to help you anchor yourself before deep exploration.
                 </p>
                 {meditationSrc ? (
@@ -506,7 +506,7 @@ function ModuleOverview({
                     )}
                   </div>
                 ) : (
-                  <span className="text-foreground/30 font-outfit text-xs font-bold uppercase tracking-widest">
+                  <span className="text-pt-quiet font-outfit text-xs font-bold uppercase tracking-widest">
                     Coming Soon
                   </span>
                 )}
@@ -520,7 +520,7 @@ function ModuleOverview({
           <div className="sticky top-8 space-y-8">
             {/* Progress Circle Card */}
             <div className="bg-neutral-50 rounded-[2rem] p-8 sm:p-10 text-center relative overflow-hidden">
-              <h3 className="font-outfit text-xs font-bold uppercase tracking-[0.2em] text-foreground/50 mb-10">
+              <h3 className="font-outfit text-xs font-bold uppercase tracking-[0.2em] text-pt-quiet mb-10">
                 Growth Progress
               </h3>
 
@@ -583,7 +583,7 @@ function ModuleOverview({
               </p>
 
               <div className="space-y-4">
-                <div className="flex justify-between text-xs font-outfit font-medium text-foreground/50 px-2">
+                <div className="flex justify-between text-xs font-outfit font-medium text-pt-quiet px-2">
                   <span>Milestone: Lessons</span>
                   <span>
                     {completedLessons}/{totalLessons}
@@ -640,7 +640,7 @@ function ModuleOverview({
       <nav className="fixed bottom-[96px] md:bottom-8 left-1/2 -translate-x-1/2 z-50 flex justify-between gap-8 sm:gap-12 items-center bg-white/80 backdrop-blur-xl rounded-full px-6 sm:px-8 py-3 w-auto min-w-[280px] sm:min-w-[320px] shadow-[0_8px_30px_-4px_rgba(7,58,71,0.15)]">
         <button
           onClick={goBackToDashboard}
-          className="flex items-center gap-2 text-foreground/50 hover:text-foreground transition-colors group"
+          className="flex items-center gap-2 text-pt-quiet hover:text-foreground transition-colors group"
         >
           <ChevronLeft className="w-4 h-4" />
           <span className="font-outfit text-xs font-medium tracking-widest uppercase hidden sm:inline">

@@ -263,9 +263,9 @@ function PortalDashboard({
       </section>
 
       {/* ── Educational disclaimer ─────────────────────────── */}
-      <p className="font-sans text-xs text-foreground/30 leading-relaxed max-w-2xl -mt-4" data-animate>
+      <p className="font-sans text-xs text-pt-quiet leading-relaxed max-w-2xl -mt-4" data-animate>
         This program is for educational purposes only and is not a substitute for professional therapy, medical advice, or clinical treatment.
-        If you are in crisis, please call <strong className="text-foreground/40">988</strong> (Suicide &amp; Crisis Lifeline) or <strong className="text-foreground/40">1-800-799-7233</strong> (Domestic Violence Hotline).
+        If you are in crisis, please call <strong className="text-pt-quiet">988</strong> (Suicide &amp; Crisis Lifeline) or <strong className="text-pt-quiet">1-800-799-7233</strong> (Domestic Violence Hotline).
       </p>
 
 
@@ -366,7 +366,7 @@ function PortalDashboard({
                     <h3 className="font-outfit text-base font-semibold mb-1 transition-colors">
                       {c.title}
                     </h3>
-                    <p className="text-sm text-foreground/50 line-clamp-2 leading-relaxed mb-3">
+                    <p className="text-sm text-pt-quiet line-clamp-2 leading-relaxed mb-3">
                       {c.description}
                     </p>
                     <p
@@ -443,13 +443,13 @@ function PortalDashboard({
               <h2 className="font-drama text-3xl sm:text-4xl text-foreground mb-4">
                 Module {activeModule.module_number}: {activeModule.title}
               </h2>
-              <p className="text-foreground/60 mb-12 max-w-md text-sm leading-relaxed">
+              <p className="text-pt-quiet mb-12 max-w-md text-sm leading-relaxed">
                 {activeModule.description || 'Continue your healing journey through this module.'}
               </p>
               <div className="mt-auto">
                 <div className="flex justify-between items-end mb-4">
                   <div>
-                    <span className="text-sm font-outfit text-foreground/50">Progress</span>
+                    <span className="text-sm font-outfit text-pt-quiet">Progress</span>
                     <div className="text-2xl font-drama italic text-foreground">
                       {activeModuleProgress}% Completed
                     </div>
@@ -558,7 +558,7 @@ function PortalDashboard({
         <div className="flex justify-between items-end mb-10">
           <div>
             <h2 className="font-drama text-3xl mb-2 text-foreground">Explore the Library</h2>
-            <p className="text-foreground/50">Wisdom curated for every step of your path.</p>
+            <p className="text-pt-quiet">Wisdom curated for every step of your path.</p>
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -656,7 +656,7 @@ function PortalDashboard({
                     <div className="absolute top-4 right-4">
                       <Lock
                         className="w-4 h-4"
-                        style={{ color: 'var(--pt-text-quiet-hex, #a8a29e)' }}
+                        style={{ color: 'var(--pt-text-quiet-hex, #6b6462)' }}
                       />
                     </div>
                   )}
@@ -726,7 +726,7 @@ function PortalDashboard({
                       fontFamily: '"Outfit", sans-serif',
                       fontSize: 11,
                       letterSpacing: '0.06em',
-                      color: 'var(--pt-text-quiet-hex, #a8a29e)',
+                      color: 'var(--pt-text-quiet-hex, #6b6462)',
                     }}
                   >
                     <span>{mod.lessons?.length || 0} Lessons</span>

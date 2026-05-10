@@ -30,12 +30,12 @@ export default function LessonNotesPanel({ lessonId }) {
         aria-expanded={expanded}
       >
         <div className="flex items-center gap-3">
-          <StickyNote className="w-5 h-5 text-foreground/50" />
+          <StickyNote className="w-5 h-5 text-pt-quiet" />
           <span className="font-outfit font-semibold text-sm text-foreground/80">
             My Notes
           </span>
           {notes && notes.length > 0 && !expanded && (
-            <span className="text-xs text-foreground/40 font-sans truncate max-w-[200px]">
+            <span className="text-xs text-pt-quiet font-sans truncate max-w-[200px]">
               {notes.slice(0, 50)}...
             </span>
           )}
@@ -43,7 +43,7 @@ export default function LessonNotesPanel({ lessonId }) {
         <div className="flex items-center gap-3">
           {/* Save status */}
           {expanded && (
-            <span className="text-xs font-sans text-foreground/40">
+            <span className="text-xs font-sans text-pt-quiet">
               {saving && 'Saving...'}
               {!saving && error && (
                 <span className="text-red-500">{error}</span>
@@ -57,7 +57,7 @@ export default function LessonNotesPanel({ lessonId }) {
             </span>
           )}
           <ChevronDown
-            className={`w-4 h-4 text-foreground/40 transition-transform duration-200 ${
+            className={`w-4 h-4 text-pt-quiet transition-transform duration-200 ${
               expanded ? 'rotate-180' : ''
             }`}
           />
@@ -78,7 +78,7 @@ export default function LessonNotesPanel({ lessonId }) {
               aria-label="Lesson notes"
             />
           )}
-          <p className="text-xs text-foreground/30 mt-2 font-sans">
+          <p className="text-xs text-pt-quiet mt-2 font-sans">
             Your private notes — only you can see these.
           </p>
         </div>
