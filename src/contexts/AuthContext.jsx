@@ -25,9 +25,28 @@ export function AuthProvider({ children }) {
     return data;
   }
 
-  // Create profile if it doesn't exist (e.g., on first login)
+  // Create profile if it doesn't exist (e.g., on first login).
+  // Strategy: read-first; insert only if missing. Avoids upsert+ignoreDuplicates
+  // which returns 0 rows on conflict and breaks .single() with PGRST116. Also
+  // preserves any server-side role updates (e.g., admin promotion) by NEVER
+  // writing on the existing-row path.
   async function ensureProfile(userId, email, displayName) {
-    const { data, error } = await supabase
+    // 1. Try to read existing profile.
+    const { data: existing, error: readError } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('id', userId)
+      .maybeSingle();
+
+    if (readError) {
+      console.error('Error reading profile:', readError);
+      return null;
+    }
+    if (existing) return existing;
+
+    // 2. Missing — create it. Use upsert with maybeSingle so a concurrent
+    //    insert (race between two tabs) doesn't surface as PGRST116.
+    const { data: created, error: writeError } = await supabase
       .from('user_profiles')
       .upsert(
         {
@@ -38,13 +57,21 @@ export function AuthProvider({ children }) {
         { onConflict: 'id', ignoreDuplicates: true }
       )
       .select()
-      .single();
+      .maybeSingle();
 
-    if (error) {
-      console.error('Error ensuring profile:', error);
+    if (writeError) {
+      console.error('Error creating profile:', writeError);
       return null;
     }
-    return data;
+    if (created) return created;
+
+    // 3. Race winner inserted between our SELECT and INSERT — re-read.
+    const { data: refetched } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('id', userId)
+      .maybeSingle();
+    return refetched;
   }
 
   useEffect(() => {
