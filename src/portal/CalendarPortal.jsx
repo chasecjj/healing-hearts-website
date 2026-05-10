@@ -92,8 +92,13 @@ export default function CalendarPortal() {
                   ? 'var(--pt-text-primary-hex, #1c1917)'
                   : 'transparent',
                 border: '1px solid',
+                // MED-08 fix: today (when not selected) gets a soft accent ring
+                // so the breath-pulse on the numeral has visual chrome to read
+                // against. Selected wins over today (heavier dark fill).
                 borderColor: isSelected
                   ? 'var(--pt-text-primary-hex, #1c1917)'
+                  : isToday
+                  ? 'var(--pt-primary-accent-soft-hex, rgba(185,106,95,0.35))'
                   : 'transparent',
                 cursor: 'pointer',
               }}
@@ -124,6 +129,11 @@ export default function CalendarPortal() {
                 {DAY_ABBREV[d.getDay()]}
               </span>
               <span
+                // MED-08 fix: apply pt-today-pulse breath animation to the
+                // numeral when today and not selected. The keyframe lives in
+                // src/index.css (4s ease-in-out, opacity 1 → 0.55 → 1) and
+                // honors prefers-reduced-motion (animation: none under reduce).
+                className={isToday && !isSelected ? 'pt-today-pulse' : ''}
                 style={{
                   fontFamily: '"Playfair Display", Georgia, serif',
                   fontWeight: 400,

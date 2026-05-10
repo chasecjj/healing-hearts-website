@@ -66,29 +66,64 @@ function ModuleOverview({
     isLessonCompleted(l.id)
   ).length || 0;
 
-  // Build timeline lesson list
+  // Build timeline lesson list — Axis F (2026-05-10):
+  // Modules 1+2 use parent-as-index pattern (migration 022). Parent rows have
+  // intentionally minimal 2-block content_json acting as INDEX PAGES; real
+  // content lives in 24+20 = 44 sub-lessons (sort_order 101+, 201+, …).
+  // Previously this filter was `!l.parent_lesson_id` only, so users only ever
+  // saw parent indexes and never the sub-lessons. We now render a flat
+  // chronological list using the lesson order from useCourseData (which
+  // already orders by sort_order), letting parents appear as section headers
+  // and sub-lessons underneath as indented entries.
   const timelineLessons = useMemo(() => {
     if (!currentModule?.lessons) return [];
-    // Only top-level lessons (no children) for the timeline
-    const topLevel = currentModule.lessons.filter((l) => !l.parent_lesson_id);
     let foundIncomplete = false;
 
-    return topLevel.map((lesson) => {
+    // Group by parent → render parents in document order, then immediately
+    // their children (indent flag carries through to render).
+    const parents = currentModule.lessons.filter((l) => !l.parent_lesson_id);
+    const childrenByParent = new Map();
+    currentModule.lessons.forEach((l) => {
+      if (l.parent_lesson_id) {
+        const arr = childrenByParent.get(l.parent_lesson_id) || [];
+        arr.push(l);
+        childrenByParent.set(l.parent_lesson_id, arr);
+      }
+    });
+
+    const flat = [];
+    parents.forEach((parent, parentIdx) => {
+      const kids = (childrenByParent.get(parent.id) || []).slice().sort(
+        (a, b) => a.sort_order - b.sort_order
+      );
+      // Parent label: "1.1" style (module.parentIdx+1)
+      flat.push({
+        ...parent,
+        isParent: true,
+        hasChildren: kids.length > 0,
+        label: `${currentModule.module_number}.${parentIdx + 1}`,
+      });
+      kids.forEach((kid, kidIdx) => {
+        flat.push({
+          ...kid,
+          isParent: false,
+          isChild: true,
+          // Child label: "1.1.1" — preserves hierarchy in UI
+          label: `${currentModule.module_number}.${parentIdx + 1}.${kidIdx + 1}`,
+        });
+      });
+    });
+
+    return flat.map((lesson) => {
       const completed = isLessonCompleted(lesson.id);
       let status = 'locked';
-
       if (completed) {
         status = 'completed';
       } else if (!foundIncomplete) {
         status = 'in-progress';
         foundIncomplete = true;
       }
-
-      return {
-        ...lesson,
-        status,
-        label: `${currentModule.module_number}.${lesson.sort_order}`,
-      };
+      return { ...lesson, status };
     });
   }, [currentModule, isLessonCompleted]);
 
@@ -277,7 +312,11 @@ function ModuleOverview({
         </div>
       </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 px-4 sm:px-8 pb-24 max-w-7xl mx-auto">
+      {/* LOW-09 fix: pb-[180px] at <md to clear PortalLayout mobile bottom-nav
+          (80px) + ModuleOverview's own floating "Dashboard / Start Lesson" pill
+          (~64px sitting at bottom-8) + safe spacing. md+ collapses back to
+          pb-24 since the desktop layout has neither overlay. */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 px-4 sm:px-8 pb-[180px] md:pb-24 max-w-7xl mx-auto">
         {/* ── Left Column: Journey Timeline ────────────────── */}
         <div className="lg:col-span-8 space-y-12">
           {/* Learning Journey */}
@@ -296,11 +335,15 @@ function ModuleOverview({
                 const isCompleted = lesson.status === 'completed';
                 const isActive = lesson.status === 'in-progress';
                 const isLocked = lesson.status === 'locked';
+                // Axis F: child rows indent under their parent for hierarchy.
+                // sm+ gets a deeper indent; mobile keeps a smaller one so the
+                // row content still has breathing room.
+                const indentClass = lesson.isChild ? 'ms-6 sm:ms-12' : '';
 
                 return (
                   <div
                     key={lesson.id}
-                    className={`relative flex items-center gap-5 p-5 rounded-2xl transition-all ${
+                    className={`relative flex items-center gap-5 p-5 rounded-2xl transition-all ${indentClass} ${
                       isCompleted
                         ? 'bg-white hover:bg-neutral-50 hover:shadow-sm cursor-pointer'
                         : isActive
@@ -591,7 +634,10 @@ function ModuleOverview({
       </div>
 
       {/* ── Bottom Navigation Bar ────────────────────────── */}
-      <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex justify-between gap-8 sm:gap-12 items-center bg-white/80 backdrop-blur-xl rounded-full px-6 sm:px-8 py-3 w-auto min-w-[280px] sm:min-w-[320px] shadow-[0_8px_30px_-4px_rgba(7,58,71,0.15)]">
+      {/* LOW-09: at <md the PortalLayout mobile bottom-nav is 80px tall and
+          fixed at bottom-0; lift this floating pill to bottom-[96px] so it
+          clears the bottom-nav. md+ keeps original bottom-8 placement. */}
+      <nav className="fixed bottom-[96px] md:bottom-8 left-1/2 -translate-x-1/2 z-50 flex justify-between gap-8 sm:gap-12 items-center bg-white/80 backdrop-blur-xl rounded-full px-6 sm:px-8 py-3 w-auto min-w-[280px] sm:min-w-[320px] shadow-[0_8px_30px_-4px_rgba(7,58,71,0.15)]">
         <button
           onClick={goBackToDashboard}
           className="flex items-center gap-2 text-foreground/50 hover:text-foreground transition-colors group"

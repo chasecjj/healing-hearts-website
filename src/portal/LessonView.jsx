@@ -131,6 +131,22 @@ function LessonView({
     [currentModule]
   );
 
+  // Axis F (2026-05-10): when the current lesson is a parent-as-index row
+  // (parent_lesson_id null AND has children pointing back to it), build a
+  // sorted list of its sub-lessons so the LessonView can render a "Lessons
+  // in this section" ToC below the curated intro blocks. Modules 1+2 use
+  // this pattern (migration 022). Other modules typically have zero children
+  // so this list is empty and the ToC block does not render.
+  const childLessons = useMemo(() => {
+    if (!currentLesson || currentLesson.parent_lesson_id || !currentModule?.lessons) {
+      return [];
+    }
+    return currentModule.lessons
+      .filter((l) => l.parent_lesson_id === currentLesson.id)
+      .slice()
+      .sort((a, b) => a.sort_order - b.sort_order);
+  }, [currentLesson, currentModule]);
+
   const completed = currentLesson ? isLessonCompleted(currentLesson.id) : false;
   const hasVideo = !!currentLesson?.mux_playback_id;
   const { startPosition, savePosition } = useVideoProgress(
@@ -448,9 +464,147 @@ function LessonView({
                 </p>
               ) : (
                 <LessonContent
-                  contentJson={currentLesson?.content_json}
+                  contentJson={(() => {
+                    // MED-07 fix: filter the leading `heading` block when its
+                    // content equals the lesson title. The hero already renders
+                    // the title as <h2>; LessonContent's HeadingBlock would
+                    // emit a second <h2> with the same text, which screen
+                    // readers + visual layout perceive as title/title
+                    // duplication. We strip ONLY the first block and only when
+                    // it matches — preserves intentional intra-content headings.
+                    const cj = currentLesson?.content_json;
+                    if (!cj || !Array.isArray(cj.blocks) || cj.blocks.length === 0) return cj;
+                    const first = cj.blocks[0];
+                    const titleNorm = (currentLesson?.title || '').trim().toLowerCase();
+                    const firstText = (first?.content || first?.text || '').trim().toLowerCase();
+                    if (first?.type === 'heading' && firstText && firstText === titleNorm) {
+                      return { ...cj, blocks: cj.blocks.slice(1) };
+                    }
+                    return cj;
+                  })()}
                   lessonId={currentLesson?.id}
                 />
+              )}
+
+              {/* ── Axis F: Lessons-in-this-section ToC (parent-as-index pattern) ──
+                   When a parent-index lesson is the active route, list its
+                   sub-lessons below the curated intro blocks so users can
+                   navigate into the actual content. Empty list = no render. */}
+              {childLessons.length > 0 && (
+                <nav
+                  aria-label="Lessons in this section"
+                  style={{
+                    marginTop: 12,
+                    paddingTop: 28,
+                    borderTop: '1px solid var(--pt-border-soft-hex, #e7e5e4)',
+                  }}
+                >
+                  <p
+                    style={{
+                      fontFamily: '"Outfit", sans-serif',
+                      fontSize: 11,
+                      fontWeight: 600,
+                      letterSpacing: '0.24em',
+                      textTransform: 'uppercase',
+                      color: 'var(--pt-text-muted-hex, #57534e)',
+                      margin: '0 0 18px',
+                    }}
+                  >
+                    Lessons in this section
+                  </p>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 10 }}>
+                    {childLessons.map((child, i) => {
+                      const childCompleted = isLessonCompleted(child.id);
+                      const minutes = child.content_json?.estimated_minutes;
+                      return (
+                        <li key={child.id}>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              navigateToLesson(currentModule, child)
+                            }
+                            style={{
+                              width: '100%',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              gap: 16,
+                              padding: '14px 18px',
+                              borderRadius: 12,
+                              border: '1px solid var(--pt-border-soft-hex, #e7e5e4)',
+                              backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
+                              cursor: 'pointer',
+                              textAlign: 'start',
+                              transition: 'all 150ms ease',
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.borderColor =
+                                'var(--pt-primary-accent-hex, #B96A5F)';
+                              e.currentTarget.style.boxShadow =
+                                '0 1px 0 rgba(28,25,23,0.02), 0 14px 30px -22px rgba(28,25,23,0.16)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.borderColor =
+                                'var(--pt-border-soft-hex, #e7e5e4)';
+                              e.currentTarget.style.boxShadow = 'none';
+                            }}
+                          >
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 14, minWidth: 0 }}>
+                              <span
+                                aria-hidden="true"
+                                style={{
+                                  flexShrink: 0,
+                                  fontFamily: '"Outfit", sans-serif',
+                                  fontSize: 11,
+                                  fontWeight: 700,
+                                  letterSpacing: '0.18em',
+                                  color: childCompleted
+                                    ? 'var(--pt-text-quiet-hex, #a8a29e)'
+                                    : 'var(--pt-primary-accent-hex, #B96A5F)',
+                                  minWidth: 28,
+                                }}
+                              >
+                                {String(i + 1).padStart(2, '0')}
+                              </span>
+                              <span
+                                style={{
+                                  fontFamily: '"Plus Jakarta Sans", sans-serif',
+                                  fontSize: 15,
+                                  fontWeight: 500,
+                                  color: 'var(--pt-text-primary-hex, #1c1917)',
+                                  textDecoration: childCompleted ? 'line-through' : 'none',
+                                  textDecorationColor: 'var(--pt-text-quiet-hex, #a8a29e)',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap',
+                                }}
+                              >
+                                {child.title}
+                              </span>
+                            </span>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+                              {minutes && (
+                                <span
+                                  style={{
+                                    fontFamily: '"Outfit", sans-serif',
+                                    fontSize: 11,
+                                    color: 'var(--pt-text-quiet-hex, #a8a29e)',
+                                  }}
+                                >
+                                  {minutes} min
+                                </span>
+                              )}
+                              <ChevronRight
+                                className="w-4 h-4"
+                                style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+                              />
+                            </span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </nav>
               )}
 
               {/* ── Caption/transcript slot (3.14: progressive <details>, i18n-safe) ── */}

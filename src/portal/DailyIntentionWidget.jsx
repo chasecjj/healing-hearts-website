@@ -159,7 +159,12 @@ export default function DailyIntentionWidget() {
               value={draftText}
               onChange={(e) => setDraftText(e.target.value)}
               placeholder="Today, I will..."
-              className="min-h-[72px] bg-white"
+              // LOW-07 fix: Scoria's Textarea bakes
+              // `focus-visible:ring-primary-500` into its base classes (teal in
+              // HH config). Override with the warm-stone accent token so the
+              // focus ring matches portal palette. Tailwind merges later
+              // utilities last, so consumer ring-* wins over Scoria's default.
+              className="min-h-[72px] bg-white focus-visible:ring-accent focus-visible:ring-offset-background"
               maxLength={500}
             />
           </div>

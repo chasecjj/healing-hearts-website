@@ -562,14 +562,18 @@ function PortalDashboard({
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {course?.modules?.map((mod) => {
+          {course?.modules?.map((mod, idx) => {
             const modProgress = (mod.is_preview || canAccessContent) ? getModuleProgress(mod) : 0;
             const isLocked = !mod.is_preview && !canAccessContent;
 
             // Wave 7 design pass — module-cipher treatment.
             // Large display numeral as visual anchor, subtle warm-cream surface,
             // accent-coral progress dot replacing the prior flat banner block.
-            const numeral = String(mod.module_number).padStart(2, '0');
+            // LOW-08 fix: derive cipher from sort-order index, not module_number.
+            // Module rows like "module-f" (legacy data garbage; recommend DELETE
+            // via reports/module-f-cleanup.sql) used to render "0F" because the
+            // module_number string contained a hex letter. Index is robust.
+            const numeral = String(idx + 1).padStart(2, '0');
             return (
               <article
                 key={mod.id}
