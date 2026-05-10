@@ -758,11 +758,11 @@ function LessonView({
         via Tab. Duration: 5s for success, 2.4s for error.                     */}
     {journalToast && (
       <div
+        // Mobile: bottom-24 (96px) clears the 80px MobileBottomNav + matches
+        // FAB clearance. Desktop: bottom-6 (24px) per original design.
+        // Tailwind responsive class so it stays declarative across viewports.
+        className="fixed end-6 z-[60] bottom-24 md:bottom-6"
         style={{
-          position: 'fixed',
-          bottom: 24,
-          insetInlineEnd: 24,
-          zIndex: 60,
           padding: '10px 16px',
           borderRadius: 10,
           backgroundColor: 'var(--pt-text-primary-hex, #1c1917)',

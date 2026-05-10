@@ -23,19 +23,41 @@
  * for scroll-position sub-state per W-01 §4.
  */
 
-import React from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Home, Compass, BookOpen } from 'lucide-react';
 import { DrawerShell, DrawerSection, DrawerItem } from './DrawerShell';
 import { useDrawerState } from '../hooks/useDrawerState';
 import { getTypeStyle } from '../design/typography';
 import { useAuth } from '../../contexts/AuthContext';
+import { clearAllRailState } from '../lib/railStateReset';
 
 // ── HomeDrawer ────────────────────────────────────────────────────────────
 
 export default function HomeDrawer() {
-  const { user, profile } = useAuth();
+  const { user, profile, signOut } = useAuth();
+  const navigate = useNavigate();
   const { pathname } = useLocation();
+  const [switching, setSwitching] = useState(false);
+
+  // P0 shared-device safety per spec §12.1 A-03. Canonical entry point lives
+  // in the rail-bottom avatar popup (PortalLayout) so it's reachable from
+  // every drawer. This visible backstop in HomeDrawer ensures users in
+  // urgency (shared device, abuser context) don't have to discover the
+  // popup chrome to find it. Muted register (not terracotta CTA) per
+  // trauma-informed framing — "here when you need it", not "press now".
+  async function handleSwitchAccount() {
+    if (switching) return;
+    setSwitching(true);
+    try {
+      await signOut();
+      clearAllRailState();
+      navigate('/login', { replace: true });
+    } catch (err) {
+      console.error('[HomeDrawer] switch-account failed:', err);
+      setSwitching(false);
+    }
+  }
 
   // useDrawerState consumed per W-01 §4 contract (scroll-position sub-state)
   // eslint-disable-next-line no-unused-vars
@@ -74,6 +96,28 @@ export default function HomeDrawer() {
             {/* A-11 rest-permission register */}
             Welcome back — nothing pressing. Settle in.
           </p>
+
+          {/* P0 A-03 safety backstop — shared-device account-switch link */}
+          <button
+            type="button"
+            onClick={handleSwitchAccount}
+            disabled={switching}
+            style={{
+              ...getTypeStyle('caption'),
+              color: 'var(--pt-text-muted-hex, #57534e)',
+              background: 'transparent',
+              border: 'none',
+              padding: 0,
+              marginTop: 10,
+              cursor: switching ? 'not-allowed' : 'pointer',
+              textDecoration: 'underline',
+              textUnderlineOffset: 2,
+              opacity: switching ? 0.6 : 1,
+            }}
+            aria-label="Not you? Switch account — signs out and redirects to login"
+          >
+            {switching ? 'Signing out…' : 'Not you? Switch account'}
+          </button>
         </div>
       </div>
 
