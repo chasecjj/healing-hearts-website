@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Mail, Lock, ArrowRight, Sparkles, CheckCircle } from 'lucide-react';
+import { Mail, ArrowRight, Sparkles, CheckCircle } from 'lucide-react';
 import usePageMeta from '../hooks/usePageMeta';
 import { errorCopyFor } from '../lib/authErrorCopy';
+import PasswordInput from '../components/auth/PasswordInput';
 
 export default function Login() {
   usePageMeta('Login', 'Sign in to your Healing Hearts account.');
@@ -108,16 +109,17 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-background flex">
       {/* Left — Branding Panel */}
-      <div className="hidden lg:flex lg:w-1/2 bg-primary text-background flex-col justify-between p-16 relative overflow-hidden">
+      {/* Wave-9 MED-01/LOW-06: surface at md (768) to fix tablet orphaned-form whitespace */}
+      <div className="hidden md:flex md:w-2/5 lg:w-1/2 bg-primary text-background flex-col justify-between p-10 lg:p-16 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-accent/20 rounded-full blur-[120px]" />
         <div className="relative z-10">
           <Link to="/" className="font-outfit font-bold text-2xl">Healing Hearts.</Link>
         </div>
         <div className="relative z-10">
-          <h2 className="font-drama italic text-5xl leading-tight mb-6">
+          <h2 className="font-drama italic text-3xl lg:text-5xl leading-tight mb-6">
             Welcome back to your journey.
           </h2>
-          <p className="font-sans font-light text-background/80 text-lg leading-relaxed max-w-md">
+          <p className="font-sans font-light text-background/80 text-base lg:text-lg leading-relaxed max-w-md">
             Every step forward is a step toward the marriage you both deserve.
           </p>
         </div>
@@ -131,7 +133,7 @@ export default function Login() {
       {/* Right — Login Form */}
       <div className="flex-1 flex items-center justify-center px-6 py-12">
         <div className="max-w-md w-full">
-          <Link to="/" className="font-outfit font-bold text-xl text-primary lg:hidden block mb-10">
+          <Link to="/" className="font-outfit font-bold text-xl text-primary md:hidden block mb-10">
             Healing Hearts.
           </Link>
 
@@ -175,8 +177,10 @@ export default function Login() {
           )}
 
           {/* Mode Toggle */}
+          {/* Wave-9 LOW-03: defensive type="button" so toggles never submit ambient forms */}
           <div className="flex gap-2 mb-6">
             <button
+              type="button"
               onClick={() => setMode('password')}
               className={`flex-1 py-2.5 rounded-xl text-sm font-outfit font-medium transition-colors ${
                 mode === 'password'
@@ -187,6 +191,7 @@ export default function Login() {
               Password
             </button>
             <button
+              type="button"
               onClick={() => setMode('magic')}
               className={`flex-1 py-2.5 rounded-xl text-sm font-outfit font-medium transition-colors flex items-center justify-center gap-2 ${
                 mode === 'magic'
@@ -205,7 +210,8 @@ export default function Login() {
                 Email address
               </label>
               <div className="relative">
-                <Mail aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
+                {/* Wave-9 MED-02/LOW-05: pl-10 for ~8px more text space at 375; stone-500 placeholder for WCAG AA */}
+                <Mail aria-hidden="true" className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-500" />
                 <input
                   id="login-email"
                   type="email"
@@ -214,7 +220,7 @@ export default function Login() {
                   required
                   autoComplete="email"
                   placeholder="you@example.com"
-                  className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
+                  className="w-full pl-10 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground text-ellipsis placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
                 />
               </div>
             </div>
@@ -233,19 +239,15 @@ export default function Login() {
                     Forgot password?
                   </Link>
                 </div>
-                <div className="relative">
-                  <Lock aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
-                  <input
-                    id="login-password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    autoComplete="current-password"
-                    placeholder="Enter your password"
-                    className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
-                  />
-                </div>
+                {/* Wave-9 LOW-04: shared PasswordInput w/ visibility toggle */}
+                <PasswordInput
+                  id="login-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  autoComplete="current-password"
+                  placeholder="Enter your password"
+                />
               </div>
             )}
 

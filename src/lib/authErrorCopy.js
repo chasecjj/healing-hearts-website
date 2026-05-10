@@ -10,6 +10,8 @@ export function errorCopyFor(err) {
     { match: /invalid login credentials/i, copy: "That didn't match what we have on file. Try again, or reset your password below." },
     { match: /email not confirmed/i, copy: "Almost there — check your email for the confirmation link we sent." },
     { match: /user already registered|already exists/i, copy: "Looks like you already have an account with this email. Try signing in instead." },
+    { match: /passwords.*don't match|passwords.*do not match|passwords do not match/i, copy: "Those two passwords don't match yet — give it another try." },
+    { match: /at least 8 characters/i, copy: "Let's make your password at least 8 characters long." },
     { match: /password.*6 characters|password.*short/i, copy: "Let's make your password a bit longer — 8 characters or more." },
     { match: /rate limit|too many/i, copy: "Let's pause for a moment — you've tried a few times. Give it a minute, then try again." },
     { match: /invalid email|valid email/i, copy: "That email doesn't look quite right — can you double-check it?" },

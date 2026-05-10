@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { Mail, User, ArrowRight } from 'lucide-react';
 import usePageMeta from '../hooks/usePageMeta';
 import { errorCopyFor } from '../lib/authErrorCopy';
+import PasswordInput from '../components/auth/PasswordInput';
 
 export default function Signup() {
   usePageMeta('Create Account', 'Create your Healing Hearts account to access the course portal.');
@@ -80,7 +81,7 @@ export default function Signup() {
               <li>Click the "Confirm your mail" link</li>
               <li>You'll be redirected back here to sign in</li>
             </ol>
-            <p className="font-sans text-xs text-foreground/50 mt-3">
+            <p className="font-sans text-xs text-stone-600 mt-3">
               Don't see it? Check your spam or junk folder. The email usually arrives within a minute.
             </p>
           </div>
@@ -98,16 +99,17 @@ export default function Signup() {
   return (
     <div className="min-h-screen bg-background flex">
       {/* Left — Branding Panel */}
-      <div className="hidden lg:flex lg:w-1/2 bg-primary text-background flex-col justify-between p-16 relative overflow-hidden">
+      {/* Wave-9 MED-01/LOW-06: surface at md (768) to fix tablet orphaned-form whitespace */}
+      <div className="hidden md:flex md:w-2/5 lg:w-1/2 bg-primary text-background flex-col justify-between p-10 lg:p-16 relative overflow-hidden">
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/20 rounded-full blur-[120px]" />
         <div className="relative z-10">
           <Link to="/" className="font-outfit font-bold text-2xl">Healing Hearts.</Link>
         </div>
         <div className="relative z-10">
-          <h2 className="font-drama italic text-5xl leading-tight mb-6">
+          <h2 className="font-drama italic text-3xl lg:text-5xl leading-tight mb-6">
             Begin your healing journey today.
           </h2>
-          <p className="font-sans font-light text-background/80 text-lg leading-relaxed max-w-md">
+          <p className="font-sans font-light text-background/80 text-base lg:text-lg leading-relaxed max-w-md">
             Create a free account to start the 7-Day Spark Challenge — and explore the Healing Hearts experience.
           </p>
         </div>
@@ -121,7 +123,7 @@ export default function Signup() {
       {/* Right — Signup Form */}
       <div className="flex-1 flex items-center justify-center px-6 py-12">
         <div className="max-w-md w-full">
-          <Link to="/" className="font-outfit font-bold text-xl text-primary lg:hidden block mb-10">
+          <Link to="/" className="font-outfit font-bold text-xl text-primary md:hidden block mb-10">
             Healing Hearts.
           </Link>
 
@@ -149,7 +151,8 @@ export default function Signup() {
                 Your name
               </label>
               <div className="relative">
-                <User aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
+                {/* Wave-9 LOW-05: stone-500 placeholder for WCAG AA */}
+                <User aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-500" />
                 <input
                   id="signup-name"
                   type="text"
@@ -158,7 +161,7 @@ export default function Signup() {
                   required
                   autoComplete="name"
                   placeholder="How should we address you?"
-                  className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
+                  className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
                 />
               </div>
             </div>
@@ -169,7 +172,7 @@ export default function Signup() {
                 Email address
               </label>
               <div className="relative">
-                <Mail aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
+                <Mail aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-500" />
                 <input
                   id="signup-email"
                   type="email"
@@ -178,7 +181,7 @@ export default function Signup() {
                   required
                   autoComplete="email"
                   placeholder="you@example.com"
-                  className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
+                  className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground text-ellipsis placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
                 />
               </div>
             </div>
@@ -188,20 +191,17 @@ export default function Signup() {
               <label htmlFor="signup-password" className="block font-outfit text-sm font-medium text-primary/80 mb-2">
                 Password
               </label>
-              <div className="relative">
-                <Lock aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
-                <input
-                  id="signup-password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={8}
-                  autoComplete="new-password"
-                  placeholder="At least 8 characters"
-                  className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
-                />
-              </div>
+              {/* Wave-9 MED-04/LOW-04: shared PasswordInput w/ visibility toggle + strength meter */}
+              <PasswordInput
+                id="signup-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={8}
+                autoComplete="new-password"
+                placeholder="At least 8 characters"
+                showStrength
+              />
             </div>
 
             {/* Confirm Password */}
@@ -209,19 +209,16 @@ export default function Signup() {
               <label htmlFor="signup-confirm" className="block font-outfit text-sm font-medium text-primary/80 mb-2">
                 Confirm password
               </label>
-              <div className="relative">
-                <Lock aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
-                <input
-                  id="signup-confirm"
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                  autoComplete="new-password"
-                  placeholder="Confirm your password"
-                  className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
-                />
-              </div>
+              {/* Wave-9 LOW-01/LOW-04: shared PasswordInput w/ visibility toggle + minLength=8 */}
+              <PasswordInput
+                id="signup-confirm"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                minLength={8}
+                autoComplete="new-password"
+                placeholder="Confirm your password"
+              />
             </div>
 
             {/* Submit */}

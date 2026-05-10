@@ -84,3 +84,17 @@
     display: none !important;
   }
 }
+
+/* Wave-9 MED-03 — neutralize Chrome :-webkit-autofill teal-glow on auth inputs.
+   Chrome composites :autofill with bg + focus-ring tokens, mis-reading as "focused"
+   on idle autofilled inputs. Inset box-shadow swaps the autofill paint back to our
+   bg token without losing the actual saved-credential indicator. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px theme('colors.background') inset !important;
+  -webkit-text-fill-color: theme('colors.foreground') !important;
+  caret-color: theme('colors.foreground') !important;
+  transition: background-color 9999s ease-in-out 0s;
+}

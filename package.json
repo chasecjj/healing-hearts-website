@@ -25,7 +25,8 @@
     "resend": "^6.9.4",
     "sonner": "^2.0.7",
     "stripe": "^20.4.1",
-    "zustand": "^5.0.12"
+    "zustand": "^5.0.12",
+    "zxcvbn-ts": "^2.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

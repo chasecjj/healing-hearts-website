@@ -2,9 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
-import { Lock, ArrowRight, ArrowLeft, CheckCircle2, AlertCircle } from 'lucide-react';
+import { ArrowRight, ArrowLeft, CheckCircle2, AlertCircle } from 'lucide-react';
 import usePageMeta from '../hooks/usePageMeta';
 import { errorCopyFor } from '../lib/authErrorCopy';
+import PasswordInput from '../components/auth/PasswordInput';
 
 export default function ResetPassword() {
   usePageMeta('Set New Password', 'Choose a new password for your Healing Hearts account.');
@@ -115,11 +116,12 @@ export default function ResetPassword() {
             <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
               <AlertCircle aria-hidden="true" className="w-8 h-8 text-red-600" />
             </div>
-            <h1 ref={tokenErrorHeadingRef} tabIndex={-1} className="font-outfit font-bold text-3xl text-primary mb-4">Reset link expired</h1>
+            {/* Wave-8 CRIT-02 carryover: serif italic register matches Login/Signup hero typography */}
+            <h1 ref={tokenErrorHeadingRef} tabIndex={-1} className="font-drama italic text-4xl text-primary mb-4">Reset link expired</h1>
             <p className="font-sans text-foreground/70 mb-4">
               This password reset link has expired or is no longer valid.
             </p>
-            <p className="font-sans text-sm text-foreground/50 mb-8">
+            <p className="font-sans text-sm text-stone-600 mb-8">
               Reset links work for a short window for your security — request a fresh
               one and you'll be back on track in a moment.
             </p>
@@ -165,39 +167,33 @@ export default function ResetPassword() {
                 <label htmlFor="reset-password" className="block font-outfit text-sm font-medium text-primary/80 mb-2">
                   New password
                 </label>
-                <div className="relative">
-                  <Lock aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
-                  <input
-                    id="reset-password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    minLength={8}
-                    autoComplete="new-password"
-                    placeholder="At least 8 characters"
-                    className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
-                  />
-                </div>
+                {/* Wave-9 MED-04/LOW-04: shared PasswordInput w/ visibility toggle + strength meter */}
+                <PasswordInput
+                  id="reset-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={8}
+                  autoComplete="new-password"
+                  placeholder="At least 8 characters"
+                  showStrength
+                />
               </div>
 
               <div className="mb-6">
                 <label htmlFor="reset-confirm" className="block font-outfit text-sm font-medium text-primary/80 mb-2">
                   Confirm new password
                 </label>
-                <div className="relative">
-                  <Lock aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
-                  <input
-                    id="reset-confirm"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                    autoComplete="new-password"
-                    placeholder="Confirm your password"
-                    className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
-                  />
-                </div>
+                {/* Wave-9 LOW-04: shared PasswordInput w/ visibility toggle */}
+                <PasswordInput
+                  id="reset-confirm"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  minLength={8}
+                  autoComplete="new-password"
+                  placeholder="Confirm your password"
+                />
               </div>
 
               <button
