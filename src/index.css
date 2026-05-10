@@ -42,7 +42,7 @@
   /* Rail / Drawer chrome */
   --pt-rail-hex: #24201D;             /* warm-dark rail */
   --pt-rail-hover-hex: #2C2823;
-  --pt-drawer-hex: #DDD3C4;
+  --pt-drawer-hex: #d6d3d1;  /* aligned to tokens.js drawer (#d6d3d1 Stone-300) — was #DDD3C4 (Wave 7 carryover) */
   --pt-drawer-hover-hex: #D0C5B4;
   --pt-drawer-active-bg-hex: #FDFCFA;
 

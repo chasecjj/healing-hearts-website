@@ -208,6 +208,15 @@ function LessonView({
   const handleJournalFromSelection = useCallback(async () => {
     if (!selection || !lessonId || !user?.id) return;
     const anchorText = selection.text;
+    // Dismiss toolbar immediately so the user has instant visual feedback
+    setSelection(null);
+    window.getSelection()?.removeAllRanges();
+    // P2 (UX-11): show "Saving…" toast immediately — before the network round-trip.
+    // On slow connections (rural broadband) the async save can take 2-5s; without
+    // this the user sees nothing between toolbar-dismiss and success toast.
+    // pending has no auto-dismiss (the duration useEffect skips kind==='pending');
+    // it is replaced by ok (5s) or err (2.4s) when the save resolves.
+    setJournalToast({ kind: 'pending', message: 'Saving to journal…' });
     try {
       await saveJournalEntry(user.id, {
         lessonId,
@@ -227,13 +236,15 @@ function LessonView({
         kind: 'err',
       });
     }
-    setSelection(null);
-    window.getSelection()?.removeAllRanges();
   }, [selection, lessonId, user?.id, currentModule?.id]);
 
-  // Auto-dismiss toast — success: 5s, error: 2.4s (Wave 10 J4)
+  // Auto-dismiss toast — ok: 5s, err: 2.4s (Wave 10 J4).
+  // P2 (UX-11): pending has NO auto-dismiss — it is replaced by ok/err when
+  // the async save resolves. Scheduling an auto-dismiss on pending would race
+  // the save and could clear the toast before the user sees the outcome.
   useEffect(() => {
     if (!journalToast) return undefined;
+    if (journalToast.kind === 'pending') return undefined; // no auto-dismiss while saving
     const ms = journalToast.kind === 'ok' ? 5000 : 2400;
     const t = setTimeout(() => setJournalToast(null), ms);
     return () => clearTimeout(t);

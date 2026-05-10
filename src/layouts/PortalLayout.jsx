@@ -666,18 +666,36 @@ function RightJournalPanel({ isOpen, onToggle, onClose, currentLessonId, current
               cursor: 'pointer',
             }}
           >
-            <span
-              className="absolute inset-0 transition-colors duration-150"
-              aria-hidden="true"
-              style={{
-                borderRadius: 'inherit',
-                backgroundColor: isOpen
-                  ? 'var(--pt-rail-hover-hex, #2C2823)'
-                  : hovered
-                  ? 'var(--pt-rail-hover-hex, #2C2823)'
-                  : 'transparent',
-              }}
-            />
+            {/* P4 (UX-14): active-chip treatment mirrors the left-rail RailIcon's
+                `rail-icon--selected` span (PortalLayout ~line 186). When the panel
+                is open, the breathing gradient chip replaces the flat hover-bg so
+                "open" is visually distinct from "hovered". Same tokens, same motion.
+                A11y unchanged — `aria-expanded` conveys state to screen readers. */}
+            {isOpen ? (
+              <span
+                className="rail-icon--selected absolute inset-0"
+                aria-hidden="true"
+                style={{
+                  borderRadius: 'inherit',
+                  background: portalTokens['rail-selected-chip'].gradientCss,
+                  backgroundSize: '200% 200%',
+                  animation: prefersReduced
+                    ? 'none'
+                    : 'rail-chip-breathe 4s cubic-bezier(0.4,0,0.2,1) infinite alternate',
+                }}
+              />
+            ) : (
+              <span
+                className="absolute inset-0 transition-colors duration-150"
+                aria-hidden="true"
+                style={{
+                  borderRadius: 'inherit',
+                  backgroundColor: hovered
+                    ? 'var(--pt-rail-hover-hex, #2C2823)'
+                    : 'transparent',
+                }}
+              />
+            )}
             <span className="relative z-10 flex flex-col items-center gap-1">
               <NotebookPen
                 className="w-5 h-5"
@@ -1041,6 +1059,36 @@ export default function PortalLayout() {
       return false;
     });
   }, []);
+
+  // Wave 11 B-P1 (UX-09): cross-tab journal-panel sync via the Web Storage `storage`
+  // event. The `storage` event fires in OTHER tabs only when a write occurs in the
+  // current tab — same-tab writes do NOT trigger it, so there is no feedback loop.
+  // When the journal-panel-open sub-key changes in another tab, update local state
+  // to match so both tabs stay in sync without a Supabase realtime channel.
+  //
+  // Left-drawer collapsed state (`drawer-collapsed` sub-key) uses the same LS object
+  // but is NOT synced here — `useDrawerState` drives which drawer is OPEN via URL
+  // search params (?drawer=<id>), which browsers already propagate cross-tab via
+  // history. Only the collapsed/expanded toggle is LS-only, and that is a visual
+  // preference that doesn't need cross-tab sync for v1.
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (e.key !== LS_KEY) return;
+      try {
+        const next = JSON.parse(e.newValue || '{}');
+        if (
+          typeof next[JOURNAL_PANEL_SUB_KEY] === 'boolean' &&
+          next[JOURNAL_PANEL_SUB_KEY] !== journalPanelOpen
+        ) {
+          setJournalPanelOpen(next[JOURNAL_PANEL_SUB_KEY]);
+        }
+      } catch {
+        // Malformed JSON — ignore
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, [journalPanelOpen]);
 
   // Wave 11 J1 — current lesson/module IDs published by CoursePortal.
   // PortalLayout owns the state; CoursePortal sets it via context setter.
