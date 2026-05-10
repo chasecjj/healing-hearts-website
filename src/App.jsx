@@ -7,6 +7,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 import RequireAdmin from './components/auth/RequireAdmin';
 import AuthoringRoute from './pages/admin/AuthoringRoute';
+import AdminComingSoon from './pages/admin/AdminComingSoon';
 import CrmListView from './pages/admin/CrmListView';
 import CrmDetailView from './pages/admin/CrmDetailView';
 import TasksLayout from './pages/admin/TasksLayout';
@@ -105,6 +106,14 @@ function App() {
               <Route path="/admin/tasks/kanban" element={<RequireAdmin><TasksLayout /></RequireAdmin>} />
               <Route path="/admin/tasks/list" element={<RequireAdmin><TasksLayout /></RequireAdmin>} />
               <Route path="/admin/authoring" element={<RequireAdmin><AuthoringRoute /></RequireAdmin>} />
+
+              {/* Admin scaffolds — IA declared in Wave 4B drawer; impl deferred to future wave */}
+              <Route path="/admin/users" element={<RequireAdmin><AdminComingSoon title="User list" breadcrumb="Users" /></RequireAdmin>} />
+              <Route path="/admin/enrollments" element={<RequireAdmin><AdminComingSoon title="Enrollments" breadcrumb="Enrollments" /></RequireAdmin>} />
+              <Route path="/admin/webinars" element={<RequireAdmin><AdminComingSoon title="Webinars" breadcrumb="Webinars" /></RequireAdmin>} />
+              <Route path="/admin/broadcasts" element={<RequireAdmin><AdminComingSoon title="Broadcasts" breadcrumb="Broadcasts" /></RequireAdmin>} />
+              <Route path="/admin/content" element={<RequireAdmin><AdminComingSoon title="Modules" breadcrumb="Modules" /></RequireAdmin>} />
+              <Route path="/admin/settings" element={<RequireAdmin><AdminComingSoon title="Settings" breadcrumb="Settings" /></RequireAdmin>} />
 
               {/* Portal routes */}
               <Route path="/portal/downloads" element={<ProtectedRoute><Downloads /></ProtectedRoute>} />

@@ -17,6 +17,7 @@
  */
 
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { DrawerShell, DrawerSection } from './DrawerShell';
 import { getTypeStyle } from '../design/typography';
 import { useAuth } from '../../contexts/AuthContext';
@@ -47,8 +48,8 @@ function deriveRoles(isAdmin, profile) {
 
 function AdminNavLink({ icon, label, href, badge }) {
   return (
-    <a
-      href={href}
+    <Link
+      to={href}
       className="flex items-center gap-2 px-3 py-2 rounded-lg"
       style={{
         ...getTypeStyle('body'),
@@ -76,7 +77,7 @@ function AdminNavLink({ icon, label, href, badge }) {
           {badge}
         </span>
       )}
-    </a>
+    </Link>
   );
 }
 
