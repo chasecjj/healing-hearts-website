@@ -991,21 +991,6 @@ function MobileBottomNav() {
   );
 }
 
-// ── Lesson/module ID extraction from route (Wave 10 J5) ───────────────────
-// Pull lessonSlug/moduleSlug from the route so the journal panel's direct-add
-// can attach FKs when the user is reading a lesson. Slug → ID resolution is
-// deliberately deferred to the panel-side query: we pass the slug as null
-// here and let the panel default to no-FK creation. That keeps PortalLayout
-// from coupling to courses.js. The brief allows "FK to current route's
-// lesson/module if available else null" — null fallback is the default.
-function useCurrentLessonContext() {
-  // Best-effort path parse: /portal/:moduleSlug/:lessonSlug
-  // Returns { lessonId, moduleId } as null since slug→ID needs a DB lookup
-  // that's already done inside CoursePortal. The panel's create flow defaults
-  // both to null when omitted — entries still save, just without lesson FK.
-  // Future enhancement: thread real IDs through via the JournalPanelContext.
-  return { lessonId: null, moduleId: null };
-}
 
 // ── PortalLayout (root export) ────────────────────────────────────────────
 export default function PortalLayout() {
@@ -1057,18 +1042,35 @@ export default function PortalLayout() {
     });
   }, []);
 
+  // Wave 11 J1 — current lesson/module IDs published by CoursePortal.
+  // PortalLayout owns the state; CoursePortal sets it via context setter.
+  const [currentLessonId, setCurrentLessonId] = useState(null);
+  const [currentModuleId, setCurrentModuleId] = useState(null);
+
+  const handleSetCurrentLessonContext = useCallback(({ lessonId, moduleId }) => {
+    setCurrentLessonId(lessonId ?? null);
+    setCurrentModuleId(moduleId ?? null);
+  }, []);
+
   const journalPanelCtx = useMemo(
     () => ({
       isOpen: journalPanelOpen,
       open: handleOpenJournalPanel,
       close: handleCloseJournalPanel,
       toggle: handleToggleJournalPanel,
+      // Wave 11 J1
+      currentLessonId,
+      currentModuleId,
+      setCurrentLessonContext: handleSetCurrentLessonContext,
     }),
     [
       journalPanelOpen,
       handleOpenJournalPanel,
       handleCloseJournalPanel,
       handleToggleJournalPanel,
+      currentLessonId,
+      currentModuleId,
+      handleSetCurrentLessonContext,
     ]
   );
 
@@ -1088,8 +1090,6 @@ export default function PortalLayout() {
   // Wave 10 J1 — inline-end margin reserves space for the right rail (always
   // shown at ≥md = 72px) and the right drawer (only when open = +280px).
   const endMarginClass = journalPanelOpen ? 'md:me-[352px]' : 'md:me-[72px]';
-
-  const { lessonId: currentLessonId, moduleId: currentModuleId } = useCurrentLessonContext();
 
   return (
     <>

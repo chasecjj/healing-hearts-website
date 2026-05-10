@@ -1,7 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 import { useCourseData } from './hooks/useCourseData';
+import { useJournalPanel } from './portal/context/JournalPanelContext';
 import PortalDashboard from './portal/PortalDashboard';
 import ModuleOverview from './portal/ModuleOverview';
 import LessonView from './portal/LessonView';
@@ -24,6 +25,7 @@ const CoursePortal = () => {
   const { profile, isAdmin } = useAuth();
   const navigate = useNavigate();
   const { courseSlug, moduleSlug, lessonSlug } = useParams();
+  const { setCurrentLessonContext } = useJournalPanel();
 
   // When accessed via /portal/course/:courseSlug/... use the slug from the URL,
   // otherwise fall back to the default healing-hearts-journey course.
@@ -86,6 +88,18 @@ const CoursePortal = () => {
 
     return { currentModule: mod, currentLesson: lesson, isAccessDenied: denied };
   }, [course, moduleSlug, lessonSlug, isAdmin, hasActiveEnrollment]);
+
+  // ─── Wave 11 J1: publish resolved lesson/module IDs to JournalPanelContext ─
+  // CoursePortal is the one place that has already done slug→ID resolution.
+  // Publishing here lets the journal panel's direct-add save with proper FKs.
+  // When not on a lesson route (Sanctuary, module overview, etc.) both IDs are
+  // null — panel compose still works, entries just save without breadcrumb.
+  useEffect(() => {
+    setCurrentLessonContext({
+      lessonId: currentLesson?.id ?? null,
+      moduleId: currentModule?.id ?? null,
+    });
+  }, [currentLesson?.id, currentModule?.id, setCurrentLessonContext]);
 
   // ─── Loading state ──────────────────────────────────────────
   if (loading) {
