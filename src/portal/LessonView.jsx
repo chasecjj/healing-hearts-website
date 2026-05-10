@@ -382,10 +382,17 @@ function LessonView({
             >
               {/* If content is missing entirely, show a quiet placeholder rather
                   than a vast empty whitespace gap (Wave 7 fix for screenshot-09
-                  empty-content render). */}
-              {!currentLesson?.content_json ||
-              (Array.isArray(currentLesson.content_json.blocks) &&
-                currentLesson.content_json.blocks.length === 0) ? (
+                  empty-content render). CRIT-03 fix: also catches content_json
+                  shapes where `blocks` is null/undefined (truthy outer object
+                  with subtitle/estimated_minutes but missing blocks array). */}
+              {(() => {
+                const blocks = currentLesson?.content_json?.blocks;
+                return (
+                  !currentLesson?.content_json ||
+                  !Array.isArray(blocks) ||
+                  blocks.length === 0
+                );
+              })() ? (
                 <p
                   style={{
                     fontFamily: '"Playfair Display", Georgia, serif',
