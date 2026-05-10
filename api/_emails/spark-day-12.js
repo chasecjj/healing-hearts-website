@@ -1,17 +1,16 @@
-// [CHASE_REVIEW_PENDING: hardcoded date April 23 2026 — update when webinar series rolls]
-// Day 12: Jeff and Trisha are going live
+// Day 12: Jeff and Trisha are going live (Thursday, May 21, 2026 at 7:00 PM MT)
 import {
   emailWrapper, heading, paragraph,
   callout, bulletList, ctaButton, signOff, unsubscribeFooter,
 } from './spark-shared.js';
 
 export function dayEmail(email) {
-  const subject = "Jeff and Trisha are going live";
-  const previewText = "A live workshop on the nervous system patterns running your marriage.";
+  const subject = "Jeff and Trisha are going live Thursday, May 21";
+  const previewText = "A live workshop on Thursday, May 21 — the nervous system patterns running your marriage.";
 
   const body = [
     heading("Jeff and Trisha Are Going Live"),
-    paragraph("We are hosting a live workshop, and we would love for you to be there."),
+    paragraph("We are hosting a live workshop on <strong>Thursday, May 21, 2026 at 7:00 PM MT</strong>, and we would love for you to be there."),
     paragraph("This is not a quick webinar with ten minutes of content and forty minutes of selling. Jeff and I teach for over an hour before we ever mention our program. We believe that if we cannot help you in sixty minutes, we have not earned the right to ask for more of your time."),
     paragraph("Here is what we will cover:"),
     bulletList([
@@ -26,7 +25,6 @@ export function dayEmail(email) {
     ctaButton('Save Your Spot', 'https://healingheartscourse.com/webinar'),
     signOff(
       "We would love to see you there. Come as you are &mdash; no prep required, no pressure to do anything but learn.",
-      "What happened after they said yes &mdash; another transformation story.",
     ),
     unsubscribeFooter(email, 'spark'),
   ].join('\n');

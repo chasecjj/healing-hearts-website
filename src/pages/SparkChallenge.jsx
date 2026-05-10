@@ -100,7 +100,7 @@ const FAQ_ITEMS = [
   {
     question: 'When do I start receiving emails?',
     answer:
-      "You'll get a welcome email right away, then Day 1 arrives tomorrow morning. One email per day for seven days.",
+      "You'll get a welcome email right away, then Day 1 arrives the next morning. One email per day for seven days.",
   },
   {
     question: 'Do we have to do it together?',
@@ -208,7 +208,7 @@ function SignupForm({ formState, onSubmit, variant }) {
         </h3>
         <p className="font-sans text-lg" style={{ color: `${P.charcoal}B3` }}>
           Check your inbox for a welcome message from Trisha. Day 1 arrives
-          tomorrow morning.
+          the next morning.
         </p>
       </div>
     )

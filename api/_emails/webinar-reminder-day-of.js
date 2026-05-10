@@ -7,7 +7,7 @@ import {
 export function reminderEmail(name, webinar, email) {
   const safeName = escapeHtml(name);
   const safeTitle = escapeHtml(webinar.title);
-  const joinUrl = webinar.meeting_url || webinar.riverside_audience_url || 'https://healingheartscourse.com/webinar/live';
+  const joinUrl = webinar.riverside_audience_url || 'https://healingheartscourse.com/webinar/live';
 
   const date = new Date(webinar.starts_at);
   const formatted = date.toLocaleString('en-US', {
