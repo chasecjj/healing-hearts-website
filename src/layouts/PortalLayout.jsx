@@ -765,7 +765,7 @@ function RightJournalPanel({ isOpen, onToggle, onClose, currentLessonId, current
         />
       )}
       <aside
-        className="md:hidden fixed start-0 end-0 z-50"
+        className="md:hidden flex flex-col fixed start-0 end-0 z-50"
         role="complementary"
         aria-label="Journal panel"
         aria-hidden={isOpen ? undefined : 'true'}
@@ -780,8 +780,6 @@ function RightJournalPanel({ isOpen, onToggle, onClose, currentLessonId, current
           transition: mobileSheetTransition,
           // When sheet is collapsed, stay out of focus order
           visibility: isOpen ? 'visible' : 'hidden',
-          display: 'flex',
-          flexDirection: 'column',
         }}
       >
         <div className="flex-shrink-0">
