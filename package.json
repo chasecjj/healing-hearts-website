@@ -17,6 +17,9 @@
     "@scoria/ui": "file:vendor/scoria-ui-0.1.0.tgz",
     "@supabase/supabase-js": "^2.97.0",
     "@vercel/analytics": "^2.0.1",
+    "@zxcvbn-ts/core": "^3.0.4",
+    "@zxcvbn-ts/language-common": "^3.0.4",
+    "@zxcvbn-ts/language-en": "^3.0.2",
     "gsap": "^3.14.2",
     "lucide-react": "^0.575.0",
     "react": "^19.2.0",
@@ -25,8 +28,7 @@
     "resend": "^6.9.4",
     "sonner": "^2.0.7",
     "stripe": "^20.4.1",
-    "zustand": "^5.0.12",
-    "zxcvbn-ts": "^2.1.0"
+    "zustand": "^5.0.12"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

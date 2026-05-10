@@ -19,6 +19,30 @@ const STRENGTH_LABELS = ['starting', 'getting there', 'comfortable', 'strong'];
 // score 0 → bucket 0, score 1 → bucket 1, score 2 → bucket 2, score 3+ → bucket 3.
 const STRENGTH_BUCKET = [0, 1, 2, 3, 3];
 
+// Module-level lazy-init: load modular @zxcvbn-ts/* ESM packages exactly once
+// per session (not per keystroke). Returns a `zxcvbn` function bound to options.
+// Modular packages are pure ESM and rollup-friendly — no nested require() chains
+// like the single zxcvbn-ts CJS package shipped (per F-001 V2, 2026-05-10).
+let zxcvbnPromise = null;
+function loadZxcvbn() {
+  if (!zxcvbnPromise) {
+    zxcvbnPromise = (async () => {
+      const [core, common, en] = await Promise.all([
+        import('@zxcvbn-ts/core'),
+        import('@zxcvbn-ts/language-common'),
+        import('@zxcvbn-ts/language-en'),
+      ]);
+      core.zxcvbnOptions.setOptions({
+        translations: en.translations,
+        graphs: common.adjacencyGraphs,
+        dictionary: { ...common.dictionary, ...en.dictionary },
+      });
+      return core.zxcvbn;
+    })();
+  }
+  return zxcvbnPromise;
+}
+
 export default function PasswordInput({
   id,
   label,
@@ -35,8 +59,10 @@ export default function PasswordInput({
   const [score, setScore] = useState(null);
   const meterId = useId();
 
-  // Lazy-load zxcvbn-ts only when meter is enabled and user starts typing.
-  // Dynamic import keeps zxcvbn-ts (~13kb gz) out of the initial bundle.
+  // Lazy-load modular @zxcvbn-ts/* only when meter is enabled and user starts
+  // typing. Module-level promise (loadZxcvbn) keeps the heavy dictionary
+  // payload out of the initial bundle and only initializes options once per
+  // session — not per keystroke.
   useEffect(() => {
     if (!showStrength) return;
     if (!value) {
@@ -46,7 +72,7 @@ export default function PasswordInput({
     let cancelled = false;
     (async () => {
       try {
-        const { zxcvbn } = await import('zxcvbn-ts');
+        const zxcvbn = await loadZxcvbn();
         const result = zxcvbn(value);
         if (!cancelled) setScore(result.score);
       } catch {
