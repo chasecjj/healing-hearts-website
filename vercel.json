@@ -14,7 +14,16 @@
     { "source": "/go/jeff", "destination": "/meet/jeff?utm_source=qr_card&utm_medium=qr&utm_campaign=orlando_workshop_2026", "permanent": false },
     { "source": "/go/trifold-evergreen", "destination": "/journey?utm_source=trifold_evergreen&utm_medium=qr&utm_campaign=evergreen", "permanent": false }
   ],
-  "crons": [],
+  "crons": [
+    {
+      "path": "/api/cron/spark-drip",
+      "schedule": "0 13 * * *"
+    },
+    {
+      "path": "/api/cron/webinar-cron",
+      "schedule": "0 23 * * *"
+    }
+  ],
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
