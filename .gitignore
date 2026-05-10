@@ -33,3 +33,15 @@ dist-ssr
 # Content drafts (not part of the app)
 Module 7_3 From Letting go to living free.md
 .superpowers/
+
+# Design reference assets (not shipped, 80MB+ of Figma binaries)
+UI Elements/
+
+# Worker-test artifacts (root-level screenshots, playwright cache)
+.playwright-mcp/
+/home-*.png
+/portal-*.png
+/admin-*.png
+/login-*.png
+# Impeccable toolkit (user-scope install, has own .git)
+.claude/skills/impeccable/

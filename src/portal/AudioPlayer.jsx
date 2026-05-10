@@ -76,7 +76,8 @@ export default function AudioPlayer({ src, title }) {
       {/* Play/Pause button */}
       <button
         onClick={togglePlay}
-        className="flex-shrink-0 w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary/90 transition-colors shadow-sm active:scale-95"
+        className="flex-shrink-0 w-10 h-10 rounded-full text-white flex items-center justify-center transition-colors shadow-sm active:scale-95"
+        style={{ backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)' }}
         aria-label={playing ? `Pause ${title}` : `Play ${title}`}
       >
         {playing ? (
@@ -99,12 +100,12 @@ export default function AudioPlayer({ src, title }) {
           aria-label="Seek audio position"
         >
           <div
-            className="absolute left-0 top-0 h-full bg-primary rounded-full transition-all duration-100"
-            style={{ width: `${progress}%` }}
+            className="absolute left-0 top-0 h-full rounded-full transition-all duration-100"
+            style={{ width: `${progress}%`, backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)' }}
           />
           <div
-            className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-primary rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
-            style={{ left: `calc(${progress}% - 6px)` }}
+            className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
+            style={{ left: `calc(${progress}% - 6px)`, backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)' }}
           />
         </button>
         <div className="flex justify-between mt-1">

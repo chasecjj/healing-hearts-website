@@ -30,7 +30,7 @@ export default function LessonNotesPanel({ lessonId }) {
         aria-expanded={expanded}
       >
         <div className="flex items-center gap-3">
-          <StickyNote className="w-5 h-5 text-primary/60" />
+          <StickyNote className="w-5 h-5 text-foreground/50" />
           <span className="font-outfit font-semibold text-sm text-foreground/80">
             My Notes
           </span>

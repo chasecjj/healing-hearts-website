@@ -7,7 +7,7 @@ description: >
   delegates accessibility checks to the chrome-devtools:a11y-debugging skill, and outputs
   structured findings. Invoke for visual bug detection, responsive testing, design token
   compliance checking, or Lighthouse auditing.
-model: opus
+model: claude-opus-4-7[1m]
 allowedTools:
   - Read
   - Glob

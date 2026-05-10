@@ -4,9 +4,10 @@
 
 INPUT=$(cat)
 
-# Extract command from JSON — check for git push to master/origin
-if echo "$INPUT" | grep -qE '(git push|git push origin master|vercel deploy|vercel --prod)'; then
-  echo "Deploy detected. Run /deploy-check first to verify the codebase is ready."
+# Extract command from JSON — check for pushes to master or prod deploys
+# (feature-branch pushes flow freely; only master/prod is gated)
+if echo "$INPUT" | grep -qE '(git push.*(origin[[:space:]]+)?master|vercel deploy|vercel --prod)'; then
+  echo "Deploy to master/prod detected. Run /deploy-check first to verify the codebase is ready."
   exit 2  # Block
 fi
 

@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Lock, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { supabase } from '../lib/supabase';
+import { ArrowRight, ArrowLeft, CheckCircle2, AlertCircle } from 'lucide-react';
 import usePageMeta from '../hooks/usePageMeta';
+import { errorCopyFor } from '../lib/authErrorCopy';
+import PasswordInput from '../components/auth/PasswordInput';
 
 export default function ResetPassword() {
   usePageMeta('Set New Password', 'Choose a new password for your Healing Hearts account.');
@@ -11,9 +14,58 @@ export default function ResetPassword() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [recoveryReady, setRecoveryReady] = useState(false);
+  const [tokenError, setTokenError] = useState(null);
 
   const { updatePassword } = useAuth();
   const navigate = useNavigate();
+  const successHeadingRef = useRef(null);
+  const tokenErrorHeadingRef = useRef(null);
+  useEffect(() => {
+    if (success && successHeadingRef.current) {
+      successHeadingRef.current.focus();
+    }
+  }, [success]);
+  useEffect(() => {
+    if (tokenError && tokenErrorHeadingRef.current) {
+      tokenErrorHeadingRef.current.focus();
+    }
+  }, [tokenError]);
+
+  useEffect(() => {
+    // Supabase fires PASSWORD_RECOVERY when the recovery token in URL hash
+    // is detected and a recovery session is established
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event) => {
+        if (event === 'PASSWORD_RECOVERY') {
+          setRecoveryReady(true);
+        }
+      }
+    );
+
+    // Surface Supabase's hash-encoded error params (expired/invalid token)
+    const hash = typeof window !== 'undefined' ? window.location.hash : '';
+    if (hash.includes('error=')) {
+      const params = new URLSearchParams(hash.replace(/^#/, ''));
+      setTokenError(params.get('error_description') || params.get('error') || 'invalid');
+    }
+
+    // Fallback: if PASSWORD_RECOVERY never fires and no error surfaced,
+    // treat as missing/invalid token after a short grace window
+    const timer = setTimeout(() => {
+      setRecoveryReady((ready) => {
+        if (!ready) {
+          setTokenError((prev) => prev ?? 'no-token');
+        }
+        return ready;
+      });
+    }, 2500);
+
+    return () => {
+      subscription?.unsubscribe();
+      clearTimeout(timer);
+    };
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -24,8 +76,8 @@ export default function ResetPassword() {
       return;
     }
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters.');
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters.');
       return;
     }
 
@@ -52,11 +104,49 @@ export default function ResetPassword() {
         {success ? (
           <div className="text-center">
             <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle2 className="w-8 h-8 text-green-600" />
+              <CheckCircle2 aria-hidden="true" className="w-8 h-8 text-green-600" />
             </div>
-            <h1 className="font-outfit font-bold text-3xl text-primary mb-4">Password updated</h1>
+            <h1 ref={successHeadingRef} tabIndex={-1} className="font-outfit font-bold text-3xl text-primary mb-4">Password updated</h1>
             <p className="font-sans text-foreground/70">
               Redirecting you to your portal...
+            </p>
+          </div>
+        ) : tokenError ? (
+          <div className="text-center">
+            <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
+              <AlertCircle aria-hidden="true" className="w-8 h-8 text-red-600" />
+            </div>
+            {/* Wave-8 CRIT-02 carryover: serif italic register matches Login/Signup hero typography */}
+            <h1 ref={tokenErrorHeadingRef} tabIndex={-1} className="font-drama italic text-4xl text-primary mb-4">Reset link expired</h1>
+            <p className="font-sans text-foreground/70 mb-4">
+              This password reset link has expired or is no longer valid.
+            </p>
+            <p className="font-sans text-sm text-stone-600 mb-8">
+              Reset links work for a short window for your security — request a fresh
+              one and you'll be back on track in a moment.
+            </p>
+            <Link
+              to="/forgot-password"
+              className="inline-flex items-center gap-2 font-outfit font-medium text-sm text-accent hover:text-accent/80 transition-colors"
+            >
+              Request a new reset link
+              <ArrowRight aria-hidden="true" className="w-4 h-4" />
+            </Link>
+            <p className="text-center mt-8">
+              <Link
+                to="/login"
+                className="inline-flex items-center gap-2 font-sans text-sm text-foreground/60 hover:text-primary transition-colors"
+              >
+                <ArrowLeft aria-hidden="true" className="w-4 h-4" /> Back to login
+              </Link>
+            </p>
+          </div>
+        ) : !recoveryReady ? (
+          <div className="text-center" role="status" aria-live="polite">
+            <div className="w-12 h-12 mx-auto mb-6 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
+            <h1 className="font-outfit font-bold text-3xl text-primary mb-2">Verifying your reset link</h1>
+            <p className="font-sans text-foreground/60">
+              One moment — confirming your password reset link is valid...
             </p>
           </div>
         ) : (
@@ -67,45 +157,43 @@ export default function ResetPassword() {
             </p>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl mb-6 text-sm font-sans">
-                {error}
+              <div role="alert" aria-live="polite" className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl mb-6 text-sm font-sans">
+                {errorCopyFor(error)}
               </div>
             )}
 
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label className="block font-outfit text-sm font-medium text-primary/80 mb-2">
+                <label htmlFor="reset-password" className="block font-outfit text-sm font-medium text-primary/80 mb-2">
                   New password
                 </label>
-                <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    minLength={6}
-                    placeholder="At least 6 characters"
-                    className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
-                  />
-                </div>
+                {/* Wave-9 MED-04/LOW-04: shared PasswordInput w/ visibility toggle + strength meter */}
+                <PasswordInput
+                  id="reset-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={8}
+                  autoComplete="new-password"
+                  placeholder="At least 8 characters"
+                  showStrength
+                />
               </div>
 
               <div className="mb-6">
-                <label className="block font-outfit text-sm font-medium text-primary/80 mb-2">
+                <label htmlFor="reset-confirm" className="block font-outfit text-sm font-medium text-primary/80 mb-2">
                   Confirm new password
                 </label>
-                <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
-                  <input
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                    placeholder="Confirm your password"
-                    className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
-                  />
-                </div>
+                {/* Wave-9 LOW-04: shared PasswordInput w/ visibility toggle */}
+                <PasswordInput
+                  id="reset-confirm"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  minLength={8}
+                  autoComplete="new-password"
+                  placeholder="Confirm your password"
+                />
               </div>
 
               <button
@@ -118,7 +206,7 @@ export default function ResetPassword() {
                 ) : (
                   <>
                     Update password
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight aria-hidden="true" className="w-4 h-4" />
                   </>
                 )}
               </button>

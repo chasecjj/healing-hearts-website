@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Mail, ArrowLeft, ArrowRight } from 'lucide-react';
 import usePageMeta from '../hooks/usePageMeta';
+import { errorCopyFor } from '../lib/authErrorCopy';
 
 export default function ForgotPassword() {
   usePageMeta('Reset Password', 'Reset your Healing Hearts account password.');
@@ -12,6 +13,13 @@ export default function ForgotPassword() {
   const [sent, setSent] = useState(false);
 
   const { resetPassword } = useAuth();
+  // Wave-9 MED-05: focus the success heading after submit (mirrors Login/Signup/Reset pattern)
+  const successHeadingRef = useRef(null);
+  useEffect(() => {
+    if (sent && successHeadingRef.current) {
+      successHeadingRef.current.focus();
+    }
+  }, [sent]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -38,18 +46,23 @@ export default function ForgotPassword() {
         {sent ? (
           <div className="text-center">
             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Mail className="w-8 h-8 text-primary" />
+              <Mail aria-hidden="true" className="w-8 h-8 text-primary" />
             </div>
-            <h1 className="font-outfit font-bold text-3xl text-primary mb-4">Check your email</h1>
-            <p className="font-sans text-foreground/70 mb-8">
+            <h1 ref={successHeadingRef} tabIndex={-1} className="font-outfit font-bold text-3xl text-primary mb-4">Check your email</h1>
+            <p className="font-sans text-foreground/70 mb-4">
               If an account exists for <strong className="text-primary">{email}</strong>,
               you'll receive a password reset link shortly.
+            </p>
+            <p className="font-sans text-sm text-stone-600 mb-8">
+              The email usually arrives within 30 seconds. If you don't see it,
+              check your spam or junk folder — and mark it as "not spam" so
+              future messages land in your inbox.
             </p>
             <Link
               to="/login"
               className="inline-flex items-center gap-2 font-outfit font-medium text-sm text-accent hover:text-accent/80 transition-colors"
             >
-              <ArrowLeft className="w-4 h-4" /> Back to login
+              <ArrowLeft aria-hidden="true" className="w-4 h-4" /> Back to login
             </Link>
           </div>
         ) : (
@@ -60,25 +73,28 @@ export default function ForgotPassword() {
             </p>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl mb-6 text-sm font-sans">
-                {error}
+              <div role="alert" aria-live="polite" className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl mb-6 text-sm font-sans">
+                {errorCopyFor(error)}
               </div>
             )}
 
             <form onSubmit={handleSubmit}>
               <div className="mb-6">
-                <label className="block font-outfit text-sm font-medium text-primary/80 mb-2">
+                <label htmlFor="forgot-email" className="block font-outfit text-sm font-medium text-primary/80 mb-2">
                   Email address
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/30" />
+                  {/* Wave-9 LOW-05: stone-500 placeholder/icon for WCAG AA */}
+                  <Mail aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-500" />
                   <input
+                    id="forgot-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    autoComplete="email"
                     placeholder="you@example.com"
-                    className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
+                    className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-primary/15 bg-background font-sans text-foreground text-ellipsis placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
                   />
                 </div>
               </div>
@@ -93,7 +109,7 @@ export default function ForgotPassword() {
                 ) : (
                   <>
                     Send reset link
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight aria-hidden="true" className="w-4 h-4" />
                   </>
                 )}
               </button>
@@ -104,7 +120,7 @@ export default function ForgotPassword() {
                 to="/login"
                 className="inline-flex items-center gap-2 font-sans text-sm text-foreground/60 hover:text-primary transition-colors"
               >
-                <ArrowLeft className="w-4 h-4" /> Back to login
+                <ArrowLeft aria-hidden="true" className="w-4 h-4" /> Back to login
               </Link>
             </p>
           </>

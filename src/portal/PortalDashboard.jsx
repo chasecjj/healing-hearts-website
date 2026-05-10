@@ -15,14 +15,28 @@ import {
 import DailyIntentionWidget from './DailyIntentionWidget';
 import { getActiveCourses } from '../lib/courses';
 import { useAuth } from '../contexts/AuthContext';
+import { useMockupMode } from './mockup/useMockupMode';
+import DashboardHero from './mockup/DashboardHero';
+import ConsentCluster from './components/ConsentCluster';
+import JournalPrompt from './components/JournalPrompt';
 
 /**
  * Portal Dashboard — personalized welcome, journey progress, module library.
  * Rendered at /portal when no moduleSlug is in the URL.
  *
  * Props come from the CoursePortal shell which owns useCourseData.
+ *
+ * Wave 5 mockup-mode: `?mockup=1` query param short-circuits to DashboardHero
+ * (static hero-state mockup) for webinar-demo screenshots without hitting
+ * Supabase. Wrapper component dispatches; original implementation untouched.
  */
-export default function PortalDashboard({
+export default function PortalDashboardWithMockup(props) {
+  const mockupMode = useMockupMode();
+  if (mockupMode) return <DashboardHero />;
+  return <PortalDashboard {...props} />;
+}
+
+function PortalDashboard({
   profile,
   course,
   overallProgress,
@@ -143,32 +157,105 @@ export default function PortalDashboard({
 
   return (
     <div ref={containerRef} className="pb-24 px-4 sm:px-8 max-w-7xl mx-auto flex flex-col gap-8">
-      {/* ── Welcome Header ─────────────────────────────────── */}
-      <section className="relative rounded-3xl overflow-hidden pt-6 p-8 sm:p-12 bg-primary/10 min-h-[200px] flex flex-col justify-center" data-animate>
-        {/* Ambient blurred glow layer */}
-        <div className="absolute inset-0 z-0 opacity-30 overflow-hidden" aria-hidden="true">
-          <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-primary blur-3xl" />
-          <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-accent blur-3xl" />
-        </div>
-        <div className="relative z-10 max-w-3xl">
-          <h1 className="font-drama text-4xl sm:text-5xl md:text-6xl text-foreground leading-tight tracking-tight mb-6">
-            Welcome back to your Sanctuary,{' '}
-            <span className="italic text-primary">{firstName}</span>
+      {/* ── Editorial Hero (3.2 magazine-stack, 3.1 no card chrome) ────── */}
+      {/* 3.15: Restorative register — lighter serif weight on Dashboard     */}
+      <section
+        className="relative pt-8 pb-6"
+        style={{ backgroundColor: 'var(--pt-content-bg-hex, #f5f5f4)' }}
+        data-animate
+        aria-label="Welcome"
+      >
+        {/* ── A-09: Hero-image slot. TODO: replace gradient placeholder with   */}
+        {/*    photographic asset — Trisha portraiture or course-stills per A-09 */}
+        {/*    (photography-over-illustration mandate; gradient is NOT spec-compliant */}
+        {/*    default but unblocks build until Trisha assets are available).         */}
+        <div className="max-w-3xl">
+          <p
+            style={{
+              fontFamily: '"Outfit", sans-serif',
+              fontSize: 12,
+              fontWeight: 600,
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              color: 'var(--pt-text-muted-hex, #57534e)',
+              margin: '0 0 18px',
+            }}
+          >
+            Your sanctuary
+          </p>
+          {/* 3.15 restorative: fontWeight 300 (lighter than Module action register) */}
+          <h1
+            style={{
+              fontFamily: '"Playfair Display", Georgia, serif',
+              fontWeight: 300,
+              fontSize: 'clamp(40px, 5vw, 60px)',
+              lineHeight: 1.07,
+              letterSpacing: '-0.02em',
+              color: 'var(--pt-text-primary-hex, #1c1917)',
+              margin: '0 0 14px',
+            }}
+          >
+            Welcome back,{' '}
+            <span
+              style={{
+                fontStyle: 'italic',
+                color: 'var(--pt-primary-accent-hex, #B96A5F)',
+              }}
+            >
+              {firstName}
+            </span>
+            .
           </h1>
-          <div className="flex items-start gap-4 text-foreground/60 italic font-drama text-lg sm:text-xl">
-            <Quote className="w-6 h-6 text-accent flex-shrink-0 mt-1" />
-            <p className="max-w-xl">
-              &ldquo;The wound is the place where the Light enters you. Let us tend to the garden of your heart today.&rdquo;
-            </p>
-          </div>
+          <p
+            style={{
+              fontFamily: '"Playfair Display", Georgia, serif',
+              fontStyle: 'italic',
+              fontWeight: 300,
+              fontSize: 18,
+              lineHeight: 1.55,
+              color: 'var(--pt-text-muted-hex, #57534e)',
+              margin: '0 0 32px',
+              maxWidth: 520,
+            }}
+          >
+            Take a breath. You&rsquo;ve picked this up again, and that&rsquo;s the whole practice.
+          </p>
+
+          {/* ── ConsentCluster (3.1, A-11) — enrolled + admin only ─────── */}
+          {canAccessContent && (
+            <>
+              <ConsentCluster
+                onPickUp={() =>
+                  nextLesson
+                    ? goToLesson(activeModule, nextLesson)
+                    : activeModule
+                    ? goToModule(activeModule)
+                    : null
+                }
+                onStartNew={() => {
+                  const el = document.getElementById('module-library');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+              />
+              {/* ── JournalPrompt (3.23, A-12) ──────────────────────── */}
+              <div style={{ marginTop: 28 }}>
+                <JournalPrompt />
+              </div>
+            </>
+          )}
         </div>
       </section>
 
       {/* ── Quick Links ─────────────────────────────────────── */}
-      <section className="flex flex-wrap gap-3" data-animate>
+      <section className="flex flex-wrap gap-3 -mt-2" data-animate>
         <Link
           to="/portal/downloads"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-primary border border-primary/20 hover:bg-primary/5 transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors hover:opacity-80"
+          style={{
+            color: 'var(--pt-primary-accent-hex, #B96A5F)',
+            border: '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
+            backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
+          }}
         >
           <Download className="w-4 h-4" />
           My Downloads
@@ -181,63 +268,24 @@ export default function PortalDashboard({
         If you are in crisis, please call <strong className="text-foreground/40">988</strong> (Suicide &amp; Crisis Lifeline) or <strong className="text-foreground/40">1-800-799-7233</strong> (Domestic Violence Hotline).
       </p>
 
-      {/* ── Your Healing Journey Stats ─────────────────────── */}
-      <section className="relative rounded-3xl overflow-hidden p-8 sm:p-10 bg-primary/10" data-animate>
-        {/* Ambient blurred glow layer */}
-        <div className="absolute inset-0 z-0 opacity-30 overflow-hidden" aria-hidden="true">
-          <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-primary blur-3xl" />
-          <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-accent blur-3xl" />
-        </div>
-        <div className="relative z-10">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-            <h2 className="font-drama text-2xl text-foreground">Your Healing Journey</h2>
-            <div className="flex items-center gap-6 text-foreground/50">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-primary" />
-                <span className="text-sm font-outfit">Active Growth</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-accent" />
-                <span className="text-sm font-outfit">Integration</span>
-              </div>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { value: completedLessons, label: 'Lessons Completed', icon: BookOpen },
-              {
-                value: completedModules > 0 ? completedModules : completedLessons > 0 ? '...' : '0',
-                label: completedModules > 0 ? 'Modules Completed' : completedLessons > 0 ? 'Module In Progress' : 'Modules Completed',
-                icon: Flame,
-              },
-              { value: totalLessons, label: 'Total Lessons', icon: Clock },
-              { value: `${overallProgress}%`, label: 'Overall Progress', icon: ChevronRight },
-            ].map(({ value, label }) => (
-              <div
-                key={label}
-                className="p-6 bg-white rounded-2xl flex flex-col gap-2 shadow-[0_2px_8px_-2px_rgba(7,58,71,0.06)]"
-              >
-                <span className="text-3xl font-drama text-primary">{value}</span>
-                <span className="text-xs font-outfit uppercase tracking-widest text-foreground/50">
-                  {label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ── My Courses (multi-course catalog) ─────────────── */}
       {availableCourses.length > 1 && (
         <section data-animate>
           <div className="flex items-center gap-3 mb-6">
-            <Library className="w-5 h-5 text-primary" />
+            <Library
+              className="w-5 h-5"
+              style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+            />
             <h2 className="font-drama text-2xl text-foreground">My Courses</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {availableCourses.map((c) => {
               // Enrollment-aware routing: owned → first module, unowned → purchase page.
-              const isEnrolled = enrolledCourseIds.has(c.id);
+              // Admins are treated as enrolled in everything (migration 033 backfills
+              // enrollment rows; this is the UI-side belt-and-suspenders guard for
+              // any admin whose row is briefly missing between role flip and trigger).
+              const isEnrolled = isAdmin || enrolledCourseIds.has(c.id);
 
               let destination;
               if (isEnrolled) {
@@ -259,9 +307,12 @@ export default function PortalDashboard({
               return (
                 <div
                   key={c.id}
-                  className={`group bg-white rounded-2xl overflow-hidden shadow-[0_4px_20px_-4px_rgba(7,58,71,0.08)] transition-all duration-200 cursor-pointer hover:shadow-[0_8px_30px_-4px_rgba(7,58,71,0.12)] hover:scale-[1.02] ${
-                    isEnrolled ? 'ring-2 ring-primary' : ''
-                  }`}
+                  className="group bg-white rounded-2xl overflow-hidden shadow-[0_4px_20px_-4px_rgba(28,25,23,0.08)] transition-all duration-200 cursor-pointer hover:shadow-[0_8px_30px_-4px_rgba(28,25,23,0.12)] hover:scale-[1.02]"
+                  style={
+                    isEnrolled
+                      ? { boxShadow: '0 0 0 2px var(--pt-primary-accent-hex, #B96A5F)' }
+                      : undefined
+                  }
                   onClick={() => navigate(destination)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
@@ -273,28 +324,55 @@ export default function PortalDashboard({
                   role="button"
                   aria-label={`${c.title}${isEnrolled ? ' (enrolled)' : ' (not enrolled)'}`}
                 >
-                  <div className="h-24 bg-gradient-to-br from-primary/10 to-accent/5 relative flex items-end p-5">
-                    <span className="bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-outfit font-bold uppercase tracking-wider">
+                  {/* D10: neutral banner, no teal gradient. Accent stripe marks enrolled state. */}
+                  <div
+                    className="h-24 relative flex items-end p-5"
+                    style={{
+                      backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)',
+                      borderBottom: isEnrolled
+                        ? '2px solid var(--pt-primary-accent-hex, #B96A5F)'
+                        : '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
+                    }}
+                  >
+                    <span
+                      className="px-3 py-1 rounded-full text-[10px] font-outfit font-bold uppercase tracking-wider"
+                      style={{
+                        backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
+                        color: 'var(--pt-text-primary-hex, #1c1917)',
+                      }}
+                    >
                       {c.course_type === 'flagship' ? 'Full Program' : 'Toolkit'}
                     </span>
                     {isEnrolled ? (
-                      <span className="absolute top-3 right-3 bg-primary text-white text-[10px] font-outfit font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
+                      <span
+                        className="absolute top-3 right-3 text-white text-[10px] font-outfit font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"
+                        style={{ backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+                      >
                         Unlocked
                       </span>
                     ) : (
-                      <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-md text-foreground/60 text-[10px] font-outfit font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
+                      <span
+                        className="absolute top-3 right-3 text-[10px] font-outfit font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"
+                        style={{
+                          backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
+                          color: 'var(--pt-text-muted-hex, #57534e)',
+                        }}
+                      >
                         Not enrolled
                       </span>
                     )}
                   </div>
                   <div className="p-5">
-                    <h3 className="font-outfit text-base font-semibold mb-1 group-hover:text-primary transition-colors">
+                    <h3 className="font-outfit text-base font-semibold mb-1 transition-colors">
                       {c.title}
                     </h3>
                     <p className="text-sm text-foreground/50 line-clamp-2 leading-relaxed mb-3">
                       {c.description}
                     </p>
-                    <p className="text-xs font-outfit font-medium text-primary group-hover:text-primary/80">
+                    <p
+                      className="text-xs font-outfit font-medium group-hover:opacity-80"
+                      style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+                    >
                       {isEnrolled ? 'Start Course →' : 'Learn more →'}
                     </p>
                   </div>
@@ -305,14 +383,13 @@ export default function PortalDashboard({
         </section>
       )}
 
-      {/* ── Start Your Journey (unenrolled users) ──────────── */}
+      {/* ── Start Your Journey (unenrolled users) — D10: warm-dark rail, no teal ─ */}
       {showStartJourney && (
         <section className="relative" data-animate>
-          <div className="rounded-3xl bg-primary text-white p-10 md:p-14 relative overflow-hidden">
-            <div
-              className="absolute top-0 right-0 w-96 h-96 bg-accent/20 rounded-full blur-[120px] pointer-events-none"
-              aria-hidden="true"
-            />
+          <div
+            className="rounded-3xl text-white p-10 md:p-14 relative overflow-hidden"
+            style={{ backgroundColor: 'var(--pt-rail-hex, #24201D)' }}
+          >
             <div className="relative z-10 max-w-2xl">
               <p className="font-outfit text-xs uppercase tracking-widest text-white/80 mb-3">
                 Start Your Journey
@@ -326,7 +403,8 @@ export default function PortalDashboard({
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link
                   to="/spark-challenge"
-                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-accent text-white font-outfit text-sm font-medium shadow-lg hover:scale-105 transition-transform"
+                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full text-white font-outfit text-sm font-medium shadow-lg hover:scale-105 transition-transform"
+                  style={{ backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)' }}
                 >
                   Start the Spark Challenge <ChevronRight className="w-4 h-4" />
                 </Link>
@@ -346,15 +424,19 @@ export default function PortalDashboard({
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-8" data-animate>
         {/* Active module card */}
         {activeModule && (
-          <div className="lg:col-span-8 relative rounded-3xl overflow-hidden p-8 sm:p-10 bg-primary/15">
-            {/* Ambient blurred glow layer */}
-            <div className="absolute inset-0 z-0 opacity-30 overflow-hidden" aria-hidden="true">
-              <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-primary blur-3xl" />
-              <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-accent blur-3xl" />
-            </div>
+          <div
+            className="lg:col-span-8 relative rounded-3xl overflow-hidden p-8 sm:p-10"
+            style={{ backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)' }}
+          >
             <div className="relative z-10 flex flex-col h-full">
               <div className="flex items-center gap-2 mb-4">
-                <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-outfit font-semibold tracking-wider uppercase">
+                <span
+                  className="px-3 py-1 rounded-full text-xs font-outfit font-semibold tracking-wider uppercase"
+                  style={{
+                    backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
+                    color: 'var(--pt-primary-accent-hex, #B96A5F)',
+                  }}
+                >
                   Active Module
                 </span>
               </div>
@@ -378,17 +460,24 @@ export default function PortalDashboard({
                         ? goToLesson(activeModule, nextLesson)
                         : goToModule(activeModule)
                     }
-                    className="bg-primary text-white px-8 py-3 rounded-full font-outfit text-sm font-medium hover:bg-primary/90 transition-all duration-200 flex items-center gap-2 active:scale-[0.98]"
+                    className="text-white px-8 py-3 rounded-full font-outfit text-sm font-medium transition-all duration-200 flex items-center gap-2 active:scale-[0.98] hover:opacity-90"
+                    style={{ backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)' }}
                   >
                     {activeModuleProgress > 0 ? 'Continue Lesson' : 'Start Module'}
                     <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
-                {/* Progress bar */}
-                <div className="h-1.5 w-full bg-neutral-100 rounded-full overflow-hidden">
+                {/* Progress bar (D10: accent fill, neutral track, no teal gradient) */}
+                <div
+                  className="h-1.5 w-full rounded-full overflow-hidden"
+                  style={{ backgroundColor: 'var(--pt-border-subtle-hex, #d6d3d1)' }}
+                >
                   <div
-                    className="h-full bg-gradient-to-r from-primary to-primary/70 rounded-full transition-all duration-500"
-                    style={{ width: `${activeModuleProgress}%` }}
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{
+                      width: `${activeModuleProgress}%`,
+                      backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)',
+                    }}
                   />
                 </div>
               </div>
@@ -402,10 +491,70 @@ export default function PortalDashboard({
         </div>
       </section>
 
+      {/* ── How are you feeling? — Trisha framework router (Wave 9 E2 migration) ──
+          Per Wave 9 architectural pivot (drawer = pure nav), the mood pills
+          previously rendered in HomeDrawer now live on the Sanctuary main page.
+          They route to /portal/rescue-kit which is built. */}
+      {canAccessContent && (
+        <section data-animate aria-label="How are you feeling?">
+          <p
+            style={{
+              fontFamily: '"Outfit", sans-serif',
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              color: 'var(--pt-text-muted-hex, #57534e)',
+              margin: '0 0 12px',
+            }}
+          >
+            How are you feeling?
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {[
+              { id: 'flooded', label: 'Flooded' },
+              { id: 'disconnected', label: 'Disconnected' },
+              { id: 'hurt', label: 'Hurt' },
+              { id: 'shutdown', label: 'Shut Down' },
+              { id: 'reactive', label: 'Reactive' },
+            ].map((f) => (
+              <Link
+                key={f.id}
+                to="/portal/rescue-kit"
+                style={{
+                  fontFamily: '"Outfit", sans-serif',
+                  fontSize: 13,
+                  fontWeight: 500,
+                  padding: '8px 16px',
+                  borderRadius: 9999,
+                  backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)',
+                  color: 'var(--pt-text-primary-hex, #1c1917)',
+                  textDecoration: 'none',
+                  border: '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
+                  transition: 'all 150ms cubic-bezier(0.19,1,0.22,1)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    'var(--pt-primary-accent-hex, #B96A5F)';
+                  e.currentTarget.style.color = '#fafaf9';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor =
+                    'var(--pt-elevation-1-hex, #e7e5e4)';
+                  e.currentTarget.style.color =
+                    'var(--pt-text-primary-hex, #1c1917)';
+                }}
+              >
+                {f.label}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
 
       {/* ── Module Library ─────────────────────────────────── */}
-      <section data-animate>
+      <section id="module-library" data-animate>
         <div className="flex justify-between items-end mb-10">
           <div>
             <h2 className="font-drama text-3xl mb-2 text-foreground">Explore the Library</h2>
@@ -413,18 +562,42 @@ export default function PortalDashboard({
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {course?.modules?.map((mod) => {
+          {course?.modules?.map((mod, idx) => {
             const modProgress = (mod.is_preview || canAccessContent) ? getModuleProgress(mod) : 0;
             const isLocked = !mod.is_preview && !canAccessContent;
 
+            // Wave 7 design pass — module-cipher treatment.
+            // Large display numeral as visual anchor, subtle warm-cream surface,
+            // accent-coral progress dot replacing the prior flat banner block.
+            // LOW-08 fix: derive cipher from sort-order index, not module_number.
+            // Module rows like "module-f" (legacy data garbage; recommend DELETE
+            // via reports/module-f-cleanup.sql) used to render "0F" because the
+            // module_number string contained a hex letter. Index is robust.
+            const numeral = String(idx + 1).padStart(2, '0');
             return (
-              <div
+              <article
                 key={mod.id}
-                className={`group bg-white rounded-2xl overflow-hidden shadow-[0_4px_20px_-4px_rgba(7,58,71,0.08)] transition-all duration-200 ${
+                className={`group relative rounded-2xl overflow-hidden transition-all duration-200 ${
                   !isLocked
-                    ? 'cursor-pointer hover:shadow-[0_8px_30px_-4px_rgba(7,58,71,0.12)] hover:scale-[1.02]'
-                    : 'opacity-60'
+                    ? 'cursor-pointer hover:-translate-y-0.5'
+                    : 'opacity-55'
                 }`}
+                style={{
+                  backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
+                  border: '1px solid var(--pt-border-soft-hex, #e7e5e4)',
+                  boxShadow: '0 1px 0 rgba(28, 25, 23, 0.02)',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isLocked) {
+                    e.currentTarget.style.boxShadow =
+                      '0 1px 0 rgba(28, 25, 23, 0.02), 0 18px 40px -22px rgba(28, 25, 23, 0.14)';
+                    e.currentTarget.style.borderColor = 'var(--pt-primary-accent-hex, #B96A5F)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = '0 1px 0 rgba(28, 25, 23, 0.02)';
+                  e.currentTarget.style.borderColor = 'var(--pt-border-soft-hex, #e7e5e4)';
+                }}
                 onClick={() => !isLocked && goToModule(mod)}
                 onKeyDown={(e) => {
                   if (!isLocked && (e.key === 'Enter' || e.key === ' ')) {
@@ -436,51 +609,222 @@ export default function PortalDashboard({
                 role="button"
                 aria-label={`Module ${mod.module_number}: ${mod.title}${isLocked ? ' - Locked' : ''}`}
               >
-                {/* Gradient header */}
-                <div className="h-40 bg-gradient-to-br from-primary/20 to-accent/10 relative flex items-end p-6">
-                  <span className="bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-outfit font-bold uppercase tracking-wider">
+                {/* Editorial cipher zone — large numeral, subtle horizon stripe */}
+                <div
+                  className="relative h-32 overflow-hidden"
+                  style={{
+                    backgroundColor: 'var(--pt-elevation-warm-hex, #faf7f2)',
+                    borderBottom: '1px solid var(--pt-border-soft-hex, #e7e5e4)',
+                  }}
+                >
+                  {/* Display numeral — Playfair italic, wedged into top-right */}
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      position: 'absolute',
+                      right: 18,
+                      top: -8,
+                      fontFamily: '"Playfair Display", Georgia, serif',
+                      fontStyle: 'italic',
+                      fontWeight: 300,
+                      fontSize: 120,
+                      lineHeight: 1,
+                      letterSpacing: '-0.04em',
+                      color: 'var(--pt-elevation-1-hex, #e7e5e4)',
+                      userSelect: 'none',
+                      transition: 'color 200ms ease',
+                    }}
+                    className="group-hover:text-[var(--pt-primary-accent-soft-hex,rgba(185,106,95,0.12))]"
+                  >
+                    {numeral}
+                  </span>
+                  {/* Eyebrow chip — bottom-left of cipher zone */}
+                  <span
+                    className="absolute bottom-4 left-5"
+                    style={{
+                      fontFamily: '"Outfit", sans-serif',
+                      fontSize: 10,
+                      fontWeight: 600,
+                      letterSpacing: '0.22em',
+                      textTransform: 'uppercase',
+                      color: 'var(--pt-text-muted-hex, #57534e)',
+                    }}
+                  >
                     Module {mod.module_number}
                   </span>
                   {isLocked && (
                     <div className="absolute top-4 right-4">
-                      <Lock className="w-5 h-5 text-primary/40" />
+                      <Lock
+                        className="w-4 h-4"
+                        style={{ color: 'var(--pt-text-quiet-hex, #a8a29e)' }}
+                      />
                     </div>
                   )}
                 </div>
                 <div className="p-6">
-                  <h3 className="font-outfit text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
+                  <h3
+                    style={{
+                      fontFamily: '"Playfair Display", Georgia, serif',
+                      fontWeight: 400,
+                      fontSize: 22,
+                      lineHeight: 1.18,
+                      letterSpacing: '-0.01em',
+                      color: 'var(--pt-text-primary-hex, #1c1917)',
+                      margin: '0 0 10px',
+                    }}
+                  >
                     {mod.title}
                   </h3>
-                  <p className="text-sm text-foreground/50 mb-4 line-clamp-2 leading-relaxed">
+                  <p
+                    className="line-clamp-2"
+                    style={{
+                      fontFamily: '"Plus Jakarta Sans", sans-serif',
+                      fontSize: 13.5,
+                      lineHeight: 1.55,
+                      color: 'var(--pt-text-muted-hex, #57534e)',
+                      margin: '0 0 18px',
+                    }}
+                  >
                     {mod.description || 'Explore this module to begin your journey.'}
                   </p>
 
                   {/* Progress bar for accessible modules */}
                   {!isLocked && modProgress > 0 && (
                     <div className="mb-3">
-                      <div className="flex justify-between text-xs text-foreground/40 mb-1">
+                      <div
+                        className="flex justify-between mb-1.5"
+                        style={{
+                          fontFamily: '"Outfit", sans-serif',
+                          fontSize: 10,
+                          fontWeight: 600,
+                          letterSpacing: '0.16em',
+                          textTransform: 'uppercase',
+                          color: 'var(--pt-text-muted-hex, #57534e)',
+                        }}
+                      >
                         <span>Progress</span>
                         <span>{modProgress}%</span>
                       </div>
-                      <div className="h-1 w-full bg-neutral-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-[2px] w-full overflow-hidden"
+                        style={{ backgroundColor: 'var(--pt-border-soft-hex, #e7e5e4)' }}
+                      >
                         <div
-                          className="h-full bg-primary rounded-full transition-all duration-500"
-                          style={{ width: `${modProgress}%` }}
+                          className="h-full transition-all duration-500"
+                          style={{
+                            width: `${modProgress}%`,
+                            backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)',
+                          }}
                         />
                       </div>
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between text-xs text-foreground/40">
+                  <div
+                    className="flex items-center justify-between"
+                    style={{
+                      fontFamily: '"Outfit", sans-serif',
+                      fontSize: 11,
+                      letterSpacing: '0.06em',
+                      color: 'var(--pt-text-quiet-hex, #a8a29e)',
+                    }}
+                  >
                     <span>{mod.lessons?.length || 0} Lessons</span>
                     {!isLocked && (
-                      <ChevronRight className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <ChevronRight
+                        className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                        style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+                      />
                     )}
                   </div>
                 </div>
-              </div>
+              </article>
             );
           })}
+        </div>
+      </section>
+
+      {/* ── Journey Stats strip (3.9 — below-fold, demoted, small footprint) */}
+      {/* Not in hero; renders after module library so it appears below-fold.  */}
+      <section
+        data-animate
+        style={{
+          padding: '24px 28px',
+          borderRadius: 14,
+          background: 'var(--pt-elevation-1-hex, #e7e5e4)',
+          border: `1px solid var(--pt-border-subtle-hex, #d6d3d1)`,
+          display: 'flex',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 32,
+        }}
+        aria-label="Journey progress (quiet stats)"
+      >
+        <div>
+          <p
+            style={{
+              fontFamily: '"Outfit", sans-serif',
+              fontSize: 10,
+              fontWeight: 600,
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              color: 'var(--pt-text-muted-hex, #57534e)',
+              margin: 0,
+              marginBottom: 3,
+            }}
+          >
+            Your quiet progress
+          </p>
+          <p
+            style={{
+              fontFamily: '"Playfair Display", Georgia, serif',
+              fontStyle: 'italic',
+              fontWeight: 300,
+              fontSize: 14,
+              color: 'var(--pt-text-muted-hex, #57534e)',
+              margin: 0,
+            }}
+          >
+            No leaderboards. No streaks. Just steps.
+          </p>
+        </div>
+        <div style={{ display: 'flex', gap: 36, flexWrap: 'wrap' }}>
+          {[
+            { value: completedLessons, label: 'Lessons' },
+            {
+              value: completedModules > 0 ? completedModules : completedLessons > 0 ? '…' : '0',
+              label: 'Modules',
+            },
+            { value: totalLessons, label: 'Total' },
+            { value: `${overallProgress}%`, label: 'Overall' },
+          ].map(({ value, label }) => (
+            <div key={label} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <span
+                style={{
+                  fontFamily: '"Outfit", sans-serif',
+                  fontWeight: 600,
+                  fontSize: 20,
+                  letterSpacing: '-0.01em',
+                  lineHeight: 1.1,
+                  color: 'var(--pt-text-primary-hex, #1c1917)',
+                }}
+              >
+                {value}
+              </span>
+              <span
+                style={{
+                  fontFamily: '"Outfit", sans-serif',
+                  fontSize: 10,
+                  fontWeight: 500,
+                  letterSpacing: '0.14em',
+                  textTransform: 'uppercase',
+                  color: 'var(--pt-text-muted-hex, #57534e)',
+                }}
+              >
+                {label}
+              </span>
+            </div>
+          ))}
         </div>
       </section>
     </div>

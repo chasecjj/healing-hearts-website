@@ -91,7 +91,7 @@ function TaskCheckbox({ checked, onChange }) {
         background: checked ? '#3fb950' : 'transparent',
         border: checked ? 'none' : '2px solid #484f58',
         cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-        flexShrink: 0, transition: 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        flexShrink: 0, transition: 'all 0.15s cubic-bezier(0.16, 1, 0.3, 1)',
         padding: 0, outline: 'none',
       }}
       onMouseDown={e => { e.currentTarget.style.transform = 'scale(0.85)' }}
