@@ -56,8 +56,8 @@ function writeTabToLs(index) {
 
 const TABS = [
   { id: 'sanctuary', label: 'Sanctuary' },
-  { id: 'journey', label: 'Your Journey' },
-  { id: 'resources', label: 'Your Resources' },
+  { id: 'journey', label: 'Journey' },
+  { id: 'resources', label: 'Resources' },
 ];
 
 // ── Sub-components ────────────────────────────────────────────────────────
@@ -160,8 +160,16 @@ function SanctuaryTab({ firstName }) {
       id="home-tabpanel-sanctuary"
       aria-labelledby="home-tab-sanctuary"
     >
-      {/* Header row: welcome + AccountSwitch top-right */}
-      <div className="flex items-start justify-between px-3 pb-3 pt-1 gap-2">
+      {/* Header — stacked vertically so welcome heading-2 doesn't compete
+          with AccountSwitch for width at 280px drawer. AccountSwitch sits
+          as an eyebrow row above the welcome (A-03 P0 affordance stays
+          prominent and tappable, but full drawer width goes to the heading). */}
+      <div className="px-3 pb-3 pt-1">
+        {/* A-03 P0 safety: account-switch affordance — eyebrow row */}
+        <div className="flex justify-end pb-2">
+          <AccountSwitch />
+        </div>
+
         <div className="min-w-0">
           <p
             style={{ ...getTypeStyle('heading-2'), margin: 0, lineHeight: 1.3 }}
@@ -179,9 +187,6 @@ function SanctuaryTab({ firstName }) {
             Welcome back — nothing pressing. Settle in.
           </p>
         </div>
-
-        {/* A-03 P0 safety: account-switch affordance */}
-        <AccountSwitch />
       </div>
 
       {/* Daily Intention — migrated from Dashboard per §12.1 A-12 / 2.3 literal */}
