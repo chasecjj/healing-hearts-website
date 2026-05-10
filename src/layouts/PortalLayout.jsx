@@ -678,7 +678,7 @@ function RightJournalPanel({ isOpen, onToggle, onClose, currentLessonId, current
                   : 'transparent',
               }}
             />
-            <span className="relative z-10">
+            <span className="relative z-10 flex flex-col items-center gap-1">
               <NotebookPen
                 className="w-5 h-5"
                 strokeWidth={isOpen ? 2 : 1.75}
@@ -689,6 +689,25 @@ function RightJournalPanel({ isOpen, onToggle, onClose, currentLessonId, current
                     : 'rgba(250,250,249,0.65)',
                 }}
               />
+              {/* Visible label — right rail hosts a single icon so there's
+                  room for a textual hint that left rail (6 stacked icons)
+                  can't afford. Addresses UX-01 discoverability — first-time
+                  users wouldn't read NotebookPen alone as "journal". */}
+              <span
+                aria-hidden="true"
+                style={{
+                  fontFamily: '"Outfit", sans-serif',
+                  fontSize: 9,
+                  fontWeight: isOpen ? 600 : 500,
+                  letterSpacing: '0.06em',
+                  lineHeight: 1,
+                  color: isOpen
+                    ? 'var(--pt-text-inverse-hex, #fafaf9)'
+                    : 'rgba(250,250,249,0.55)',
+                }}
+              >
+                Journal
+              </span>
             </span>
           </button>
         </nav>

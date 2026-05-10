@@ -61,6 +61,7 @@ export default function JournalEntryDetail({ entry, onBack, onUpdate, onDelete }
   const [mood, setMood] = useState(entry?.mood || null);
   const [saving, setSaving] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [confirmingBack, setConfirmingBack] = useState(false);
   const [savedFlash, setSavedFlash] = useState(false);
 
   // If parent swaps the entry prop (e.g. sync from refetch), refresh local
@@ -99,13 +100,24 @@ export default function JournalEntryDetail({ entry, onBack, onUpdate, onDelete }
     }
   };
 
+  // Asymmetric Delete-warned / Back-silent was a friction point users in this
+  // population are most likely to hit (per UX-07). Mirror the InlineConfirm
+  // pattern for Back when there are unsaved changes.
+  const handleBackClick = () => {
+    if (dirty) {
+      setConfirmingBack(true);
+    } else {
+      onBack();
+    }
+  };
+
   return (
     <div className="flex flex-col h-full">
       {/* Header bar with back + delete */}
       <div className="flex items-center justify-between px-3 py-2 flex-shrink-0">
         <button
           type="button"
-          onClick={onBack}
+          onClick={handleBackClick}
           className="flex items-center gap-1 px-2 py-1 rounded-md focus-visible:outline-none focus-visible:ring-2"
           style={{
             ...getTypeStyle('caption', 'medium'),
@@ -116,6 +128,7 @@ export default function JournalEntryDetail({ entry, onBack, onUpdate, onDelete }
             outlineColor: 'var(--pt-focus-ring-hex, #B96A5F)',
           }}
           aria-label="Back to journal list"
+          disabled={confirmingBack}
         >
           <ChevronLeft className="w-3.5 h-3.5" strokeWidth={2} aria-hidden="true" />
           Back
@@ -149,6 +162,18 @@ export default function JournalEntryDetail({ entry, onBack, onUpdate, onDelete }
             message="Delete this journal entry? This can't be undone."
             onConfirm={handleDeleteConfirm}
             onCancel={() => setConfirmingDelete(false)}
+          />
+        )}
+
+        {/* Inline confirm when Back pressed with unsaved changes */}
+        {confirmingBack && (
+          <InlineConfirm
+            message="You have unsaved changes. Leave without saving?"
+            onConfirm={() => {
+              setConfirmingBack(false);
+              onBack();
+            }}
+            onCancel={() => setConfirmingBack(false)}
           />
         )}
 
