@@ -2,6 +2,10 @@
  * JournalView — content of the right-drawer journal panel.
  *
  * Wave 10 J2 + J5.
+ * Wave 11 J1 — currentLessonId / currentModuleId now flow from
+ *   JournalPanelContext (set by CoursePortal); props remain the
+ *   pass-through shape from PortalLayout.
+ * Wave 11 J2 — filter chips: All / This lesson / This module / By mood.
  *
  * Three modes:
  *   - LIST   (default) — recent entries, scrollable, click-to-detail
@@ -17,13 +21,16 @@
  *     props (passed in by the consumer that knows the route context). When
  *     absent, entries save with both FKs = null (panel is reachable from
  *     non-lesson surfaces too — Sanctuary, Bookmarks, Calendar).
+ *   - Filter state is ephemeral (local useState, resets to 'all' when panel
+ *     closes). No localStorage persistence — too much cognitive load.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Plus } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { getTypeStyle } from './design/typography';
 import { useJournal } from './hooks/useJournal';
+import { MOOD_OPTIONS } from '../lib/constants';
 import JournalEntryDetail from './JournalEntryDetail';
 import MoodSelector from './MoodSelector';
 
@@ -119,6 +126,224 @@ function JournalHeader({ onCompose }) {
       >
         <Plus className="w-4 h-4" strokeWidth={2} aria-hidden="true" />
       </button>
+    </div>
+  );
+}
+
+// ── Filter chip row (Wave 11 J2) ──────────────────────────────────────────
+/**
+ * Chips: All | This lesson (hidden if no lessonId) | This module (hidden if
+ * no moduleId) | By mood (always shown, opens popover with multi-select pills)
+ *
+ * Active chip style: filled bg = --pt-primary-accent-hex, text = --pt-text-inverse-hex
+ * Inactive chip style: transparent bg, border 1px --pt-border-subtle-hex, text --pt-text-muted-hex
+ */
+function FilterChips({
+  activeFilter,
+  onFilterChange,
+  currentLessonId,
+  currentModuleId,
+  selectedMoods,
+  onMoodsChange,
+}) {
+  const [moodPopoverOpen, setMoodPopoverOpen] = useState(false);
+  const popoverRef = useRef(null);
+  const moodBtnRef = useRef(null);
+
+  // Close popover on click-outside
+  useEffect(() => {
+    if (!moodPopoverOpen) return undefined;
+    const handler = (e) => {
+      if (
+        popoverRef.current && !popoverRef.current.contains(e.target) &&
+        moodBtnRef.current && !moodBtnRef.current.contains(e.target)
+      ) {
+        setMoodPopoverOpen(false);
+      }
+    };
+    document.addEventListener('pointerdown', handler);
+    return () => document.removeEventListener('pointerdown', handler);
+  }, [moodPopoverOpen]);
+
+  // Close popover on ESC
+  useEffect(() => {
+    if (!moodPopoverOpen) return undefined;
+    const handler = (e) => {
+      if (e.key === 'Escape') setMoodPopoverOpen(false);
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [moodPopoverOpen]);
+
+  const chipStyle = (isActive) => ({
+    display: 'inline-flex',
+    alignItems: 'center',
+    padding: '3px 10px',
+    borderRadius: 9999,
+    border: isActive
+      ? '1px solid transparent'
+      : '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
+    backgroundColor: isActive
+      ? 'var(--pt-primary-accent-hex, #B96A5F)'
+      : 'transparent',
+    color: isActive
+      ? 'var(--pt-text-inverse-hex, #fafaf9)'
+      : 'var(--pt-text-muted-hex, #57534e)',
+    cursor: 'pointer',
+    fontSize: 11,
+    fontFamily: '"Outfit", sans-serif',
+    fontWeight: 500,
+    letterSpacing: '0.04em',
+    transition: 'background-color 120ms ease, color 120ms ease',
+    whiteSpace: 'nowrap',
+  });
+
+  const isMoodActive = activeFilter === 'mood' && selectedMoods.length > 0;
+
+  const toggleMood = (moodValue) => {
+    if (selectedMoods.includes(moodValue)) {
+      const next = selectedMoods.filter((m) => m !== moodValue);
+      onMoodsChange(next);
+      if (next.length === 0) {
+        // no moods selected → revert to 'all'
+        onFilterChange('all');
+      } else {
+        onFilterChange('mood');
+      }
+    } else {
+      onMoodsChange([...selectedMoods, moodValue]);
+      onFilterChange('mood');
+    }
+  };
+
+  return (
+    <div
+      style={{
+        padding: '6px 16px 8px',
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: 6,
+        alignItems: 'center',
+        borderBottom: '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
+        position: 'relative',
+      }}
+      role="group"
+      aria-label="Filter journal entries"
+    >
+      {/* All */}
+      <button
+        type="button"
+        onClick={() => onFilterChange('all')}
+        aria-pressed={activeFilter === 'all'}
+        style={chipStyle(activeFilter === 'all')}
+        className="focus-visible:outline-none focus-visible:ring-2"
+      >
+        All
+      </button>
+
+      {/* This lesson — hidden when no lessonId */}
+      {currentLessonId !== null && (
+        <button
+          type="button"
+          onClick={() => onFilterChange('lesson')}
+          aria-pressed={activeFilter === 'lesson'}
+          style={chipStyle(activeFilter === 'lesson')}
+          className="focus-visible:outline-none focus-visible:ring-2"
+        >
+          This lesson
+        </button>
+      )}
+
+      {/* This module — hidden when no moduleId */}
+      {currentModuleId !== null && (
+        <button
+          type="button"
+          onClick={() => onFilterChange('module')}
+          aria-pressed={activeFilter === 'module'}
+          style={chipStyle(activeFilter === 'module')}
+          className="focus-visible:outline-none focus-visible:ring-2"
+        >
+          This module
+        </button>
+      )}
+
+      {/* By mood — always shown; opens multi-select popover */}
+      <div style={{ position: 'relative' }}>
+        <button
+          ref={moodBtnRef}
+          type="button"
+          onClick={() => setMoodPopoverOpen((o) => !o)}
+          aria-pressed={isMoodActive}
+          aria-expanded={moodPopoverOpen}
+          aria-haspopup="listbox"
+          style={chipStyle(isMoodActive)}
+          className="focus-visible:outline-none focus-visible:ring-2"
+        >
+          {isMoodActive && selectedMoods.length > 0
+            ? `Mood (${selectedMoods.length})`
+            : 'By mood'}
+        </button>
+
+        {/* Mood multi-select popover */}
+        {moodPopoverOpen && (
+          <div
+            ref={popoverRef}
+            role="listbox"
+            aria-multiselectable="true"
+            aria-label="Select moods to filter by"
+            style={{
+              position: 'absolute',
+              top: 'calc(100% + 6px)',
+              left: 0,
+              zIndex: 50,
+              backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
+              border: '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
+              borderRadius: 8,
+              boxShadow: '0 4px 16px rgba(28,25,23,0.12)',
+              padding: '10px 12px',
+              width: 200,
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 6,
+            }}
+          >
+            {MOOD_OPTIONS.map((mood) => {
+              const isSelected = selectedMoods.includes(mood.value);
+              return (
+                <button
+                  key={mood.value}
+                  type="button"
+                  role="option"
+                  aria-selected={isSelected}
+                  onClick={() => toggleMood(mood.value)}
+                  style={{
+                    padding: '3px 10px',
+                    borderRadius: 9999,
+                    border: isSelected
+                      ? '1px solid transparent'
+                      : '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
+                    backgroundColor: isSelected
+                      ? 'var(--pt-primary-accent-hex, #B96A5F)'
+                      : 'transparent',
+                    color: isSelected
+                      ? 'var(--pt-text-inverse-hex, #fafaf9)'
+                      : 'var(--pt-text-muted-hex, #57534e)',
+                    cursor: 'pointer',
+                    fontSize: 11,
+                    fontFamily: '"Outfit", sans-serif',
+                    fontWeight: 500,
+                    transition: 'background-color 120ms ease, color 120ms ease',
+                    textTransform: 'capitalize',
+                  }}
+                  className="focus-visible:outline-none focus-visible:ring-2"
+                >
+                  {mood.label}
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -284,6 +509,55 @@ function EmptyState({ onCompose }) {
   );
 }
 
+// ── Empty filter state (Wave 11 J2) ───────────────────────────────────────
+function EmptyFilterState({ onShowAll }) {
+  return (
+    <div
+      className="flex flex-col items-start gap-3"
+      style={{ padding: '12px 16px 20px' }}
+    >
+      <p
+        style={{
+          fontFamily: '"Cormorant Garamond", "Playfair Display", Georgia, serif',
+          fontStyle: 'italic',
+          fontWeight: 400,
+          fontSize: 16,
+          lineHeight: 1.4,
+          color: 'var(--pt-text-primary-hex, #1c1917)',
+          margin: 0,
+        }}
+      >
+        No entries match this filter.
+      </p>
+      <p
+        style={{
+          ...getTypeStyle('body'),
+          color: 'var(--pt-text-muted-hex, #57534e)',
+          margin: 0,
+        }}
+      >
+        Try All to see everything.
+      </p>
+      <button
+        type="button"
+        onClick={onShowAll}
+        className="px-3 py-2 rounded-md focus-visible:outline-none focus-visible:ring-2"
+        style={{
+          ...getTypeStyle('body', 'semibold'),
+          backgroundColor: 'transparent',
+          color: 'var(--pt-primary-accent-hex, #B96A5F)',
+          border: '1px solid var(--pt-primary-accent-hex, #B96A5F)',
+          cursor: 'pointer',
+          outlineColor: 'var(--pt-focus-ring-hex, #B96A5F)',
+          marginTop: 4,
+        }}
+      >
+        Show all
+      </button>
+    </div>
+  );
+}
+
 // ── Compose form (J5) ─────────────────────────────────────────────────────
 function ComposeForm({ onCancel, onCreate }) {
   const [text, setText] = useState('');
@@ -434,6 +708,30 @@ export default function JournalView({ currentLessonId = null, currentModuleId = 
   const [mode, setMode] = useState('list');
   const [selectedId, setSelectedId] = useState(null);
 
+  // Wave 11 J2 — filter state (ephemeral: resets when panel closes)
+  // activeFilter: 'all' | 'lesson' | 'module' | 'mood'
+  const [activeFilter, setActiveFilter] = useState('all');
+  // selectedMoods: string[] — OR-combined matching
+  const [selectedMoods, setSelectedMoods] = useState([]);
+
+  // Filter resets naturally: RightJournalPanel unmounts JournalView on close
+  // ({isOpen && <JournalView/>} in PortalLayout), so useState initial values
+  // ('all', []) are restored on every panel open — no effect needed.
+
+  // ── Derived filtered entries ─────────────────────────────────────────────
+  const filteredEntries = (() => {
+    if (activeFilter === 'lesson' && currentLessonId) {
+      return entries.filter((e) => e.lesson_id === currentLessonId);
+    }
+    if (activeFilter === 'module' && currentModuleId) {
+      return entries.filter((e) => e.module_id === currentModuleId);
+    }
+    if (activeFilter === 'mood' && selectedMoods.length > 0) {
+      return entries.filter((e) => e.mood && selectedMoods.includes(e.mood));
+    }
+    return entries;
+  })();
+
   const selectedEntry = entries.find((e) => e.id === selectedId) || null;
 
   const handleSelect = (id) => {
@@ -467,6 +765,11 @@ export default function JournalView({ currentLessonId = null, currentModuleId = 
     // After save, return to list so the user sees their entry at the top.
     setMode('list');
     return created;
+  };
+
+  const handleShowAll = () => {
+    setActiveFilter('all');
+    setSelectedMoods([]);
   };
 
   // ── Auth gate ───────────────────────────────────────────────────────────
@@ -518,6 +821,18 @@ export default function JournalView({ currentLessonId = null, currentModuleId = 
     <div className="flex flex-col h-full">
       <JournalHeader onCompose={handleCompose} />
 
+      {/* Wave 11 J2 — filter chips (only shown when there are entries to filter) */}
+      {entries.length > 0 && (
+        <FilterChips
+          activeFilter={activeFilter}
+          onFilterChange={setActiveFilter}
+          currentLessonId={currentLessonId}
+          currentModuleId={currentModuleId}
+          selectedMoods={selectedMoods}
+          onMoodsChange={setSelectedMoods}
+        />
+      )}
+
       <div className="flex-1 overflow-y-auto">
         {loading && entries.length === 0 ? (
           <p
@@ -544,9 +859,11 @@ export default function JournalView({ currentLessonId = null, currentModuleId = 
           </p>
         ) : entries.length === 0 ? (
           <EmptyState onCompose={handleCompose} />
+        ) : filteredEntries.length === 0 ? (
+          <EmptyFilterState onShowAll={handleShowAll} />
         ) : (
           <ul style={{ listStyle: 'none', margin: 0, padding: '4px 8px 12px' }}>
-            {entries.map((entry) => (
+            {filteredEntries.map((entry) => (
               <li key={entry.id}>
                 <EntryCard entry={entry} onClick={() => handleSelect(entry.id)} />
               </li>
