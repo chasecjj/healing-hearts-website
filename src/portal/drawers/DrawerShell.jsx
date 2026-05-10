@@ -143,13 +143,18 @@ export function DrawerShell({
           className="flex items-center gap-2 px-4 py-3"
           style={{ borderBottom: '1px solid var(--pt-border-subtle-hex, #d6d3d1)' }}
         >
-          {/* Home icon — always present; semantic anchor per 2.13 */}
-          <Home
-            className="w-4 h-4 flex-shrink-0"
-            strokeWidth={1.75}
-            aria-hidden="true"
-            style={{ color: 'var(--pt-text-muted-hex, #57534e)' }}
-          />
+          {/* Home icon — semantic anchor per 2.13. Suppressed when the section's
+              own icon IS Home (HomeDrawer) so the topbar doesn't render two
+              identical icons next to "Home". A-05 identity is still preserved
+              by the section icon + label + breadcrumb on the home drawer. */}
+          {SectionIcon !== Home && (
+            <Home
+              className="w-4 h-4 flex-shrink-0"
+              strokeWidth={1.75}
+              aria-hidden="true"
+              style={{ color: 'var(--pt-text-muted-hex, #57534e)' }}
+            />
+          )}
 
           {/* Section icon — semantic identity channel (A-05) */}
           {SectionIcon && (

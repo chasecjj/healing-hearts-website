@@ -38,6 +38,7 @@ import {
 import { PortalLogo } from '../portal/components/PortalLogo';
 import { DrawerMetaContext } from '../portal/context/DrawerMetaContext';
 import { JournalPanelContext } from '../portal/context/JournalPanelContext';
+import { clearAllRailState } from '../portal/lib/railStateReset';
 import JournalView from '../portal/JournalView';
 import HomeDrawer from '../portal/drawers/HomeDrawer';
 import CoursesDrawer from '../portal/drawers/CoursesDrawer';
@@ -317,6 +318,21 @@ function DesktopTwoRail({ isAdmin, activeRailId: pathActiveRailId, drawerCollaps
     navigate('/');
   };
 
+  // P0 shared-device safety per spec §12.1 A-03: signOut + wipe all rail-slot
+  // localStorage + redirect to /login. Distinct from "Sign out" (which lands
+  // on /). Previously surfaced as <AccountSwitch/> in HomeDrawer eyebrow row;
+  // moved into the bottom-rail account popup.
+  const handleSwitchAccount = async () => {
+    setAccountMenuOpen(false);
+    try {
+      await signOut();
+      clearAllRailState();
+      navigate('/login', { replace: true });
+    } catch (err) {
+      console.error('[PortalLayout] switch-account failed:', err);
+    }
+  };
+
   useEffect(() => {
     if (!accountMenuOpen) return;
     const onClick = (e) => {
@@ -361,8 +377,13 @@ function DesktopTwoRail({ isAdmin, activeRailId: pathActiveRailId, drawerCollaps
         aria-label="Main navigation rail"
         style={{ backgroundColor: 'var(--pt-rail-hex, #24201D)' }}
       >
-        {/* Logo — top of rail */}
-        <div className="flex items-center justify-center h-14 flex-shrink-0">
+        {/* Logo — top of rail. Explicit color so the heart reads as cream on the
+            dark warm-brown rail (currentColor would otherwise inherit the page's
+            text-foreground and render dark-on-dark). */}
+        <div
+          className="flex items-center justify-center h-14 flex-shrink-0"
+          style={{ color: 'var(--pt-text-inverse-hex, #fafaf9)' }}
+        >
           <PortalLogo size={32} alt="Healing Hearts" />
         </div>
 
@@ -455,6 +476,16 @@ function DesktopTwoRail({ isAdmin, activeRailId: pathActiveRailId, drawerCollaps
                 className="w-full text-left px-4 py-2 text-sm hover:bg-black/5 transition-colors"
               >
                 Change password
+              </button>
+              <button
+                type="button"
+                role="menuitem"
+                onClick={handleSwitchAccount}
+                className="w-full text-left px-4 py-2 text-sm hover:bg-black/5 transition-colors"
+                style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+                aria-label="Not you? Switch account — signs out and redirects to login"
+              >
+                Not you? Switch account
               </button>
               <button
                 type="button"

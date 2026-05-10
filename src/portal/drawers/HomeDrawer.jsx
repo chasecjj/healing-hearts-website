@@ -30,7 +30,6 @@ import { DrawerShell, DrawerSection, DrawerItem } from './DrawerShell';
 import { useDrawerState } from '../hooks/useDrawerState';
 import { getTypeStyle } from '../design/typography';
 import { useAuth } from '../../contexts/AuthContext';
-import AccountSwitch from '../components/AccountSwitch';
 
 // ── HomeDrawer ────────────────────────────────────────────────────────────
 
@@ -55,15 +54,10 @@ export default function HomeDrawer() {
 
   return (
     <DrawerShell title="Home" ariaContext="Home" drawerId="home">
-      {/* Header — eyebrow row (AccountSwitch P0 affordance) + welcome heading.
-          Stacked vertical so heading-2 doesn't compete with AccountSwitch at
-          280px column width (Wave 8 vertical-stack fix). */}
+      {/* Header — welcome heading. AccountSwitch (P0 A-03 affordance) lives in
+          the bottom-rail account popup (PortalLayout) so it's reachable from
+          every drawer surface, not just Home. */}
       <div className="px-3 pb-3 pt-1">
-        {/* A-03 P0 safety: account-switch affordance — eyebrow row */}
-        <div className="flex justify-end pb-2">
-          <AccountSwitch />
-        </div>
-
         <div className="min-w-0">
           <p
             style={{ ...getTypeStyle('heading-2'), margin: 0, lineHeight: 1.3 }}
