@@ -93,15 +93,17 @@ export function DrawerShell({
   sectionIcon: SectionIconProp,
   flavorToken: flavorTokenProp,
   breadcrumb: breadcrumbProp,
-  // Wave 9 E5: drawer hide/show toggle wiring
-  onCollapseToggle,
-  collapsed = false,
+  // Wave 9 E5: drawer hide/show toggle wiring (props override context)
+  onCollapseToggle: onCollapseToggleProp,
+  collapsed: collapsedProp,
 }) {
   // Context fallback: PortalLayout injects these when drawer files aren't yet updated
   const ctx = useContext(DrawerMetaContext);
   const flavorToken = flavorTokenProp ?? ctx.flavorToken;
   const SectionIcon = SectionIconProp ?? ctx.sectionIcon;
   const breadcrumb = breadcrumbProp ?? ctx.breadcrumb ?? title;
+  const onCollapseToggle = onCollapseToggleProp ?? ctx.onCollapseToggle;
+  const collapsed = collapsedProp ?? ctx.collapsed ?? false;
 
   const prefersReduced = useReducedMotion();
   const entranceMotion = useDrawerEntrance(prefersReduced);

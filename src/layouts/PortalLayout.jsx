@@ -49,6 +49,38 @@ function PortalKeyframeStyles() {
   return <style>{breathingGradientKeyframes}</style>;
 }
 
+// ── Drawer-collapse LS sub-key (Wave 9 E5) ────────────────────────────────
+// Reuses the existing portal-drawer-state-v1 LS object via a sub-key, matching
+// the useDrawerState scroll-position pattern. Default is `false` (expanded for
+// new users, per Chase 2026-05-10 lock).
+const LS_KEY = 'portal-drawer-state-v1';
+const COLLAPSED_SUB_KEY = 'drawer-collapsed';
+
+function readDrawerCollapsedFromLs() {
+  if (typeof window === 'undefined') return false;
+  try {
+    const raw = window.localStorage.getItem(LS_KEY);
+    const state = raw ? JSON.parse(raw) : {};
+    return state[COLLAPSED_SUB_KEY] === true;
+  } catch {
+    return false;
+  }
+}
+
+function writeDrawerCollapsedToLs(collapsed) {
+  if (typeof window === 'undefined') return;
+  try {
+    const raw = window.localStorage.getItem(LS_KEY);
+    const current = raw ? JSON.parse(raw) : {};
+    window.localStorage.setItem(
+      LS_KEY,
+      JSON.stringify({ ...current, [COLLAPSED_SUB_KEY]: !!collapsed })
+    );
+  } catch {
+    // fail silently
+  }
+}
+
 // ── Rail-id → drawer component map ────────────────────────────────────────
 const DRAWERS = {
   home: HomeDrawer,
@@ -185,7 +217,7 @@ function useActiveRailId(isAdmin) {
 }
 
 // ── Desktop two-rail + contextual drawer ──────────────────────────────────
-function DesktopTwoRail({ isAdmin, activeRailId: pathActiveRailId }) {
+function DesktopTwoRail({ isAdmin, activeRailId: pathActiveRailId, drawerCollapsed, onToggleCollapsed }) {
   const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
@@ -277,7 +309,14 @@ function DesktopTwoRail({ isAdmin, activeRailId: pathActiveRailId }) {
     .toUpperCase();
 
   const DrawerComponent = DRAWERS[activeRailId] || HomeDrawer;
-  const drawerMeta = DRAWER_META[activeRailId] || DRAWER_META.home;
+  const baseDrawerMeta = DRAWER_META[activeRailId] || DRAWER_META.home;
+  // Inject Wave 9 E5 collapse-toggle wiring through DrawerMetaContext so each
+  // DrawerShell instance shows the chevron without per-drawer prop plumbing.
+  const drawerMeta = {
+    ...baseDrawerMeta,
+    onCollapseToggle: onToggleCollapsed,
+    collapsed: drawerCollapsed,
+  };
 
   return (
     <>
@@ -399,20 +438,61 @@ function DesktopTwoRail({ isAdmin, activeRailId: pathActiveRailId }) {
       {/* ── DRAWER (280px, inset-inline-start: 72px for RTL safety, 2.12) ─ */}
       {/* start-[72px] = inset-inline-start: 72px (logical property)           */}
       {/* DrawerMetaContext provides flavor/icon/breadcrumb to DrawerShell      */}
+      {/* Wave 9 E5: collapsed → width 0 + visibility hidden + aria-hidden.     */}
+      {/*   DOM remains rendered (preserves React state); CSS-only collapse.   */}
       <aside
         ref={drawerAsideRef}
-        className="hidden md:flex fixed start-[72px] top-0 h-screen w-[280px] z-30"
+        className="hidden md:flex fixed start-[72px] top-0 h-screen z-30"
         aria-label="Contextual drawer"
+        aria-hidden={drawerCollapsed ? 'true' : undefined}
         style={{
+          width: drawerCollapsed ? 0 : 280,
+          visibility: drawerCollapsed ? 'hidden' : 'visible',
+          overflow: drawerCollapsed ? 'hidden' : 'visible',
           backgroundColor: 'var(--pt-drawer-hex, #d6d3d1)',
-          borderInlineEnd: '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
+          borderInlineEnd: drawerCollapsed
+            ? 'none'
+            : '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
+          transition: 'width 200ms cubic-bezier(0,0,0.2,1)',
         }}
       >
-        {/* Context injects flavor/icon/breadcrumb per active section (2.13 + A-05) */}
+        {/* Context injects flavor/icon/breadcrumb to DrawerShell (2.13 + A-05) */}
+        {/* Plus Wave 9 E5: onCollapseToggle + collapsed for chevron toggle.    */}
         <DrawerMetaContext.Provider value={drawerMeta}>
           <DrawerComponent />
         </DrawerMetaContext.Provider>
       </aside>
+
+      {/* Wave 9 E5: re-expand affordance — fixed-position chevron button at rail
+          edge, shown only when drawer is collapsed. Clicking it expands the
+          drawer back to its normal 280px width. Users can also click the rail
+          icon itself (which already routes to the drawer's home view) but the
+          rail icons don't toggle collapse — this affordance bridges that gap. */}
+      {drawerCollapsed && (
+        <button
+          type="button"
+          onClick={onToggleCollapsed}
+          aria-label="Show drawer"
+          aria-expanded="false"
+          title="Show drawer"
+          className="hidden md:flex fixed start-[72px] top-3 z-40 items-center justify-center rounded-e-md focus-visible:outline-none focus-visible:ring-2"
+          style={{
+            width: 22,
+            height: 28,
+            border: '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
+            borderInlineStart: 'none',
+            backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
+            color: 'var(--pt-text-muted-hex, #57534e)',
+            cursor: 'pointer',
+            outlineColor: 'var(--pt-focus-ring-hex, #B96A5F)',
+            boxShadow: '0 1px 3px rgba(28,25,23,0.10)',
+          }}
+        >
+          <span aria-hidden="true" style={{ fontSize: 12, lineHeight: 1 }}>
+            ›
+          </span>
+        </button>
+      )}
     </>
   );
 }
@@ -494,6 +574,20 @@ export default function PortalLayout() {
   const activeRailId = useActiveRailId(isAdmin);
   const cssVars = portalTokensAsCssVars();
 
+  // Wave 9 E5: drawer collapsed state — sync-restored from LS pre-paint.
+  // Default `false` (expanded) for new users per Chase 2026-05-10 lock.
+  const [drawerCollapsed, setDrawerCollapsed] = useState(() =>
+    readDrawerCollapsedFromLs()
+  );
+
+  const handleToggleCollapsed = useCallback(() => {
+    setDrawerCollapsed((prev) => {
+      const next = !prev;
+      writeDrawerCollapsedToLs(next);
+      return next;
+    });
+  }, []);
+
   // Close any residual body lock on route change
   const firstRender = useRef(true);
   useEffect(() => {
@@ -503,6 +597,10 @@ export default function PortalLayout() {
     }
     document.body.style.overflow = '';
   }, [location.pathname]);
+
+  // Main-content inline-start margin: 72 (rail) + 280 (drawer) = 352 expanded;
+  // 72 (rail only) when drawer is collapsed.
+  const mainMarginClass = drawerCollapsed ? 'md:ms-[72px]' : 'md:ms-[352px]';
 
   return (
     <>
@@ -517,12 +615,18 @@ export default function PortalLayout() {
         }}
       >
         {/* Desktop two-rail */}
-        <DesktopTwoRail isAdmin={isAdmin} activeRailId={activeRailId} />
+        <DesktopTwoRail
+          isAdmin={isAdmin}
+          activeRailId={activeRailId}
+          drawerCollapsed={drawerCollapsed}
+          onToggleCollapsed={handleToggleCollapsed}
+        />
 
-        {/* Main content — ms-[352px] = margin-inline-start: 352px (RTL-safe logical property)   */}
-        {/* 352 = 72px rail + 280px drawer (resolved from 392 = 72 + 320 in R2) — W-01 math    */}
+        {/* Main content — margin shifts based on drawer-collapsed state.       */}
+        {/* Expanded: ms-[352px] = 72 (rail) + 280 (drawer). Collapsed: ms-[72px]. */}
+        {/* Logical property `ms-` = margin-inline-start (RTL-safe).            */}
         <main
-          className="flex-1 md:ms-[352px] flex flex-col min-h-screen overflow-y-auto pb-[80px] md:pb-0"
+          className={`flex-1 ${mainMarginClass} flex flex-col min-h-screen overflow-y-auto pb-[80px] md:pb-0 transition-[margin] duration-200 ease-out`}
         >
           <Outlet />
         </main>
