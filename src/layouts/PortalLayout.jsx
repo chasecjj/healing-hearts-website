@@ -26,7 +26,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Outlet, NavLink, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { Home, BookOpen, LifeBuoy, Bookmark, Calendar, Shield, NotebookPen, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { studentNavItems, adminNavItems } from './portalNav.config';
+import { studentNavItems, adminNavItems, getMobileBottomNavItems } from './portalNav.config';
 import {
   portalTokens,
   portalTokensAsCssVars,
@@ -945,9 +945,13 @@ function RightJournalPanel({ isOpen, onToggle, onClose, currentLessonId, current
   );
 }
 
-// ── Mobile bottom-nav (unchanged from R2) ─────────────────────────────────
-function MobileBottomNav() {
+// ── Mobile bottom-nav ─────────────────────────────────────────────────────
+// Slot 2 is dual-purpose Phedris: admin users → /admin shortcut (admin is
+// otherwise desktop-only); non-admin users → /phedris-coming-soon brand-tease
+// placeholder. Replaces the prior duplicate /portal/courses slot.
+function MobileBottomNav({ isAdmin }) {
   const location = useLocation();
+  const mobileNavItems = getMobileBottomNavItems(isAdmin);
   return (
     <nav
       className="md:hidden fixed bottom-0 left-0 right-0 z-40"
@@ -960,13 +964,13 @@ function MobileBottomNav() {
       aria-label="Mobile navigation"
     >
       <div className="flex h-[56px]">
-        {studentNavItems.map((item) => {
+        {mobileNavItems.map((item) => {
           const Icon = item.icon;
           const isActive =
             item.path === '/portal'
               ? location.pathname === '/portal' ||
                 (location.pathname.startsWith('/portal/') &&
-                  !studentNavItems
+                  !mobileNavItems
                     .filter((i) => i.path !== '/portal')
                     .some((i) => location.pathname.startsWith(i.path)))
               : location.pathname.startsWith(item.path);
@@ -1187,7 +1191,7 @@ export default function PortalLayout() {
 
           {/* Mobile bottom-nav — hidden on /admin/* routes (admin tables
               were overlapped by the learner navigation rail at 360px). */}
-          {!location.pathname.startsWith('/admin') && <MobileBottomNav />}
+          {!location.pathname.startsWith('/admin') && <MobileBottomNav isAdmin={isAdmin} />}
         </div>
       </JournalPanelContext.Provider>
     </>
