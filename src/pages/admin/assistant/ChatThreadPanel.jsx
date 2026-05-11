@@ -109,24 +109,6 @@ export default function ChatThreadPanel({
     bottomRef.current.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth' });
   }, [messages, streamingText, prefersReduced]);
 
-  // Empty state: no session selected
-  if (!sessionId) {
-    return (
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'var(--pt-text-muted-hex, #57534e)',
-          ...getTypeStyle('body'),
-        }}
-      >
-        Select a conversation or start a new one.
-      </div>
-    );
-  }
-
   // Build messages to display (add streaming bubble if in progress)
   const displayMessages = [
     ...messages,
@@ -219,7 +201,7 @@ export default function ChatThreadPanel({
               color: 'var(--pt-text-muted-hex, #57534e)',
             }}
           >
-            Start a conversation.
+            {sessionId ? 'Start a conversation.' : 'Type a message below to start a new conversation.'}
           </li>
         ) : (
           displayMessages.map((msg, idx) => {
