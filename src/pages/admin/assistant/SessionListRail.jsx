@@ -246,41 +246,18 @@ export default function SessionListRail({
         borderRight: '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
       }}
     >
-      {/* Top bar: search + new chat button */}
+      {/* Top bar: New chat (primary) above search (refine). Stacked so both fit
+          comfortably in the 280px rail without truncation. */}
       <div
         style={{
           padding: '12px 12px 8px',
           display: 'flex',
+          flexDirection: 'column',
           gap: 8,
-          alignItems: 'center',
           flexShrink: 0,
           borderBottom: '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
         }}
       >
-        <input
-          type="search"
-          value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Search conversations…"
-          aria-label="Search conversations"
-          style={{
-            flex: 1,
-            border: '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
-            borderRadius: 6,
-            padding: '6px 10px',
-            ...getTypeStyle('caption'),
-            fontFamily: 'inherit',
-            color: 'var(--pt-text-primary-hex, #1c1917)',
-            backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
-            outline: 'none',
-          }}
-          onFocus={(e) => {
-            e.target.style.borderColor = 'var(--pt-focus-ring-hex, #B96A5F)';
-          }}
-          onBlur={(e) => {
-            e.target.style.borderColor = 'var(--pt-border-subtle-hex, #d6d3d1)';
-          }}
-        />
         <button
           onClick={onNew}
           aria-label="New chat"
@@ -288,10 +265,12 @@ export default function SessionListRail({
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 4,
+            justifyContent: 'center',
+            gap: 6,
+            width: '100%',
             border: '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
             borderRadius: 6,
-            padding: '6px 10px',
+            padding: '8px 10px',
             backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
             cursor: 'pointer',
             ...getTypeStyle('caption', 'medium'),
@@ -308,8 +287,33 @@ export default function SessionListRail({
           }
         >
           <PhedrisIcon style={{ width: 14, height: 14 }} aria-hidden="true" />
-          <span className="hidden sm:inline">New chat</span>
+          <span>New chat</span>
         </button>
+        <input
+          type="search"
+          value={searchQuery}
+          onChange={(e) => onSearchChange(e.target.value)}
+          placeholder="Search conversations…"
+          aria-label="Search conversations"
+          style={{
+            width: '100%',
+            border: '1px solid var(--pt-border-subtle-hex, #d6d3d1)',
+            borderRadius: 6,
+            padding: '6px 10px',
+            ...getTypeStyle('caption'),
+            fontFamily: 'inherit',
+            color: 'var(--pt-text-primary-hex, #1c1917)',
+            backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
+            outline: 'none',
+            boxSizing: 'border-box',
+          }}
+          onFocus={(e) => {
+            e.target.style.borderColor = 'var(--pt-focus-ring-hex, #B96A5F)';
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = 'var(--pt-border-subtle-hex, #d6d3d1)';
+          }}
+        />
       </div>
 
       {/* Session list */}
