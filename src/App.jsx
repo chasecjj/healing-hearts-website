@@ -135,24 +135,21 @@ function App() {
               <Route path="/admin/settings" element={<RequireAdmin><AdminComingSoon title="Settings" breadcrumb="Settings" /></RequireAdmin>} />
               <Route path="/admin/assistant" element={<RequireAdmin><Suspense fallback={<div className="p-8" />}><AssistantView /></Suspense></RequireAdmin>} />
 
-              {/* Portal routes */}
-              <Route path="/portal/downloads" element={<ProtectedRoute><Downloads /></ProtectedRoute>} />
-              <Route path="/portal/course/:courseSlug" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
-              <Route path="/portal/course/:courseSlug/:moduleSlug" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
-              <Route path="/portal/course/:courseSlug/:moduleSlug/:lessonSlug" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
+              {/* Portal routes — static paths FIRST so dynamic :moduleSlug doesn't capture them */}
               <Route path="/portal" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
-              <Route path="/portal/:moduleSlug" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
-              <Route path="/portal/:moduleSlug/:lessonSlug" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
-
-              {/* Placeholder portal sections — Round 2 will populate */}
+              <Route path="/portal/downloads" element={<ProtectedRoute><Downloads /></ProtectedRoute>} />
               <Route path="/portal/courses" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
               <Route path="/portal/rescue-kit" element={<ProtectedRoute><Suspense fallback={<div className="p-8" />}><RescuePage /></Suspense></ProtectedRoute>} />
               <Route path="/portal/bookmarks" element={<ProtectedRoute><BookmarksPortal /></ProtectedRoute>} />
               <Route path="/portal/calendar" element={<ProtectedRoute><CalendarPortal /></ProtectedRoute>} />
-              <Route path="/phedris-coming-soon" element={<ProtectedRoute><PhedrisComingSoon /></ProtectedRoute>} />
-              {/* Wave 9 E1: Home-drawer nav targets — placeholder views per A-11 register */}
               <Route path="/portal/journey" element={<ProtectedRoute><JourneyView /></ProtectedRoute>} />
               <Route path="/portal/resources" element={<ProtectedRoute><ResourcesView /></ProtectedRoute>} />
+              <Route path="/portal/course/:courseSlug" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
+              <Route path="/portal/course/:courseSlug/:moduleSlug" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
+              <Route path="/portal/course/:courseSlug/:moduleSlug/:lessonSlug" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
+              <Route path="/portal/:moduleSlug" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
+              <Route path="/portal/:moduleSlug/:lessonSlug" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
+              <Route path="/phedris-coming-soon" element={<ProtectedRoute><PhedrisComingSoon /></ProtectedRoute>} />
               <Route path="/account/password" element={<ProtectedRoute><AccountPassword /></ProtectedRoute>} />
             </Route>
 
