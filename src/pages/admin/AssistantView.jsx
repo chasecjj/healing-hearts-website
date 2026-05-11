@@ -16,16 +16,26 @@ import { useAssistantSession } from '../../portal/admin/assistant/useAssistantSe
 import SessionListRail from './assistant/SessionListRail';
 import ChatThreadPanel from './assistant/ChatThreadPanel';
 
+function safeSessionSet(key, value) {
+  try { sessionStorage.setItem(key, value); } catch { /* sessionStorage unavailable in private browsing */ }
+}
+
+function safeSessionRemove(key) {
+  try { sessionStorage.removeItem(key); } catch { /* sessionStorage unavailable in private browsing */ }
+}
+
+function safeSessionGet(key) {
+  try { return sessionStorage.getItem(key) || null; } catch { return null; }
+}
+
+const SESSION_KEY = 'assistant_session_id';
+
 export default function AssistantView() {
   const prefersReduced = useReducedMotion();
 
-  const [selectedSessionId, setSelectedSessionId] = useState(() => {
-    try {
-      return sessionStorage.getItem('assistant_session_id') || null;
-    } catch {
-      return null;
-    }
-  });
+  const [selectedSessionId, setSelectedSessionId] = useState(() =>
+    safeSessionGet(SESSION_KEY)
+  );
 
   // Mobile pane state: 'list' | 'thread'
   const [mobilePane, setMobilePane] = useState(
@@ -45,7 +55,7 @@ export default function AssistantView() {
 
   // Callback when a new session is implicitly created by Phedris
   const handleNewSessionCreated = useCallback((newId) => {
-    try { sessionStorage.setItem('assistant_session_id', newId); } catch {}
+    safeSessionSet(SESSION_KEY, newId);
     setSelectedSessionId(newId);
     refreshSessions();
   }, [refreshSessions]);
@@ -62,13 +72,13 @@ export default function AssistantView() {
 
   const handleSelectSession = useCallback((id) => {
     setSelectedSessionId(id);
-    try { sessionStorage.setItem('assistant_session_id', id); } catch {}
+    safeSessionSet(SESSION_KEY, id);
     setMobilePane('thread');
   }, []);
 
   const handleNewChat = useCallback(() => {
     setSelectedSessionId(null);
-    try { sessionStorage.removeItem('assistant_session_id'); } catch {}
+    safeSessionRemove(SESSION_KEY);
     setMobilePane('thread');
   }, []);
 
@@ -76,7 +86,7 @@ export default function AssistantView() {
     await archiveSession(id);
     if (id === selectedSessionId) {
       setSelectedSessionId(null);
-      try { sessionStorage.removeItem('assistant_session_id'); } catch {}
+      safeSessionRemove(SESSION_KEY);
       setMobilePane('list');
     }
   }, [archiveSession, selectedSessionId]);
@@ -85,7 +95,7 @@ export default function AssistantView() {
     await deleteSession(id);
     if (id === selectedSessionId) {
       setSelectedSessionId(null);
-      try { sessionStorage.removeItem('assistant_session_id'); } catch {}
+      safeSessionRemove(SESSION_KEY);
       setMobilePane('list');
     }
   }, [deleteSession, selectedSessionId]);
