@@ -62,7 +62,6 @@ export function emit(eventName, payload = {}) {
 
   // Dev-only console logging for orchestrator visibility
   if (typeof import.meta !== 'undefined' && import.meta.env?.DEV) {
-    // eslint-disable-next-line no-console
     console.log('[rescueTelemetry]', eventName, payload);
   }
 

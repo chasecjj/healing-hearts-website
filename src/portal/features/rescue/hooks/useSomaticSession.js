@@ -290,19 +290,33 @@ export function useSomaticSession() {
   // ── React to in-process sensory-reduce flip (Settings toggle in same
   //    tab). Distinct from cross-tab handler above which is wired through
   //    the preference hook's storage listener.
+  //
+  //    stopAll() is deferred via queueMicrotask so we don't call setState
+  //    synchronously inside an effect body (cascading-renders lint rule).
+  //    The flip-detect itself is the external signal; the teardown is the
+  //    response — both can land in the same microtask, before paint.
   const prevSensoryReduceRef = useRef(pref.sensoryReduce);
   useEffect(() => {
-    if (pref.sensoryReduce && !prevSensoryReduceRef.current) {
-      rescueTelemetry.emit('sensoryReduce.activated', {
-        userId: userIdRef.current,
-        source: isActiveRef.current ? 'in-session' : 'mount',
-        ts: Date.now(),
-      });
-      if (isActiveRef.current) {
-        stopAll('sensory-reduce');
-      }
-    }
+    const prev = prevSensoryReduceRef.current;
     prevSensoryReduceRef.current = pref.sensoryReduce;
+    if (!pref.sensoryReduce || prev) return undefined;
+
+    rescueTelemetry.emit('sensoryReduce.activated', {
+      userId: userIdRef.current,
+      source: isActiveRef.current ? 'in-session' : 'mount',
+      ts: Date.now(),
+    });
+    if (!isActiveRef.current) return undefined;
+
+    const handle = queueMicrotask
+      ? queueMicrotask(() => stopAll('sensory-reduce'))
+      : Promise.resolve().then(() => stopAll('sensory-reduce'));
+    return () => {
+      // queueMicrotask cannot be cancelled; handle is undefined. The
+      // microtask is a no-op if stopAll has already fired or session has
+      // ended (idempotent via wasActive guard inside stopAll).
+      void handle;
+    };
   }, [pref.sensoryReduce, stopAll]);
 
   // ── Opt-in setters wrap preference setters + telemetry ──────────────────
