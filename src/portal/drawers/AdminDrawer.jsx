@@ -23,6 +23,7 @@ import { getTypeStyle } from '../design/typography';
 import { useAuth } from '../../contexts/AuthContext';
 import { hasAnyRole } from '../admin/roleSectionAccess';
 import InlineConfirm from '../components/InlineConfirm';
+import { PhedrisIcon } from '../../layouts/portalNav.config';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -130,31 +131,6 @@ function DestructiveRow({ icon = '⚠', label, confirmMsg, onConfirmed }) {
   );
 }
 
-// ─── Phedris tunnel gate (CHASE-GATE G3) ────────────────────────────────────
-
-function PhedrisTunnelGate() {
-  return (
-    <div
-      className="px-3 py-3 rounded-xl mx-1"
-      style={{
-        backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)',
-        border: '1px solid rgba(180, 83, 9, 0.25)',
-      }}
-    >
-      <p style={{ ...getTypeStyle('body', 'medium'), margin: 0 }}>⚠ Tunnel pending</p>
-      <p
-        style={{
-          ...getTypeStyle('caption'),
-          color: 'var(--pt-text-muted-hex, #57534e)',
-          marginTop: 4,
-        }}
-      >
-        Phedris sessions appear here once the Cloudflare tunnel is active (G3).
-      </p>
-    </div>
-  );
-}
-
 // ─── Main component ──────────────────────────────────────────────────────────
 
 export default function AdminDrawer() {
@@ -174,9 +150,21 @@ export default function AdminDrawer() {
   const canContent    = hasAnyRole(authUser, 'content');
   const canAnalytics  = hasAnyRole(authUser, 'analytics');
   const canSettings   = hasAnyRole(authUser, 'settings');
+  const canAssistant  = hasAnyRole(authUser, 'assistant');
 
   return (
     <DrawerShell title="Admin" ariaContext="Admin">
+      {/* ── Assistant section (admin only) — FIRST in drawer per D6 spirit ── */}
+      {canAssistant && (
+        <DrawerSection label="Assistant">
+          <AdminNavLink
+            icon={<PhedrisIcon style={{ width: 16, height: 16 }} />}
+            label="Assistant"
+            href="/admin/assistant"
+          />
+        </DrawerSection>
+      )}
+
       {/* Card-chrome retained per decision-3.11: Admin utility-ethic carve-out.
           Admin surfaces use card-chrome deliberately (coach managing 30 learners
           needs scan-density). Learner sanctuary surfaces do NOT use card-chrome.
@@ -318,8 +306,6 @@ export default function AdminDrawer() {
       {canSettings && (
         <DrawerSection label="Settings" defaultOpen={false}>
           <AdminNavLink icon="⚙️" label="Settings" href="/admin/settings" />
-          {/* CHASE-GATE G3: Phedris tunnel */}
-          <PhedrisTunnelGate />
         </DrawerSection>
       )}
     </DrawerShell>
