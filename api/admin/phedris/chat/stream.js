@@ -13,7 +13,7 @@
  */
 
 export const config = {
-  runtime: 'nodejs18.x',
+  runtime: 'nodejs',
   maxDuration: 120, // Pro plan only; ignored on Hobby (30s cap applies)
 };
 
