@@ -8,6 +8,7 @@ const EnrollmentDetailView = React.lazy(() => import('./pages/admin/EnrollmentDe
 const BroadcastsListView = React.lazy(() => import('./pages/admin/BroadcastsListView'));
 const BroadcastDetailView = React.lazy(() => import('./pages/admin/BroadcastDetailView'));
 const AssistantView = React.lazy(() => import('./pages/admin/AssistantView'));
+const RescuePage = React.lazy(() => import('./portal/features/rescue/RescuePage'));
 import ScrollToTop from './components/ScrollToTop';
 import { AuthProvider } from './contexts/AuthContext';
 import { Layout } from './components/Layout';
@@ -145,7 +146,7 @@ function App() {
 
               {/* Placeholder portal sections — Round 2 will populate */}
               <Route path="/portal/courses" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
-              <Route path="/portal/rescue-kit" element={<ProtectedRoute><RescueKitPortal /></ProtectedRoute>} />
+              <Route path="/portal/rescue-kit" element={<ProtectedRoute><Suspense fallback={<div className="p-8" />}><RescuePage /></Suspense></ProtectedRoute>} />
               <Route path="/portal/bookmarks" element={<ProtectedRoute><BookmarksPortal /></ProtectedRoute>} />
               <Route path="/portal/calendar" element={<ProtectedRoute><CalendarPortal /></ProtectedRoute>} />
               <Route path="/phedris-coming-soon" element={<ProtectedRoute><PhedrisComingSoon /></ProtectedRoute>} />
