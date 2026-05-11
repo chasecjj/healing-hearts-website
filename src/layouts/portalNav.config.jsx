@@ -12,7 +12,7 @@ import { Home, BookOpen, LifeBuoy, Bookmark, Calendar, Shield } from 'lucide-rea
  * Lucide-compatible props (className, style, aria-hidden). strokeWidth
  * is accepted but ignored (raster image has no stroke).
  */
-function PhedrisIcon({ className, style, 'aria-hidden': ariaHidden, strokeWidth: _strokeWidth, ...rest }) {
+export function PhedrisIcon({ className, style, 'aria-hidden': ariaHidden, strokeWidth: _strokeWidth, ...rest }) {
   return (
     <img
       src="/phedris-avatar-256.png"
@@ -56,7 +56,7 @@ export const adminNavItems = [
  */
 export function getMobileBottomNavItems(isAdmin) {
   const slot2 = isAdmin
-    ? { id: 'admin',    path: '/admin',                 label: 'Admin',    icon: PhedrisIcon }
+    ? { id: 'admin',    path: '/admin/assistant',        label: 'Assistant', icon: PhedrisIcon }
     : { id: 'phedris',  path: '/phedris-coming-soon',   label: 'Phedris',  icon: PhedrisIcon };
   return [
     studentNavItems[0],   // Home
