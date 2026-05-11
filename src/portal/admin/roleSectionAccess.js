@@ -9,7 +9,8 @@
  */
 
 export const ROLE_SECTION_ACCESS = {
-  admin:      ['users', 'applications', 'webinars', 'broadcasts', 'crm', 'enrollments', 'content', 'analytics', 'settings'],
+  admin:      ['users', 'applications', 'webinars', 'broadcasts', 'crm',
+               'enrollments', 'content', 'analytics', 'settings', 'assistant'],
   coach:      ['users', 'webinars', 'content'],
   'sales-cs': ['applications', 'crm', 'broadcasts'],
 };

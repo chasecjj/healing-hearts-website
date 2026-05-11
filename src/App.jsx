@@ -7,6 +7,8 @@ const EnrollmentsListView = React.lazy(() => import('./pages/admin/EnrollmentsLi
 const EnrollmentDetailView = React.lazy(() => import('./pages/admin/EnrollmentDetailView'));
 const BroadcastsListView = React.lazy(() => import('./pages/admin/BroadcastsListView'));
 const BroadcastDetailView = React.lazy(() => import('./pages/admin/BroadcastDetailView'));
+const AssistantView = React.lazy(() => import('./pages/admin/AssistantView'));
+const RescuePage = React.lazy(() => import('./portal/features/rescue/RescuePage'));
 import ScrollToTop from './components/ScrollToTop';
 import { AuthProvider } from './contexts/AuthContext';
 import { Layout } from './components/Layout';
@@ -131,6 +133,7 @@ function App() {
               <Route path="/admin/broadcasts/:broadcast_id" element={<RequireAdmin><Suspense fallback={<div className="p-8" /> }><BroadcastDetailView /></Suspense></RequireAdmin>} />
               <Route path="/admin/content" element={<RequireAdmin><AdminComingSoon title="Modules" breadcrumb="Modules" /></RequireAdmin>} />
               <Route path="/admin/settings" element={<RequireAdmin><AdminComingSoon title="Settings" breadcrumb="Settings" /></RequireAdmin>} />
+              <Route path="/admin/assistant" element={<RequireAdmin><Suspense fallback={<div className="p-8" />}><AssistantView /></Suspense></RequireAdmin>} />
 
               {/* Portal routes */}
               <Route path="/portal/downloads" element={<ProtectedRoute><Downloads /></ProtectedRoute>} />
@@ -143,7 +146,7 @@ function App() {
 
               {/* Placeholder portal sections — Round 2 will populate */}
               <Route path="/portal/courses" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
-              <Route path="/portal/rescue-kit" element={<ProtectedRoute><RescueKitPortal /></ProtectedRoute>} />
+              <Route path="/portal/rescue-kit" element={<ProtectedRoute><Suspense fallback={<div className="p-8" />}><RescuePage /></Suspense></ProtectedRoute>} />
               <Route path="/portal/bookmarks" element={<ProtectedRoute><BookmarksPortal /></ProtectedRoute>} />
               <Route path="/portal/calendar" element={<ProtectedRoute><CalendarPortal /></ProtectedRoute>} />
               <Route path="/phedris-coming-soon" element={<ProtectedRoute><PhedrisComingSoon /></ProtectedRoute>} />
