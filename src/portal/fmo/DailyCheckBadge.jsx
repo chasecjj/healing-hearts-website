@@ -15,8 +15,9 @@
  *   - Renders null gracefully if no coupleId (non-FMO users see nothing).
  *
  * Query strategy:
- *   1. lesson_progress rows where user_id = userId AND lesson_id LIKE 'fmo-m1-%'
- *      with completed_at IS NOT NULL — Module 1 completion gate.
+ *   1. lesson_progress rows where user_id = userId AND lesson_id IN
+ *      (5 FMO M1 lesson UUIDs from migration 039) with completed_at IS NOT NULL
+ *      — Module 1 completion gate.
  *   2. daily_intentions for today (intention_date = today) — daily-check gate.
  *
  *   Both reads degrade silently to null on error (badge is non-essential UX).
@@ -26,11 +27,13 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { getTypeStyle } from '../design/typography';
+import lessonsConfig from './config/lessons.json';
 
-// FMO Module 1 lesson-id prefix. Lessons authored under this slug pattern
-// (`fmo-m1-<step>`) populate lesson_progress rows on completion. The badge
-// gates State B render on ALL such rows being completed.
-const FMO_M1_LESSON_PREFIX = 'fmo-m1-';
+// FMO Module 1 lesson UUIDs — real ids seeded by migration 039
+// (applied to prod 2026-05-13 02:02 UTC). Replaces the prior
+// `fmo-m1-<step>` slug prefix; lesson_progress.lesson_id FK-references
+// lessons(id) (uuid). Source of truth: ./config/lessons.json.
+const FMO_M1_LESSON_IDS = lessonsConfig.lessonIds;
 
 export default function DailyCheckBadge({ coupleId, userId }) {
   const [moduleComplete, setModuleComplete] = useState(null);
@@ -52,7 +55,7 @@ export default function DailyCheckBadge({ coupleId, userId }) {
           .from('lesson_progress')
           .select('lesson_id, completed_at')
           .eq('user_id', userId)
-          .like('lesson_id', `${FMO_M1_LESSON_PREFIX}%`)
+          .in('lesson_id', FMO_M1_LESSON_IDS)
           .not('completed_at', 'is', null);
         if (!error && Array.isArray(data)) {
           completed = data.length > 0;

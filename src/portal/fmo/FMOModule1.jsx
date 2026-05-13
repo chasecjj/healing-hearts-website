@@ -36,11 +36,13 @@ import SpendingQuiz from './SpendingQuiz';
 import SpendingPlanBuilder from './SpendingPlanBuilder';
 import WishlistVote from './WishlistVote';
 import MoneyDateKitButton from './MoneyDateKitButton';
+import lessonsConfig from './config/lessons.json';
 
-// FMO Module 1 lesson ids — these populate lesson_progress rows on completion.
-// SolveBeforeExplain takes a lessonId prop directly (its lesson_progress
-// metadata bag is the partner-sync surface for Step 1).
-const LESSON_ID_OPENER = 'fmo-m1-opener';
+// FMO Module 1 lesson ids — real UUIDs from migration 039 (applied to prod
+// 2026-05-13 02:02 UTC). These populate lesson_progress rows on completion;
+// the lesson_id column FK-references lessons(id) (uuid), so string slugs are
+// no longer acceptable. Source of truth: ./config/lessons.json.
+const LESSON_ID_OPENER = lessonsConfig.lessons.opener;
 
 const STEPS = [
   { id: 'opener', label: 'Step 1 — Solve before explain' },
