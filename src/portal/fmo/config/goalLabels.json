@@ -1,0 +1,39 @@
+{
+  "_meta": {
+    "source": "Mind Vault/Projects/Blacksmith/healing-hearts/02-teams/financial-module-overhaul-v1/02-teams/round-01/track-c-output/wishlist-vote-goals-list.md",
+    "final-six-selection": "Orchestrator-recommended subset (Goals 1, 2, 3, 4, 6, 8) — covers all 4 AP-7 seed goals + investing + shared experience fund. Balanced across time horizons.",
+    "max-selections": 3
+  },
+  "goals": [
+    {
+      "id": "vacation-fund",
+      "label": "Vacation Fund",
+      "description": "Save a dedicated amount for a shared trip or experience — so travel becomes a planned joy, not a guilt purchase."
+    },
+    {
+      "id": "emergency-buffer",
+      "label": "Emergency Buffer",
+      "description": "Build 3–6 months of essential living expenses in a joint account so an unexpected cost doesn't derail the whole plan."
+    },
+    {
+      "id": "home-down-payment",
+      "label": "Home Down Payment",
+      "description": "Save toward a down payment on a home — or grow the equity already there with fewer competing priorities draining the account."
+    },
+    {
+      "id": "debt-freedom-date",
+      "label": "Debt Freedom Date",
+      "description": "Pick a target date to be fully free of non-mortgage debt — and build a payoff plan that makes that date real."
+    },
+    {
+      "id": "start-investing",
+      "label": "Start (or Grow) Investing",
+      "description": "Open or increase contributions to a retirement or investment account — putting money to work in the background while life happens in the foreground."
+    },
+    {
+      "id": "shared-experience-fund",
+      "label": "Build a Shared Experience Fund",
+      "description": "Create a dedicated account for things you both want to do together — concerts, weekend trips, hobbies, date nights — so those experiences don't compete with bills."
+    }
+  ]
+}

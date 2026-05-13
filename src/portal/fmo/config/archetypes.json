@@ -1,0 +1,103 @@
+{
+  "_meta": {
+    "source": "Mind Vault/Projects/Blacksmith/healing-hearts/02-teams/financial-module-overhaul-v1/02-teams/round-01/track-a-output/section-1-hidden-costs.md (Step 2)",
+    "scoring-rubric": "track-a-output/quiz-scoring-rubric.md (v2-R1-merged)",
+    "shareText-source": "track-a-output/quiz-shareText.md (v1, M-14 partner-mention strip applied to Joy-Seeker)",
+    "anvil-status": "Section 2 v2-R1-merged ANVIL R2 PASS 2026-05-12",
+    "display-order": "Guardian, Nurturer, Visionary, Ambassador, Joy-Seeker (fixed; NOT a ranking)"
+  },
+  "archetypes": [
+    {
+      "id": "Guardian",
+      "subtype": "The Lighthouse",
+      "centroid": { "t": 0.8, "d": -0.7 },
+      "recognition": "You've always been the one who notices first — the bill that crept up, the subscription nobody renewed on purpose, the month that's about to get tight before anyone else sees it coming. That's not anxiety. That's range. For you, looking ahead isn't a chore; it's the floor you stand on. You'd rather see the problem early than be surprised by it. Your household runs partly on the fact that you do.",
+      "clinical": "Guardians treat money as the floor that makes everything else possible — security first, momentum after. They're built to see risk before it lands. At their worst, Guardians can let the plan crowd out the life the plan was built to protect — the dinner, the trip, the small splurge that makes the month feel worth the discipline.",
+      "shareText": "Took the Spending Personality quiz. Apparently I'm the household Lighthouse — which explains why I've already opened the spreadsheet twice this morning."
+    },
+    {
+      "id": "Nurturer",
+      "subtype": "The Open-Door",
+      "centroid": { "t": 0.0, "d": 0.8 },
+      "recognition": "You've always spent toward the people you love before yourself. The gift you knew they'd remember, the meal you covered without making it a thing, the friend you helped in a month nobody else noticed they needed it. For you, money is one of the languages of care — the most concrete one you know. You don't track it that way. You just know when someone you love is short, and you do something.",
+      "clinical": "Nurturers treat money as a means of care — pulled outward toward family, friends, and the causes they're rooted in. They give before they're asked. At their worst, Nurturers can run their own cup dry — covering everyone else's needs so consistently that the household's own breathing room quietly disappears.",
+      "shareText": "Apparently I'm the Open-Door in my household. Honestly, hard to argue with the quiz that just named why my Venmo looks the way it does."
+    },
+    {
+      "id": "Visionary",
+      "subtype": "The Builder",
+      "centroid": { "t": 0.75, "d": -0.15 },
+      "recognition": "You've always lived a little in the future. Not in a daydreaming way — in a building way. Every choice is a small piece of the life you're constructing: the down payment, the freedom date, the version of your household two years from now you can already picture. You'd rather spend a little less today if it means tomorrow looks more like the picture. The picture is real to you. That's what keeps you moving.",
+      "clinical": "Visionaries treat money as the building material for the life they're constructing — long-arc, goal-oriented, future-shaped. They plan in horizons, not months. At their worst, Visionaries can defer the present so consistently that the household forgets it's allowed to enjoy the journey, not just arrive at it.",
+      "shareText": "Quiz says I'm the household Builder. My partner says they could've told me that for free — apparently me planning three years out is a personality trait."
+    },
+    {
+      "id": "Ambassador",
+      "subtype": "The Curator",
+      "centroid": { "t": 0.0, "d": -0.5 },
+      "recognition": "You've always had a sense for what's worth doing well versus what's just worth doing. You'd rather have one of the right thing than three of the almost-right thing. When you spend, you spend on purpose — the meal at the place that does it best, the piece of the house that'll outlast a dozen replacements, the version of an experience you'd actually want to remember. To you, that's not extravagance. That's not settling. You also notice when something speaks well of your household — the dinner you'd be glad to have hosted, the home that feels like a place worth being invited to. That's not vanity. It's pride in what you're building, made visible.",
+      "clinical": "Ambassadors treat money as an instrument of quality and identity — curating a household and a life with care for what's lasting. They invest in what they choose. At their worst, Ambassadors can let the standard of the right one outpace what the plan can hold — turning curation into accumulation when 'we've earned this' starts answering every question.",
+      "shareText": "I'm a Curator, apparently. Which would explain why I have strong opinions about exactly two coffee shops in this town."
+    },
+    {
+      "id": "Joy-Seeker",
+      "subtype": "The Spark",
+      "centroid": { "t": -0.8, "d": -0.4 },
+      "recognition": "You've always lived more vividly in the present than most people you know. The trip somebody else would've talked themselves out of, the yes to the dinner, the spontaneous detour that turned into the best part of the week — those are yours. You spend the way you live: in real time, on what's in front of you, with the people you're with. You'd rather have the memory than the line on a statement.",
+      "clinical": "Joy-Seekers treat money as the fuel for the life they're actually living now — experiences first, ledger second. They keep the household's pulse warm. At their worst, Joy-Seekers can stack this month's yeses faster than the plan can absorb them — leaving next month to quietly do the work of catching up.",
+      "shareText": "Apparently I'm The Spark. The quiz called it 'spending toward the life you're living now.' I just call it Tuesday."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "prompt": "It's a quiet Friday night. The week was a normal week. There's room in the plan for the weekend. Without thinking about it too hard — what's the first thing you'd say?",
+      "options": [
+        { "id": "A", "text": "Let me pull up the categories. There's a line already named for tonight — I just want to know which one we're spending from.", "t": 0.3, "d": -0.7 },
+        { "id": "B", "text": "Whatever we do, I want tonight to count for something — even a little. We're building toward something bigger, and this is part of how we get there.", "t": 0.9, "d": -0.4 },
+        { "id": "C", "text": "Pick the place we keep saying we'll try. Order what we actually want. We worked for the room to do this right.", "t": -0.3, "d": -0.5 },
+        { "id": "D", "text": "It's Friday. The money's there. Let's go do something we'll remember.", "t": -0.9, "d": -0.4 }
+      ]
+    },
+    {
+      "id": "Q2",
+      "prompt": "An unexpected $400 lands — a refund, a bonus, a gift you didn't see coming. Before you even think about it, what's already happening in your head?",
+      "options": [
+        { "id": "A", "text": "It's accounted for. Three places it could go before the deposit clears — emergency fund first, probably.", "t": 0.7, "d": -0.7 },
+        { "id": "B", "text": "Straight to the goal we've been chipping at for months. The climb just got a little faster.", "t": 0.9, "d": -0.3 },
+        { "id": "C", "text": "I want this to land on the people we love. A gift, a night out with them, a memory we'd otherwise skip.", "t": 0.0, "d": 0.8 },
+        { "id": "D", "text": "Found money is for the thing we said we couldn't justify. This is the justification.", "t": -0.8, "d": -0.3 }
+      ]
+    },
+    {
+      "id": "Q3",
+      "prompt": "It's the last day of the month and there's $150 left over — not earmarked, not spoken for. What happens to it?",
+      "options": [
+        { "id": "A", "text": "Into savings before either of us sees it again. If we see it, we'll spend it.", "t": 0.8, "d": -0.7 },
+        { "id": "B", "text": "Something for the house we'll actually use — a piece we've been eyeing. We've been good; let's pick something with real quality this time.", "t": -0.2, "d": -0.6 },
+        { "id": "C", "text": "Someone we love could use a little something. A gift card to the friend who's been having a hard month, dinner for my parents — small things, real impact.", "t": 0.0, "d": 0.9 },
+        { "id": "D", "text": "We've been eyeing that thing for months. Let's stop eyeing it.", "t": -0.7, "d": -0.4 }
+      ]
+    },
+    {
+      "id": "Q4",
+      "prompt": "How do you feel when you check the account balance?",
+      "options": [
+        { "id": "A", "text": "Daily — it's not anxiety, it's how I know the picture matches the plan. I'd rather see a small problem early than a big one late.", "t": 0.6, "d": -0.8 },
+        { "id": "B", "text": "I check before I commit to anything that costs more than usual — so when I say yes, I mean yes. I'm not stopping the dream; I'm sizing it.", "t": 0.7, "d": -0.3 },
+        { "id": "C", "text": "I check when I'm planning something for someone — to know what I can give without it costing more than I have to give.", "t": 0.1, "d": 0.7 },
+        { "id": "D", "text": "I glance at it. The number doesn't change what I value; it just tells me what's possible right now.", "t": -0.2, "d": -0.4 }
+      ]
+    },
+    {
+      "id": "Q5",
+      "prompt": "A friend keeps recommending a show, restaurant, or experience that costs more than your usual. Your real reaction is:",
+      "options": [
+        { "id": "A", "text": "Next month's plan can hold it. We'll move a line and it'll be there waiting — I'm not saying no; I'm saying when.", "t": 0.5, "d": -0.4 },
+        { "id": "B", "text": "If we go, I want to go right — the good seats, the nice dinner, the place I'd actually want to tell our friends we went to. Otherwise it's not worth doing.", "t": -0.4, "d": -0.6 },
+        { "id": "C", "text": "Life's short. Some things are worth saying yes to before the price tag finishes loading.", "t": -0.9, "d": -0.3 },
+        { "id": "D", "text": "I'd want to bring someone with us — or pick up the tab for the friend who recommended it. The experience matters more when it's shared.", "t": -0.3, "d": 0.8 }
+      ]
+    }
+  ]
+}

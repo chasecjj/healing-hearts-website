@@ -1,0 +1,49 @@
+{
+  "_meta": {
+    "source": "Mind Vault/Projects/Blacksmith/healing-hearts/02-teams/financial-module-overhaul-v1/02-teams/round-01/track-a-output/inline-lesson-snippets.md",
+    "compliance": "AP-9 progress-forward language standard; no prohibited tokens (overspent, over budget, failed, bad, wrong, audit, restriction, cap, shame)",
+    "interpolation": "{ratio} is replaced with the live percentage value at render time (e.g., '32%')"
+  },
+  "snippets": {
+    "housing": {
+      "headline": "Your housing ratio is {ratio}.",
+      "body": "Most households that consistently hit their savings goals keep housing under 30% of take-home. At {ratio}, your housing costs are the largest single item in your plan — which is common, especially in higher cost-of-living areas. The good news: housing is a fixed number, which means every dollar you redirect from flexible categories moves faster than you might expect.",
+      "action": "Look at your dining and subscription categories first — these are usually the fastest levers for creating breathing room without changing where you live."
+    },
+    "food": {
+      "headline": "Your food and dining ratio is {ratio}.",
+      "body": "Food is one of the most identity-connected spending categories — it's where date nights live, where family happens, and where a hard week earns a takeout night. At {ratio}, your household is investing more in this category than the benchmark range. That's not automatically a problem if it's intentional. The question is whether it's a priority you both chose, or a default you haven't examined yet.",
+      "action": "Check whether your subscription audit uncovered any food-delivery or meal-kit services that are costing more than expected — canceling one is the lowest-friction lever here."
+    },
+    "debt": {
+      "headline": "Your debt payment ratio is {ratio}.",
+      "body": "Carrying {ratio} of your take-home toward debt payments is significant — and it's also something your household is already managing. The 20% mark is a common threshold where debt service starts to limit what's available for savings and goals. The households that make the fastest progress aren't the ones who pay nothing extra — they're the ones who find one category to redirect and apply it consistently.",
+      "action": "After you complete your Spending Plan, look at your Breathing Room Number and identify whether there's $25–$50/month that could move toward the highest-interest debt on your list. Small, consistent redirects compound faster than most people expect."
+    },
+    "savings": {
+      "headline": "Your savings rate is {ratio} this month.",
+      "body": "A 10% savings rate is a widely cited starting-point benchmark — not because it's magic, but because households that reach it tend to build momentum quickly. At {ratio}, you're building the habit even if the number isn't there yet. Every percentage point you add compounds over time, and the plan you're building right now is how that happens.",
+      "action": "After you see your Breathing Room Number, identify one category where you could redirect $50/month toward savings — even temporarily — to move this number toward 10%."
+    },
+    "discretionary": {
+      "headline": "Your discretionary ratio is {ratio}.",
+      "body": "Discretionary spending — the entertainment, experiences, hobbies, and fun that make the month feel livable — is running at {ratio} of your take-home. The 50/30/20 rule puts 'wants' at 30%, so you're still within a widely accepted range. The place to watch is whether this number is intentional (both partners chose it) or accumulated (it's what happened without a plan). A Spending Plan turns accumulated into intentional.",
+      "action": "Review which of your discretionary categories you both care most about — protect those first. Categories neither partner is particularly attached to are your best candidates for a small redirect toward savings or debt."
+    },
+    "transportation": {
+      "headline": "Your transportation ratio is {ratio}.",
+      "body": "Transportation costs — car payments, insurance, fuel, rideshare, and maintenance — are sitting at {ratio} of your take-home. Like housing, transportation tends to be a fixed or semi-fixed category, which limits how quickly it can change. At this level, it's worth knowing that transportation and housing together often determine how much room the rest of your plan has to work with.",
+      "action": "Check whether your transportation insurance is still the best available rate — this is the single most reviewable transportation cost for most households, and a 15-minute comparison can free up $30–$80/month."
+    },
+    "subscriptions": {
+      "headline": "Your subscription total is {ratio}.",
+      "body": "At {ratio} of take-home, your household's recurring subscriptions are above the 5% threshold where this category tends to have consistent easy wins. Subscriptions are the quietest category in most budgets — they charge automatically, they feel small individually, and they accumulate without either partner noticing. The good news: this is exactly what your subscription audit was designed to surface.",
+      "action": "Return to your Found Savings Log from Step 3. If your subscription audit is complete, move any 'cancel' decisions to your Spending Plan now so the savings show up in next month's Breathing Room."
+    },
+    "fixed-total": {
+      "headline": "Your fixed expenses are {ratio} of take-home this month.",
+      "body": "Fixed expenses — the ones that don't change month to month — are running at {ratio} of your take-home. When fixed costs reach 60% or above, the remaining 40% carries both your savings goals and all variable spending, which compresses the plan. Many households in this range are building strong financial habits despite the constraint — the Spending Plan and Breathing Room Number help you be intentional about how the remaining 40% works.",
+      "action": "Before you assign your remaining discretionary dollars, confirm your savings contribution first — even a small fixed savings transfer each month puts that goal ahead of variable spending pressure."
+    }
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "_meta": {
+    "source": "Mind Vault/Projects/Blacksmith/healing-hearts/02-teams/financial-module-overhaul-v1/02-teams/round-01/track-a-output/inline-lesson-snippets.md",
+    "model": "ratio = category_amount / monthly_take_home; trigger when ratio compared via `op` to `value`",
+    "priority-rule": "highest-priority threshold wins if multiple fire (lower priority number = higher priority)"
+  },
+  "thresholds": [
+    {
+      "id": "housing",
+      "snippetId": "housing",
+      "category": "Housing",
+      "ratioKey": "housing",
+      "op": "gt",
+      "value": 0.30,
+      "priority": 1,
+      "source": "30/30/40 rule; Experian"
+    },
+    {
+      "id": "fixed-total",
+      "snippetId": "fixed-total",
+      "category": "Total Fixed Expenses",
+      "ratioKey": "fixedTotal",
+      "op": "gt",
+      "value": 0.60,
+      "priority": 2,
+      "source": "50/30/20 rule adapted (50% needs ceiling + buffer)"
+    },
+    {
+      "id": "debt",
+      "snippetId": "debt",
+      "category": "Debt Payments",
+      "ratioKey": "debt",
+      "op": "gt",
+      "value": 0.20,
+      "priority": 3,
+      "source": "50/30/20 rule (debt under needs); NerdWallet"
+    },
+    {
+      "id": "savings",
+      "snippetId": "savings",
+      "category": "Savings Rate",
+      "ratioKey": "savings",
+      "op": "lt",
+      "value": 0.10,
+      "priority": 4,
+      "source": "Standard planning guidance; Fidelity"
+    },
+    {
+      "id": "food",
+      "snippetId": "food",
+      "category": "Food / Dining",
+      "ratioKey": "food",
+      "op": "gt",
+      "value": 0.15,
+      "priority": 5,
+      "source": "50/30/20 rule (needs portion, food subcomponent)"
+    },
+    {
+      "id": "transportation",
+      "snippetId": "transportation",
+      "category": "Transportation",
+      "ratioKey": "transportation",
+      "op": "gt",
+      "value": 0.15,
+      "priority": 6,
+      "source": "NerdWallet; standard planning guidance"
+    },
+    {
+      "id": "discretionary",
+      "snippetId": "discretionary",
+      "category": "Discretionary Spending",
+      "ratioKey": "discretionary",
+      "op": "gt",
+      "value": 0.25,
+      "priority": 7,
+      "source": "50/30/20 rule (wants — 30% ceiling; 25% early alert)"
+    },
+    {
+      "id": "subscriptions",
+      "snippetId": "subscriptions",
+      "category": "Subscriptions",
+      "ratioKey": "subscriptions",
+      "op": "gt",
+      "value": 0.05,
+      "priority": 8,
+      "source": "Rocket Money analysis; NerdWallet"
+    }
+  ]
+}
