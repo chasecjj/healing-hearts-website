@@ -303,7 +303,12 @@ function PortalDashboard({
 
 
       {/* ── My Courses (multi-course catalog) ─────────────── */}
-      {availableCourses.length > 1 && (
+      {/* W6: section now always renders if FMO tile OR ≥2 courses present.
+          FMO is a deep-link surface (not a `courses` row), so it lives as a
+          hardcoded supplemental tile after the mapped catalog tiles.
+          TECH DEBT: ideally FMO becomes a real `courses` row + module so
+          this special-case can collapse back into the map. Tracked below. */}
+      {(availableCourses.length > 1 || canAccessContent) && (
         <section data-animate>
           <div className="flex items-center gap-3 mb-6">
             <Library
@@ -412,6 +417,73 @@ function PortalDashboard({
                 </div>
               );
             })}
+
+            {/* ── W6: Financial Unity System tile (deep-link surface) ────
+                FMO Module 1 is NOT a `courses` table row (yet) — it ships
+                as a standalone session-orchestrator surface under
+                /portal/fmo/module-1. Rendered as a supplemental hardcoded
+                tile because it can't ride the availableCourses.map().
+                Visual treatment mirrors the mapped tiles: same wrapper
+                classes, same elevation hex tokens, same accent stripe
+                pattern, same "Unlocked" pill (FMO is gated by couple-link,
+                surfaced inside the module itself — the tile is universally
+                clickable for enrolled / admin users).
+                TECH DEBT: see the supplemental-tile note above. */}
+            {canAccessContent && (
+              <div
+                key="fmo-module-1-supplemental"
+                className="group bg-white rounded-2xl overflow-hidden shadow-[0_4px_20px_-4px_rgba(28,25,23,0.08)] transition-all duration-200 cursor-pointer hover:shadow-[0_8px_30px_-4px_rgba(28,25,23,0.12)] hover:scale-[1.02]"
+                style={{ boxShadow: '0 0 0 2px var(--pt-primary-accent-hex, #B96A5F)' }}
+                onClick={() => navigate('/portal/fmo/module-1')}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    navigate('/portal/fmo/module-1');
+                  }
+                }}
+                tabIndex={0}
+                role="button"
+                aria-label="Financial Unity System (enrolled)"
+              >
+                <div
+                  className="h-24 relative flex items-end p-5"
+                  style={{
+                    backgroundColor: 'var(--pt-elevation-1-hex, #e7e5e4)',
+                    borderBottom: '2px solid var(--pt-primary-accent-hex, #B96A5F)',
+                  }}
+                >
+                  <span
+                    className="px-3 py-1 rounded-full text-[10px] font-outfit font-bold uppercase tracking-wider"
+                    style={{
+                      backgroundColor: 'var(--pt-elevation-2-hex, #ffffff)',
+                      color: 'var(--pt-text-primary-hex, #1c1917)',
+                    }}
+                  >
+                    Module Series
+                  </span>
+                  <span
+                    className="absolute top-3 right-3 text-white text-[10px] font-outfit font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"
+                    style={{ backgroundColor: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+                  >
+                    Unlocked
+                  </span>
+                </div>
+                <div className="p-5">
+                  <h3 className="font-outfit text-base font-semibold mb-1 transition-colors">
+                    Financial Unity System
+                  </h3>
+                  <p className="text-sm text-pt-quiet line-clamp-2 leading-relaxed mb-3">
+                    A partner-paced practice for couples — daily check-ins, archetype self-knowledge, and the conversations money usually skips.
+                  </p>
+                  <p
+                    className="text-xs font-outfit font-medium group-hover:opacity-80"
+                    style={{ color: 'var(--pt-primary-accent-hex, #B96A5F)' }}
+                  >
+                    Start Module 1 →
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </section>
       )}
