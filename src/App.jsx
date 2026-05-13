@@ -9,6 +9,8 @@ const BroadcastsListView = React.lazy(() => import('./pages/admin/BroadcastsList
 const BroadcastDetailView = React.lazy(() => import('./pages/admin/BroadcastDetailView'));
 const AssistantView = React.lazy(() => import('./pages/admin/AssistantView'));
 const RescuePage = React.lazy(() => import('./portal/features/rescue/RescuePage'));
+const FMOModule1 = React.lazy(() => import('./portal/fmo/FMOModule1'));
+const SurpriseCommitStub = React.lazy(() => import('./portal/fmo/SurpriseCommitStub'));
 import ScrollToTop from './components/ScrollToTop';
 import { AuthProvider } from './contexts/AuthContext';
 import { Layout } from './components/Layout';
@@ -140,6 +142,10 @@ function App() {
               <Route path="/portal/downloads" element={<ProtectedRoute><Downloads /></ProtectedRoute>} />
               <Route path="/portal/courses" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
               <Route path="/portal/rescue-kit" element={<ProtectedRoute><Suspense fallback={<div className="p-8" />}><RescuePage /></Suspense></ProtectedRoute>} />
+              {/* FMO Module 1 — protected route; FMOModule1 itself surfaces the soft no-couple message for non-FMO users. */}
+              <Route path="/portal/fmo/module-1" element={<ProtectedRoute><Suspense fallback={<div className="p-8" />}><FMOModule1 /></Suspense></ProtectedRoute>} />
+              {/* FMO Surprise-and-Commit stub — accessible by direct URL ONLY. Intentionally NOT linked from dashboard nav (Component 12 contract). */}
+              <Route path="/portal/fmo/surprise-commit" element={<ProtectedRoute><Suspense fallback={<div className="p-8" />}><FMOSurpriseCommitRoute /></Suspense></ProtectedRoute>} />
               <Route path="/portal/bookmarks" element={<ProtectedRoute><BookmarksPortal /></ProtectedRoute>} />
               <Route path="/portal/calendar" element={<ProtectedRoute><CalendarPortal /></ProtectedRoute>} />
               <Route path="/portal/journey" element={<ProtectedRoute><JourneyView /></ProtectedRoute>} />
@@ -171,3 +177,23 @@ function App() {
 }
 
 export default App;
+
+// ──────────────────────────────────────────────────────────────────────
+// Inline route wrapper — resolves user + couple context for SurpriseCommitStub.
+//
+// The stub component is accessible by direct URL only (no dashboard nav link
+// per Component 12 contract). Wiring lives here so the stub can be lazy-loaded
+// without forcing the whole App.jsx file to import the hook chain at top level.
+// ──────────────────────────────────────────────────────────────────────
+import { useAuth as _useAuthForFMO } from './contexts/AuthContext';
+import { useFMOSession as _useFMOSessionForStub } from './hooks/useFMOSession';
+function FMOSurpriseCommitRoute() {
+  const { user } = _useAuthForFMO();
+  const { coupleId, loading } = _useFMOSessionForStub();
+  if (loading) return <div className="p-8" />;
+  return (
+    <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+      <SurpriseCommitStub coupleId={coupleId} userId={user?.id} />
+    </main>
+  );
+}

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { gsap } from 'gsap';
 import {
@@ -19,6 +19,13 @@ import { useMockupMode } from './mockup/useMockupMode';
 import DashboardHero from './mockup/DashboardHero';
 import ConsentCluster from './components/ConsentCluster';
 import JournalPrompt from './components/JournalPrompt';
+// FMO Wave 4 — session-open surfaces (lazy + Suspense-wrapped per pr-plan §PR 4).
+// useFMOSession is the only non-component import — kept eager so the hook fires
+// its fire-and-forget `updateLastActivity` write on dashboard mount even if the
+// badge / banner ultimately render null.
+import { useFMOSession } from '../hooks/useFMOSession';
+const DailyCheckBadge = React.lazy(() => import('./fmo/DailyCheckBadge'));
+const PartnerNudgeBanner = React.lazy(() => import('./fmo/PartnerNudgeBanner'));
 
 /**
  * Portal Dashboard — personalized welcome, journey progress, module library.
@@ -52,6 +59,11 @@ function PortalDashboard({
   const [availableCourses, setAvailableCourses] = useState([]);
   const [enrolledCourseIds, setEnrolledCourseIds] = useState(new Set());
   const { user } = useAuth();
+  // FMO session — non-FMO users get { coupleId: null } and DailyCheckBadge /
+  // PartnerNudgeBanner render null. updateLastActivity fires fire-and-forget
+  // from inside the hook so the partner's nudge banner can surface "recently
+  // active" without a separate write call from here.
+  const { coupleId: fmoCoupleId } = useFMOSession();
 
   // ── GSAP entrance animations ──────────────────────────────
   useEffect(() => {
@@ -245,6 +257,27 @@ function PortalDashboard({
           )}
         </div>
       </section>
+
+      {/* ── FMO session-open surfaces (Wave 4 / PR 4) ──
+          Suspense fallback={null} so a slow Supabase query never stalls the
+          dashboard render. Components render null when:
+            - User has no couple linked (non-FMO users)
+            - Module 1 not yet complete (DailyCheckBadge State A)
+            - Daily check already done (DailyCheckBadge State C)
+            - Banner dismissed this session (PartnerNudgeBanner)
+          So the wrapper is invisible in the common case for non-FMO users. */}
+      {fmoCoupleId && user?.id && (
+        <section
+          className="flex flex-wrap items-center gap-3"
+          data-animate
+          aria-label="Module 1 session surfaces"
+        >
+          <Suspense fallback={null}>
+            <DailyCheckBadge coupleId={fmoCoupleId} userId={user.id} />
+            <PartnerNudgeBanner coupleId={fmoCoupleId} userId={user.id} />
+          </Suspense>
+        </section>
+      )}
 
       {/* ── Quick Links ─────────────────────────────────────── */}
       <section className="flex flex-wrap gap-3 -mt-2" data-animate>
