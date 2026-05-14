@@ -51,7 +51,7 @@ function toDollarStr(cents) {
 // (W4 wires couple/user context uniformly); SpendingPlanBuilder writes via
 // couple_id only (joint authorship per AP-2). Renamed underscore-prefix so the
 // lint rule `^[A-Z_]/u` ignores the unused arg.
-export default function SpendingPlanBuilder({ coupleId, userId: _userId, onComplete }) {
+export default function SpendingPlanBuilder({ coupleId, userId: _userId, onComplete, soloPreview = false }) {
   const [takeHome, setTakeHome] = useState('');
   const [fixedBills, setFixedBills] = useState('');
   const [savingsTarget, setSavingsTarget] = useState('');
@@ -60,10 +60,12 @@ export default function SpendingPlanBuilder({ coupleId, userId: _userId, onCompl
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(null);
   // Initial loading derived from coupleId presence — avoids set-state-in-effect.
-  const [loading, setLoading] = useState(() => Boolean(coupleId));
+  // Solo preview skips hydration entirely, so render immediately.
+  const [loading, setLoading] = useState(() => !soloPreview && Boolean(coupleId));
 
   // Hydrate from existing plan if any.
   useEffect(() => {
+    if (soloPreview) return;
     let cancelled = false;
     if (!coupleId) return;
     getSpendingPlan(coupleId)
@@ -97,7 +99,7 @@ export default function SpendingPlanBuilder({ coupleId, userId: _userId, onCompl
     return () => {
       cancelled = true;
     };
-  }, [coupleId]);
+  }, [coupleId, soloPreview]);
 
   const takeHomeCents = toCents(takeHome);
   const fixedBillsCents = toCents(fixedBills);
@@ -123,6 +125,11 @@ export default function SpendingPlanBuilder({ coupleId, userId: _userId, onCompl
   }, []);
 
   const handleSubmit = useCallback(async () => {
+    if (soloPreview) {
+      setSubmitted(true);
+      if (typeof onComplete === 'function') onComplete();
+      return;
+    }
     if (!coupleId) return;
     try {
       // Persist categories without the metadata (isFixed / ratioKey) — only learner-visible fields.
@@ -135,7 +142,7 @@ export default function SpendingPlanBuilder({ coupleId, userId: _userId, onCompl
     } catch (e) {
       setError(e.message || 'Failed to save Spending Plan');
     }
-  }, [coupleId, categories, breathingRoomCents, triggeredSnippets, onComplete]);
+  }, [coupleId, categories, breathingRoomCents, triggeredSnippets, onComplete, soloPreview]);
 
   if (loading) {
     return (
@@ -264,16 +271,18 @@ export default function SpendingPlanBuilder({ coupleId, userId: _userId, onCompl
       <button
         type="button"
         onClick={handleSubmit}
-        disabled={!coupleId || submitted}
+        disabled={(!coupleId && !soloPreview) || submitted}
         style={{
           marginTop: 16,
           padding: '10px 20px',
           borderRadius: 12,
           backgroundColor:
-            !coupleId || submitted ? 'var(--pt-border-subtle)' : 'var(--pt-primary-accent)',
+            (!coupleId && !soloPreview) || submitted
+              ? 'var(--pt-border-subtle)'
+              : 'var(--pt-primary-accent)',
           color: 'var(--pt-text-inverse)',
           border: 'none',
-          cursor: !coupleId || submitted ? 'not-allowed' : 'pointer',
+          cursor: (!coupleId && !soloPreview) || submitted ? 'not-allowed' : 'pointer',
           ...getTypeStyle('body'),
         }}
       >

@@ -31,18 +31,20 @@ const POLL_INTERVAL_MS = 6000;
 const GOALS = goalLabelsConfig.goals;
 const GOAL_BY_ID = Object.fromEntries(GOALS.map((g) => [g.id, g]));
 
-export default function WishlistVote({ coupleId, userId, onComplete }) {
+export default function WishlistVote({ coupleId, userId, onComplete, soloPreview = false }) {
   const [ownSelections, setOwnSelections] = useState([]);
   const [submitted, setSubmitted] = useState(false);
   const [partnerGoals, setPartnerGoals] = useState(null); // null = BLIND (couples-care contract)
   const [overlapGoals, setOverlapGoals] = useState(null);
   const [partnerSlot, setPartnerSlot] = useState(null);
   // Initial loading derived from required props — avoids set-state-in-effect.
-  const [loading, setLoading] = useState(() => Boolean(coupleId && userId));
+  // Solo preview skips hydration entirely, so render immediately.
+  const [loading, setLoading] = useState(() => !soloPreview && Boolean(coupleId && userId));
   const [error, setError] = useState(null);
 
   // Resolve partner slot.
   useEffect(() => {
+    if (soloPreview) return;
     let cancelled = false;
     if (!coupleId || !userId) return;
     getCoupleForUser(userId)
@@ -54,10 +56,11 @@ export default function WishlistVote({ coupleId, userId, onComplete }) {
     return () => {
       cancelled = true;
     };
-  }, [coupleId, userId]);
+  }, [coupleId, userId, soloPreview]);
 
   // Hydrate from storage.
   useEffect(() => {
+    if (soloPreview) return;
     let cancelled = false;
     if (!coupleId || !userId) return;
     getGoalSelections(coupleId, userId)
@@ -81,10 +84,11 @@ export default function WishlistVote({ coupleId, userId, onComplete }) {
     return () => {
       cancelled = true;
     };
-  }, [coupleId, userId]);
+  }, [coupleId, userId, soloPreview]);
 
   // Poll for partner submission once own submitted.
   useEffect(() => {
+    if (soloPreview) return;
     if (!submitted || partnerGoals !== null || !coupleId || !userId) return;
     let cancelled = false;
     const check = async () => {
@@ -105,14 +109,18 @@ export default function WishlistVote({ coupleId, userId, onComplete }) {
       cancelled = true;
       clearInterval(interval);
     };
-  }, [submitted, partnerGoals, coupleId, userId]);
+  }, [submitted, partnerGoals, coupleId, userId, soloPreview]);
 
   // Fire onComplete when reveal reached (single transition).
   useEffect(() => {
+    if (soloPreview && submitted && typeof onComplete === 'function') {
+      onComplete();
+      return;
+    }
     if (submitted && partnerGoals !== null && typeof onComplete === 'function') {
       onComplete();
     }
-  }, [submitted, partnerGoals, onComplete]);
+  }, [submitted, partnerGoals, onComplete, soloPreview]);
 
   const toggleGoal = useCallback(
     (goalId) => {
@@ -126,7 +134,12 @@ export default function WishlistVote({ coupleId, userId, onComplete }) {
   );
 
   const handleSubmit = useCallback(async () => {
-    if (ownSelections.length !== MAX_SELECTIONS || !coupleId || !partnerSlot) return;
+    if (ownSelections.length !== MAX_SELECTIONS) return;
+    if (soloPreview) {
+      setSubmitted(true);
+      return;
+    }
+    if (!coupleId || !partnerSlot) return;
     try {
       const res = await saveGoalSelections(coupleId, partnerSlot, ownSelections);
       setSubmitted(true);
@@ -141,7 +154,7 @@ export default function WishlistVote({ coupleId, userId, onComplete }) {
     } catch (e) {
       setError(e.message || 'Failed to save your goals');
     }
-  }, [ownSelections, coupleId, partnerSlot]);
+  }, [ownSelections, coupleId, partnerSlot, soloPreview]);
 
   const computedOverlap = useMemo(() => {
     // Prefer server-stored overlap when both arrays present; client-compute as fallback.
@@ -164,6 +177,33 @@ export default function WishlistVote({ coupleId, userId, onComplete }) {
       <p style={{ ...getTypeStyle('body'), color: 'var(--pt-text-muted)' }}>
         Loading your Shared Goals…
       </p>
+    );
+  }
+
+  // ─── Solo preview: own selections only, no partner data ─────
+  if (soloPreview && submitted) {
+    return (
+      <section
+        aria-label="Shared goals solo preview"
+        style={{
+          backgroundColor: 'var(--pt-elevation-1)',
+          borderRadius: 24,
+          padding: 24,
+          border: '1px solid var(--pt-border-subtle)',
+        }}
+      >
+        <h2 style={{ ...getTypeStyle('heading-1'), color: 'var(--pt-text-primary)', margin: 0 }}>
+          Your Top {MAX_SELECTIONS} Goals
+        </h2>
+        <p style={{ ...getTypeStyle('body'), color: 'var(--pt-text-muted)', marginTop: 8 }}>
+          Admin solo preview — in joint mode, partner picks would surface here with an overlap reveal.
+        </p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>
+          {ownSelections.map((gid) => (
+            <GoalBadge key={gid} goal={GOAL_BY_ID[gid]} variant="overlap" />
+          ))}
+        </div>
+      </section>
     );
   }
 

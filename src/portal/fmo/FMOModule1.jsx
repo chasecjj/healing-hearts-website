@@ -24,9 +24,10 @@
  *   - useFMOSession resolves couple_id. Users without a couple see a soft
  *     message explaining FMO is a joint-track module — never blocked at
  *     the route level (Chase ruling: avoid hard gating in stub phase).
- *   - Admins without a couple get a quiz-only solo preview surface so they
- *     can demo / inspect the archetype quiz UI without a partner link.
- *     Other steps (plan, wishlist, kit) remain couple-gated.
+ *   - Admins without a couple get a full 5-step solo preview: each step's
+ *     `soloPreview` prop bypasses couple-resolution, partner polling, and
+ *     DB writes; reveal/own-state renders immediately on submit. An "Admin
+ *     preview" banner surfaces at the top of the orchestrator.
  */
 
 import React, { useCallback, useState } from 'react';
@@ -88,73 +89,10 @@ export default function FMOModule1() {
     );
   }
 
-  // No couple linked — admins get a quiz-only solo preview; everyone else
-  // sees the soft "your account isn't linked yet" message.
-  if (!coupleId) {
-    if (isAdmin) {
-      return (
-        <main
-          className="max-w-3xl mx-auto px-4 sm:px-6 py-10 flex flex-col gap-6"
-          style={{ backgroundColor: 'var(--pt-content-bg)' }}
-          aria-label="FMO Module 1 — admin solo preview"
-        >
-          <header>
-            <p
-              style={{
-                ...getTypeStyle('caption'),
-                color: 'var(--pt-text-muted)',
-                textTransform: 'uppercase',
-                letterSpacing: '0.18em',
-                margin: 0,
-              }}
-            >
-              Admin preview · Solo mode · Results not persisted
-            </p>
-            <h1
-              style={{
-                ...getTypeStyle('heading-1'),
-                color: 'var(--pt-text-primary)',
-                margin: 0,
-                marginTop: 6,
-              }}
-            >
-              Spending Personality Quiz
-            </h1>
-            <p
-              style={{
-                ...getTypeStyle('body'),
-                color: 'var(--pt-text-muted)',
-                marginTop: 8,
-              }}
-            >
-              Your account isn&apos;t linked to a partner, so the full couple flow
-              (plan builder, wishlist vote, money date kit) is hidden. The quiz
-              works standalone — take it to see your archetype.
-            </p>
-          </header>
-
-          {error && (
-            <p
-              role="alert"
-              style={{
-                ...getTypeStyle('caption'),
-                color: 'var(--pt-danger)',
-              }}
-            >
-              {error}
-            </p>
-          )}
-
-          <SpendingQuiz
-            coupleId={null}
-            userId={userId}
-            onComplete={() => {}}
-            soloPreview
-          />
-        </main>
-      );
-    }
-
+  // Non-admin without a couple — surface the soft "reach out to facilitator" message.
+  // Admins without a couple fall through to the full orchestrator in soloPreview mode
+  // (each step renders standalone, no DB writes).
+  if (!coupleId && !isAdmin) {
     return (
       <main
         className="max-w-3xl mx-auto px-4 sm:px-6 py-10"
@@ -184,6 +122,7 @@ export default function FMOModule1() {
     );
   }
 
+  const soloPreview = !coupleId && isAdmin;
   const currentStep = STEPS[stepIdx];
 
   return (
@@ -193,6 +132,21 @@ export default function FMOModule1() {
       aria-label="FMO Module 1"
     >
       <header>
+        {soloPreview && (
+          <p
+            style={{
+              ...getTypeStyle('caption'),
+              color: 'var(--pt-warning)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.18em',
+              margin: 0,
+              marginBottom: 6,
+              fontWeight: 600,
+            }}
+          >
+            Admin preview · Solo mode · Results not persisted
+          </p>
+        )}
         <p
           style={{
             ...getTypeStyle('caption'),
@@ -244,6 +198,7 @@ export default function FMOModule1() {
           userId={userId}
           coupleId={coupleId}
           onComplete={handleStepComplete}
+          soloPreview={soloPreview}
         />
       )}
       {currentStep.id === 'quiz' && (
@@ -251,6 +206,7 @@ export default function FMOModule1() {
           coupleId={coupleId}
           userId={userId}
           onComplete={handleStepComplete}
+          soloPreview={soloPreview}
         />
       )}
       {currentStep.id === 'plan' && (
@@ -258,6 +214,7 @@ export default function FMOModule1() {
           coupleId={coupleId}
           userId={userId}
           onComplete={handleStepComplete}
+          soloPreview={soloPreview}
         />
       )}
       {currentStep.id === 'wishlist' && (
@@ -265,6 +222,7 @@ export default function FMOModule1() {
           coupleId={coupleId}
           userId={userId}
           onComplete={handleStepComplete}
+          soloPreview={soloPreview}
         />
       )}
       {currentStep.id === 'kit' && (

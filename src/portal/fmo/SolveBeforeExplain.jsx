@@ -44,7 +44,7 @@ const REVEAL_BY_OPTION = {
 
 const POLL_INTERVAL_MS = 6000;
 
-export default function SolveBeforeExplain({ lessonId, userId, coupleId, onComplete }) {
+export default function SolveBeforeExplain({ lessonId, userId, coupleId, onComplete, soloPreview = false }) {
   const [selectedOption, setSelectedOption] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [partnerSubmitted, setPartnerSubmitted] = useState(false);
@@ -53,6 +53,7 @@ export default function SolveBeforeExplain({ lessonId, userId, coupleId, onCompl
 
   // Resolve the other partner's user id once.
   useEffect(() => {
+    if (soloPreview) return;
     let cancelled = false;
     if (!coupleId || !userId) return;
     getCoupleForUser(userId)
@@ -67,10 +68,11 @@ export default function SolveBeforeExplain({ lessonId, userId, coupleId, onCompl
     return () => {
       cancelled = true;
     };
-  }, [coupleId, userId]);
+  }, [coupleId, userId, soloPreview]);
 
   // Poll for partner submission once both userId + partnerId + own submission are present.
   useEffect(() => {
+    if (soloPreview) return;
     if (!submitted || !partnerId || partnerSubmitted) return;
 
     let cancelled = false;
@@ -96,7 +98,7 @@ export default function SolveBeforeExplain({ lessonId, userId, coupleId, onCompl
       cancelled = true;
       clearInterval(interval);
     };
-  }, [submitted, partnerId, partnerSubmitted, lessonId]);
+  }, [submitted, partnerId, partnerSubmitted, lessonId, soloPreview]);
 
   // Fire onComplete when both partners have submitted (single transition).
   useEffect(() => {
@@ -106,7 +108,13 @@ export default function SolveBeforeExplain({ lessonId, userId, coupleId, onCompl
   }, [submitted, partnerSubmitted, onComplete]);
 
   const handleSubmit = useCallback(async () => {
-    if (!selectedOption || !lessonId || !userId) return;
+    if (!selectedOption) return;
+    if (soloPreview) {
+      setSubmitted(true);
+      setPartnerSubmitted(true);
+      return;
+    }
+    if (!lessonId || !userId) return;
     try {
       const { error: writeErr } = await supabase
         .from('lesson_progress')
@@ -128,7 +136,7 @@ export default function SolveBeforeExplain({ lessonId, userId, coupleId, onCompl
     } catch (e) {
       setError(e.message || 'Failed to save your selection');
     }
-  }, [selectedOption, lessonId, userId, coupleId]);
+  }, [selectedOption, lessonId, userId, coupleId, soloPreview]);
 
   const showReveal = submitted && partnerSubmitted;
 
