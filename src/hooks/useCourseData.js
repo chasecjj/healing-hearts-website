@@ -93,7 +93,18 @@ export function useCourseData(courseSlug = 'healing-hearts-journey') {
       setEnrollments(enrollmentData);
       writeCache(courseSlug, courseData, progressData);
     } catch (err) {
-      console.error('Failed to load course data:', err);
+      // TypeError: Failed to fetch is a network-level error, most often caused by
+      // a React Router navigation interrupting an in-flight Supabase request — the
+      // unmounting component's fetch lands as a TypeError. Real connection failures
+      // also surface this way, but in both cases `setError` propagates to the UI
+      // so consumers can render an offline/retry state. The console.error adds no
+      // debugging value and clutters logs, so suppress it for network blips while
+      // letting genuine Supabase errors (PostgrestError shape) log normally.
+      const isNetworkBlip =
+        err?.name === 'TypeError' || /Failed to fetch/i.test(err?.message || '');
+      if (!isNetworkBlip) {
+        console.error('Failed to load course data:', err);
+      }
       setError(err.message);
       // If we have cached data, keep showing it — don't blank the screen
     } finally {
