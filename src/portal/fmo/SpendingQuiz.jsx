@@ -14,6 +14,11 @@
  *   - showJointReveal only true when BOTH partner archetypes non-null.
  *   - Partner's archetype never displayed before joint reveal.
  *   - "There are no wrong archetypes. Your household needs both of yours." — Joint reveal copy.
+ *
+ * Solo preview mode (`soloPreview` prop):
+ *   - Bypasses couple-resolution + DB writes + partner polling.
+ *   - On submit, scores quiz locally and reveals the user's own archetype card.
+ *   - Used by admin-without-couple preview path; see FMOModule1.jsx.
  */
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -31,7 +36,7 @@ const POLL_INTERVAL_MS = 6000;
 
 // ─── Component ──────────────────────────────────────────────────
 
-export default function SpendingQuiz({ coupleId, userId, onComplete }) {
+export default function SpendingQuiz({ coupleId, userId, onComplete, soloPreview = false }) {
   const [responses, setResponses] = useState({});
   const [questionIdx, setQuestionIdx] = useState(0);
   const [submitted, setSubmitted] = useState(false);
@@ -45,6 +50,7 @@ export default function SpendingQuiz({ coupleId, userId, onComplete }) {
 
   // Resolve partner slot on mount.
   useEffect(() => {
+    if (soloPreview) return;
     let cancelled = false;
     if (!coupleId || !userId) return;
     getCoupleForUser(userId)
@@ -56,10 +62,11 @@ export default function SpendingQuiz({ coupleId, userId, onComplete }) {
     return () => {
       cancelled = true;
     };
-  }, [coupleId, userId]);
+  }, [coupleId, userId, soloPreview]);
 
   // On mount: load any existing result so the partner archetype shows on reveal.
   useEffect(() => {
+    if (soloPreview) return;
     let cancelled = false;
     if (!coupleId || !partnerSlot) return;
     getQuizResults(coupleId)
@@ -79,10 +86,11 @@ export default function SpendingQuiz({ coupleId, userId, onComplete }) {
     return () => {
       cancelled = true;
     };
-  }, [coupleId, partnerSlot]);
+  }, [coupleId, partnerSlot, soloPreview]);
 
   // Poll for partner's archetype after own submission, until joint reveal possible.
   useEffect(() => {
+    if (soloPreview) return;
     if (!submitted || partnerArchetype || !coupleId || !partnerSlot) return;
     let cancelled = false;
     const check = async () => {
@@ -101,14 +109,15 @@ export default function SpendingQuiz({ coupleId, userId, onComplete }) {
       cancelled = true;
       clearInterval(interval);
     };
-  }, [submitted, partnerArchetype, coupleId, partnerSlot]);
+  }, [submitted, partnerArchetype, coupleId, partnerSlot, soloPreview]);
 
-  const showJointReveal = Boolean(ownArchetype && partnerArchetype);
+  const showJointReveal = !soloPreview && Boolean(ownArchetype && partnerArchetype);
+  const showSoloReveal = soloPreview && Boolean(ownArchetype);
 
-  // Fire onComplete when joint reveal possible (single transition).
+  // Fire onComplete when reveal possible (joint OR solo).
   useEffect(() => {
-    if (showJointReveal && typeof onComplete === 'function') onComplete();
-  }, [showJointReveal, onComplete]);
+    if ((showJointReveal || showSoloReveal) && typeof onComplete === 'function') onComplete();
+  }, [showJointReveal, showSoloReveal, onComplete]);
 
   const handleSelect = useCallback((qid, optId) => {
     setResponses((prev) => ({ ...prev, [qid]: optId }));
@@ -120,8 +129,14 @@ export default function SpendingQuiz({ coupleId, userId, onComplete }) {
   );
 
   const handleSubmit = useCallback(async () => {
-    if (!allAnswered || !coupleId || !partnerSlot) return;
+    if (!allAnswered) return;
     const archetype = scoreQuiz(responses);
+    if (soloPreview) {
+      setOwnArchetype(archetype);
+      setSubmitted(true);
+      return;
+    }
+    if (!coupleId || !partnerSlot) return;
     try {
       await saveQuizResult(coupleId, partnerSlot, archetype);
       setOwnArchetype(archetype);
@@ -129,7 +144,7 @@ export default function SpendingQuiz({ coupleId, userId, onComplete }) {
     } catch (e) {
       setError(e.message || 'Failed to save quiz result');
     }
-  }, [allAnswered, responses, coupleId, partnerSlot]);
+  }, [allAnswered, responses, coupleId, partnerSlot, soloPreview]);
 
   const ownArchetypeData = ownArchetype
     ? archetypesConfig.archetypes.find((a) => a.id === ownArchetype)
@@ -183,6 +198,30 @@ export default function SpendingQuiz({ coupleId, userId, onComplete }) {
         >
           You've just named something most couples never name out loud. Your archetypes aren't opposites — they're the two halves of how your household actually works. Every Spending Plan you build from here is for both of you. The next step is naming what that plan is for.
         </p>
+      </section>
+    );
+  }
+
+  if (showSoloReveal) {
+    return (
+      <section
+        aria-label="Spending personality solo preview"
+        style={{
+          backgroundColor: 'var(--pt-elevation-1)',
+          borderRadius: 24,
+          padding: 24,
+          border: '1px solid var(--pt-border-subtle)',
+        }}
+      >
+        <h2 style={{ ...getTypeStyle('heading-1'), color: 'var(--pt-text-primary)', margin: 0 }}>
+          Your Spending Personality
+        </h2>
+        <p style={{ ...getTypeStyle('body'), color: 'var(--pt-text-muted)', marginTop: 8 }}>
+          Admin solo preview — your archetype only. Joint reveal is shown when both partners submit.
+        </p>
+        <div style={{ marginTop: 16 }}>
+          <ArchetypeCard archetype={ownArchetypeData} who="You" />
+        </div>
       </section>
     );
   }
