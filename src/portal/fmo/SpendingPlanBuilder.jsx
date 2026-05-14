@@ -106,7 +106,7 @@ export default function SpendingPlanBuilder({ coupleId, userId: _userId, onCompl
   const savingsCents = toCents(savingsTarget);
   const breathingRoomCents = takeHomeCents - fixedBillsCents - savingsCents;
 
-  const ratios = computeRatios(takeHomeCents, categories);
+  const ratios = computeRatios(takeHomeCents, categories, savingsCents);
 
   const handleCategoryChange = useCallback((idx, field, value) => {
     setCategories((prev) => {

@@ -84,8 +84,12 @@ export function pickFiringSnippet(ratios) {
  * Compute category ratios for AP-8 inline feedback.
  * @param {number} takeHomeCents
  * @param {Array<{name: string, amount_cents: number, isFixed?: boolean, ratioKey?: string|null}>} categories
+ * @param {number} [savingsCents=0] — top-level savings target (lives outside the
+ *   categories array in SpendingPlanBuilder's form state). Required to populate
+ *   `ratios.savings` for the Snippet 4 (Savings Rate) threshold; without it the
+ *   `savings < 0.10` threshold can never fire.
  */
-export function computeRatios(takeHomeCents, categories) {
+export function computeRatios(takeHomeCents, categories, savingsCents = 0) {
   if (!takeHomeCents || takeHomeCents <= 0) return {};
   const sumByKey = {};
   let fixedTotal = 0;
@@ -100,5 +104,6 @@ export function computeRatios(takeHomeCents, categories) {
     ratios[k] = v / takeHomeCents;
   }
   ratios.fixedTotal = fixedTotal / takeHomeCents;
+  ratios.savings = (savingsCents || 0) / takeHomeCents;
   return ratios;
 }
