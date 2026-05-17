@@ -216,12 +216,14 @@ export default function SpendingPlanBuilder({ coupleId, userId: _userId, onCompl
             />
             <input
               type="number"
+              inputMode="decimal"
               min="0"
               step="0.01"
               value={toDollarStr(cat.amount_cents)}
               onChange={(e) => handleCategoryChange(idx, 'amount', e.target.value)}
               aria-label={`Category ${idx + 1} monthly amount`}
               placeholder="$"
+              className="no-spinner"
               style={{
                 padding: 8,
                 borderRadius: 8,
@@ -306,11 +308,13 @@ function MoneyInput({ label, value, onChange }) {
       </span>
       <input
         type="number"
+        inputMode="decimal"
         min="0"
         step="0.01"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="$"
+        className="no-spinner"
         style={{
           width: '100%',
           padding: 8,

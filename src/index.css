@@ -109,3 +109,18 @@ input:-webkit-autofill:active {
   caret-color: theme('colors.foreground') !important;
   transition: background-color 9999s ease-in-out 0s;
 }
+
+/* Hide browser spinner arrows on number inputs that opt in via .no-spinner.
+   Used on money-entry fields (e.g. FMO SpendingPlanBuilder) where step=0.01
+   makes the spinner a penny-by-penny trap for amounts larger than $1. With
+   spinners hidden, direct typing becomes the only path — matching the
+   spreadsheet mental model users naturally bring to budget entry. */
+.no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.no-spinner {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
