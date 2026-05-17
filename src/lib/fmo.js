@@ -135,8 +135,10 @@ export async function saveQuizResult(coupleId, partnerSlot, archetype) {
     throw new Error(`[fmo] invalid partnerSlot "${partnerSlot}"; expected 'a' or 'b'`);
   }
 
-  // Schema requires BOTH archetype columns NOT NULL on row create. To support
-  // partial-submission state, we fetch the existing row (if any) and merge.
+  // Schema (migration 040, 2026-05-17): both archetype columns nullable; NULL
+  // = "not yet submitted" (canonical). CHECK constraint disallows ''. We fetch
+  // the existing row (if any) and merge so the other partner's submitted
+  // archetype is preserved when this partner writes.
   const { data: existing, error: lookupErr } = await supabase
     .from('couple_quiz_results')
     .select('*')
@@ -147,9 +149,9 @@ export async function saveQuizResult(coupleId, partnerSlot, archetype) {
   const payload = {
     couple_id: coupleId,
     partner_a_archetype:
-      partnerSlot === 'a' ? archetype : existing?.partner_a_archetype || '',
+      partnerSlot === 'a' ? archetype : existing?.partner_a_archetype ?? null,
     partner_b_archetype:
-      partnerSlot === 'b' ? archetype : existing?.partner_b_archetype || '',
+      partnerSlot === 'b' ? archetype : existing?.partner_b_archetype ?? null,
     submitted_at: new Date().toISOString(),
   };
 

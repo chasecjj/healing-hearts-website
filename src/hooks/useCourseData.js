@@ -62,6 +62,8 @@ export function useCourseData(courseSlug = 'healing-hearts-journey') {
   const [error, setError] = useState(null);
 
   const fetchingRef = useRef(false);
+  const courseRef = useRef(course);
+  useEffect(() => { courseRef.current = course; }, [course]);
 
   const loadData = useCallback(async () => {
     if (!user || fetchingRef.current) return;
@@ -69,7 +71,7 @@ export function useCourseData(courseSlug = 'healing-hearts-journey') {
 
     try {
       // Only show loading spinner if we have no cached data
-      if (!course) setLoading(true);
+      if (!courseRef.current) setLoading(true);
       setError(null);
 
       const courseData = await getCourseWithContent(courseSlug);
@@ -111,7 +113,7 @@ export function useCourseData(courseSlug = 'healing-hearts-journey') {
       setLoading(false);
       fetchingRef.current = false;
     }
-  }, [user, courseSlug, course]);
+  }, [user, courseSlug]);
 
   // Fetch on mount + revalidate when user returns to tab
   useEffect(() => {
