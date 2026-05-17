@@ -155,6 +155,8 @@ function App() {
               <Route path="/portal/course/:courseSlug/:moduleSlug/:lessonSlug" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
               <Route path="/portal/:moduleSlug" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
               <Route path="/portal/:moduleSlug/:lessonSlug" element={<ProtectedRoute><CoursePortal /></ProtectedRoute>} />
+              {/* Catch-all for unrecognized /portal/* paths — redirect to portal home rather than silently rendering CoursePortal with a bad slug */}
+              <Route path="/portal/*" element={<ProtectedRoute><Navigate to="/portal" replace /></ProtectedRoute>} />
               <Route path="/phedris-coming-soon" element={<ProtectedRoute><PhedrisComingSoon /></ProtectedRoute>} />
               <Route path="/account/password" element={<ProtectedRoute><AccountPassword /></ProtectedRoute>} />
             </Route>
